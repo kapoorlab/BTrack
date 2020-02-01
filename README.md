@@ -4,9 +4,7 @@ Fiji plugin for tracking cells inside a mouse embryo bud with track and track ed
 
 From the Trackmate3 repository a copy of the Readme for users of this plugin.
 
-[![](https://travis-ci.org/fiji/TrackMate3.svg?branch=master)](https://travis-ci.org/fiji/TrackMate3)
 
-![Mastodon logo](doc/Mastodon-logo-512x512.png)
 
 # Mastodon – a large-scale tracking and track-editing framework for large, multi-view images.
 
