@@ -11,6 +11,8 @@ import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
@@ -22,14 +24,14 @@ public class DisplayListOverlay {
 	
 	// Get all the non-zero co ordinates of a binary image 
 	public static ArrayList<RealLocalizable> GetCoordinatesBit(
-			RandomAccessibleInterval<FloatType> actualRoiimg) {
+			RandomAccessibleInterval<BitType> actualRoiimg) {
 
 		ArrayList<RealLocalizable> coordinatelist = new ArrayList<RealLocalizable>();
 		int ndims = actualRoiimg.numDimensions();
 		
 
 
-		final Cursor<FloatType> center = Views.iterable(actualRoiimg).localizingCursor();
+		final Cursor<BitType> center = Views.iterable(actualRoiimg).localizingCursor();
 
 		
 
@@ -40,7 +42,7 @@ public class DisplayListOverlay {
 			double[] posf = new double[ndims];
 			center.localize(posf);
 			final RealPoint rpos = new RealPoint(posf);
-			if(center.get().get() > 0) {
+			if(center.get().getInteger() > 0) {
 				coordinatelist.add(rpos);
 			}
 			

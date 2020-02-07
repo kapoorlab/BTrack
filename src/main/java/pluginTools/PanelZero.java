@@ -2,15 +2,17 @@ package pluginTools;
 
 import javax.swing.JFrame;
 
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.io.Opener;
+import sc.fiji.simplifiedio.SimplifiedIO;
+
+import net.imagej.ImageJ;
 
 public class PanelZero {
 
 	public static void main(String[] args) {
-		
-		new ImageJ();
+		ImageJ ij = new ImageJ();
+		ij.ui().showUI();
 		JFrame frame = new JFrame("");
 
 	

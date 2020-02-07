@@ -140,7 +140,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		
 		
-		
+		StartDisplayer();
 		if (overlay == null) {
 
 			overlay = new Overlay();
@@ -155,6 +155,15 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		}
 		
 	}
+	
+	
+	public void StartDisplayer() {
+		
+		ComputeBorder display = new ComputeBorder(this, jpb);
+		
+		display.execute();
+	}
+	
 	public void repaintView(ImagePlus Activeimp, RandomAccessibleInterval<FloatType> Activeimage) {
 		if (Activeimp == null || !Activeimp.isVisible()) {
 			Activeimp = ImageJFunctions.show(Activeimage);

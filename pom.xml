@@ -96,6 +96,11 @@
 
 	<dependencies>
 		<!-- ImgLib2 dependencies -->
+		<dependency>
+    <groupId>sc.fiji</groupId>
+    <artifactId>simplified-io</artifactId>
+    <version>1.0.1</version>
+</dependency>
 			<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigdataviewer-vistools</artifactId>

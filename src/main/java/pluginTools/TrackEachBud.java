@@ -7,11 +7,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ij.ImagePlus;
+import mpicbg.imglib.image.display.imagej.ImageJFunctions;
+import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
@@ -19,7 +23,8 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
-
+import sc.fiji.simplifiedio.SimplifiedIO;
+import displayBud.DisplayListOverlay;
 
 public class TrackEachBud {
 	
@@ -58,11 +63,13 @@ public class TrackEachBud {
 			percent++;
 
 			int label = setiter.next();
-			
+			if (label > 0) {
 			// Input the integer image of bud with the label and output the binary border for that label
 			RandomAccessibleInterval<BitType> CurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
-		   	
+			List<RealLocalizable> truths =  DisplayListOverlay.GetCoordinatesBit(CurrentViewBit); 
 			
+			
+			}
 		}
 			
 		
