@@ -13,13 +13,19 @@ public class PanelZero {
 		new ImageJ();
 		JFrame frame = new JFrame("");
 
-		ImagePlus impB = new Opener()
-				.openImage("/Users/aimachine/Documents/Dureen/RAW.tif");
-		impB.show();
+	
 
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Documents/Dureen/MASK_EMBRYO.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/ClaudiaProb.tif");
 		impA.show();
+		
+		ImagePlus impC = new Opener()
+				.openImage("/Users/aimachine/Documents/Claudia/BudOriginal.tif");
+		impC.show();
+
+		ImagePlus impD = new Opener()
+				.openImage("/Users/aimachine/Documents/Claudia/BudSegment.tif");
+		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();
 

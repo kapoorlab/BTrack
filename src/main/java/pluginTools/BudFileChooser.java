@@ -55,7 +55,7 @@ public class BudFileChooser extends JPanel {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		  public JFrame Cardframe = new JFrame("Nuclear cloud aggregate tracker");
+		  public JFrame Cardframe = new JFrame("Bud n Cell tracker");
 		  public JPanel panelCont = new JPanel();
 		  public ImagePlus impOrig, impOrigSec, impSegA, impSegB, impSegC;
 		  public File impOrigfile, impOrigSecfile, impSegAfile, impSegBfile, impSegCfile;
