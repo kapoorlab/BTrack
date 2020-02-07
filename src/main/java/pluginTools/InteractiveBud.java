@@ -8,6 +8,8 @@ import java.awt.Label;
 import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -39,11 +41,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public String usefolder = IJ.getDirectory("imagej");
 	public String addToName = "BTrack_";
 	public final int scrollbarSize = 1000;
-	
+	public Set<Integer> pixellist;
 	
 	public RandomAccessibleInterval<FloatType> originalimg;
 	public RandomAccessibleInterval<FloatType> originalSecimg;
-	public RandomAccessibleInterval<FloatType> Segoriginalimg;
+	public RandomAccessibleInterval<IntType> Segoriginalimg;
 	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public final String NameA;
@@ -64,7 +66,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<FloatType> originalSecimg,
-			final RandomAccessibleInterval<FloatType> Segoriginalimg,
+			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<FloatType> SegSecoriginalimg,
 			final String NameA,
 			final String NameB) {
@@ -107,7 +109,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		jpb = new JProgressBar();
-		
+		pixellist = new HashSet<Integer>();
 		
 		if (ndims == 3) {
 
@@ -138,7 +140,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		
 		
-		repaintView(imp, CurrentView);
+		
 		if (overlay == null) {
 
 			overlay = new Overlay();
@@ -146,7 +148,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			
 		}
 		
+		if (change == ValueChange.THIRDDIMmouse)
+		{
+		repaintView(imp, CurrentView);
 		
+		}
 		
 	}
 	public void repaintView(ImagePlus Activeimp, RandomAccessibleInterval<FloatType> Activeimage) {
@@ -245,10 +251,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		
-		
-
-		
 		
 		timeslider.addAdjustmentListener(new TimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));

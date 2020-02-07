@@ -192,7 +192,7 @@ public class BudFileChooser extends JPanel {
 				
 				RandomAccessibleInterval<FloatType> imageOrig = new ImgOpener().openImgs(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType()).iterator().next();
 				RandomAccessibleInterval<FloatType> imageOrigSec = new ImgOpener().openImgs(impOrigSec.getOriginalFileInfo().directory + impOrigSec.getOriginalFileInfo().fileName, new FloatType()).iterator().next();
-				RandomAccessibleInterval<FloatType> imageSegA = new ImgOpener().openImgs(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new FloatType()).iterator().next();
+				RandomAccessibleInterval<IntType> imageSegA = new ImgOpener().openImgs(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType()).iterator().next();
 				RandomAccessibleInterval<FloatType> imageSegB = new ImgOpener().openImgs(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType()).iterator().next();
 				
 				
