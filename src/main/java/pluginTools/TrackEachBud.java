@@ -22,6 +22,7 @@ import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
 import sc.fiji.simplifiedio.SimplifiedIO;
 import displayBud.DisplayListOverlay;
@@ -64,9 +65,24 @@ public class TrackEachBud {
 
 			int label = setiter.next();
 			if (label > 0) {
+				
+				String uniqueID = Integer.toString(parent.thirdDimension) + Integer.toString(label);
+				
 			// Input the integer image of bud with the label and output the binary border for that label
 			RandomAccessibleInterval<BitType> CurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
-			List<RealLocalizable> truths =  DisplayListOverlay.GetCoordinatesBit(CurrentViewBit); 
+			
+			// For each bud get the list of points
+			List<RealLocalizable> truths =  DisplayListOverlay.GetCoordinatesBit(CurrentViewBit);
+			
+			// Get the center point of each bud
+			RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
+			
+			// Order the list of bud points
+			Pair<RealLocalizable, List<RealLocalizable>> Ordered = budDetector.Listordering.getOrderedList(truths);
+			
+			DisplayListOverlay.ArrowDisplay(parent, Ordered, uniqueID);
+			
+			
 			
 			
 			}
