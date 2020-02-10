@@ -57,22 +57,12 @@ public class DisplayListOverlay {
 	
 	public static void DisplayList(final InteractiveBud parent, List<RealLocalizable> Skelpoints) {
 		
-		for (int i = 0; i < Skelpoints.size(); i++) {
-			
-			int X = (int)Skelpoints.get(i).getFloatPosition(0);
-			int Y = (int)Skelpoints.get(i).getFloatPosition(1);
-			
-			OvalRoi points =  new OvalRoi((int) X, (int) Y,
-					10, 10);
-			
-			points.setStrokeColor(Color.ORANGE);
-			parent.overlay.add(points);
-		}
-		parent.imp.updateAndDraw();
+		
+		
 	}
 	
 	// Display the found points as arrows on the bud
-	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered, String uniqueID) {
+	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
 		parent.overlay.clear();
 		
@@ -95,6 +85,21 @@ public class DisplayListOverlay {
 		oval.setStrokeWidth(10);
 		oval.setStrokeColor(Color.GREEN);
 		parent.overlay.add(oval);
+		
+		
+        for (int i = 0; i < Skelpoints.size(); i++) {
+			
+			int X = (int)Skelpoints.get(i).getFloatPosition(0);
+			int Y = (int)Skelpoints.get(i).getFloatPosition(1);
+			
+			OvalRoi points =  new OvalRoi((int) X, (int) Y,
+					10, 10);
+			points.setStrokeColor(Color.PINK);
+			points.setStrokeWidth(10);
+			parent.overlay.add(points);
+		}
+		
+		
 		parent.imp.updateAndDraw();
 		parent.Refcord = Ordered.getA();
 

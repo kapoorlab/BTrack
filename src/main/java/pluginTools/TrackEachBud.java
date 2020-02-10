@@ -12,10 +12,12 @@ import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
+import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -81,13 +83,6 @@ public class TrackEachBud {
 			// Get the center point of each bud
 			RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 			
-			// Order the list of bud points
-			
-			
-						
-						
-			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), uniqueID);
-			
 			// Skeletonize Bud
 			OpService ops = parent.ij.op();
 			
@@ -95,13 +90,11 @@ public class TrackEachBud {
 			skelmake.run();
 			ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 			
-			System.out.println(Allskeletons.size());
-			
-			//ArrayList<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons );
 			
 			
+			ArrayList<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons , ops);
 			
-			//DisplayListOverlay.DisplayList(parent, skeletonEndPoints);
+			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths),skeletonEndPoints, uniqueID);
 			
 			
 			}
@@ -110,10 +103,35 @@ public class TrackEachBud {
 		
 	}
 	
-	//public static ArrayList<RealLocalizable>  AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons ) {
+	public static ArrayList<RealLocalizable>  AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, OpService ops ) {
+	
+		 ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
 		
+		for(RandomAccessibleInterval<BitType> skeleton : Allskeletons) {
 		
-	//}
+			
+			SkeletonAnalyzer<BitType> skelanalyze = new SkeletonAnalyzer<BitType>(skeleton, ops);
+		    RandomAccessibleInterval<BitType> Ends = skelanalyze.getEndpoints();
+		    
+		    Cursor<BitType> skelcursor = Views.iterable(Ends).localizingCursor();
+		    
+		    while(skelcursor.hasNext()) {
+		    	
+		    	
+		    	skelcursor.next();
+		    	
+		    	if(skelcursor.get().getInteger() > 0) {
+		    		endPoints.add(new RealPoint(skelcursor.getDoublePosition(0) ,skelcursor.getDoublePosition(1) ));
+		    		
+		    	}
+		    	
+		    	
+		    }
+				
+		}
+		return endPoints;
+		
+	}
 	
 	public static  RandomAccessibleInterval<BitType> GradientmagnitudeImage(
 			RandomAccessibleInterval<BitType> inputimg) {

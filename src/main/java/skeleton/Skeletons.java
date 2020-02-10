@@ -6,6 +6,7 @@ import net.imagej.ops.OpService;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.morphology.table2d.Branchpoints;
+import net.imglib2.algorithm.morphology.table2d.Endpoints;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.logic.BitType;
@@ -63,6 +64,21 @@ public class Skeletons {
 		return branchPoints;
 	}
 
+	
+	public static RandomAccessibleInterval< BitType > endPoints(
+			RandomAccessibleInterval< BitType > skeleton )
+	{
+		RandomAccessibleInterval< BitType > endPoints =
+				ArrayImgs.bits( Intervals.dimensionsAsLongArray( skeleton ) );
+
+		Endpoints.endpoints(
+				Views.extendBorder( Views.zeroMin( skeleton ) ),
+				Views.flatIterable( endPoints ) );
+
+		Views.translate( endPoints, Intervals.minAsLongArray( skeleton ) );
+
+		return endPoints;
+	}
 	static void removeBranchpoints( RandomAccessibleInterval< BitType > skeleton )
 	{
 		final RandomAccessibleInterval< BitType > branchpoints = branchPoints( skeleton );

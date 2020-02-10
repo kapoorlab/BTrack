@@ -40,19 +40,18 @@ public class SkeletonCreator< T extends RealType< T > & NativeType< T > >
 		skeletons = new ArrayList<>( );
         
 		
-			Logger.log( "Creating skeletons, ");
+			Logger.log( "Creating skeletons");
 
 			final ImgLabeling< Integer, IntType > imgLabeling =
 					Regions.asImgLabeling(
 							mask,
-							ConnectedComponents.StructuringElement.FOUR_CONNECTED );
+							ConnectedComponents.StructuringElement.EIGHT_CONNECTED );
 
 			final RandomAccessibleInterval< BitType > skeletons =
 					Algorithms.createObjectSkeletons(
 							imgLabeling,
 							closingRadius, // TODO: Make a parameter
 							opService );
-             ImageJFunctions.show(skeletons);
 			this.skeletons.add( skeletons );
 		}
 
