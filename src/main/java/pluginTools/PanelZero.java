@@ -11,8 +11,7 @@ import net.imagej.ImageJ;
 public class PanelZero {
 
 	public static void main(String[] args) {
-		ImageJ ij = new ImageJ();
-		ij.ui().showUI();
+		
 		JFrame frame = new JFrame("");
 
 	

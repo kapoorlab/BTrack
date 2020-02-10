@@ -38,7 +38,7 @@ public class BoundaryTrack {
 		IntType max = new IntType();
 		computeMinMax(Views.iterable(BudSeg), min, max);
 		
-		System.out.println("Total number of buds found:" + parent.pixellist.size());
+		System.out.println("Total number of buds found:" + (parent.pixellist.size()-1) );
 		
 		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
 		

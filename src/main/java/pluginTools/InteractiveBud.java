@@ -26,6 +26,7 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import listeners.TimeListener;
+import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
@@ -63,7 +64,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int thirdDimensionslider = 1;
 	public int thirdDimensionsliderInit = 1;
 	public JProgressBar jpb;
-	
+	public ImageJ ij; 
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<FloatType> originalSecimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
@@ -110,7 +111,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		jpb = new JProgressBar();
 		pixellist = new HashSet<Integer>();
-		
+		ij = new ImageJ();
+		ij.ui().showUI();
 		if (ndims == 3) {
 
 			thirdDimension = 1;
@@ -131,7 +133,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Cardframe.validate();
 		panelFirst.repaint();
 		panelFirst.validate();
-
+		StartDisplayer();
 		Card();
 	}
 	
@@ -151,7 +153,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		if (change == ValueChange.THIRDDIMmouse)
 		{
 		repaintView(imp, CurrentView);
-		
+		StartDisplayer();
+		System.out.println("repainting");
 		}
 		
 	}
@@ -165,6 +168,10 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	}
 	
 	public void repaintView(ImagePlus Activeimp, RandomAccessibleInterval<FloatType> Activeimage) {
+		
+		
+		overlay.clear();
+		
 		if (Activeimp == null || !Activeimp.isVisible()) {
 			Activeimp = ImageJFunctions.show(Activeimage);
 

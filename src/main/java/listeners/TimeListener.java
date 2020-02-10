@@ -33,7 +33,7 @@ public class TimeListener implements AdjustmentListener {
 		this.scrollbarSize = scrollbarSize;
 
 		this.deltaScrollbar = deltaScrollbar;
-		deltaScrollbar.addMouseMotionListener(new BudMouseListener(parent, ValueChange.THIRDDIMmouse));
+		//deltaScrollbar.addMouseMotionListener(new BudMouseListener(parent, ValueChange.THIRDDIMmouse));
 		deltaScrollbar.addMouseListener(new BudStandardMouseListener(parent, ValueChange.THIRDDIMmouse));
 		deltaScrollbar.setBlockIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
 		deltaScrollbar.setUnitIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));

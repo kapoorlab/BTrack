@@ -8,22 +8,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ij.ImagePlus;
-import mpicbg.imglib.image.display.imagej.ImageJFunctions;
 import net.imagej.ImageJ;
+import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
+import skeleton.*;
 import sc.fiji.simplifiedio.SimplifiedIO;
 import displayBud.DisplayListOverlay;
 
@@ -69,20 +73,35 @@ public class TrackEachBud {
 				String uniqueID = Integer.toString(parent.thirdDimension) + Integer.toString(label);
 				
 			// Input the integer image of bud with the label and output the binary border for that label
-			RandomAccessibleInterval<BitType> CurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
+			Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType> > PairCurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
 			
 			// For each bud get the list of points
-			List<RealLocalizable> truths =  DisplayListOverlay.GetCoordinatesBit(CurrentViewBit);
+			List<RealLocalizable> truths =  DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
 			
 			// Get the center point of each bud
 			RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 			
 			// Order the list of bud points
-			Pair<RealLocalizable, List<RealLocalizable>> Ordered = budDetector.Listordering.getOrderedList(truths);
-			
-			DisplayListOverlay.ArrowDisplay(parent, Ordered, uniqueID);
 			
 			
+						
+						
+			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), uniqueID);
+			
+			// Skeletonize Bud
+			OpService ops = parent.ij.op();
+			
+			SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.getB(), ops);
+			skelmake.run();
+			ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
+			
+			System.out.println(Allskeletons.size());
+			
+			//ArrayList<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons );
+			
+			
+			
+			//DisplayListOverlay.DisplayList(parent, skeletonEndPoints);
 			
 			
 			}
@@ -90,6 +109,11 @@ public class TrackEachBud {
 			
 		
 	}
+	
+	//public static ArrayList<RealLocalizable>  AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons ) {
+		
+		
+	//}
 	
 	public static  RandomAccessibleInterval<BitType> GradientmagnitudeImage(
 			RandomAccessibleInterval<BitType> inputimg) {
@@ -138,7 +162,7 @@ public class TrackEachBud {
 		return gradientimg;
 	}
 	
-	public static RandomAccessibleInterval<BitType> CurrentLabelBinaryImage(RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
+	public static Pair<RandomAccessibleInterval<BitType>,RandomAccessibleInterval<BitType>>  CurrentLabelBinaryImage(RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
 		Cursor<IntType> intCursor = Views.iterable(Intimg).cursor();
@@ -174,10 +198,20 @@ public class TrackEachBud {
 				imageRA.get().setZero();
 
 		}
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
+		RandomAccessibleInterval<BitType> outsmooth = new ArrayImgFactory<BitType>().create(outimg, new BitType());
+		try {
+
+			net.imglib2.algorithm.gauss3.Gauss3.gauss(10, Views.extendBorder(outimg), outsmooth);
+
+		} catch (IncompatibleTypeException es) {
+
+			es.printStackTrace();
+		}
+		
+		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outsmooth);
 
 
-		return gradimg;
+		return new ValuePair<RandomAccessibleInterval<BitType>,RandomAccessibleInterval<BitType>>(gradimg, outsmooth);
 
 	}
 	

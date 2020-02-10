@@ -6,6 +6,7 @@ import java.util.List;
 
 import ij.IJ;
 import ij.gui.Arrow;
+import ij.gui.Line;
 import ij.gui.OvalRoi;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
@@ -54,22 +55,39 @@ public class DisplayListOverlay {
 		return coordinatelist;
 	}
 	
-	
+	public static void DisplayList(final InteractiveBud parent, List<RealLocalizable> Skelpoints) {
+		
+		for (int i = 0; i < Skelpoints.size(); i++) {
+			
+			int X = (int)Skelpoints.get(i).getFloatPosition(0);
+			int Y = (int)Skelpoints.get(i).getFloatPosition(1);
+			
+			OvalRoi points =  new OvalRoi((int) X, (int) Y,
+					10, 10);
+			
+			points.setStrokeColor(Color.ORANGE);
+			parent.overlay.add(points);
+		}
+		parent.imp.updateAndDraw();
+	}
 	
 	// Display the found points as arrows on the bud
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered, String uniqueID) {
 		
-		for (int i = 0; i < Ordered.getB().size() - 10; i += 10) {
+		parent.overlay.clear();
+		
+		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 
 			double X = Ordered.getB().get(i).getDoublePosition(0);
 			double Y = Ordered.getB().get(i).getDoublePosition(1);
 
-			double nextX = Ordered.getB().get(i + 10).getDoublePosition(0);
-			double nextY = Ordered.getB().get(i + 10).getDoublePosition(1);
 
-			Arrow line = new Arrow(X, Y, nextX, nextY);
-			line.setStrokeWidth(0.01);
-			parent.overlay.add(line);
+			OvalRoi points =  new OvalRoi((int) X, (int) Y,
+					2, 2);
+			
+			points.setStrokeColor(Color.RED);
+			parent.overlay.add(points);
+		
 		}
 
 		OvalRoi oval = new OvalRoi((int) Ordered.getA().getDoublePosition(0), (int) Ordered.getA().getDoublePosition(1),
