@@ -42,6 +42,10 @@ import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
+import listeners.LinkobjectListener;
+import listeners.PREIniSearchListener;
+import listeners.PRELostFrameListener;
+import listeners.PREMaxSearchTListener;
 import listeners.TimeListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
@@ -359,35 +363,29 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		Timeselect.setBorder(timeborder);
 		
-		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		KalmanPanel = CovistoKalmanPanel.KalmanPanel();
 		
-		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
+		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
-		panelFirst.add(PanelSelectFile, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(PanelSelectFile, new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
 		timeslider.addAdjustmentListener(new TimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));
-		//CovistoKalmanPanel.Timetrack.addActionListener(new LinkobjectListener(this));
-		//CovistoKalmanPanel.lostframe.addTextListener(new PRELostFrameListener(this));
-		//CovistoKalmanPanel.alphaS.addAdjustmentListener(new PREAlphaListener(this, CovistoKalmanPanel.alphaText,
-		//		CovistoKalmanPanel.alphastring, CovistoKalmanPanel.alphaMin, CovistoKalmanPanel.alphaMax,
-		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.alphaS));
-		//CovistoKalmanPanel.betaS.addAdjustmentListener(new PREBetaListeners(this, CovistoKalmanPanel.betaText,
-		//		CovistoKalmanPanel.betastring, CovistoKalmanPanel.betaMin, CovistoKalmanPanel.betaMax,
-		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.betaS));
+		CovistoKalmanPanel.Timetrack.addActionListener(new LinkobjectListener(this));
+		CovistoKalmanPanel.lostframe.addTextListener(new PRELostFrameListener(this));
 		
-		//CovistoKalmanPanel.maxSearchKalman.addAdjustmentListener(new PREMaxSearchTListener(this,
-		//		CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,
-		//		CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
-		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
-		//CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new PREIniSearchListener(this,
-		//		CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
-		//		CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
-		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
+		CovistoKalmanPanel.maxSearchKalman.addAdjustmentListener(new PREMaxSearchTListener(this,
+				CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,
+				CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
+				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
+		CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new PREIniSearchListener(this,
+				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
+				CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
+				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
