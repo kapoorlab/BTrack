@@ -39,7 +39,6 @@ public class BoundaryTrack {
 		IntType max = new IntType();
 		computeMinMax(Views.iterable(BudSeg), min, max);
 		
-		System.out.println("Total number of buds found:" + (parent.pixellist.size()-1) );
 		
 		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
 		
@@ -73,13 +72,16 @@ public class BoundaryTrack {
 		IntType max = new IntType();
 		computeMinMax(Views.iterable(BudSeg), min, max);
 		
-		System.out.println("Total number of buds found:" + (parent.pixellist.size()-1) );
 		
 		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
 		
 		compute.displayBuds();
 		
 		}
+		
+		if(parent.jpb!=null )
+			utility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
+					"Starting Tracking" );
 	}
 	
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {

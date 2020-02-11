@@ -12,19 +12,17 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 	public final double[] Location;
 	public final  int t;
 	private final int ID;
-	public final double velocity;
 	private String name;
 	private final ConcurrentHashMap< String, Double > features = new ConcurrentHashMap< String, Double >();
 	public static AtomicInteger IDcounter = new AtomicInteger( -1 );
 	
-	public Budpointobject(final double[] Location, final int t, final double velocity ) {
+	public Budpointobject(final double[] Location, final int t ) {
 		
 		
 		
 		super(3);
 		this.Location = Location;
 		this.t = t;
-		this.velocity = velocity;
 		
 		this.ID = IDcounter.incrementAndGet();
 		this.name = "ID" + ID;

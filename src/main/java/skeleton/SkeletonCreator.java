@@ -40,7 +40,6 @@ public class SkeletonCreator< T extends RealType< T > & NativeType< T > >
 		skeletons = new ArrayList<>( );
         
 		
-			Logger.log( "Creating skeletons");
 
 			final ImgLabeling< Integer, IntType > imgLabeling =
 					Regions.asImgLabeling(

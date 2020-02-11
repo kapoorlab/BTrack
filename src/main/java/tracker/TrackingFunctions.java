@@ -42,8 +42,10 @@ public class TrackingFunctions {
 		for (Map.Entry<String, ArrayList<Budpointobject>> entry : parent.AllBudpoints.entrySet()) {
 
 			ArrayList<Budpointobject> bloblist = entry.getValue();
-			if(bloblist.size() > 0)
+			if(bloblist.size() > 0) {
 			colllist.add(bloblist);
+			System.out.println(bloblist.size());
+			}
 
 		}
 

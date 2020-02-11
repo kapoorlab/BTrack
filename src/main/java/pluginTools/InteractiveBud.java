@@ -164,6 +164,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Finalresult = new HashMap<String, Budpointobject>();
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
+		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
 		ij = new ImageJ();
 		ij.ui().showUI();
 		if (ndims == 3) {

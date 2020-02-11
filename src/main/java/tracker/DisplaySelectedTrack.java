@@ -210,16 +210,7 @@ public class DisplaySelectedTrack {
    			parent.imp.updateAndDraw();
    		}
 
-   		if(parent.Velocitydataset!=null)
-   		parent.Velocitydataset.removeAllSeries();
-   		parent.Velocitydataset.addSeries(ChartMaker.drawVelocity(currentresultIntA, "Velocity"));
-
-   		parent.chartVelocity = utility.ChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity", "Time", "Velocity");
    		
-   	
-
-   		parent.jFreeChartFrameRate.dispose();
-   		parent.jFreeChartFrameRate.repaint();
    		
    		
    		

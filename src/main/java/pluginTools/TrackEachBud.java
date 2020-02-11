@@ -1,12 +1,14 @@
 package pluginTools;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import budDetector.Budpointobject;
 import ij.ImagePlus;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
@@ -64,16 +66,14 @@ public class TrackEachBud {
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
-		int count = 0;
 		while (setiter.hasNext()) {
 			
-			count++;
 			percent++;
 			
 			int label = setiter.next();
 			if(parent.jpb!=null )
-				utility.ProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize + 1),
-						"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " BudID = " + count + "/"
+				utility.ProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
+						"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
 								+ (parent.pixellist.size()-1));
 			
 			if (label > 0) {
@@ -100,6 +100,17 @@ public class TrackEachBud {
 			
 			
 			ArrayList<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons , ops);
+			
+			ArrayList<Budpointobject> Budpointlist = new ArrayList<Budpointobject>();
+			
+			for(RealLocalizable budpoints:skeletonEndPoints) {
+				
+				Budpointobject Budpoint = new Budpointobject(new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension);
+				Budpointlist.add(Budpoint);
+				
+				
+			}
+			parent.AllBudpoints.put(uniqueID, Budpointlist);
 			
 			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths),skeletonEndPoints, uniqueID);
 			
