@@ -1,14 +1,22 @@
 package pluginTools;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Scrollbar;
 import java.awt.TextField;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -16,15 +24,24 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import budDetector.Budobject;
+import budDetector.Budpointobject;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
+import kalmanGUI.CovistoKalmanPanel;
 import listeners.TimeListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
@@ -33,7 +50,12 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
+import tracker.CostFunction;
+import tracker.TrackModel;
+import zGUI.CovistoZselectPanel;
 
 public class InteractiveBud  extends JPanel implements PlugIn{
 
@@ -43,7 +65,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public String addToName = "BTrack_";
 	public final int scrollbarSize = 1000;
 	public Set<Integer> pixellist;
-	
+	public NumberFormat nf;
 	public RandomAccessibleInterval<FloatType> originalimg;
 	public RandomAccessibleInterval<FloatType> originalSecimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
@@ -52,19 +74,35 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public final String NameA;
 	public final String NameB;
 	public int ndims;
+	public MouseListener mvl;
+	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
+	public CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
+	public int[] Clickedpoints;
+	public HashMap<String, Integer> AccountedT;
+	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
 	public Overlay overlay;
 	public ImagePlus imp;
+	public int row;
+	public int tablesize;
 	public RealLocalizable Refcord;
 	public HashMap<String, RealLocalizable> AllRefcords;
-	
+	public HashMap<String, Budpointobject> Finalresult;
 	public int thirdDimension;
+	public TrackModel Globalmodel;
 	public int thirdDimensionSize;
 	public ImagePlus impA;
+	public int rowchoice;
+	public Frame jFreeChartFrameRate;
 	public int maxframegap = 30;
 	public int thirdDimensionslider = 1;
 	public int thirdDimensionsliderInit = 1;
 	public JProgressBar jpb;
+	public JFreeChart chartRate;
+	public MouseMotionListener ml;
+	public ImagePlus resultimp;
+	public XYSeriesCollection Velocitydataset;
 	public ImageJ ij; 
+	public JFreeChart chartVelocity;
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<FloatType> originalSecimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
@@ -80,14 +118,17 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		this.NameA = NameA;
 		this.NameB = NameB;
 		this.ndims = originalimg.numDimensions();
-		
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.ChartMaker.display(chartRate, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
 		
 		
 		
 	}
 	
 	
-	
+	public ImageStack prestack;
+	public JTable table;
 	public static enum ValueChange {
 		
 		THIRDDIMmouse, All;
@@ -109,8 +150,15 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public void run(String arg0) {
 
 		AllRefcords = new HashMap<String, RealLocalizable>();
+		AccountedT = new HashMap<String, Integer>();
 		jpb = new JProgressBar();
+		nf = NumberFormat.getInstance(Locale.ENGLISH);
+		nf.setMaximumFractionDigits(3);
+		nf.setGroupingUsed(false);
+		Clickedpoints = new int[2];
+		Finalresult = new HashMap<String, Budpointobject>();
 		pixellist = new HashSet<Integer>();
+		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
 		ij = new ImageJ();
 		ij.ui().showUI();
 		if (ndims == 3) {
@@ -152,6 +200,10 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		if (change == ValueChange.THIRDDIMmouse)
 		{
+			
+			String TID = Integer.toString( thirdDimension);
+			AccountedT.put(TID,  thirdDimension);
+			
 		repaintView(imp, CurrentView);
 		StartDisplayer();
 		System.out.println("repainting");
@@ -193,7 +245,10 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	public JFrame Cardframe = new JFrame("Bud n Cell Tracker");
 	public JPanel panelFirst = new JPanel();
+	
+	public JPanel PanelSelectFile = new JPanel();
 	public JPanel Timeselect = new JPanel();
+	public JPanel KalmanPanel = new JPanel();
 	public JPanel panelCont = new JPanel();
 	public final Insets insets = new Insets(10, 0, 0, 0);
 	public final GridBagLayout layout = new GridBagLayout();
@@ -201,6 +256,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public JScrollPane scrollPane;
 	int SizeX = 400;
 	int SizeY = 200;
+	public Border selectfile = new CompoundBorder(new TitledBorder("Select Track"), new EmptyBorder(c.insets));
 	public Label autoTstart, autoTend;
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
@@ -229,6 +285,44 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelCont.setLayout(cl);
 
 		panelCont.add(panelFirst, "1");
+		
+		
+		
+		
+		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Growth Rate" };
+
+		Object[][] rowvalues = new Object[0][colnames.length];
+		
+		if (Finalresult != null && Finalresult.size() > 0) {
+
+			rowvalues = new Object[Finalresult.size()][colnames.length];
+
+		}
+		
+		table = new JTable(rowvalues, colnames);
+		table.setFillsViewportHeight(true);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
+		scrollPane = new JScrollPane(table);
+
+		scrollPane.getViewport().add(table);
+		scrollPane.setAutoscrolls(true);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		PanelSelectFile.add(scrollPane, BorderLayout.CENTER);
+
+		PanelSelectFile.setBorder(selectfile);
+		int size = 100;
+		table.getColumnModel().getColumn(0).setPreferredWidth(size);
+		table.getColumnModel().getColumn(1).setPreferredWidth(size);
+		table.getColumnModel().getColumn(2).setPreferredWidth(size);
+		table.getColumnModel().getColumn(3).setPreferredWidth(size);
+		table.getColumnModel().getColumn(4).setPreferredWidth(size);
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		table.setFillsViewportHeight(true);
+		table.isOpaque();
+		scrollPane.setMinimumSize(new Dimension(300, 200));
+		scrollPane.setPreferredSize(new Dimension(300, 200));
 		
 		panelFirst.setLayout(layout);
 		overlay = imp.getOverlay();
@@ -267,10 +361,33 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
+		KalmanPanel = CovistoKalmanPanel.KalmanPanel();
+		
+		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		panelFirst.add(PanelSelectFile, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
 		timeslider.addAdjustmentListener(new TimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));
+		//CovistoKalmanPanel.Timetrack.addActionListener(new LinkobjectListener(this));
+		//CovistoKalmanPanel.lostframe.addTextListener(new PRELostFrameListener(this));
+		//CovistoKalmanPanel.alphaS.addAdjustmentListener(new PREAlphaListener(this, CovistoKalmanPanel.alphaText,
+		//		CovistoKalmanPanel.alphastring, CovistoKalmanPanel.alphaMin, CovistoKalmanPanel.alphaMax,
+		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.alphaS));
+		//CovistoKalmanPanel.betaS.addAdjustmentListener(new PREBetaListeners(this, CovistoKalmanPanel.betaText,
+		//		CovistoKalmanPanel.betastring, CovistoKalmanPanel.betaMin, CovistoKalmanPanel.betaMax,
+		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.betaS));
 		
+		//CovistoKalmanPanel.maxSearchKalman.addAdjustmentListener(new PREMaxSearchTListener(this,
+		//		CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,
+		//		CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
+		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
+		//CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new PREIniSearchListener(this,
+		//		CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
+		//		CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
+		//		CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");

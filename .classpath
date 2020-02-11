@@ -25,5 +25,14 @@
 	<classpathentry kind="lib" path="MastadonCode"/>
 	<classpathentry kind="lib" path="TrackMateCode"/>
 	<classpathentry kind="src" path="/MasterPanels"/>
+	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="net.sf.jgrapht"/>
+			<attribute name="maven.artifactId" value="jgrapht"/>
+			<attribute name="maven.version" value="0.8.3"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
