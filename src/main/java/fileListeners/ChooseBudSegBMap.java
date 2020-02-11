@@ -8,14 +8,14 @@ import javax.swing.JComboBox;
 import ij.WindowManager;
 import pluginTools.BudFileChooser;
 
-public class ChooseSegCMap implements ActionListener {
+public class ChooseBudSegBMap implements ActionListener {
 	
 	
 	final BudFileChooser parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseSegCMap(final BudFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseBudSegBMap(final BudFileChooser parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;
@@ -31,7 +31,7 @@ public class ChooseSegCMap implements ActionListener {
 		
 		
 		
-    	parent.impSegC = WindowManager.getImage(imagename);
+    	parent.impSegB = WindowManager.getImage(imagename);
     	
 
 		

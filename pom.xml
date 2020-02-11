@@ -11,7 +11,7 @@
 
 	<groupId>net.kapoor</groupId>
 	<artifactId>B_Track</artifactId>
-	<version>1.0.0-snapshot</version>
+	<version>1.0.0</version>
 
 	<name>Cell tracking inside buds</name>
 	<description>Track cells and measure bud properties, using track visualization tools of mastadon.</description>
@@ -96,16 +96,11 @@
 
 	<dependencies>
 		<!-- ImgLib2 dependencies -->
-		<dependency>
-    <groupId>sc.fiji</groupId>
-    <artifactId>simplified-io</artifactId>
-    <version>1.0.1</version>
-</dependency>
 			<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigdataviewer-vistools</artifactId>
 		</dependency>
-
+	
 		<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigvolumeviewer</artifactId>
@@ -163,15 +158,5 @@
 		
 		
 	</dependencies>
-	
-	<build>
-   
-   <resources>
-     <resource>
-       <directory>BTrack/TrackMateCode</directory>
-     </resource>
-   </resources>
-   
- </build>
 
 </project>

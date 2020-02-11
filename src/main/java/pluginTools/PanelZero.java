@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import ij.ImagePlus;
 import ij.io.Opener;
-import sc.fiji.simplifiedio.SimplifiedIO;
 
 import net.imagej.ImageJ;
 

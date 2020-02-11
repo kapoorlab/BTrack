@@ -32,7 +32,6 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import skeleton.*;
-import sc.fiji.simplifiedio.SimplifiedIO;
 import displayBud.DisplayListOverlay;
 
 public class TrackEachBud {
@@ -72,7 +71,7 @@ public class TrackEachBud {
 			
 			int label = setiter.next();
 			if(parent.jpb!=null )
-				utility.ProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
+				utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
 						"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
 								+ (parent.pixellist.size()-1));
 			

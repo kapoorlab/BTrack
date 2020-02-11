@@ -21,7 +21,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import budDetector.Budpointobject;
 import net.imglib2.util.Pair;
 
-public class ChartMaker {
+public class BudChartMaker {
 
 	public static JFrame display(final JFreeChart chart) {
 		return display(chart, new Dimension(800, 500));

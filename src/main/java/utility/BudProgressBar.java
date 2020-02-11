@@ -2,7 +2,7 @@ package utility;
 
 import javax.swing.JProgressBar;
 
-public class ProgressBar {
+public class BudProgressBar {
 
 	
 	public static void SetProgressBar(JProgressBar jpb, double percent, String message) {

@@ -33,7 +33,7 @@ public class ComputeBorder extends SwingWorker<Void, Void> {
 		
 		parent.jpb.setIndeterminate(false);
 		if(parent.jpb!=null )
-			utility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
+			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Bud endpoints computed for all buds present at timepoint " + parent.thirdDimension);
 		
 	}

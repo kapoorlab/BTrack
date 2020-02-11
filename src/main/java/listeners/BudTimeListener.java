@@ -12,9 +12,9 @@ import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveBud.ValueChange;
-import utility.ShowView;
+import utility.BudShowView;
 
-public class TimeListener implements AdjustmentListener {
+public class BudTimeListener implements AdjustmentListener {
 	final Label label;
 	final String string;
 	InteractiveBud parent;
@@ -23,7 +23,7 @@ public class TimeListener implements AdjustmentListener {
 
 	final JScrollBar deltaScrollbar;
 
-	public TimeListener(final InteractiveBud parent, final Label label, final String string, final float min, final float max,
+	public BudTimeListener(final InteractiveBud parent, final Label label, final String string, final float min, final float max,
 			final int scrollbarSize, final JScrollBar deltaScrollbar) {
 		this.label = label;
 		this.parent = parent;
@@ -35,18 +35,18 @@ public class TimeListener implements AdjustmentListener {
 		this.deltaScrollbar = deltaScrollbar;
 		//deltaScrollbar.addMouseMotionListener(new BudMouseListener(parent, ValueChange.THIRDDIMmouse));
 		deltaScrollbar.addMouseListener(new BudStandardMouseListener(parent, ValueChange.THIRDDIMmouse));
-		deltaScrollbar.setBlockIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
-		deltaScrollbar.setUnitIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
+		deltaScrollbar.setBlockIncrement(utility.BudSlicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
+		deltaScrollbar.setUnitIncrement(utility.BudSlicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
 	}
 
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent e) {
 		
-		parent.thirdDimension = (int) Math.round(utility.Slicer.computeValueFromScrollbarPosition(e.getValue(), min, max, scrollbarSize));
+		parent.thirdDimension = (int) Math.round(utility.BudSlicer.computeValueFromScrollbarPosition(e.getValue(), min, max, scrollbarSize));
 
 
 		deltaScrollbar
-		.setValue(utility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, min, max, scrollbarSize));
+		.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(parent.thirdDimension, min, max, scrollbarSize));
 		
 		label.setText(string +  " = "  + parent.thirdDimension);
 
@@ -54,7 +54,7 @@ public class TimeListener implements AdjustmentListener {
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
 		
-		ShowView show = new ShowView(parent);
+		BudShowView show = new BudShowView(parent);
 		show.shownewT();
 
 	}

@@ -32,11 +32,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.BasicConfigurator;
 
-import fileListeners.ChooseOrigMap;
-import fileListeners.ChooseSecOrigMap;
-import fileListeners.ChooseSegAMap;
-import fileListeners.ChooseSegBMap;
-import fileListeners.ChooseSegCMap;
+import fileListeners.ChooseBudOrigMap;
+import fileListeners.ChooseBudSecOrigMap;
+import fileListeners.ChooseBudSegAMap;
+import fileListeners.ChooseBudSegBMap;
+import fileListeners.ChooseBudSegCMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -145,12 +145,12 @@ public class BudFileChooser extends JPanel {
 				// Listeneres 
 				
 				
-				original.ChooseImage.addActionListener(new ChooseOrigMap(this, original.ChooseImage));
-				original.ChoosesecImage.addActionListener(new ChooseSecOrigMap(this, original.ChoosesecImage));
-				segmentation.ChooseImage.addActionListener(new ChooseSegAMap(this, segmentation.ChooseImage));
-				segmentation.ChoosesecImage.addActionListener(new ChooseSegBMap(this, segmentation.ChoosesecImage));
+				original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
+				original.ChoosesecImage.addActionListener(new ChooseBudSecOrigMap(this, original.ChoosesecImage));
+				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
+				segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(this, segmentation.ChoosesecImage));
 				
-				Done.addActionListener(new DoneListener());
+				Done.addActionListener(new BudDoneListener());
 				panelFirst.setVisible(true);
 				cl.show(panelCont, "1");
 				Cardframe.add(panelCont, "Center");
@@ -162,7 +162,7 @@ public class BudFileChooser extends JPanel {
 				Cardframe.setVisible(true);
 			}
 			
-		  public class DoneListener implements ActionListener{
+		  public class BudDoneListener implements ActionListener{
 			  
 			  
 			  @Override
@@ -170,7 +170,7 @@ public class BudFileChooser extends JPanel {
 				  
 				  
 				  try {
-					DoneCurr(Cardframe);
+					DoneCurrBud(Cardframe);
 				} catch (ImgIOException e1) {
 
 					// TODO Auto-generated catch block
@@ -184,7 +184,7 @@ public class BudFileChooser extends JPanel {
 		  }
 		  
 		
-		  public void DoneCurr(Frame parent) throws ImgIOException{
+		  public void DoneCurrBud(Frame parent) throws ImgIOException{
 				
 				// Tracking and Measurement is done with imageA 
 		        

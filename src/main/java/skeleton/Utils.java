@@ -6,9 +6,7 @@ import ij.io.FileSaver;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
-import loci.plugins.in.ImagePlusReader;
-import loci.plugins.in.ImportProcess;
-import loci.plugins.in.ImporterOptions;
+
 import net.imglib2.*;
 import net.imglib2.Cursor;
 import net.imglib2.Point;
@@ -1284,29 +1282,7 @@ public class Utils
 		return registeredImage;
 	}
 
-	public static ImagePlus openWithBioFormats( String path )
-	{
-		try
-		{
-			ImporterOptions opts = new ImporterOptions();
-			opts.setId( path );
-			opts.setVirtual( true );
-
-			ImportProcess process = new ImportProcess( opts );
-			process.execute();
-
-			ImagePlusReader impReader = new ImagePlusReader( process );
-
-			ImagePlus[] imps = impReader.openImagePlus();
-			return imps[ 0 ];
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-			return null;
-		}
-
-	}
+	
 
 
 	public static < T extends RealType< T > & NativeType< T > >

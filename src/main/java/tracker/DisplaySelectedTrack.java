@@ -20,7 +20,7 @@ import budDetector.Distance;
 import ij.gui.ImageCanvas;
 import net.imglib2.util.Pair;
 import pluginTools.InteractiveBud;
-import utility.ChartMaker;
+import utility.BudChartMaker;
 import zGUI.CovistoZselectPanel;
 
 public class DisplaySelectedTrack {
@@ -64,7 +64,7 @@ public class DisplaySelectedTrack {
 					displayclicked(parent, parent.rowchoice);
 					
 					if (!parent.jFreeChartFrameRate.isVisible())
-						parent.jFreeChartFrameRate = utility.ChartMaker.display(parent.chartRate, new Dimension(500, 500));
+						parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartRate, new Dimension(500, 500));
 				
 					
 					

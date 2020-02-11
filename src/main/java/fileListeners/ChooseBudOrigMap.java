@@ -8,14 +8,14 @@ import javax.swing.JComboBox;
 import ij.WindowManager;
 import pluginTools.BudFileChooser;
 
-public class ChooseOrigMap implements ActionListener {
+public class ChooseBudOrigMap implements ActionListener {
 	
 	
 	final BudFileChooser parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseOrigMap(final BudFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseBudOrigMap(final BudFileChooser parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;

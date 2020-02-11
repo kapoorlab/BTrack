@@ -7,11 +7,11 @@ import java.awt.event.TextListener;
 import kalmanGUI.CovistoKalmanPanel;
 import pluginTools.InteractiveBud;
 
-public class PRELostFrameListener implements TextListener {
+public class BudPRELostFrameListener implements TextListener {
 
 	public InteractiveBud parent;
 	
-	public PRELostFrameListener(final InteractiveBud parent) {
+	public BudPRELostFrameListener(final InteractiveBud parent) {
 		
 		this.parent = parent;
 	}

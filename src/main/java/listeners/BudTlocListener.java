@@ -12,15 +12,15 @@ import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveBud.ValueChange;
-import utility.ShowView;
+import utility.BudShowView;
 
-public class TlocListener implements TextListener {
+public class BudTlocListener implements TextListener {
 	
 	
 	final InteractiveBud parent;
 	
 	boolean pressed;
-	public TlocListener(final InteractiveBud parent, final boolean pressed) {
+	public BudTlocListener(final InteractiveBud parent, final boolean pressed) {
 		
 		this.parent = parent;
 		this.pressed = pressed;
@@ -59,12 +59,12 @@ public class TlocListener implements TextListener {
 							parent.thirdDimension = parent.thirdDimensionSize;
 						} else
 							parent.thirdDimension = Integer.parseInt(s);
-			    		ShowView show = new ShowView(parent);
+			    		BudShowView show = new BudShowView(parent);
 					show.shownewT();
 					parent.timeText.setText("Current T = " + parent.thirdDimension);
 					parent.updatePreview(ValueChange.THIRDDIMmouse);
 					
-					parent.timeslider.setValue(utility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
+					parent.timeslider.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
 					parent.timeslider.repaint();
 					parent.timeslider.validate();
 					

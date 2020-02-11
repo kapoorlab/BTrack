@@ -3,13 +3,13 @@ package utility;
 import ij.IJ;
 import pluginTools.InteractiveBud;
 
-public class ShowView {
+public class BudShowView {
 
 	
 	final InteractiveBud parent;
 	
 	
-	public ShowView(final InteractiveBud parent) {
+	public BudShowView(final InteractiveBud parent) {
 		
 		this.parent = parent;
 		
@@ -26,12 +26,12 @@ public class ShowView {
 			parent.thirdDimension = parent.thirdDimensionSize;
 			
 			
-			parent.CurrentView = utility.Slicer.getCurrentView(parent.originalimg,(int) parent.thirdDimension,
+			parent.CurrentView = utility.BudSlicer.getCurrentBudView(parent.originalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
 			
 		} else {
 
-			parent.CurrentView = utility.Slicer.getCurrentView(parent.originalimg,(int) parent.thirdDimension,
+			parent.CurrentView = utility.BudSlicer.getCurrentBudView(parent.originalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
 			
 		}

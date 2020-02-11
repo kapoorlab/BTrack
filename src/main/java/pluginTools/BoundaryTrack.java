@@ -32,7 +32,7 @@ public class BoundaryTrack {
 		
 		int percent = 0;
 		parent.updatePreview(ValueChange.THIRDDIMmouse);
-		RandomAccessibleInterval<IntType> BudSeg = utility.Slicer.getCurrentView(parent.Segoriginalimg,(int) parent.thirdDimension,
+		RandomAccessibleInterval<IntType> BudSeg = utility.BudSlicer.getCurrentBudView(parent.Segoriginalimg,(int) parent.thirdDimension,
 				(int)parent.thirdDimensionSize);
 		GetPixelList(BudSeg);
 		IntType min = new IntType();
@@ -58,14 +58,14 @@ public class BoundaryTrack {
 		
 		parent.inputFieldT.setText(Integer.toString((int)parent.thirdDimension));
 		
-		parent.timeslider.setValue(utility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
+		parent.timeslider.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
 		parent.timeslider.repaint();
 		parent.timeslider.validate();
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
 		
 		
-		RandomAccessibleInterval<IntType> BudSeg = utility.Slicer.getCurrentView(parent.Segoriginalimg,(int) parent.thirdDimension,
+		RandomAccessibleInterval<IntType> BudSeg = utility.BudSlicer.getCurrentBudView(parent.Segoriginalimg,(int) parent.thirdDimension,
 				(int)parent.thirdDimensionSize);
 		GetPixelList(BudSeg);
 		IntType min = new IntType();
@@ -80,7 +80,7 @@ public class BoundaryTrack {
 		}
 		
 		if(parent.jpb!=null )
-			utility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
+			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Starting Tracking" );
 	}
 	

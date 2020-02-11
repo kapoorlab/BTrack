@@ -10,7 +10,7 @@ import kalmanGUI.CovistoKalmanPanel;
 import nearestNeighbourGUI.CovistoNearestNPanel;
 import pluginTools.InteractiveBud;
 
-public class PREMaxSearchTListener implements AdjustmentListener {
+public class BudPREMaxSearchTListener implements AdjustmentListener {
 	
 	final Label label;
 	final String string;
@@ -20,7 +20,7 @@ public class PREMaxSearchTListener implements AdjustmentListener {
 	final JScrollBar scrollbar;
 	
 	
-	public PREMaxSearchTListener(final InteractiveBud parent, final Label label, final String string, final float min, final float max, final int scrollbarSize, final JScrollBar scrollbar) {
+	public BudPREMaxSearchTListener(final InteractiveBud parent, final Label label, final String string, final float min, final float max, final int scrollbarSize, final JScrollBar scrollbar) {
 		
 		this.parent = parent;
 		this.label = label;
@@ -30,18 +30,18 @@ public class PREMaxSearchTListener implements AdjustmentListener {
 		this.scrollbarSize = scrollbarSize;
 		this.scrollbar = scrollbar;
 		
-		scrollbar.setBlockIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
-		scrollbar.setUnitIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
+		scrollbar.setBlockIncrement(utility.BudSlicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
+		scrollbar.setUnitIncrement(utility.BudSlicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
 	}
 	
 	
 	
 	@Override
 	public void adjustmentValueChanged(final AdjustmentEvent event) {
-		CovistoKalmanPanel.maxSearchradius = utility.Slicer.computeValueFromScrollbarPosition(event.getValue(), min, max, scrollbarSize);
+		CovistoKalmanPanel.maxSearchradius = utility.BudSlicer.computeValueFromScrollbarPosition(event.getValue(), min, max, scrollbarSize);
 
 		
-			scrollbar.setValue(utility.Slicer.computeScrollbarPositionFromValue(CovistoKalmanPanel.maxSearchradius, min, max, scrollbarSize));
+			scrollbar.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(CovistoKalmanPanel.maxSearchradius, min, max, scrollbarSize));
 
 			label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.maxSearchradius));
 			

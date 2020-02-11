@@ -19,7 +19,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
 
-public class Slicer {
+public class BudSlicer {
 
 	public static RandomAccessibleInterval<FloatType> getCurrentViewLarge(
 			RandomAccessibleInterval<FloatType> originalimg, int thirdDimension) {
@@ -35,7 +35,7 @@ public class Slicer {
 
 	}
 
-	public static  < T extends NumericType< T > & NativeType< T > > RandomAccessibleInterval<T> getCurrentView(RandomAccessibleInterval<T> originalimg,
+	public static  < T extends NumericType< T > & NativeType< T > > RandomAccessibleInterval<T> getCurrentBudView(RandomAccessibleInterval<T> originalimg,
 			int thirdDimension, int thirdDimensionSize) {
 
 		final T type = originalimg.randomAccess().get().createVariable();

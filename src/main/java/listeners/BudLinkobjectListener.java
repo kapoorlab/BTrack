@@ -10,11 +10,11 @@ import pluginTools.InteractiveBud;
 import tracker.TrackResult;
 
 
-public class LinkobjectListener implements ActionListener {
+public class BudLinkobjectListener implements ActionListener {
 	
 	final InteractiveBud parent;
 	
-	public LinkobjectListener(final InteractiveBud parent) {
+	public BudLinkobjectListener(final InteractiveBud parent) {
 		
 		this.parent = parent;
 		
