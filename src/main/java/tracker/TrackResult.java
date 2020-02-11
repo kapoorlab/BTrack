@@ -23,6 +23,7 @@ import budDetector.Budpointobject;
 import ij.ImageStack;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
+import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
 import zGUI.CovistoZselectPanel;
 
@@ -47,7 +48,8 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		parent.table.removeAll();
 		parent.Tracklist.clear();
 		parent.Finalresult.clear();
-
+		BoundaryTrack newtrack = new BoundaryTrack(parent, parent.jpb);
+		newtrack.ShowBoundaryTime();
 		
 		TrackingFunctions track = new TrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
@@ -188,7 +190,6 @@ public class TrackResult extends SwingWorker<Void, Void> {
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[0]), parent.row, 1);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[1]), parent.row, 2);
 			parent.table.getModel().setValueAt(f.format(currentbud.t), parent.row, 3);
-			parent.table.getModel().setValueAt(f.format(currentbud.velocity), parent.row, 4);
 
 			parent.row++;
 

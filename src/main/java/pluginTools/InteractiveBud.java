@@ -47,6 +47,7 @@ import listeners.PREIniSearchListener;
 import listeners.PRELostFrameListener;
 import listeners.PREMaxSearchTListener;
 import listeners.TimeListener;
+import listeners.TlocListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
@@ -194,7 +195,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		
 		
-		StartDisplayer();
+		
 		if (overlay == null) {
 
 			overlay = new Overlay();
@@ -204,13 +205,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		if (change == ValueChange.THIRDDIMmouse)
 		{
-			
+			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 			String TID = Integer.toString( thirdDimension);
 			AccountedT.put(TID,  thirdDimension);
-			
-		repaintView(imp, CurrentView);
-		StartDisplayer();
-		System.out.println("repainting");
+			CurrentView = utility.Slicer.getCurrentView(originalimg, thirdDimension, thirdDimensionSize);
+		repaintView(CurrentView);
 		}
 		
 	}
@@ -223,25 +222,24 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		display.execute();
 	}
 	
-	public void repaintView(ImagePlus Activeimp, RandomAccessibleInterval<FloatType> Activeimage) {
+	public void repaintView( RandomAccessibleInterval<FloatType> Activeimage) {
 		
 		
-		overlay.clear();
 		
-		if (Activeimp == null || !Activeimp.isVisible()) {
-			Activeimp = ImageJFunctions.show(Activeimage);
+		if (imp == null || !imp.isVisible()) {
+			imp = ImageJFunctions.show(Activeimage);
 
 		}
 
 		else {
 
-			final float[] pixels = (float[]) Activeimp.getProcessor().getPixels();
+			final float[] pixels = (float[]) imp.getProcessor().getPixels();
 			final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
 
 			for (int i = 0; i < pixels.length; ++i)
 				pixels[i] = c.next().get();
 
-			Activeimp.updateAndDraw();
+			imp.updateAndDraw();
 
 		}
 
@@ -372,6 +370,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		panelFirst.add(PanelSelectFile, new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		inputFieldT.addTextListener(new TlocListener(this,false));
 		
 		timeslider.addAdjustmentListener(new TimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));

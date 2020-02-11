@@ -31,6 +31,7 @@ public class BoundaryTrack {
 	public void ShowBoundary() {
 		
 		int percent = 0;
+		parent.updatePreview(ValueChange.THIRDDIMmouse);
 		RandomAccessibleInterval<IntType> BudSeg = utility.Slicer.getCurrentView(parent.Segoriginalimg,(int) parent.thirdDimension,
 				(int)parent.thirdDimensionSize);
 		GetPixelList(BudSeg);
@@ -44,6 +45,41 @@ public class BoundaryTrack {
 		
 		compute.displayBuds();
 		
+	}
+	
+	
+	public void ShowBoundaryTime() {
+		
+		int percent = 0;
+		
+		for(int t = 1; t < parent.thirdDimensionSize; ++t) {
+			percent++;
+		parent.thirdDimension = t;
+		parent.updatePreview(ValueChange.THIRDDIMmouse);
+		
+		parent.inputFieldT.setText(Integer.toString((int)parent.thirdDimension));
+		
+		parent.timeslider.setValue(utility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
+		parent.timeslider.repaint();
+		parent.timeslider.validate();
+		parent.panelFirst.validate();
+		parent.panelFirst.repaint();
+		
+		
+		RandomAccessibleInterval<IntType> BudSeg = utility.Slicer.getCurrentView(parent.Segoriginalimg,(int) parent.thirdDimension,
+				(int)parent.thirdDimensionSize);
+		GetPixelList(BudSeg);
+		IntType min = new IntType();
+		IntType max = new IntType();
+		computeMinMax(Views.iterable(BudSeg), min, max);
+		
+		System.out.println("Total number of buds found:" + (parent.pixellist.size()-1) );
+		
+		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
+		
+		compute.displayBuds();
+		
+		}
 	}
 	
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {
