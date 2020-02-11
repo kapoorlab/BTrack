@@ -28,5 +28,14 @@ public class ComputeBorder extends SwingWorker<Void, Void> {
 		return null;
 		
 	}
+	@Override
+	protected void done() {
+		
+		parent.jpb.setIndeterminate(false);
+		if(parent.jpb!=null )
+			utility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
+					"Bud endpoints computed for all buds present at timepoint " + parent.thirdDimension);
+		
+	}
 	
 }

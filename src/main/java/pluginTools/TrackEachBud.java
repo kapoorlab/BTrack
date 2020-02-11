@@ -38,7 +38,6 @@ public class TrackEachBud {
 	
 	
 	final InteractiveBud parent;
-	
 	final RandomAccessibleInterval<IntType> CurrentViewInt;
 	final int t;
 	final int maxlabel;
@@ -65,11 +64,18 @@ public class TrackEachBud {
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
-		
+		int count = 0;
 		while (setiter.hasNext()) {
+			
+			count++;
 			percent++;
-
+			
 			int label = setiter.next();
+			if(parent.jpb!=null )
+				utility.ProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize + 1),
+						"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " BudID = " + count + "/"
+								+ (parent.pixellist.size()-1));
+			
 			if (label > 0) {
 				
 				String uniqueID = Integer.toString(parent.thirdDimension) + Integer.toString(label);
@@ -87,6 +93,7 @@ public class TrackEachBud {
 			OpService ops = parent.ij.op();
 			
 			SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.getB(), ops);
+			skelmake.setClosingRadius(1);
 			skelmake.run();
 			ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 			
