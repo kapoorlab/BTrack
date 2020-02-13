@@ -47,6 +47,7 @@ import listeners.BudPREIniSearchListener;
 import listeners.BudPRELostFrameListener;
 import listeners.BudPREMaxSearchTListener;
 import listeners.BudSkeletonListener;
+import listeners.BudSkeletonTrackLengthListener;
 import listeners.BudTimeListener;
 import listeners.BudTlocListener;
 import net.imagej.ImageJ;
@@ -381,6 +382,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		CovistoKalmanPanel.Skeletontime.addActionListener(new BudSkeletonListener(this));
 		CovistoKalmanPanel.Timetrack.addActionListener(new BudLinkobjectListener(this));
 		CovistoKalmanPanel.lostframe.addTextListener(new BudPRELostFrameListener(this));
+		CovistoKalmanPanel.tracklength.addTextListener(new BudSkeletonTrackLengthListener(this));
+		
 		
 		CovistoKalmanPanel.maxSearchKalman.addAdjustmentListener(new BudPREMaxSearchTListener(this,
 				CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,

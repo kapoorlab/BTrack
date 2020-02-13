@@ -81,7 +81,7 @@ public class BoundaryTrack {
 		
 		if(parent.jpb!=null )
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
-					"Starting Tracking" );
+					"Skeletons Created, Push Track Buddies Button" );
 	}
 	
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {

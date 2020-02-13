@@ -21,6 +21,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 
 import budDetector.Budpointobject;
 import ij.ImageStack;
+import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.BoundaryTrack;
@@ -100,7 +101,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				model.setName(id, "Track" + id);
 				parent.Globalmodel = model;
 				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
-				if (Angleset.size() > parent.AccountedT.size() / 4) {
+				if (Angleset.size() > CovistoKalmanPanel.trackduration) {
 			
 				Iterator<Budpointobject> Angleiter = Angleset.iterator();
 				
