@@ -1,21 +1,26 @@
 package listeners;
 
-
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 
+import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveBud.ValueChange;
+import skeleton.SkeletonizeBuds;
 import tracker.TrackResult;
+import utility.BudShowView;
 
-
-public class BudLinkobjectListener implements ActionListener {
+public class BudSkeletonListener implements ActionListener {
 	
 	final InteractiveBud parent;
 	
-	public BudLinkobjectListener(final InteractiveBud parent) {
+	public BudSkeletonListener(final InteractiveBud parent) {
 		
 		this.parent = parent;
 		
@@ -40,15 +45,10 @@ public class BudLinkobjectListener implements ActionListener {
 
 	public void go() {
 
-		parent.Tracklist.clear();
-		parent.Finalresult.clear();
-		
-		
-		TrackResult track = new TrackResult(parent);
-		track.execute();
+		SkeletonizeBuds skeleton = new SkeletonizeBuds(parent);
+		skeleton.execute();
 		
 		
 
 	}
-
 }

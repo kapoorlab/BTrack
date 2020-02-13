@@ -48,8 +48,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		parent.table.removeAll();
 		parent.Tracklist.clear();
 		parent.Finalresult.clear();
-		BoundaryTrack newtrack = new BoundaryTrack(parent, parent.jpb);
-		newtrack.ShowBoundaryTime();
+		
 		
 		TrackingFunctions track = new TrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
