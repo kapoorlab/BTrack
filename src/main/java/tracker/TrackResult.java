@@ -58,7 +58,9 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		DisplayGraph(simplegraph);
 		
 	
-		
+		if(parent.jpb!=null )
+			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
+					"Bud Tracking Done" );
 		
 		
 
@@ -121,7 +123,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 			for (int id = minid; id <= maxid; ++id) {
 				Budpointobject bestbud = null;
 				
-				if (model.trackBudpointobjects(id) != null && model.trackBudpointobjects(id).size() > parent.AccountedT.size() / 4) {
+				if (model.trackBudpointobjects(id) != null && model.trackBudpointobjects(id).size() > CovistoKalmanPanel.trackduration) {
 
 					List<Budpointobject> sortedList = new ArrayList<Budpointobject>(model.trackBudpointobjects(id));
 
