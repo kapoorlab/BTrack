@@ -104,7 +104,7 @@ public class TrackEachBud {
 			
 			for(RealLocalizable budpoints:skeletonEndPoints) {
 				
-				Budpointobject Budpoint = new Budpointobject(new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension);
+				Budpointobject Budpoint = new Budpointobject(new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
 				Budpointlist.add(Budpoint);
 				
 				

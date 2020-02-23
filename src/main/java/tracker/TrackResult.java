@@ -20,6 +20,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import budDetector.Budpointobject;
+import budDetector.Distance;
 import ij.ImageStack;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.util.Pair;
@@ -106,14 +107,20 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				if (Angleset.size() > CovistoKalmanPanel.trackduration) {
 			
 				Iterator<Budpointobject> Angleiter = Angleset.iterator();
-				
-				
+				Budpointobject previousbud = null;
 				while (Angleiter.hasNext()) {
-
+					
+					
+                    double velocity = 0; 
 					Budpointobject currentbud = Angleiter.next();
+					if(previousbud!=null) 
+							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
+						
 					
+					
+					currentbud.putFeature("Velocity", velocity);
 					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, currentbud));
-					
+					previousbud = currentbud;
 				}
 				Collections.sort(parent.Tracklist, ThirdDimcomparison);
 
