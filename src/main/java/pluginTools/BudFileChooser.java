@@ -65,6 +65,7 @@ public class BudFileChooser extends JPanel {
 		  public JPanel Panelfileoriginal = new JPanel();
 		  public JPanel Paneldone = new JPanel();
 		  public JPanel Panelrun = new JPanel();
+		  public JPanel Microscope = new JPanel();
 		  public final Insets insets = new Insets(10, 0, 0, 0);
 		  public final GridBagLayout layout = new GridBagLayout();
 		  public final GridBagConstraints c = new GridBagConstraints();
@@ -93,15 +94,29 @@ public class BudFileChooser extends JPanel {
 		  public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring),
 					new EmptyBorder(c.insets));
 		
+		  public Label inputLabelcalX, wavesize;
+		  public double calibration, Wavesize;
+
+		  public TextField inputFieldcalX, Fieldwavesize;
+		  public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"), new EmptyBorder(c.insets));
+		  
 		  
 		  public BudFileChooser() {
 			
 			
-			  
+			   inputLabelcalX = new Label("Pixel calibration in X,Y (um)");
+		       inputFieldcalX = new TextField(5);
+			   inputFieldcalX.setText("1");
+				
+			   wavesize = new Label("Pixel calibration in T (s)");
+			   Fieldwavesize = new TextField(5);
+			   Fieldwavesize.setText("1");
 			   panelFirst.setLayout(layout);
 			   
 			   Paneldone.setLayout(layout);
 		       CardLayout cl = new CardLayout();
+		       calibration = Float.parseFloat(inputFieldcalX.getText());
+				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				
 				panelCont.setLayout(cl);
 				panelCont.add(panelFirst, "1");
@@ -141,6 +156,23 @@ public class BudFileChooser extends JPanel {
 				panelFirst.add(Paneldone, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
+				Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
+				Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.RELATIVE, insets, 0, 0));
+				
+				Microscope.add(wavesize, new GridBagConstraints(3, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
+				Microscope.add(Fieldwavesize, new GridBagConstraints(3, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.RELATIVE, insets, 0, 0));
+				
+		
+				
+				Microscope.setBorder(microborder);
+				panelFirst.add(Microscope, new GridBagConstraints(0, 3, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 				
 				// Listeneres 
 				
@@ -149,7 +181,8 @@ public class BudFileChooser extends JPanel {
 				original.ChoosesecImage.addActionListener(new ChooseBudSecOrigMap(this, original.ChoosesecImage));
 				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
 				segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(this, segmentation.ChoosesecImage));
-				
+				inputFieldcalX.addTextListener(new CalXListener());
+				Fieldwavesize.addTextListener(new WaveListener());
 				Done.addActionListener(new BudDoneListener());
 				panelFirst.setVisible(true);
 				cl.show(panelCont, "1");
@@ -161,6 +194,39 @@ public class BudFileChooser extends JPanel {
 				Cardframe.pack();
 				Cardframe.setVisible(true);
 			}
+		  
+		  public class CalXListener implements TextListener {
+
+				
+				
+				
+				@Override
+				public void textValueChanged(TextEvent e) {
+					final TextComponent tc = (TextComponent)e.getSource();
+				    String s = tc.getText();
+				   
+				    if (s.length() > 0)
+					calibration = Double.parseDouble(s);
+				}
+				
+		  }
+		  
+		  public class WaveListener implements TextListener {
+
+				
+				
+				
+				@Override
+				public void textValueChanged(TextEvent e) {
+					final TextComponent tc = (TextComponent)e.getSource();
+				    String s = tc.getText();
+				   
+				    if (s.length() > 0)
+					Wavesize = Float.parseFloat(s);
+					
+				}
+				
+		  }
 			
 		  public class BudDoneListener implements ActionListener{
 			  
@@ -198,7 +264,7 @@ public class BudFileChooser extends JPanel {
 				
 				WindowManager.closeAllWindows();
 				
-				new InteractiveBud(imageOrig, imageOrigSec, imageSegA, imageSegB,impOrig.getOriginalFileInfo().fileName,impOrigSec.getOriginalFileInfo().fileName    ).run(null);
+				new InteractiveBud(imageOrig, imageOrigSec, imageSegA, imageSegB,impOrig.getOriginalFileInfo().fileName,impOrigSec.getOriginalFileInfo().fileName, calibration, Wavesize    ).run(null);
 				close(parent);
 				
 				

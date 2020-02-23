@@ -12,6 +12,7 @@ import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
@@ -42,14 +45,17 @@ import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
+import listeners.BTrackFilenameListener;
 import listeners.BudLinkobjectListener;
 import listeners.BudPREIniSearchListener;
 import listeners.BudPRELostFrameListener;
 import listeners.BudPREMaxSearchTListener;
+import listeners.BudSaveBatchListener;
 import listeners.BudSkeletonListener;
 import listeners.BudSkeletonTrackLengthListener;
 import listeners.BudTimeListener;
 import listeners.BudTlocListener;
+import listeners.BudTrackidListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
@@ -89,6 +95,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
 	public Overlay overlay;
 	public ImagePlus imp;
+	public String selectedID;
 	public int row;
 	public int tablesize;
 	public RealLocalizable Refcord;
@@ -110,12 +117,18 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public XYSeriesCollection Velocitydataset;
 	public ImageJ ij; 
 	public JFreeChart chartVelocity;
+	public double calibration;
+	public double timecal;
+	public File saveFile;
+	
+	
+	
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<FloatType> originalSecimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<FloatType> SegSecoriginalimg,
 			final String NameA,
-			final String NameB) {
+			final String NameB,final double calibration, final double timecal) {
 		
 		
 		this.originalimg = originalimg;
@@ -124,6 +137,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		this.SegSecoriginalimg = SegSecoriginalimg;
 		this.NameA = NameA;
 		this.NameB = NameB;
+		this.calibration = calibration;
+		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
 		this.Velocitydataset = new XYSeriesCollection();
 		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartRate, new Dimension(500, 500));
@@ -189,6 +204,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Cardframe.validate();
 		panelFirst.repaint();
 		panelFirst.validate();
+		saveFile = new java.io.File(".");
 		StartDisplayer();
 		Card();
 	}
@@ -250,7 +266,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	public JFrame Cardframe = new JFrame("Bud n Cell Tracker");
 	public JPanel panelFirst = new JPanel();
-	
+	public JPanel Original = new JPanel();
 	public JPanel PanelSelectFile = new JPanel();
 	public JPanel Timeselect = new JPanel();
 	public JPanel KalmanPanel = new JPanel();
@@ -271,9 +287,18 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public TextField inputFieldT;
 	public JScrollBar timeslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
 			scrollbarSize + 10);
-	
+	public JButton Savebutton = new JButton("Save Track");
+	public JButton Batchbutton = new JButton("Save Parameters for batch mode and exit");
+	public JButton SaveAllbutton = new JButton("Save All Tracks");
 	public Border timeborder = new CompoundBorder(new TitledBorder("Select time"), new EmptyBorder(c.insets));
-	
+	public Label inputtrackLabel;
+	public TextField inputtrackField;
+	public Border selectcell = new CompoundBorder(new TitledBorder("Select Cell"), new EmptyBorder(c.insets));
+	public JLabel inputLabel = new JLabel("Filename:");
+	public TextField inputField = new TextField();
+	public Border origborder = new CompoundBorder(new TitledBorder("Enter filename for results files"),
+			new EmptyBorder(c.insets));
+	public final JButton ChooseDirectory = new JButton("Choose Directory to save results in");
 	public void Card() {
 		
 		CardLayout cl = new CardLayout();
@@ -291,8 +316,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		panelCont.add(panelFirst, "1");
 		
-		
-		
+		inputtrackLabel = new Label("Enter trackID to save");
+		inputtrackField = new TextField(textwidth);
 		
 		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Growth Rate" };
 
@@ -309,7 +334,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		scrollPane = new JScrollPane(table);
-
+		Original.setLayout(layout);
 		scrollPane.getViewport().add(table);
 		scrollPane.setAutoscrolls(true);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -374,6 +399,36 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelFirst.add(PanelSelectFile, new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
+		Original.add(inputLabel, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
+		Original.add(inputField, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
+		Original.add(inputtrackLabel, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
+		Original.add(inputtrackField, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
+		Original.add(ChooseDirectory, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		Original.add(Savebutton, new GridBagConstraints(0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
+		Original.add(SaveAllbutton, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
+		Original.setBorder(origborder);
+		
+		
+		panelFirst.add(Original, new GridBagConstraints(3, 1, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		panelFirst.add(Batchbutton, new GridBagConstraints(3, 2, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
+		
 		inputFieldT.addTextListener(new BudTlocListener(this,false));
 		
 		timeslider.addAdjustmentListener(new BudTimeListener(this, timeText, timestring, thirdDimensionsliderInit,
@@ -393,6 +448,14 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
 				CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
+		
+		inputtrackField.addTextListener(new BudTrackidListener(this));
+		Batchbutton.addActionListener(new BudSaveBatchListener(this));
+		inputField.addTextListener(new BTrackFilenameListener(this));
+		//Savebutton.addActionListener(new BudSaverListener(this));
+		//SaveAllbutton.addActionListener(new BudSaverAllListener(this));
+		
+		
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");

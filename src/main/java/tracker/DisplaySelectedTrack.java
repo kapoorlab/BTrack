@@ -63,8 +63,8 @@ public class DisplaySelectedTrack {
 					//Still to write this function
 					displayclicked(parent, parent.rowchoice);
 					
-					if (!parent.jFreeChartFrameRate.isVisible())
-						parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartRate, new Dimension(500, 500));
+				//	if (!parent.jFreeChartFrameRate.isVisible())
+				//		parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartRate, new Dimension(500, 500));
 				
 					
 					
