@@ -41,7 +41,6 @@ public class BudLinkobjectListener implements ActionListener {
 	public void go() {
 
 		parent.Tracklist.clear();
-		parent.Finalresult.clear();
 		
 		
 		TrackResult track = new TrackResult(parent);

@@ -125,7 +125,18 @@ public class BudChartMaker {
 	}
 
 	
+	
+	public static XYSeries drawVelocity(final List<Pair<String, Budpointobject>> mts, String name) {
+		XYSeries series = new XYSeries(name);
 
+		if (mts != null) {
+			for (final Pair<String, Budpointobject> mt : mts) {
+				series.add(mt.getB().t, mt.getB().velocity);
+			    System.out.println(mt.getB().t + " " + mt.getB().velocity );
+		}
+		}
+		return series;
+	}
 	
 	
 	

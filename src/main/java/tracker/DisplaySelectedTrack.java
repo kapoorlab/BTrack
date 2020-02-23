@@ -63,8 +63,8 @@ public class DisplaySelectedTrack {
 					//Still to write this function
 					displayclicked(parent, parent.rowchoice);
 					
-				//	if (!parent.jFreeChartFrameRate.isVisible())
-				//		parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartRate, new Dimension(500, 500));
+					if (!parent.jFreeChartFrameRate.isVisible())
+						parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartVelocity, new Dimension(500, 500));
 				
 					
 					
@@ -111,14 +111,12 @@ public class DisplaySelectedTrack {
 						String CordX = (String) parent.table.getValueAt(row, 1);
 						String CordY = (String) parent.table.getValueAt(row, 2);
 
-						String CordZ = (String) parent.table.getValueAt(row, 3);
 
 						double dCordX = 0, dCordZ = 0, dCordY = 0;
 						try {
 							dCordX = f.parse(CordX).doubleValue();
 
 							dCordY = f.parse(CordY).doubleValue();
-							dCordZ = f.parse(CordZ).doubleValue();
 						} catch (ParseException e1) {
 
 						}
@@ -211,7 +209,15 @@ public class DisplaySelectedTrack {
    		}
 
    		
-   		
+   		if(parent.Velocitydataset!=null)
+   	   		parent.Velocitydataset.removeAllSeries();
+   	   		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(currentresultIntA, "Intensity"));
+
+   	   		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/s)", "Time", "Velocity");
+   	   		
+   	   	
+
+   	   		
    		
    		
    	   	   		

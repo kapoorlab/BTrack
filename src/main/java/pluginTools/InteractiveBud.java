@@ -100,7 +100,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int tablesize;
 	public RealLocalizable Refcord;
 	public HashMap<String, RealLocalizable> AllRefcords;
-	public HashMap<String, Budpointobject> Finalresult;
 	public int thirdDimension;
 	public TrackModel Globalmodel;
 	public int thirdDimensionSize;
@@ -111,7 +110,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int thirdDimensionslider = 1;
 	public int thirdDimensionsliderInit = 1;
 	public JProgressBar jpb;
-	public JFreeChart chartRate;
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public XYSeriesCollection Velocitydataset;
@@ -141,7 +139,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
 		this.Velocitydataset = new XYSeriesCollection();
-		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartRate, new Dimension(500, 500));
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
 		this.jFreeChartFrameRate.setVisible(false);
 		
 		
@@ -178,7 +176,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		nf.setMaximumFractionDigits(3);
 		nf.setGroupingUsed(false);
 		Clickedpoints = new int[2];
-		Finalresult = new HashMap<String, Budpointobject>();
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
 		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
@@ -323,9 +320,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		Object[][] rowvalues = new Object[0][colnames.length];
 		
-		if (Finalresult != null && Finalresult.size() > 0) {
+		if (Tracklist != null && Tracklist.size() > 0) {
 
-			rowvalues = new Object[Finalresult.size()][colnames.length];
+			rowvalues = new Object[Tracklist.size()][colnames.length];
 
 		}
 		

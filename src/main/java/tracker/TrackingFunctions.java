@@ -44,7 +44,6 @@ public class TrackingFunctions {
 			ArrayList<Budpointobject> bloblist = entry.getValue();
 			if(bloblist.size() > 0) {
 			colllist.add(bloblist);
-			System.out.println(bloblist.size());
 			}
 
 		}

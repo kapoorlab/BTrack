@@ -49,7 +49,6 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 		parent.table.removeAll();
 		parent.Tracklist.clear();
-		parent.Finalresult.clear();
 		
 		
 		TrackingFunctions track = new TrackingFunctions(parent);
@@ -115,60 +114,19 @@ public class TrackResult extends SwingWorker<Void, Void> {
 					Budpointobject currentbud = Angleiter.next();
 					if(previousbud!=null) 
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
-						
 					
-					
-					currentbud.putFeature("Velocity", velocity);
-					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, currentbud));
+					velocity = velocity * (parent.calibration/parent.timecal);
+					Budpointobject newbud = new Budpointobject(currentbud.Location, currentbud.t, velocity);
+					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, newbud));
 					previousbud = currentbud;
 				}
 				Collections.sort(parent.Tracklist, ThirdDimcomparison);
-
-				}
-			}
-
-			for (int id = minid; id <= maxid; ++id) {
-				Budpointobject bestbud = null;
 				
-				if (model.trackBudpointobjects(id) != null && model.trackBudpointobjects(id).size() > CovistoKalmanPanel.trackduration) {
 
-					List<Budpointobject> sortedList = new ArrayList<Budpointobject>(model.trackBudpointobjects(id));
-
-					Collections.sort(sortedList, new Comparator<Budpointobject>() {
-
-						@Override
-						public int compare(Budpointobject o1, Budpointobject o2) {
-
-							return o1.t - o2.t;
-						}
-
-					});
-
-					Iterator<Budpointobject> iterator = sortedList.iterator();
-
-					int count = 0;
-					while (iterator.hasNext()) {
-
-						Budpointobject currentbud = iterator.next();
-						if (count == 0)
-							bestbud = currentbud;
-						if (parent.originalimg.numDimensions() <= 3) {
-							if (currentbud.t == parent.thirdDimension) {
-								bestbud = currentbud;
-								count++;
-								break;
-
-							}
-
-						}
-
-					}
-					parent.Finalresult.put(Integer.toString(id) , bestbud);
-					
-					
 				}
-
 			}
+
+	
 			
 			
 			CreateTableView(parent);
@@ -187,23 +145,28 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 		Object[][] rowvalues = new Object[0][colnames.length];
 
-		rowvalues = new Object[parent.Finalresult.size()][colnames.length];
+		rowvalues = new Object[parent.Tracklist.size()][colnames.length];
 
 		parent.table = new JTable(rowvalues, colnames);
 		parent.row = 0;
 		NumberFormat f = NumberFormat.getInstance();
-		for (Map.Entry<String, Budpointobject> entry : parent.Finalresult.entrySet()) {
-
-			Budpointobject currentbud = entry.getValue();
-			parent.table.getModel().setValueAt(entry.getKey(), parent.row, 0);
+		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+			
+			String ID = Track.getA();
+			Budpointobject currentbud = Track.getB();
+			if(currentbud.t == parent.thirdDimension) {
+				
+			parent.table.getModel().setValueAt(ID, parent.row, 0);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[0]), parent.row, 1);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[1]), parent.row, 2);
 			parent.table.getModel().setValueAt(f.format(currentbud.t), parent.row, 3);
-
+			parent.table.getModel().setValueAt(f.format(currentbud.velocity), parent.row, 4);
 			parent.row++;
 
 			parent.tablesize = parent.row;
+			}
 		}
+		
 
 		makeGUI(parent);
 
