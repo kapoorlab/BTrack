@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,6 +40,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -50,7 +52,9 @@ import listeners.BudLinkobjectListener;
 import listeners.BudPREIniSearchListener;
 import listeners.BudPRELostFrameListener;
 import listeners.BudPREMaxSearchTListener;
+import listeners.BudSaveAllListener;
 import listeners.BudSaveBatchListener;
+import listeners.BudSaveListener;
 import listeners.BudSkeletonListener;
 import listeners.BudSkeletonTrackLengthListener;
 import listeners.BudTimeListener;
@@ -276,6 +280,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public final GridBagLayout layout = new GridBagLayout();
 	public final GridBagConstraints c = new GridBagConstraints();
 	public JScrollPane scrollPane;
+	public JFileChooser chooserA = new JFileChooser();
+	public String choosertitleA;
 	int SizeX = 400;
 	int SizeY = 200;
 	public Border selectfile = new CompoundBorder(new TitledBorder("Select Track"), new EmptyBorder(c.insets));
@@ -453,9 +459,10 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		inputtrackField.addTextListener(new BudTrackidListener(this));
 		Batchbutton.addActionListener(new BudSaveBatchListener(this));
 		inputField.addTextListener(new BTrackFilenameListener(this));
-		//Savebutton.addActionListener(new BudSaverListener(this));
-		//SaveAllbutton.addActionListener(new BudSaverAllListener(this));
-		
+		Savebutton.addActionListener(new BudSaveListener(this));
+		SaveAllbutton.addActionListener(new BudSaveAllListener(this));
+		ChooseDirectory.addActionListener(new BTrackSaveDirectoryListener(this));
+		inputField.addTextListener(new BTrackFilenameListener(this));
 		
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
