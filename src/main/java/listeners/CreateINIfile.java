@@ -33,7 +33,7 @@ public class CreateINIfile {
 			LocalPrefs.setHomeDir(new java.io.File(".").getAbsolutePath());
         LocalPrefs.savePreferences();
 		System.out.println(LocalPrefs.getHomeDir() + " " + parent.saveFile.getAbsolutePath());
-		System.exit(1);
+		//System.exit(1);
 	}
 	
 	

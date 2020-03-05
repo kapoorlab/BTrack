@@ -100,6 +100,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int tablesize;
 	public RealLocalizable Refcord;
 	public HashMap<String, RealLocalizable> AllRefcords;
+	public ArrayList<RealLocalizable> AllBudcenter;
+	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
 	public TrackModel Globalmodel;
 	public int thirdDimensionSize;
@@ -170,6 +172,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public void run(String arg0) {
 
 		AllRefcords = new HashMap<String, RealLocalizable>();
+		AllBudcenter = new ArrayList<RealLocalizable>();
+		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
 		jpb = new JProgressBar();
 		nf = NumberFormat.getInstance(Locale.ENGLISH);

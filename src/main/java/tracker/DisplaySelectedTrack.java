@@ -182,10 +182,6 @@ public class DisplaySelectedTrack {
    		DisplayTrack display = new DisplayTrack(parent, parent.Globalmodel);
 		display.getImp();
 		
-		
-
-   		
-
    	
    		
    		ArrayList<Pair<String, Budpointobject>> currentresultIntA = new ArrayList<Pair<String, Budpointobject>>();
@@ -213,18 +209,9 @@ public class DisplaySelectedTrack {
    	   		parent.Velocitydataset.removeAllSeries();
    	   		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(currentresultIntA, "Intensity"));
 
-   	   		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/s)", "Time", "Velocity");
+   	   		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/min)", "Time", "Velocity");
    	   		
    	   	
-
-   	   		
-   		
-   		
-   	   	   		
-   	   		
-   	   		
-   	   		
-
    	}
 
 		

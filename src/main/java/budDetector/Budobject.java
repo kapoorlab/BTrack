@@ -12,6 +12,7 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 	
 	public final double[] Budcenter;
 	public final ArrayList<RealLocalizable> linelist;
+	public final ArrayList<RealLocalizable> dynamiclinelist;
 	public final int t;
 	private String name;
 	private final int ID;
@@ -21,13 +22,15 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 	
 	
 	
-	public Budobject(final double[] Budcenter, final ArrayList<RealLocalizable> linelist, final int t, final double perimeter) {
+	public Budobject(final double[] Budcenter, final ArrayList<RealLocalizable> linelist, final ArrayList<RealLocalizable> dynamiclinelist, final int t, final double perimeter) {
 		
 		super(3);
 		
 		this.Budcenter = Budcenter;
 		
 		this.linelist = linelist;
+		
+		this.dynamiclinelist = dynamiclinelist;
 		
 		this.t = t;
 		

@@ -102,6 +102,7 @@ public class DisplayListOverlay {
 		
 		parent.imp.updateAndDraw();
 		parent.Refcord = Ordered.getA();
+		parent.AllBudcenter.add(parent.Refcord);
 
 		parent.AllRefcords.put(uniqueID, parent.Refcord);
 	}

@@ -108,7 +108,7 @@ public class BudFileChooser extends JPanel {
 		       inputFieldcalX = new TextField(5);
 			   inputFieldcalX.setText("1");
 				
-			   wavesize = new Label("Pixel calibration in T (s)");
+			   wavesize = new Label("Pixel calibration in T (min)");
 			   Fieldwavesize = new TextField(5);
 			   Fieldwavesize.setText("1");
 			   panelFirst.setLayout(layout);
@@ -263,7 +263,10 @@ public class BudFileChooser extends JPanel {
 				
 				
 				WindowManager.closeAllWindows();
-				
+				calibration = Float.parseFloat(inputFieldcalX.getText());
+				Wavesize = Float.parseFloat(Fieldwavesize.getText());
+				System.out.println("CalibrationX:" + calibration);
+				System.out.println("Wavesize:" + Wavesize);
 				new InteractiveBud(imageOrig, imageOrigSec, imageSegA, imageSegB,impOrig.getOriginalFileInfo().fileName,impOrigSec.getOriginalFileInfo().fileName, calibration, Wavesize    ).run(null);
 				close(parent);
 				
