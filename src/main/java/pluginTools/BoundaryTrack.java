@@ -1,11 +1,14 @@
 package pluginTools;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JProgressBar;
 
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -52,6 +55,8 @@ public class BoundaryTrack {
 		int percent = 0;
 		
 		for(int t = 1; t < parent.thirdDimensionSize; ++t) {
+			
+			
 			percent++;
 		parent.thirdDimension = t;
 		parent.updatePreview(ValueChange.THIRDDIMmouse);
@@ -79,9 +84,14 @@ public class BoundaryTrack {
 		
 		}
 		
-		if(parent.jpb!=null )
+		if(parent.jpb!=null ) {
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Skeletons Created, Push Track Buddies Button" );
+			parent.AllRefcords = new HashMap<String, RealLocalizable>();
+			parent.AllBudcenter = new ArrayList<RealLocalizable>();
+			parent.ChosenBudcenter = new ArrayList<RealLocalizable>();	
+			
+		}
 	}
 	
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {

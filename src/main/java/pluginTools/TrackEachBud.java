@@ -1,5 +1,6 @@
 package pluginTools;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import budDetector.Budpointobject;
+import budDetector.Distance;
 import ij.ImagePlus;
+import listeners.BudSelectBudsListener;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
@@ -65,15 +68,12 @@ public class TrackEachBud {
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
+		
 		while (setiter.hasNext()) {
 			
-			percent++;
 			
 			int label = setiter.next();
-			if(parent.jpb!=null )
-				utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
-						"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
-								+ (parent.pixellist.size()-1));
+			
 			
 			if (label > 0) {
 				
@@ -88,6 +88,65 @@ public class TrackEachBud {
 			// Get the center point of each bud
 			RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 			
+			parent.AllBudcenter.add(centerpoint);
+			
+			parent.Refcord = centerpoint;
+			
+
+			parent.AllRefcords.put(uniqueID, parent.Refcord);
+			
+			}
+			
+		}
+		
+		Iterator<Integer> setitersecond = parent.pixellist.iterator();
+		while (setitersecond.hasNext()) {
+			
+			percent++;
+			
+			int label = setitersecond.next();
+			
+			
+			if (label > 0) {
+			
+				String uniqueID = Integer.toString(parent.thirdDimension) + Integer.toString(label);
+				
+				// Input the integer image of bud with the label and output the binary border for that label
+				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType> > PairCurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
+				
+				// For each bud get the list of points
+				List<RealLocalizable> truths =  DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+				
+				// Get the center point of each bud
+				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
+				System.out.println(parent.ChosenBudcenter.size() + " " + centerpoint);
+			if(parent.thirdDimension > 1 && parent.ChosenBudcenter.size() > 0) {
+			
+				parent.ChosenBudcenter.clear();
+				BudSelectBudsListener.removebuds(parent, centerpoint);
+			
+			
+			}
+			
+			
+			parent.overlay.clear();
+			if(Contains(parent.ChosenBudcenter, centerpoint) && parent.thirdDimension!=1) {
+				System.out.println(parent.ChosenBudcenter.get(0) + " " + centerpoint);
+				if(parent.jpb!=null )
+					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
+							"No buddies here! What are you doing?");
+			
+				continue;
+				
+				
+			}
+					
+				else {
+			
+				if(parent.jpb!=null )
+					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
+							"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
+									+ (parent.pixellist.size()-1));
 			// Skeletonize Bud
 			OpService ops = parent.ij.op();
 			
@@ -115,11 +174,42 @@ public class TrackEachBud {
 			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths),skeletonEndPoints, uniqueID);
 			
 			
+			//Allow the user to choose or deselect buds
+			
+			if(parent.thirdDimension == 1) {
+			BudSelectBudsListener.markbuds(parent);
+			
+			
+			}
+			
+			
+				}
+			
 			}
 		}
-			
 		
 	}
+	
+	private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable currentbud) {
+		
+		boolean contains = false;
+		
+		for(RealLocalizable bud: Buds) {
+			
+			
+			double dist = Distance.DistanceSqrt(bud, currentbud);
+			
+			if(dist<=1)
+				contains = true;
+			
+		}
+		
+		
+		return contains;
+		
+	}
+	
+	
 	
 	public static ArrayList<RealLocalizable>  AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, OpService ops ) {
 	

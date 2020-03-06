@@ -21,6 +21,8 @@ public class ComputeBorder extends SwingWorker<Void, Void> {
 	
 	public Void doInBackground() throws Exception {
 		
+		
+		parent.BudOvalRois.clear();
 		BoundaryTrack newtrack = new BoundaryTrack(parent, jpb);
 		newtrack.ShowBoundary();
 		

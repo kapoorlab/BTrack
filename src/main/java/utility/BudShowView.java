@@ -1,6 +1,10 @@
 package utility;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import ij.IJ;
+import net.imglib2.RealLocalizable;
 import pluginTools.InteractiveBud;
 
 public class BudShowView {
@@ -36,7 +40,11 @@ public class BudShowView {
 			
 		}
 
+		if(parent.thirdDimension == 1) {
+		parent.StartDisplayer();
 		
+		
+		}
 		
 	
 

@@ -44,6 +44,7 @@ import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
@@ -88,6 +89,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
 	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
 	public RandomAccessibleInterval<FloatType> CurrentView;
+	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
 	public final String NameB;
 	public int ndims;
@@ -105,6 +107,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public RealLocalizable Refcord;
 	public HashMap<String, RealLocalizable> AllRefcords;
 	public ArrayList<RealLocalizable> AllBudcenter;
+	public ArrayList<RealLocalizable> ChosenBudcenter;
 	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
 	public TrackModel Globalmodel;
@@ -177,6 +180,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
+		ChosenBudcenter = new ArrayList<RealLocalizable>();
+		BudOvalRois = new ArrayList<OvalRoi>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
 		jpb = new JProgressBar();

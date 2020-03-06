@@ -65,6 +65,7 @@ public class DisplayListOverlay {
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
 		parent.overlay.clear();
+		parent.BudOvalRois.clear();
 		
 		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 
@@ -85,6 +86,7 @@ public class DisplayListOverlay {
 		oval.setStrokeWidth(10);
 		oval.setStrokeColor(Color.GREEN);
 		parent.overlay.add(oval);
+		parent.BudOvalRois.add(oval);
 		
 		
         for (int i = 0; i < Skelpoints.size(); i++) {
@@ -101,14 +103,9 @@ public class DisplayListOverlay {
 		
 		
 		parent.imp.updateAndDraw();
-		parent.Refcord = Ordered.getA();
-		parent.AllBudcenter.add(parent.Refcord);
-
-		parent.AllRefcords.put(uniqueID, parent.Refcord);
+		
 	}
 	
-	
-
 	
 	
 }
