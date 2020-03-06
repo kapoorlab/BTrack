@@ -10,6 +10,8 @@ import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Scrollbar;
 import java.awt.TextField;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
@@ -478,7 +480,39 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Cardframe.pack();
 		Cardframe.setVisible(true);
 
+		imp.getCanvas().addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == 27)
+					EscapePressed = true;
+				
+			}
+			
+			
+			
+			
+			
+		});
+		
+		
+		
+		
 	}
 	
+	
+	Boolean EscapePressed = false;
 
 }

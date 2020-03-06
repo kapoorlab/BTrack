@@ -57,6 +57,9 @@ public class BoundaryTrack {
 		for(int t = 1; t < parent.thirdDimensionSize; ++t) {
 			
 			
+			if(parent.EscapePressed)
+				break;
+			
 			percent++;
 		parent.thirdDimension = t;
 		parent.updatePreview(ValueChange.THIRDDIMmouse);

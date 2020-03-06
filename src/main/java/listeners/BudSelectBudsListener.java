@@ -65,7 +65,7 @@ public class BudSelectBudsListener {
 				parent.Clickedpoints[1] = y;
 
 				
-				if (SwingUtilities.isRightMouseButton(e)) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
 					
 					// Select buds for removing
 					
@@ -82,7 +82,7 @@ public class BudSelectBudsListener {
 					 }
 				}
 				
-				if (SwingUtilities.isRightMouseButton(e) && e.isShiftDown()) {
+				if (SwingUtilities.isLeftMouseButton(e) && e.isAltDown()) {
 				
 					// Re-add removed buds
 					
