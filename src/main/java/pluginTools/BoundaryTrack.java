@@ -57,8 +57,14 @@ public class BoundaryTrack {
 		for(int t = 1; t < parent.thirdDimensionSize; ++t) {
 			
 			
-			if(parent.EscapePressed)
+			if(parent.EscapePressed) {
+
+				if(parent.jpb!=null ) 
+					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
+							"You pressed Escape to stop calculation, drag timeslider to restart" );
+				parent.EscapePressed = false;
 				break;
+			}
 			
 			percent++;
 		parent.thirdDimension = t;
@@ -87,7 +93,7 @@ public class BoundaryTrack {
 		
 		}
 		
-		if(parent.jpb!=null ) {
+		if(parent.jpb!=null && !parent.EscapePressed ) {
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Skeletons Created, Push Track Buddies Button" );
 			parent.AllRefcords = new HashMap<String, RealLocalizable>();

@@ -119,7 +119,6 @@ public class TrackEachBud {
 				
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-				System.out.println(parent.ChosenBudcenter.size() + " " + centerpoint);
 			if(parent.thirdDimension > 1 && parent.ChosenBudcenter.size() > 0) {
 			
 				parent.ChosenBudcenter.clear();

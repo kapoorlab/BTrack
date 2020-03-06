@@ -295,6 +295,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Label autoTstart, autoTend;
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
+	
+	public Label explain = new Label("Left click deselcts a bud" , Label.CENTER);
+	public Label secondexplain = new Label("AltLeft click selects it again" , Label.CENTER);
+	
+	
 	public String timestring = "Current T";
 	int textwidth = 5;
 	public int AutostartTime, AutoendTime;
@@ -400,11 +405,12 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		Timeselect.add(inputFieldT, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
+		Timeselect.add(explain, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Timeselect.add(secondexplain, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);
 		
 		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
+       
 		KalmanPanel = CovistoKalmanPanel.KalmanPanel();
 		
 		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
