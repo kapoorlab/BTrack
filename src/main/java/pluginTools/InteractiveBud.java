@@ -83,6 +83,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	private static final long serialVersionUID = 1L;
 	public String usefolder = IJ.getDirectory("imagej");
 	public String addToName = "BTrack_";
+	public String inputstring;
 	public final int scrollbarSize = 1000;
 	public Set<Integer> pixellist;
 	public NumberFormat nf;
@@ -137,7 +138,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<FloatType> SegSecoriginalimg,
 			final String NameA,
-			final String NameB,final double calibration, final double timecal) {
+			final String NameB,final double calibration, final double timecal, String inputstring) {
 		
 		
 		this.originalimg = originalimg;
@@ -152,7 +153,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		this.Velocitydataset = new XYSeriesCollection();
 		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
 		this.jFreeChartFrameRate.setVisible(false);
-		
+		this.inputstring = inputstring;
 		
 		
 	}

@@ -56,7 +56,8 @@ public class BoundaryTrack {
 		
 		for(int t = 1; t < parent.thirdDimensionSize; ++t) {
 			
-			
+			if (parent.mvl != null)
+				parent.imp.getCanvas().removeMouseListener(parent.mvl);
 			if(parent.EscapePressed) {
 
 				if(parent.jpb!=null ) 

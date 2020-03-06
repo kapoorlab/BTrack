@@ -18,11 +18,11 @@ public class PanelZero {
 	
 		
 		ImagePlus impC = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/TRMaskTrainTest/Original.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/BudOriginal.tif");
 		impC.show();
 
 		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/TRMaskTrainTest/Mask.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/BudSegment.tif");
 		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();

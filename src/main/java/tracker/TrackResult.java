@@ -99,7 +99,6 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				};
 
 				String ID = Integer.toString(id);
-			
 				model.setName(id, "Track" + id);
 				parent.Globalmodel = model;
 				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);

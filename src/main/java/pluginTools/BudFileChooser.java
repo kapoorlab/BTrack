@@ -260,14 +260,14 @@ public class BudFileChooser extends JPanel {
 				RandomAccessibleInterval<FloatType> imageOrigSec = new ImgOpener().openImgs(impOrigSec.getOriginalFileInfo().directory + impOrigSec.getOriginalFileInfo().fileName, new FloatType()).iterator().next();
 				RandomAccessibleInterval<IntType> imageSegA = new ImgOpener().openImgs(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType()).iterator().next();
 				RandomAccessibleInterval<FloatType> imageSegB = new ImgOpener().openImgs(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType()).iterator().next();
-				
+				String name = impOrig.getOriginalFileInfo().fileName;
 				
 				WindowManager.closeAllWindows();
 				calibration = Float.parseFloat(inputFieldcalX.getText());
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("Wavesize:" + Wavesize);
-				new InteractiveBud(imageOrig, imageOrigSec, imageSegA, imageSegB,impOrig.getOriginalFileInfo().fileName,impOrigSec.getOriginalFileInfo().fileName, calibration, Wavesize    ).run(null);
+				new InteractiveBud(imageOrig, imageOrigSec, imageSegA, imageSegB,impOrig.getOriginalFileInfo().fileName,impOrigSec.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 				close(parent);
 				
 				

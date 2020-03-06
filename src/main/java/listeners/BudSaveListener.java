@@ -30,6 +30,7 @@ public class BudSaveListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 	
 		String ID = parent.selectedID;
+		if(ID!=null) {
 		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			try {
@@ -40,7 +41,7 @@ public class BudSaveListener implements ActionListener {
 				BufferedWriter bw = new BufferedWriter(fw);
 				
 				bw.write(
-						"\t Time \t LocationX \t LocationY \t Velocity \n");
+						" Time, LocationX , LocationY , Velocity \n");
 				
 				if(Track.getA().equals(ID)) {
 				
@@ -49,10 +50,10 @@ public class BudSaveListener implements ActionListener {
 					double LocationX = Track.getB().Location[0] * parent.calibration;
 					double LocationY = Track.getB().Location[1] * parent.calibration;
 					double Velocity = Track.getB().velocity;
-				bw.write("\t" + time + "\t" + "\t"
-						+ LocationX + "\t" + "\t"
-						+ LocationY + "\t" + "\t"
-						+ Velocity + 
+				bw.write(time + "," 
+						+ parent.nf.format(LocationX) + "," 
+						+ parent.nf.format(LocationY) + "," 
+						+ parent.nf.format(Velocity) + 
 						"\n");
 				
 				
@@ -65,6 +66,8 @@ public class BudSaveListener implements ActionListener {
 			
 		}
 		
+		BudSaveAllListener.saveTrackMovie(parent, ID);
+		}
 		
 	}
 

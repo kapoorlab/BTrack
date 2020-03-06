@@ -122,7 +122,7 @@ public class DisplaySelectedTrack {
 						}
 						double dist = Distance.DistanceSq(new double[] { dCordX, dCordY }, new double[] { x, y });
 						if (Distance.DistanceSq(new double[] { dCordX, dCordY }, new double[] { x, y }) < distmin
-								&& CovistoZselectPanel.thirdDimension == (int) dCordZ && parent.ndims > 3) {
+								&& parent.ndims > 3) {
 
 							parent.rowchoice = row;
 							distmin = dist;
