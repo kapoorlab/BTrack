@@ -20,8 +20,12 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.gui.TextRoi;
 import ij.io.FileSaver;
+import net.imglib2.Cursor;
+import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealPoint;
+import net.imglib2.algorithm.region.BresenhamLine;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
@@ -106,7 +110,7 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 
 	public static void saveTrackMovie(InteractiveBud parent, String ID) {
 		
-		RandomAccessibleInterval<FloatType> TrackMovie = new ArrayImgFactory().create(parent.originalimg, new FloatType());
+		RandomAccessibleInterval<FloatType> TrackMovie = new ArrayImgFactory().create(new long[] {parent.originalimg.dimension(0), parent.originalimg.dimension(1)}, new FloatType());
 		
 		
 		// Get the corresponding set for each id
@@ -146,17 +150,23 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 			Budpointobject Spotbase = model.getEdgeSource(e);
 			Budpointobject Spottarget = model.getEdgeTarget(e);
 
-			final double[] startedge = Spotbase.Location;
-			final double[] targetedge = Spottarget.Location; 
+			final long[] startedge = new long[] {(long)Spotbase.Location[0],(long)Spotbase.Location[1] };
+			final long[] targetedge = new long[] {(long) Spottarget.Location[0], (long)Spottarget.Location[1] }; 
 		
 			
 			if(model.trackIDOf(Spotbase) == id) {
 
-				ranac.setPosition(new int[] { (int) startedge[0],  (int) startedge[1],Spotbase.t});
-				ranac.get().setOne();
-				
-				ranac.setPosition(new int[] {(int) targetedge[0], (int) targetedge[1],Spottarget.t});
-				ranac.get().setOne();
+				 BresenhamLine<FloatType> newline = new BresenhamLine<FloatType>(ranac, new Point(startedge), new Point(targetedge));
+				  Cursor<FloatType> cursor = newline.copyCursor();
+				  
+				  
+				  while (cursor.hasNext()) {
+				  
+				  cursor.fwd();
+				  
+				  cursor.get().setReal(1.0);
+				  
+				  }
 				
 
 			}
