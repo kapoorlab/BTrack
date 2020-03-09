@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,10 +48,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		parent.prestack = new ImageStack((int) parent.originalimg.dimension(0), (int) parent.originalimg.dimension(1),
 				java.awt.image.ColorModel.getRGBdefault());
 
-		parent.table.removeAll();
-		parent.Tracklist.clear();
-		parent.table.repaint();
-		parent.table.validate();
+		
 		
 		TrackingFunctions track = new TrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
@@ -77,7 +75,6 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 	
 		for (final Integer id : model.trackIDs(false)) {
-System.out.println(id);
 			if (id > maxid)
 				maxid = id;
 
@@ -150,10 +147,25 @@ System.out.println(id);
 		parent.table = new JTable(rowvalues, colnames);
 		parent.row = 0;
 		NumberFormat f = NumberFormat.getInstance();
+		
+		
+		HashMap<String, Boolean> LabelCovered = new HashMap<String, Boolean>();
+		
+for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+			
+			String ID = Track.getA();
+		LabelCovered.put(ID, false);
+		
+}
+		
 		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			String ID = Track.getA();
+			
 			Budpointobject currentbud = Track.getB();
+			
+			if(LabelCovered.get(ID)!=null)
+				if(!LabelCovered.get(ID))
 			if(currentbud.t == parent.thirdDimension) {
 				
 			parent.table.getModel().setValueAt(ID, parent.row, 0);
@@ -164,7 +176,10 @@ System.out.println(id);
 			parent.row++;
 
 			parent.tablesize = parent.row;
+			LabelCovered.put(ID, true);
 			}
+			
+			
 		}
 		
 

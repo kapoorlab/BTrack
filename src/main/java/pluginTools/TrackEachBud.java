@@ -134,7 +134,7 @@ public class TrackEachBud {
 			parent.overlay.clear();
 			if(Contains(parent.ChosenBudcenter, centerpoint) && parent.thirdDimension!=1) {
 				if(parent.jpb!=null )
-					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
+					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
 							"No buddies here! What are you doing?");
 			
 				continue;

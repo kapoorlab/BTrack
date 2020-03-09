@@ -43,8 +43,10 @@ public class BudLinkobjectListener implements ActionListener {
 
 	public void go() {
 
+		parent.table.removeAll();
 		parent.Tracklist.clear();
-		
+		parent.table.repaint();
+		parent.table.validate();
 		
 		TrackResult track = new TrackResult(parent);
 		track.execute();

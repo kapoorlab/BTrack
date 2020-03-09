@@ -63,56 +63,70 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 			
 	String ID = (String) parent.table.getValueAt(tablepos, 0);
 			if(ID!=null) {
-			try {
 				
-				
-				
-				
-				File budfile = new File(parent.saveFile + "//" + "ExtraBudInformation" + parent.addToName + "BudID" + ID + ".txt");
-				
-				
-				FileWriter fwbud = new FileWriter(budfile);
-				BufferedWriter bwbud = new BufferedWriter(fwbud);
-				bwbud.write(
-						" Time, LocationX , LocationY , Perimeter \n");
-				
-				HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
-				LabelCovered.put(0, true);
-                for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+
+				Iterator<Integer> pixels = parent.pixellist.iterator();
+				while(pixels.hasNext()) {
 					
+					int Label = pixels.next();
+					
+					try {
+						
+						if(Label > 0) {
+	            File budfile = new File(parent.saveFile + "//" + "ExtraBudInformation" + parent.addToName + "BudID" + Label + ".txt");
+    				
+    				
+    				FileWriter fwbud = new FileWriter(budfile);
+    				BufferedWriter bwbud = new BufferedWriter(fwbud);
+    				   
+    				bwbud.write(
+    						" Time, LocationX , LocationY , Perimeter \n");
+                for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+                	
+                	int TrackLabel = Track.getB().label;
+                	
+                	
+             
 					if(Track.getA().equals(ID)) {
 						
-						int Label = Track.getB().label;
+						if(TrackLabel == Label) {
 						
-						if(LabelCovered.get(Label)!=null)
-						if(LabelCovered.get(Label)) {
 							
 							double time = Track.getB().t * parent.timecal;
 							double LocationX = Track.getB().Budcenter.getDoublePosition(0) * parent.calibration;
 							double LocationY = Track.getB().Budcenter.getDoublePosition(1) * parent.calibration;
 							double Perimeter = Track.getB().perimeter;
 						    
-							bwbud.write(time + "," 
+							bwbud.write((int)time + "," 
 									+ parent.nf.format(LocationX) + "," 
 									+ parent.nf.format(LocationY) + "," 
 									+ parent.nf.format(Perimeter) + 
 									"\n");
 						
-							}
-						LabelCovered.put(Label, true);
+						
 							
 						}
 						
 							
 						
 					}
+                
+			}
+                
+
                 bwbud.close();
-				fwbud.close();
+  				fwbud.close();
+						}
+				
+              
+				
 			}
 			catch (IOException te) {
 			}
+				}
+				
 			
-			
+				
 				
 			try {
 				
@@ -135,7 +149,7 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 					double LocationX = Track.getB().Location[0] * parent.calibration;
 					double LocationY = Track.getB().Location[1] * parent.calibration;
 					double Velocity = Track.getB().velocity;
-					bw.write(time + "," 
+					bw.write((int)time + "," 
 							+ parent.nf.format(LocationX) + "," 
 							+ parent.nf.format(LocationY) + "," 
 							+ parent.nf.format(Velocity) + 
