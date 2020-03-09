@@ -1,5 +1,6 @@
 package budDetector;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,13 +12,18 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 	
 	public final double[] Location;
 	public final double velocity;
-	public final  int t;
-	private final int ID;
 	private String name;
 	private final ConcurrentHashMap< String, Double > features = new ConcurrentHashMap< String, Double >();
 	public static AtomicInteger IDcounter = new AtomicInteger( -1 );
 	
-	public Budpointobject(final double[] Location, final int t,final double velocity  ) {
+	public final RealLocalizable Budcenter;
+	public final List<RealLocalizable> linelist;
+	public final List<RealLocalizable> dynamiclinelist;
+	public final int t;
+	public final int ID;
+	public final double perimeter;
+	
+	public Budpointobject(final RealLocalizable Budcenter, final List<RealLocalizable> linelist, final List<RealLocalizable> dynamiclinelist, final double perimeter,final double[] Location, final int t,final double velocity  ) {
 		
 		
 		
@@ -28,6 +34,17 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 		
 		this.ID = IDcounter.incrementAndGet();
 		this.name = "ID" + ID;
+		
+        this.Budcenter = Budcenter;
+		
+		this.linelist = linelist;
+		
+		this.dynamiclinelist = dynamiclinelist;
+		
+		
+		this.perimeter = perimeter;
+		
+		
 		putFeature(TIME,  (double)this.t);
 		putFeature(XPOSITION, this.Location[0]);
 		putFeature(YPOSITION, this.Location[1]);

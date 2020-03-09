@@ -9,6 +9,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.ImagePlus;
@@ -68,6 +69,8 @@ public class TrackEachBud {
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
+		
+		
 		
 		while (setiter.hasNext()) {
 			
@@ -156,18 +159,21 @@ public class TrackEachBud {
 			
 			
 			
-			ArrayList<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons , ops);
+			List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons , ops);
 			
 			ArrayList<Budpointobject> Budpointlist = new ArrayList<Budpointobject>();
 			
 			for(RealLocalizable budpoints:skeletonEndPoints) {
 				
 				
-				Budpointobject Budpoint = new Budpointobject(new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
+				Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints, truths.size() * parent.calibration,new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
 				
 				Budpointlist.add(Budpoint);
 				
 			}
+			
+			
+			
 			parent.AllBudpoints.put(uniqueID, Budpointlist);
 			
 			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths),skeletonEndPoints, uniqueID);

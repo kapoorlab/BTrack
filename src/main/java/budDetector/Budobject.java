@@ -1,6 +1,7 @@
 package budDetector;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,19 +11,18 @@ import net.imglib2.RealLocalizable;
 public class Budobject extends AbstractEuclideanSpace implements RealLocalizable, Comparable<Budobject> {
 
 	
-	public final double[] Budcenter;
-	public final ArrayList<RealLocalizable> linelist;
-	public final ArrayList<RealLocalizable> dynamiclinelist;
+	public final RealLocalizable Budcenter;
+	public final List<RealLocalizable> linelist;
+	public final List<RealLocalizable> dynamiclinelist;
 	public final int t;
 	private String name;
-	private final int ID;
+	public final int ID;
 	private final ConcurrentHashMap< String, Double > features = new ConcurrentHashMap< String, Double >();
-	public static AtomicInteger IDcounter = new AtomicInteger( -1 );
 	public final double perimeter;
 	
 	
 	
-	public Budobject(final double[] Budcenter, final ArrayList<RealLocalizable> linelist, final ArrayList<RealLocalizable> dynamiclinelist, final int t, final double perimeter) {
+	public Budobject(final RealLocalizable Budcenter, final List<RealLocalizable> linelist, final List<RealLocalizable> dynamiclinelist, final int t, final int ID, final double perimeter) {
 		
 		super(3);
 		
@@ -36,8 +36,7 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 		
 		this.perimeter = perimeter;
 		
-		this.ID = IDcounter.incrementAndGet();
-		this.name = "ID" + ID;
+		this.ID = ID;
 		
 	}
 	
@@ -86,12 +85,12 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 
 	@Override
 	public float getFloatPosition(int d) {
-		return (float) Budcenter[d];
+		return (float) Budcenter.getFloatPosition(d);
 	}
 
 	@Override
 	public double getDoublePosition(int d) {
-		return Budcenter[d];
+		return Budcenter.getDoublePosition(d);
 	}
 
 }

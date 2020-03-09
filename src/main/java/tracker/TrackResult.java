@@ -115,7 +115,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
 					
 					velocity = velocity * (parent.calibration/parent.timecal);
-					Budpointobject newbud = new Budpointobject(currentbud.Location, currentbud.t, velocity);
+					Budpointobject newbud = new Budpointobject(currentbud.Budcenter, currentbud.linelist, currentbud.dynamiclinelist,currentbud.perimeter,currentbud.Location, currentbud.t, velocity);
 					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, newbud));
 					previousbud = currentbud;
 				}
