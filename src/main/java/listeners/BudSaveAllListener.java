@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -29,6 +30,7 @@ import net.imglib2.algorithm.region.BresenhamLine;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 import tracker.TrackModel;
@@ -52,6 +54,8 @@ public class BudSaveAllListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		
+		
+		
 	
 for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 			
@@ -60,6 +64,59 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 	String ID = (String) parent.table.getValueAt(tablepos, 0);
 			if(ID!=null) {
 			try {
+				
+				
+				
+				
+				File budfile = new File(parent.saveFile + "//" + "ExtraBudInformation" + parent.addToName + "BudID" + ID + ".txt");
+				
+				
+				FileWriter fwbud = new FileWriter(budfile);
+				BufferedWriter bwbud = new BufferedWriter(fwbud);
+				bwbud.write(
+						" Time, LocationX , LocationY , Perimeter \n");
+				
+				HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
+				LabelCovered.put(0, true);
+                for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+					
+					if(Track.getA().equals(ID)) {
+						
+						int Label = Track.getB().label;
+						
+						if(LabelCovered.get(Label)!=null)
+						if(LabelCovered.get(Label)) {
+							
+							double time = Track.getB().t * parent.timecal;
+							double LocationX = Track.getB().Budcenter.getDoublePosition(0) * parent.calibration;
+							double LocationY = Track.getB().Budcenter.getDoublePosition(1) * parent.calibration;
+							double Perimeter = Track.getB().perimeter;
+						    
+							bwbud.write(time + "," 
+									+ parent.nf.format(LocationX) + "," 
+									+ parent.nf.format(LocationY) + "," 
+									+ parent.nf.format(Perimeter) + 
+									"\n");
+						
+							}
+						LabelCovered.put(Label, true);
+							
+						}
+						
+							
+						
+					}
+                bwbud.close();
+				fwbud.close();
+			}
+			catch (IOException te) {
+			}
+			
+			
+				
+			try {
+				
+				
 				File fichier = new File(
 						 parent.saveFile + "//" + "BudGrowth" + parent.addToName + "TrackID" +ID + ".txt");
 

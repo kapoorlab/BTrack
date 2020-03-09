@@ -55,6 +55,7 @@ import listeners.BudLinkobjectListener;
 import listeners.BudPREIniSearchListener;
 import listeners.BudPRELostFrameListener;
 import listeners.BudPREMaxSearchTListener;
+import listeners.BudRestartListener;
 import listeners.BudSaveAllListener;
 import listeners.BudSaveBatchListener;
 import listeners.BudSaveListener;
@@ -105,6 +106,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Overlay overlay;
 	public ImagePlus imp;
 	public String selectedID;
+	public boolean mouseremoved = false;
 	public int row;
 	public int tablesize;
 	public RealLocalizable Refcord;
@@ -299,7 +301,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	public Label explain = new Label("Left click deselcts a bud" , Label.CENTER);
 	public Label secondexplain = new Label("AltLeft click selects it again" , Label.CENTER);
-	
+	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
 	
 	public String timestring = "Current T";
 	int textwidth = 5;
@@ -308,6 +310,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public JScrollBar timeslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
 			scrollbarSize + 10);
 	public JButton Savebutton = new JButton("Save Track");
+	public JButton Restartbutton = new JButton("Restart");
 	public JButton Batchbutton = new JButton("Save Parameters for batch mode and exit");
 	public JButton SaveAllbutton = new JButton("Save All Tracks");
 	public Border timeborder = new CompoundBorder(new TitledBorder("Select time"), new EmptyBorder(c.insets));
@@ -408,6 +411,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(explain, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(secondexplain, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);
 		
 		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
@@ -446,8 +450,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelFirst.add(Original, new GridBagConstraints(3, 1, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		panelFirst.add(Batchbutton, new GridBagConstraints(3, 2, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		//panelFirst.add(Batchbutton, new GridBagConstraints(3, 2, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+		//		GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		
 		
 		inputFieldT.addTextListener(new BudTlocListener(this,false));
@@ -456,6 +460,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				thirdDimensionSize, scrollbarSize, timeslider));
 		
 		CovistoKalmanPanel.Skeletontime.addActionListener(new BudSkeletonListener(this));
+		CovistoKalmanPanel.Restart.addActionListener(new BudRestartListener(this));
 		CovistoKalmanPanel.Timetrack.addActionListener(new BudLinkobjectListener(this));
 		CovistoKalmanPanel.lostframe.addTextListener(new BudPRELostFrameListener(this));
 		CovistoKalmanPanel.tracklength.addTextListener(new BudSkeletonTrackLengthListener(this));
@@ -520,6 +525,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	}
 	
 	
-	Boolean EscapePressed = false;
+	public Boolean EscapePressed = false;
 
 }

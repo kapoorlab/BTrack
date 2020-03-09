@@ -9,6 +9,7 @@ import java.awt.event.AdjustmentListener;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 
+import kalmanGUI.CovistoKalmanPanel;
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveBud.ValueChange;
@@ -34,7 +35,7 @@ public class BudSkeletonListener implements ActionListener {
 			@Override
 			public void run() {
 
-				go();
+				go(parent);
 
 			}
 
@@ -43,8 +44,13 @@ public class BudSkeletonListener implements ActionListener {
 	}
 	
 
-	public void go() {
+	public static void go(final InteractiveBud parent) {
 
+		CovistoKalmanPanel.Skeletontime.setEnabled(false);
+		CovistoKalmanPanel.Timetrack.setEnabled(false);
+		parent.SaveAllbutton.setEnabled(false);
+		parent.Savebutton.setEnabled(false);
+		
 		SkeletonizeBuds skeleton = new SkeletonizeBuds(parent);
 		skeleton.execute();
 		

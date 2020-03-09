@@ -40,11 +40,7 @@ public class BudShowView {
 			
 		}
 
-		if(parent.thirdDimension == 1) {
-		parent.StartDisplayer();
 		
-		
-		}
 		
 	
 

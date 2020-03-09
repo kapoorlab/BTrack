@@ -49,7 +49,8 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 		parent.table.removeAll();
 		parent.Tracklist.clear();
-		
+		parent.table.repaint();
+		parent.table.validate();
 		
 		TrackingFunctions track = new TrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
@@ -76,7 +77,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 	
 		for (final Integer id : model.trackIDs(false)) {
-
+System.out.println(id);
 			if (id > maxid)
 				maxid = id;
 
@@ -102,7 +103,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				model.setName(id, "Track" + id);
 				parent.Globalmodel = model;
 				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
-				if (Angleset.size() > CovistoKalmanPanel.trackduration) {
+				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.thirdDimensionSize) {
 			
 				Iterator<Budpointobject> Angleiter = Angleset.iterator();
 				Budpointobject previousbud = null;
@@ -115,7 +116,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
 					
 					velocity = velocity * (parent.calibration/parent.timecal);
-					Budpointobject newbud = new Budpointobject(currentbud.Budcenter, currentbud.linelist, currentbud.dynamiclinelist,currentbud.perimeter,currentbud.Location, currentbud.t, velocity);
+					Budpointobject newbud = new Budpointobject(currentbud.Budcenter, currentbud.linelist, currentbud.dynamiclinelist,currentbud.perimeter, currentbud.label, currentbud.Location, currentbud.t, velocity);
 					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, newbud));
 					previousbud = currentbud;
 				}

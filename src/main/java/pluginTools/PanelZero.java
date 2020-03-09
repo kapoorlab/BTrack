@@ -18,7 +18,7 @@ public class PanelZero {
 	
 		
 		ImagePlus impC = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/BudOriginal.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/BudOriginal-small.tif");
 		impC.show();
 
 		ImagePlus impD = new Opener()

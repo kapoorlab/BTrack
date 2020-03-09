@@ -133,7 +133,6 @@ public class TrackEachBud {
 			
 			parent.overlay.clear();
 			if(Contains(parent.ChosenBudcenter, centerpoint) && parent.thirdDimension!=1) {
-				System.out.println(parent.ChosenBudcenter.get(0) + " " + centerpoint);
 				if(parent.jpb!=null )
 					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
 							"No buddies here! What are you doing?");
@@ -166,7 +165,7 @@ public class TrackEachBud {
 			for(RealLocalizable budpoints:skeletonEndPoints) {
 				
 				
-				Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints, truths.size() * parent.calibration,new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
+				Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints, truths.size() * parent.calibration, label, new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
 				
 				Budpointlist.add(Budpoint);
 				

@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import javax.swing.JProgressBar;
 
+import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
@@ -54,19 +55,23 @@ public class BoundaryTrack {
 		
 		int percent = 0;
 		
-		for(int t = 1; t < parent.thirdDimensionSize; ++t) {
+		for(int t = 1; t <= parent.thirdDimensionSize; ++t) {
 			
-			if (parent.mvl != null)
+		   	
+			if (parent.mvl != null) {
 				parent.imp.getCanvas().removeMouseListener(parent.mvl);
+			    parent.mouseremoved = true;	
+			}
+			
 			if(parent.EscapePressed) {
 
 				if(parent.jpb!=null ) 
 					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
-							"You pressed Escape to stop calculation, drag timeslider to restart" );
+							"You pressed Escape to stop calculation, press restart to start again" );
 				parent.EscapePressed = false;
+				CovistoKalmanPanel.Skeletontime.setEnabled(true);
 				break;
 			}
-			
 			percent++;
 		parent.thirdDimension = t;
 		parent.updatePreview(ValueChange.THIRDDIMmouse);
@@ -94,7 +99,11 @@ public class BoundaryTrack {
 		
 		}
 		
-		if(parent.jpb!=null && !parent.EscapePressed ) {
+		if(parent.jpb!=null && parent.thirdDimension == parent.thirdDimensionSize) {
+			CovistoKalmanPanel.Skeletontime.setEnabled(true);
+			CovistoKalmanPanel.Timetrack.setEnabled(true);
+			parent.SaveAllbutton.setEnabled(true);
+			parent.Savebutton.setEnabled(true);
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Skeletons Created, Push Track Buddies Button" );
 			parent.AllRefcords = new HashMap<String, RealLocalizable>();

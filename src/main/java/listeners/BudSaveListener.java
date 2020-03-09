@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 import budDetector.Budpointobject;
 import net.imglib2.util.ValuePair;
@@ -31,7 +32,64 @@ public class BudSaveListener implements ActionListener {
 	
 		String ID = parent.selectedID;
 		if(ID!=null) {
+			
+try {
+				
+				
+				
+				
+				File budfile = new File(parent.saveFile + "//" + "ExtraBudInformation" + parent.addToName + "BudID" + ID + ".txt");
+				
+				
+				FileWriter fwbud = new FileWriter(budfile);
+				BufferedWriter bwbud = new BufferedWriter(fwbud);
+				bwbud.write(
+						" Time, LocationX , LocationY , Perimeter \n");
+				
+				HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
+				LabelCovered.put(0, true);
+				
+				
+                for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+					
+					if(Track.getA().equals(ID)) {
+						
+						int Label = Track.getB().label;
+						
+						if(LabelCovered.get(Label)!=null)
+						if(LabelCovered.get(Label)) {
+							
+							double time = Track.getB().t * parent.timecal;
+							double LocationX = Track.getB().Budcenter.getDoublePosition(0) * parent.calibration;
+							double LocationY = Track.getB().Budcenter.getDoublePosition(1) * parent.calibration;
+							double Perimeter = Track.getB().perimeter;
+						    
+							bwbud.write(time + "," 
+									+ parent.nf.format(LocationX) + "," 
+									+ parent.nf.format(LocationY) + "," 
+									+ parent.nf.format(Perimeter) + 
+									"\n");
+						
+							}
+						LabelCovered.put(Label, true);
+							
+						}
+						
+							
+						
+					}
+                bwbud.close();
+				fwbud.close();
+			}
+			catch (IOException te) {
+			}
+			
+			
 		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+			
+			
+			
+			
 			
 			try {
 				File fichier = new File(

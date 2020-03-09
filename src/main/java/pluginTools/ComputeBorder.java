@@ -23,6 +23,7 @@ public class ComputeBorder extends SwingWorker<Void, Void> {
 		
 		
 		parent.BudOvalRois.clear();
+		parent.ChosenBudcenter.clear();
 		BoundaryTrack newtrack = new BoundaryTrack(parent, jpb);
 		newtrack.ShowBoundary();
 		

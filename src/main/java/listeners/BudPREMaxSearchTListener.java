@@ -38,12 +38,13 @@ public class BudPREMaxSearchTListener implements AdjustmentListener {
 	
 	@Override
 	public void adjustmentValueChanged(final AdjustmentEvent event) {
-		CovistoKalmanPanel.maxSearchradius = utility.BudSlicer.computeValueFromScrollbarPosition(event.getValue(), min, max, scrollbarSize);
+		CovistoKalmanPanel.maxSearchradius = CovistoKalmanPanel.initialSearchradius;
+				//utility.BudSlicer.computeValueFromScrollbarPosition(event.getValue(), min, max, scrollbarSize);
 
 		
-			scrollbar.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(CovistoKalmanPanel.maxSearchradius, min, max, scrollbarSize));
+			//scrollbar.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(CovistoKalmanPanel.maxSearchradius, min, max, scrollbarSize));
 
-			label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.maxSearchradius));
+			//label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.maxSearchradius));
 			
 			
 	
