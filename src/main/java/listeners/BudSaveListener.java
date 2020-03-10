@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -99,6 +100,48 @@ public class BudSaveListener implements ActionListener {
 		
 	
 			
+		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
+		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+			
+			if(Track.getA().equals(ID)) {
+			
+				
+			double time = Track.getB().t * parent.timecal;
+			double LocationX = Track.getB().Location[0] * parent.calibration;
+			double LocationY = Track.getB().Location[1] * parent.calibration;
+			double Velocity = Track.getB().velocity;
+			
+			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
+			
+		
+			}
+		
+		
+	
+	}
+		
+		int averageframe = 3;
+		ArrayList<double[]> AverageTrackinfo = new ArrayList<double[]>();
+		for(int i = 0; i< Trackinfo.size() - averageframe; ++i) {
+			
+         
+        		double[] current = Trackinfo.get(i);
+        		double[] next = Trackinfo.get(i + 1);
+        		double[] secondnext = Trackinfo.get(i + 2);
+        		double[] thirdnext = Trackinfo.get(i + 3);
+        	    double currentvelocity = current[3];
+        	    double nextvelocity = next[3];
+        	    double secondnextvelocity = secondnext[3];
+        	    double thirdnextvelocity = thirdnext[3];
+        	    
+        	    double averagevelocity = (currentvelocity + nextvelocity + secondnextvelocity + thirdnextvelocity)/4.0;
+		    double time = current[0];
+		    double LocationX = current[1];
+		    double LocationY = current[2];
+		    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
+			
+		}
+		
 		try {
 			
 			
@@ -109,36 +152,30 @@ public class BudSaveListener implements ActionListener {
 			BufferedWriter bw = new BufferedWriter(fw);
 			
 			bw.write(
-					" Time, LocationX , LocationY , Average Velocity \n");
-
-		
+					" Time, LocationX , LocationY , Velocity \n");
 			
-			for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+			for(int i = 0; i< AverageTrackinfo.size(); ++i) {
 				
-				if(Track.getA().equals(ID)) {
+				double[] current = AverageTrackinfo.get(i);
+				 double time = current[0];
+				    double LocationX = current[1];
+				    double LocationY = current[2];
+				    double Velocity = current[3];
+				    
+				    bw.write((int)time + "," 
+							+ parent.nf.format(LocationX) + "," 
+							+ parent.nf.format(LocationY) + "," 
+							+ parent.nf.format(Velocity) + 
+							"\n");
 				
-				double time = Track.getB().t * parent.timecal;
-				double LocationX = Track.getB().Location[0] * parent.calibration;
-				double LocationY = Track.getB().Location[1] * parent.calibration;
-				double Velocity = Track.getB().velocity;
-				bw.write((int)time + "," 
-						+ parent.nf.format(LocationX) + "," 
-						+ parent.nf.format(LocationY) + "," 
-						+ parent.nf.format(Velocity) + 
-						"\n");
-			
-				}
-			
-			
+			}
+	
 		
-		}
-		
-			
-			bw.close();
-			fw.close();
-		}
-		catch (IOException te) {
-		}
+		bw.close();
+		fw.close();
+	}
+	catch (IOException te) {
+	}
 		
 		
 		
