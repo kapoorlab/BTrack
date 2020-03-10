@@ -99,7 +99,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int ndims;
 	public MouseListener mvl;
 	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
+	public HashMap<String, ArrayList<Budobject>> AllBuds;
 	public CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
+	public CostFunction<Budobject, Budobject> BudUserchosenCostFunction;
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
@@ -197,6 +199,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
 		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
+		AllBuds = new HashMap<String, ArrayList<Budobject>>();
 		ij = new ImageJ();
 		ij.ui().showUI();
 		if (ndims == 3) {

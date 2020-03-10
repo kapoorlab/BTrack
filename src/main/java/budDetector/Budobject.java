@@ -62,6 +62,23 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 		return features.get(feature);
 	}
 	
+	/**
+	 * Returns the difference between the location of two clouds, this operation
+	 * returns ( <code>A.diffTo(B) = - B.diffTo(A)</code>)
+	 *
+	 * @param target
+	 *            the Cloud to compare to.
+	 * @param int
+	 *            n n = 0 for X- coordinate, n = 1 for Y- coordinate
+	 * @return the difference in co-ordinate specified.
+	 */
+	public double diffTo(final Budobject target, int n) {
+
+		final double thisBloblocation = getDoublePosition(n);
+		final double targetBloblocation = target.getDoublePosition(n);
+		return thisBloblocation - targetBloblocation;
+	}
+	
 	@Override
 	public int compareTo(Budobject o) {
 		return hashCode() - o.hashCode();
@@ -91,6 +108,46 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 	@Override
 	public double getDoublePosition(int d) {
 		return Budcenter.getDoublePosition(d);
+	}
+	
+	/**
+	 * Returns the squared distance between two clouds.
+	 *
+	 * @param target
+	 *            the Cloud to compare to.
+	 *
+	 * @return the distance to the current cloud to target cloud specified.
+	 */
+
+	public double squareDistanceTo(Budobject target) {
+		// Returns squared distance between the source Blob and the target Blob.
+
+		final double[] sourceLocation = new double[] {Budcenter.getDoublePosition(0),Budcenter.getDoublePosition(1) };
+		final double[] targetLocation = new double[] {target.getDoublePosition(0), target.getDoublePosition(1)};
+
+		double distance = 0;
+
+		for (int d = 0; d < sourceLocation.length; ++d) {
+
+			distance += (sourceLocation[d] - targetLocation[d]) * (sourceLocation[d] - targetLocation[d]);
+		}
+
+		return distance;
+	}
+	public double DistanceTo(Budobject target, final double alpha, final double beta) {
+		// Returns squared distance between the source Blob and the target Blob.
+
+		final double[] sourceLocation = new double[] {Budcenter.getDoublePosition(0),Budcenter.getDoublePosition(1) };
+		final double[] targetLocation = new double[] {target.getDoublePosition(0), target.getDoublePosition(1)};
+
+		double distance = 1.0E-5;
+
+		for (int d = 0; d < sourceLocation.length; ++d) {
+
+			distance += (sourceLocation[d] - targetLocation[d]) * (sourceLocation[d] - targetLocation[d]);
+		}
+
+			return distance;
 	}
 
 }

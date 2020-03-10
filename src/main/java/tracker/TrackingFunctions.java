@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.Budobject;
 import budDetector.Budpointobject;
 import kalmanGUI.CovistoKalmanPanel;
 import pluginTools.InteractiveBud;
@@ -50,10 +51,41 @@ public class TrackingFunctions {
 
 		
 		KFsearch Tsearch = new KFsearch(colllist, parent.UserchosenCostFunction,  CovistoKalmanPanel.maxSearchradius ,
-				CovistoKalmanPanel.maxSearchradius, 
+				CovistoKalmanPanel.initialSearchradius, 
 				CovistoKalmanPanel.maxframegap, parent.AccountedT, parent.jpb);
 		Tsearch.process();
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = Tsearch.getResult();
+
+		return simplegraph;
+		
+		
+	}
+	
+public SimpleWeightedGraph<Budobject, DefaultWeightedEdge> BudTrackfunction() {
+		
+		parent.BudUserchosenCostFunction = new BudTrackCostFunction(CovistoKalmanPanel.alpha, CovistoKalmanPanel.beta);
+		
+
+		ArrayList<ArrayList<Budobject>> colllist = new ArrayList<ArrayList<Budobject>>();
+		
+		parent.AllBuds = sortBudByIntegerInter(parent.AllBuds);
+	
+		
+		for (Map.Entry<String, ArrayList<Budobject>> entry : parent.AllBuds.entrySet()) {
+
+			ArrayList<Budobject> bloblist = entry.getValue();
+			if(bloblist.size() > 0) {
+			colllist.add(bloblist);
+			}
+
+		}
+
+		
+		BudKFsearch Tsearch = new BudKFsearch(colllist, parent.BudUserchosenCostFunction,  CovistoKalmanPanel.maxSearchradius ,
+				CovistoKalmanPanel.initialSearchradius, 
+				CovistoKalmanPanel.maxframegap, parent.AccountedT, parent.jpb);
+		Tsearch.process();
+		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> simplegraph = Tsearch.getResult();
 
 		return simplegraph;
 		
@@ -105,6 +137,29 @@ public class TrackingFunctions {
 		HashMap<String, ArrayList<Budpointobject>> sortedHashMap = new LinkedHashMap<String, ArrayList<Budpointobject>>();
 		for (Iterator<Entry<String, ArrayList<Budpointobject>>> it = list.iterator(); it.hasNext();) {
 			Map.Entry<String, ArrayList<Budpointobject>> entry = (Map.Entry<String, ArrayList<Budpointobject>>) it.next();
+			sortedHashMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedHashMap;
+	}
+	
+	
+	public static HashMap<String, ArrayList<Budobject>> sortBudByIntegerInter(HashMap<String, ArrayList<Budobject>> map) {
+		List<Entry<String, ArrayList<Budobject>>> list = new LinkedList<Entry<String, ArrayList<Budobject>>>(map.entrySet());
+		// Defined Custom Comparator here
+		Collections.sort(list, new Comparator<Entry<String, ArrayList<Budobject>>>() {
+
+			@Override
+			public int compare(Entry<String, ArrayList<Budobject>> o1, Entry<String, ArrayList<Budobject>> o2) {
+				
+				return Integer.parseInt(o1.getKey()) - Integer.parseInt(o2.getKey());
+			}
+		});
+
+		// Here I am copying the sorted list in HashMap
+		// using LinkedHashMap to preserve the insertion order
+		HashMap<String, ArrayList<Budobject>> sortedHashMap = new LinkedHashMap<String, ArrayList<Budobject>>();
+		for (Iterator<Entry<String, ArrayList<Budobject>>> it = list.iterator(); it.hasNext();) {
+			Map.Entry<String, ArrayList<Budobject>> entry = (Map.Entry<String, ArrayList<Budobject>>) it.next();
 			sortedHashMap.put(entry.getKey(), entry.getValue());
 		}
 		return sortedHashMap;

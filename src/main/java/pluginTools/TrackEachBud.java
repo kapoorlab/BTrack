@@ -103,6 +103,8 @@ public class TrackEachBud {
 		}
 		
 		Iterator<Integer> setitersecond = parent.pixellist.iterator();
+		
+		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
 		while (setitersecond.hasNext()) {
 			
 			percent++;
@@ -170,8 +172,10 @@ public class TrackEachBud {
 				Budpointlist.add(Budpoint);
 				
 			}
+			Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label, truths.size() * parent.calibration);
+			Budlist.add(Curreentbud);
 			
-			
+			parent.AllBuds.put(uniqueID, Budlist);
 			
 			parent.AllBudpoints.put(uniqueID, Budpointlist);
 			
