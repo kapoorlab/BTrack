@@ -20,6 +20,7 @@ import javax.swing.SwingWorker;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.ImageStack;
@@ -52,10 +53,14 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		
 		TrackingFunctions track = new TrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
-
+		
+		// Seperate graph for buds
+		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
+		
+		
 		// Display Graph results, make table etc
 		DisplayGraph(simplegraph);
-		
+		BudDisplayGraph(Budsimplegraph);
 	
 		if(parent.jpb!=null )
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
@@ -103,20 +108,25 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.thirdDimensionSize) {
 			
 				Iterator<Budpointobject> Angleiter = Angleset.iterator();
+			
+				
 				Budpointobject previousbud = null;
 				while (Angleiter.hasNext()) {
 					
 					
                     double velocity = 0; 
 					Budpointobject currentbud = Angleiter.next();
-					if(previousbud!=null) 
+					if(previousbud!=null) { 
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
 					
 					velocity = velocity * (parent.calibration/parent.timecal);
 					Budpointobject newbud = new Budpointobject(currentbud.Budcenter, currentbud.linelist, currentbud.dynamiclinelist,currentbud.perimeter, currentbud.label, currentbud.Location, currentbud.t, velocity);
 					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, newbud));
+					}
 					previousbud = currentbud;
 				}
+				
+				
 				Collections.sort(parent.Tracklist, ThirdDimcomparison);
 				
 
@@ -134,6 +144,63 @@ public class TrackResult extends SwingWorker<Void, Void> {
 	}
 	
 	
+	protected void BudDisplayGraph(SimpleWeightedGraph<Budobject, DefaultWeightedEdge> simplegraph) {
+
+		int minid = Integer.MAX_VALUE;
+		int maxid = Integer.MIN_VALUE;
+		BudTrackModel model = new BudTrackModel(simplegraph);
+
+	
+		for (final Integer id : model.trackIDs(false)) {
+			if (id > maxid)
+				maxid = id;
+
+			if (id < minid)
+				minid = id;
+		}
+		if (minid != Integer.MAX_VALUE) {
+
+			for (final Integer id : model.trackIDs(true)) {
+
+				Comparator<Pair<String, Budobject>> ThirdDimcomparison = new Comparator<Pair<String, Budobject>>() {
+
+					@Override
+					public int compare(final Pair<String, Budobject> A, final Pair<String, Budobject> B) {
+
+						return A.getB().t - B.getB().t;
+
+					}
+
+				};
+
+				String ID = Integer.toString(id);
+				model.setName(id, "Track" + id);
+				parent.BudGlobalModel = model;
+				final HashSet<Budobject> Angleset = model.trackBudobjects(id);
+				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.thirdDimensionSize) {
+			
+				Iterator<Budobject> Angleiter = Angleset.iterator();
+				while (Angleiter.hasNext()) {
+					
+					
+                    double velocity = 0; 
+                    Budobject currentbud = Angleiter.next();
+					
+					velocity = velocity * (parent.calibration/parent.timecal);
+					parent.BudTracklist.add(new ValuePair<String, Budobject>(ID, currentbud));
+				}
+				Collections.sort(parent.BudTracklist, ThirdDimcomparison);
+				
+
+				}
+			}
+
+	
+			
+			
+
+		}
+	}
 	public void CreateTableView(InteractiveBud parent) {
 
 

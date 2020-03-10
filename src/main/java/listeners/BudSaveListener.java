@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import budDetector.Budobject;
 import budDetector.Budpointobject;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
@@ -56,14 +57,13 @@ public class BudSaveListener implements ActionListener {
 					" Time, LocationX , LocationY , Perimeter \n");
 			
 			if(Label > 0) {
-        for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+        for (ValuePair<String, Budobject> Track: parent.BudTracklist) {
         	
-        	int TrackLabel = Track.getB().label;
+        	int TrackLabel = Track.getB().ID;
         	
         	
         
 			
-			if(Track.getA().equals(ID)) {
 				
 				if(TrackLabel == Label) {
 				
@@ -85,7 +85,6 @@ public class BudSaveListener implements ActionListener {
 				
 					
 				
-			}
         
 	}
 			}
@@ -110,8 +109,9 @@ public class BudSaveListener implements ActionListener {
 			BufferedWriter bw = new BufferedWriter(fw);
 			
 			bw.write(
-					" Time, LocationX , LocationY , Velocity \n");
-			
+					" Time, LocationX , LocationY , Average Velocity \n");
+
+		
 			
 			for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 				

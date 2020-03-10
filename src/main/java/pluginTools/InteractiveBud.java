@@ -74,6 +74,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
+import tracker.BudTrackModel;
 import tracker.CostFunction;
 import tracker.TrackModel;
 import zGUI.CovistoZselectPanel;
@@ -105,6 +106,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
+	public ArrayList<ValuePair<String, Budobject>> BudTracklist;
 	public Overlay overlay;
 	public ImagePlus imp;
 	public String selectedID;
@@ -118,6 +120,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
 	public TrackModel Globalmodel;
+	public BudTrackModel BudGlobalModel;
 	public int thirdDimensionSize;
 	public ImagePlus impA;
 	public int rowchoice;
@@ -198,6 +201,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Clickedpoints = new int[2];
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
+		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
 		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
 		AllBuds = new HashMap<String, ArrayList<Budobject>>();
 		ij = new ImageJ();

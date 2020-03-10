@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.Budobject;
 import budDetector.Budpointobject;
 import ij.ImagePlus;
 import ij.gui.Line;
@@ -57,12 +58,7 @@ public class BudSaveAllListener implements ActionListener {
 		
 		
 	
-for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
-			
-			
-			
-	String ID = (String) parent.table.getValueAt(tablepos, 0);
-			if(ID!=null) {
+
 				
 
 				Iterator<Integer> pixels = parent.pixellist.iterator();
@@ -81,13 +77,12 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
     				   
     				bwbud.write(
     						" Time, LocationX , LocationY , Perimeter \n");
-                for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+                for (ValuePair<String, Budobject> Track: parent.BudTracklist) {
                 	
-                	int TrackLabel = Track.getB().label;
-                	
+                	int TrackLabel = Track.getB().ID;
                 	
              
-					if(Track.getA().equals(ID)) {
+					
 						
 						if(TrackLabel == Label) {
 						
@@ -109,7 +104,7 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 						
 							
 						
-					}
+					
                 
 			}
                 
@@ -125,7 +120,12 @@ for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 			}
 				}
 				
-			
+				for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
+					
+					
+					
+					String ID = (String) parent.table.getValueAt(tablepos, 0);
+							if(ID!=null) {
 				
 				
 			try {
