@@ -124,21 +124,25 @@ public class BudSaveListener implements ActionListener {
 		ArrayList<double[]> AverageTrackinfo = new ArrayList<double[]>();
 		for(int i = 0; i< Trackinfo.size() - averageframe; ++i) {
 			
-         
-        		double[] current = Trackinfo.get(i);
-        		double[] next = Trackinfo.get(i + 1);
-        		double[] secondnext = Trackinfo.get(i + 2);
-        		double[] thirdnext = Trackinfo.get(i + 3);
-        	    double currentvelocity = current[3];
-        	    double nextvelocity = next[3];
-        	    double secondnextvelocity = secondnext[3];
-        	    double thirdnextvelocity = thirdnext[3];
-        	    
-        	    double averagevelocity = (currentvelocity + nextvelocity + secondnextvelocity + thirdnextvelocity)/4.0;
-		    double time = current[0];
-		    double LocationX = current[1];
-		    double LocationY = current[2];
-		    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
+			double[] current = Trackinfo.get(i);
+    		double[] next = Trackinfo.get(i + 1);
+    		double[] secondnext = Trackinfo.get(i + 2);
+    		double[] thirdnext = Trackinfo.get(i + 3);
+    		double[] fourthnext = Trackinfo.get(i + 4);
+    		double[] fifthnext = Trackinfo.get(i + 5);
+    		
+    	    double currentvelocity = current[3];
+    	    double nextvelocity = next[3];
+    	    double secondnextvelocity = secondnext[3];
+    	    double thirdnextvelocity = thirdnext[3];
+    	    double fourthnextvelocity = fourthnext[3];
+    	    double fifthnextvelocity = fifthnext[3];
+    	    
+    	    double averagevelocity = (currentvelocity + nextvelocity + secondnextvelocity + thirdnextvelocity + fourthnextvelocity + fifthnextvelocity )/6.0;
+	    double time = current[0];
+	    double LocationX = current[1];
+	    double LocationY = current[2];
+	    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
 			
 		}
 		
