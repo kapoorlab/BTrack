@@ -154,7 +154,7 @@ public class TrackEachBud {
 			OpService ops = parent.ij.op();
 			
 			SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.getB(), ops);
-			skelmake.setClosingRadius(1);
+			//skelmake.setClosingRadius(2);
 			skelmake.run();
 			ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 			

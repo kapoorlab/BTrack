@@ -35,9 +35,9 @@ public class BoundaryTrack {
 	public void ShowBoundary() {
 		
 		int percent = 0;
-		parent.updatePreview(ValueChange.THIRDDIMmouse);
 		RandomAccessibleInterval<IntType> BudSeg = utility.BudSlicer.getCurrentBudView(parent.Segoriginalimg,(int) parent.thirdDimension,
 				(int)parent.thirdDimensionSize);
+		
 		GetPixelList(BudSeg);
 		IntType min = new IntType();
 		IntType max = new IntType();

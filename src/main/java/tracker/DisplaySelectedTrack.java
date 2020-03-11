@@ -19,6 +19,7 @@ import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.gui.ImageCanvas;
 import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 import utility.BudChartMaker;
 import zGUI.CovistoZselectPanel;
@@ -184,18 +185,54 @@ public class DisplaySelectedTrack {
 		
    	
    		
-   		ArrayList<Pair<String, Budpointobject>> currentresultIntA = new ArrayList<Pair<String, Budpointobject>>();
-
-   		for (Pair<String, Budpointobject> currentInt : parent.Tracklist) {
-
-   			if (ID.equals(currentInt.getA())) {
-
-   				currentresultIntA.add(currentInt);
-
-   			}
-
-   		}
-
+   		
+   		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
+		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+			
+			if(Track.getA().equals(ID)) {
+			
+				
+			double time = Track.getB().t * parent.timecal;
+			double LocationX = Track.getB().Location[0] * parent.calibration;
+			double LocationY = Track.getB().Location[1] * parent.calibration;
+			double Velocity = Track.getB().velocity;
+			
+			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
+			
+		
+			}
+		
+		
+	
+	}
+		
+		int averageframe = 5;
+		ArrayList<double[]> AverageTrackinfo = new ArrayList<double[]>();
+		for(int i = 0; i< Trackinfo.size() - averageframe; ++i) {
+			
+         
+        		double[] current = Trackinfo.get(i);
+        		double[] next = Trackinfo.get(i + 1);
+        		double[] secondnext = Trackinfo.get(i + 2);
+        		double[] thirdnext = Trackinfo.get(i + 3);
+        		double[] fourthnext = Trackinfo.get(i + 4);
+        		double[] fifthnext = Trackinfo.get(i + 5);
+        		
+        	    double currentvelocity = current[3];
+        	    double nextvelocity = next[3];
+        	    double secondnextvelocity = secondnext[3];
+        	    double thirdnextvelocity = thirdnext[3];
+        	    double fourthnextvelocity = fourthnext[3];
+        	    double fifthnextvelocity = fifthnext[3];
+        	    
+        	    double averagevelocity = (currentvelocity + nextvelocity + secondnextvelocity + thirdnextvelocity + fourthnextvelocity + fifthnextvelocity )/6.0;
+		    double time = current[0];
+		    double LocationX = current[1];
+		    double LocationY = current[2];
+		    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
+			
+		}
+		
    	
    		
 
@@ -207,7 +244,7 @@ public class DisplaySelectedTrack {
    		
    		if(parent.Velocitydataset!=null)
    	   		parent.Velocitydataset.removeAllSeries();
-   	   		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(currentresultIntA, "Intensity"));
+   	   		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(AverageTrackinfo, "Intensity"));
 
    	   		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/min)", "Time", "Velocity");
    	   		

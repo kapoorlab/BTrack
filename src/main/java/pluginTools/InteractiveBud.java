@@ -251,6 +251,12 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			AccountedT.put(TID,  thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 		repaintView(CurrentView);
+		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
+			imp.getOverlay().clear();
+			StartDisplayer();
+			
+		}
+		
 		}
 		
 	}
@@ -309,7 +315,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Label explain = new Label("Left click deselcts a bud" , Label.CENTER);
 	public Label secondexplain = new Label("AltLeft click selects it again" , Label.CENTER);
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
-	
+	public Label fourthexplain = new Label("Click Skeletonize buddies first (without parameter change)" , Label.CENTER);
 	public String timestring = "Current T";
 	int textwidth = 5;
 	public int AutostartTime, AutoendTime;
@@ -419,6 +425,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Timeselect.add(explain, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(secondexplain, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);
 		
 		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
