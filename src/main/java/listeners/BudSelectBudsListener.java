@@ -22,7 +22,7 @@ import utility.GetNearest;
 public class BudSelectBudsListener {
 
 
-	public static void removebuds(final InteractiveBud parent, final RealLocalizable ceneterpoint) {
+	public static void choosebuds(final InteractiveBud parent, final RealLocalizable ceneterpoint) {
 		
 		
 		
@@ -31,7 +31,7 @@ public class BudSelectBudsListener {
 		parent.AllBudcenter.remove(ceneterpoint);
 		RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, ceneterpoint);
 		parent.ChosenBudcenter.add(Closestpoint);
-		Closestroi.setStrokeColor(Color.RED);
+		Closestroi.setStrokeColor(Color.GREEN);
 		 parent.imp.updateAndDraw();
 		
 	}
@@ -67,16 +67,16 @@ public class BudSelectBudsListener {
 				
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					
-					// Select buds for removing
+					// Select buds for tracking Red wont be tracked
 					
 					 OvalRoi Closestroi = GetNearest.getNearestRois(parent.BudOvalRois, new double[] {x,y});
 					 
-					 if(Closestroi.getStrokeColor() == Color.GREEN) {
+					 if(Closestroi.getStrokeColor() == Color.RED) {
 					 
 				     RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, new RealPoint(new double[] {x,y}));
 					 parent.ChosenBudcenter.add(Closestpoint);
 					 
-					 Closestroi.setStrokeColor(Color.RED);
+					 Closestroi.setStrokeColor(Color.GREEN);
 					 parent.imp.updateAndDraw();
 					 
 					 }
@@ -84,18 +84,18 @@ public class BudSelectBudsListener {
 				
 				if (SwingUtilities.isLeftMouseButton(e) && e.isAltDown()) {
 				
-					// Re-add removed buds
+					// Remove buds
 					
 					OvalRoi Closestroi = GetNearest.getNearestRois(parent.BudOvalRois, new double[] {x,y});
 					
-					if(Closestroi.getStrokeColor() == Color.RED) {
+					if(Closestroi.getStrokeColor() == Color.GREEN) {
 						
 					
 					RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, new RealPoint(new double[] {x,y}));
 					 if(parent.ChosenBudcenter.contains(Closestpoint))
 					 parent.ChosenBudcenter.remove(Closestpoint);
 					
-					 Closestroi.setStrokeColor(Color.GREEN);
+					 Closestroi.setStrokeColor(Color.RED);
 					 parent.imp.updateAndDraw();
 					 
 					}

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import budDetector.Distance;
 import ij.IJ;
 import ij.gui.Arrow;
 import ij.gui.Line;
@@ -60,12 +61,35 @@ public class DisplayListOverlay {
 		
 		
 	}
+private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable currentbud) {
+		
+		boolean contains = false;
+		
+		for(RealLocalizable bud: Buds) {
+			
+			
+			double dist = Distance.DistanceSqrt(bud, currentbud);
+			
+			if(dist<=1)
+				contains = true;
+			
+		}
+		
+		
+		return contains;
+		
+	}
 	
 	// Display the found points as arrows on the bud
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
 		parent.overlay.clear();
 		parent.BudOvalRois.clear();
+		Color displayColor; 
+		if (Contains(parent.ChosenBudcenter, Ordered.getA()))
+			displayColor = Color.GREEN;
+		else
+			displayColor = Color.RED;
 		
 		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 
@@ -76,7 +100,7 @@ public class DisplayListOverlay {
 			OvalRoi points =  new OvalRoi((int) X, (int) Y,
 					2, 2);
 			
-			points.setStrokeColor(Color.RED);
+			points.setStrokeColor(displayColor);
 			parent.overlay.add(points);
 		
 		}
@@ -84,7 +108,7 @@ public class DisplayListOverlay {
 		OvalRoi oval = new OvalRoi((int) Ordered.getA().getDoublePosition(0), (int) Ordered.getA().getDoublePosition(1),
 				10, 10);
 		oval.setStrokeWidth(10);
-		oval.setStrokeColor(Color.GREEN);
+		oval.setStrokeColor(displayColor);
 		parent.overlay.add(oval);
 		parent.BudOvalRois.add(oval);
 		

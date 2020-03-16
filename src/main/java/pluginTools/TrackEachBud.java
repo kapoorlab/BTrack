@@ -13,6 +13,7 @@ import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.ImagePlus;
+import kalmanGUI.CovistoKalmanPanel;
 import listeners.BudSelectBudsListener;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
@@ -124,17 +125,17 @@ public class TrackEachBud {
 				
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-			if(parent.thirdDimension > 1 && parent.ChosenBudcenter.size() > 0) {
+			if(parent.thirdDimension > 1 && parent.ChosenBudcenter.size() > 0 && !CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			
 				parent.ChosenBudcenter.clear();
-				BudSelectBudsListener.removebuds(parent, centerpoint);
+				BudSelectBudsListener.choosebuds(parent, centerpoint);
 			
 			
 			}
 			
 			
-			parent.overlay.clear();
-			if(Contains(parent.ChosenBudcenter, centerpoint) && parent.thirdDimension!=1) {
+			
+			if(!Contains(parent.ChosenBudcenter, centerpoint) && parent.thirdDimension!=1&& !CovistoKalmanPanel.Skeletontime.isEnabled()) {
 				if(parent.jpb!=null )
 					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
 							"No buddies here! What are you doing?");

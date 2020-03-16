@@ -251,8 +251,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			AccountedT.put(TID,  thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 		repaintView(CurrentView);
+		
 		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			imp.getOverlay().clear();
+			//CovistoKalmanPanel.Skeletontime.setEnabled(false);
+			//CovistoKalmanPanel.Timetrack.setEnabled(false);
 			StartDisplayer();
 			
 		}
@@ -312,10 +315,10 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
 	
-	public Label explain = new Label("Left click deselcts a bud" , Label.CENTER);
-	public Label secondexplain = new Label("AltLeft click selects it again" , Label.CENTER);
+	public Label explain = new Label("Left click selcts buds (first step)" , Label.CENTER);
+	public Label secondexplain = new Label("AltLeft click to deselect bud" , Label.CENTER);
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
-	public Label fourthexplain = new Label("Click Skeletonize buddies first (without parameter change)" , Label.CENTER);
+	public Label fourthexplain = new Label("Click Skeletonize buddies after selection" , Label.CENTER);
 	public String timestring = "Current T";
 	int textwidth = 5;
 	public int AutostartTime, AutoendTime;
@@ -336,6 +339,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			new EmptyBorder(c.insets));
 	public final JButton ChooseDirectory = new JButton("Choose Directory to save results in");
 	public void Card() {
+		
+		
 		
 		CardLayout cl = new CardLayout();
 
