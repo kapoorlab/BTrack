@@ -65,7 +65,7 @@ public class TrackEachBud {
 	
 	public void displayBuds() {
 		
-		
+		int sidecutpixel = 10;
 		int nThreads = Runtime.getRuntime().availableProcessors();
 		
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
@@ -93,6 +93,10 @@ public class TrackEachBud {
 			// Get the center point of each bud
 			RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 			
+			int ndims = centerpoint.numDimensions();
+			for(int d = 0; d < ndims; ++d)
+				if(centerpoint.getDoublePosition(d) > sidecutpixel && centerpoint.getDoublePosition(d) < CurrentViewInt.dimension(d) - sidecutpixel) {
+			System.out.println(centerpoint.getDoublePosition(0) + " " + centerpoint.getDoublePosition(1)  );
 			parent.AllBudcenter.add(centerpoint);
 			
 			parent.Refcord = centerpoint;
@@ -100,6 +104,7 @@ public class TrackEachBud {
 
 			parent.AllRefcords.put(uniqueID, parent.Refcord);
 			
+			}
 			}
 			
 		}
@@ -126,12 +131,17 @@ public class TrackEachBud {
 				
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
+				int ndims = centerpoint.numDimensions();
+				for(int d = 0; d < ndims; ++d)
+					if(centerpoint.getDoublePosition(d) > sidecutpixel && centerpoint.getDoublePosition(d) < CurrentViewInt.dimension(d) - sidecutpixel) {
+						
+						
+						
 			if( !CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			
 				
 				BudSelectBudsListener.choosebuds(parent, centerpoint);
 				
-			    System.out.println("In loop");
 			
 			}
 			if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
@@ -144,13 +154,12 @@ public class TrackEachBud {
 						centerpoint, uniqueID,label);
 				
 			}
-			if(parent.ChosenBudcenter.size() == 0 && parent.thirdDimension > 1) {
+			if(parent.ChosenBudcenter.size() == 0 && parent.thirdDimension > 1 && !CovistoKalmanPanel.Skeletontime.isEnabled()) {
 				
 				if(parent.jpb!=null )
 					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
 							"No buddies here! What are you doing?");
 			
-				continue;
 				
 			}
 			
@@ -167,16 +176,15 @@ public class TrackEachBud {
 				PairCurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
 				// For each bud get the list of points
 				truths =  DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
-				
-				// Get the center point of each bud
 				centerpoint = budDetector.Listordering.getMeanCord(truths);
-			    System.out.println(centerpoint + " " + currentpoint);
+			
+				
 				if(parent.jpb!=null )
 					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()),
 							"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
 									+ (parent.pixellist.size()-1));
 		
-			
+				System.out.println(centerpoint.getDoublePosition(0) + " " + centerpoint.getDoublePosition(1)  );
 				
 			
 			
@@ -192,7 +200,7 @@ public class TrackEachBud {
 			
 			}
 			
-			
+			}
 			
 		}
 		

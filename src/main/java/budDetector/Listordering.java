@@ -32,57 +32,7 @@ public class Listordering {
 	
 	
 	
-	public static Pair<RealLocalizable, List<RealLocalizable>> getOrderedList(List<RealLocalizable> truths) {
-		
-		List<RealLocalizable> copytruths = getCopyList(truths);
-		List<RealLocalizable> orderedtruths = new ArrayList<RealLocalizable>(truths.size());
-		RealLocalizable minCord;
-
-		RealLocalizable meanCord = getMeanCord(copytruths);
-		minCord = getMinCord(copytruths);
-		RealLocalizable refcord = minCord;
-
 	
-		orderedtruths.add(minCord);
-
-		copytruths.remove(minCord);
-		int count = 0;
-		do {
-
-			List<RealLocalizable> subcopytruths = getNexinLine(copytruths, minCord, meanCord, count);
-			if (subcopytruths != null && subcopytruths.size() > 0) {
-				count++;
-				RealLocalizable nextCord = getNextNearest(minCord, subcopytruths);
-				copytruths.remove(nextCord);
-				if (copytruths.size() != 0) {
-					copytruths.add(nextCord);
-
-					RealLocalizable chosenCord = null;
-
-					chosenCord = nextCord;
-
-					minCord = chosenCord;
-					orderedtruths.add(minCord);
-
-					copytruths.remove(chosenCord);
-				} else {
-
-					orderedtruths.add(nextCord);
-					break;
-
-				}
-			}
-			else break;
-		} while (copytruths.size() >= 0);
-
-		
-
-
-		return new ValuePair<RealLocalizable, List<RealLocalizable>>(refcord, orderedtruths);
-		
-		
-		
-	}
 	/**
 	 * 
 	 * 
@@ -152,7 +102,9 @@ public class Listordering {
 	
 	public static RealLocalizable getMeanCord(List<RealLocalizable> truths) {
 
+		
 		Iterator<RealLocalizable> iter = truths.iterator();
+		
 		double Xmean = 0, Ymean = 0;
 		while (iter.hasNext()) {
 

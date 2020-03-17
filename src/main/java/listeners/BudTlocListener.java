@@ -62,7 +62,6 @@ public class BudTlocListener implements TextListener {
 			    		BudShowView show = new BudShowView(parent);
 					show.shownewT();
 					parent.timeText.setText("Current T = " + parent.thirdDimension);
-					parent.updatePreview(ValueChange.THIRDDIMmouse);
 					
 					parent.timeslider.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
 					parent.timeslider.repaint();

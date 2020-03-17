@@ -13,6 +13,7 @@ import displayBud.DisplayListOverlay;
 import ij.gui.ImageCanvas;
 import ij.gui.OvalRoi;
 import ij.gui.Roi;
+import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.util.Pair;
@@ -23,15 +24,14 @@ import utility.GetNearest;
 public class BudSelectBudsListener {
 
 
-	public static double maxdist = 50;
+	
 	public static void choosebuds(final InteractiveBud parent, final RealLocalizable ceneterpoint) {
 		
 		
-		
+		 double maxdist = CovistoKalmanPanel.initialSearchradius;
 		if(parent.ChosenBudcenter.size() > 0	) {
 		RealLocalizable Closestpoint = GetNearest.getNearestBudcenter(parent, ceneterpoint);
 		double dist = Distance.DistanceSqrt(ceneterpoint, Closestpoint);
-		System.out.println(dist + " " + ceneterpoint + " " + Closestpoint );
 		if(dist <= maxdist) {
 		parent.ChosenBudcenter.remove(Closestpoint);
 		parent.ChosenBudcenter.add(ceneterpoint);
