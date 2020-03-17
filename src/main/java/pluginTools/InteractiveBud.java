@@ -19,6 +19,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
@@ -69,7 +70,12 @@ import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.algorithm.labeling.ConnectedComponents;
+import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.roi.labeling.ImgLabeling;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
@@ -231,6 +237,41 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelFirst.repaint();
 		panelFirst.validate();
 		saveFile = new java.io.File(".");
+		
+		//Get Labelled image
+		
+		 final long[] dims = new long[Segoriginalimg.numDimensions()];
+        // get image dimension
+		 Segoriginalimg.dimensions(dims);
+        // create labeling index image
+        final RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
+        final ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
+        final Iterator<Integer> labels = new Iterator<Integer>()
+        {
+            private int i = 1;
+
+            @Override
+            public boolean hasNext()
+            {
+                return true;
+            }
+
+            @Override
+            public Integer next()
+            {
+                return i++;
+            }
+
+            @Override
+            public void remove()
+            {}
+        };
+        
+        ConnectedComponents.labelAllConnectedComponents(Segoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+        
+		Segoriginalimg = labeling.getIndexImg();
+		
+		
 		StartDisplayer();
 		Card();
 	}
@@ -271,6 +312,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	
 	public void StartDisplayer() {
+		
+		
 		
 		ComputeBorder display = new ComputeBorder(this, jpb);
 		
@@ -320,8 +363,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
 	
-	public Label explain = new Label("Left click selcts buds (first step)" , Label.CENTER);
-	public Label secondexplain = new Label("AltLeft click to deselect bud" , Label.CENTER);
+	public Label explain = new Label("Left click selcts/deselects buds (first step)" , Label.CENTER);
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
 	public Label fourthexplain = new Label("Click Skeletonize buddies after selection" , Label.CENTER);
 	public String timestring = "Current T";
@@ -434,7 +476,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Timeselect.add(inputFieldT, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(explain, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		Timeselect.add(secondexplain, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);

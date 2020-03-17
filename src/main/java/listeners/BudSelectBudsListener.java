@@ -28,13 +28,14 @@ public class BudSelectBudsListener {
 		
 		
 		
-		
+		if(parent.ChosenBudcenter.size() > 0	) {
 		RealLocalizable Closestpoint = GetNearest.getNearestBudcenter(parent, ceneterpoint);
 		double dist = Distance.DistanceSqrt(ceneterpoint, Closestpoint);
 		System.out.println(dist + " " + ceneterpoint + " " + Closestpoint );
 		if(dist <= maxdist) {
 		parent.ChosenBudcenter.remove(Closestpoint);
 		parent.ChosenBudcenter.add(ceneterpoint);
+		}
 		}
 		
 	}
@@ -74,35 +75,28 @@ public class BudSelectBudsListener {
 					
 					 OvalRoi Closestroi = GetNearest.getNearestRois(parent.BudOvalRois, new double[] {x,y});
 					 
-					 if(Closestroi.getStrokeColor() == Color.RED) {
-					 
-				     RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, new RealPoint(new double[] {x,y}));
-					 parent.ChosenBudcenter.add(Closestpoint);
-					 
-					 Closestroi.setStrokeColor(Color.GREEN);
-					 parent.imp.updateAndDraw();
-					 
+					 // Check if already selected
+					 RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, new RealPoint(new double[] {x,y}));
+					 if(parent.ChosenBudcenter.contains(Closestpoint)) {
+						 
+						 parent.ChosenBudcenter.remove(Closestpoint);
+							
+						 Closestroi.setStrokeColor(Color.RED);
+						 parent.imp.updateAndDraw();
+						 
 					 }
-				}
-				
-				if (SwingUtilities.isLeftMouseButton(e) && e.isAltDown()) {
-				
-					// Remove buds
-					
-					OvalRoi Closestroi = GetNearest.getNearestRois(parent.BudOvalRois, new double[] {x,y});
-					
-					if(Closestroi.getStrokeColor() == Color.GREEN) {
-						
-					
-					RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, new RealPoint(new double[] {x,y}));
-					 if(parent.ChosenBudcenter.contains(Closestpoint))
-					 parent.ChosenBudcenter.remove(Closestpoint);
-					
-					 Closestroi.setStrokeColor(Color.RED);
-					 parent.imp.updateAndDraw();
+					 else {
+						 
+						 parent.ChosenBudcenter.add(Closestpoint);
+							
+						 Closestroi.setStrokeColor(Color.GREEN);
+						 parent.imp.updateAndDraw();
+						 
+					 }
 					 
-					}
 				}
+				
+			
 				
 			}
 

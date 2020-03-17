@@ -155,7 +155,7 @@ public class TrackEachBud {
 			}
 			
 			else {
-			
+			if(parent.ChosenBudcenter.size()!=0)
 			for(RealLocalizable currentpoint:parent.ChosenBudcenter) {
 				
 			RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
