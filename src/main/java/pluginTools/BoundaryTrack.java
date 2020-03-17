@@ -54,10 +54,8 @@ public class BoundaryTrack {
 	public void ShowBoundaryTime() {
 		
 		int percent = 0;
-		
 		for(int t = 1; t <= parent.thirdDimensionSize; ++t) {
 			
-		   	
 			if (parent.mvl != null) {
 				parent.imp.getCanvas().removeMouseListener(parent.mvl);
 			    parent.mouseremoved = true;	
@@ -72,7 +70,7 @@ public class BoundaryTrack {
 				CovistoKalmanPanel.Skeletontime.setEnabled(true);
 				break;
 			}
-			percent++;
+			
 		parent.thirdDimension = t;
 		parent.updatePreview(ValueChange.THIRDDIMmouse);
 		
@@ -96,6 +94,9 @@ public class BoundaryTrack {
 		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
 		
 		compute.displayBuds();
+			
+		
+		percent++;
 		
 		}
 		

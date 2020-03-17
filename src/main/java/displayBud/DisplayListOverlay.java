@@ -83,8 +83,8 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 	// Display the found points as arrows on the bud
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
-		parent.overlay.clear();
-		parent.BudOvalRois.clear();
+		if(parent.BudOvalRois.size() > 0) 
+			parent.BudOvalRois.clear();
 		Color displayColor; 
 		if (Contains(parent.ChosenBudcenter, Ordered.getA()))
 			displayColor = Color.GREEN;

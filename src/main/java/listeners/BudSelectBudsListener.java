@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import budDetector.Distance;
 import displayBud.DisplayListOverlay;
 import ij.gui.ImageCanvas;
 import ij.gui.OvalRoi;
@@ -22,17 +23,19 @@ import utility.GetNearest;
 public class BudSelectBudsListener {
 
 
+	public static double maxdist = 150;
 	public static void choosebuds(final InteractiveBud parent, final RealLocalizable ceneterpoint) {
 		
 		
 		
-		OvalRoi Closestroi = GetNearest.getNearestRois(parent.BudOvalRois, new double[] {ceneterpoint.getDoublePosition(0),ceneterpoint.getDoublePosition(1)});
 		
-		parent.AllBudcenter.remove(ceneterpoint);
-		RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, ceneterpoint);
-		parent.ChosenBudcenter.add(Closestpoint);
-		Closestroi.setStrokeColor(Color.GREEN);
-		 parent.imp.updateAndDraw();
+		RealLocalizable Closestpoint = GetNearest.getNearestBudcenter(parent, ceneterpoint);
+		double dist = Distance.DistanceSqrt(ceneterpoint, Closestpoint);
+		System.out.println(dist + " " + ceneterpoint + " " + Closestpoint );
+		if(dist <= maxdist) {
+		parent.ChosenBudcenter.remove(Closestpoint);
+		parent.ChosenBudcenter.add(ceneterpoint);
+		}
 		
 	}
 	

@@ -19,6 +19,7 @@ import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
+import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
@@ -70,7 +71,7 @@ public class TrackEachBud {
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
-		
+		parent.overlay.clear();
 		
 		
 		while (setiter.hasNext()) {
@@ -125,77 +126,118 @@ public class TrackEachBud {
 				
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-			if(parent.thirdDimension > 1 && parent.ChosenBudcenter.size() > 0 && !CovistoKalmanPanel.Skeletontime.isEnabled()) {
+			if( !CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			
-				parent.ChosenBudcenter.clear();
+				
 				BudSelectBudsListener.choosebuds(parent, centerpoint);
-			
+				
+			    System.out.println("In loop");
 			
 			}
-			
-			
-			
-			if(!Contains(parent.ChosenBudcenter, centerpoint) && parent.thirdDimension!=1&& !CovistoKalmanPanel.Skeletontime.isEnabled()) {
+			if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
+				
+				if(parent.jpb!=null )
+					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()),
+							"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
+									+ (parent.pixellist.size()-1));
+				Common( PairCurrentViewBit, truths, Budlist ,
+						centerpoint, uniqueID,label);
+				
+			}
+			if(parent.ChosenBudcenter.size() == 0 && parent.thirdDimension > 1) {
+				
 				if(parent.jpb!=null )
 					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
 							"No buddies here! What are you doing?");
 			
 				continue;
 				
-				
 			}
-					
-				else {
 			
+			else {
+			
+			for(RealLocalizable currentpoint:parent.ChosenBudcenter) {
+				
+			RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
+			intranac.setPosition(new long[] {(long) currentpoint.getFloatPosition(0), (long) currentpoint.getFloatPosition(1)});
+			int Labelchosen = intranac.get().get();
+		
+			if(label == Labelchosen) {		
+				
+				PairCurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
+				// For each bud get the list of points
+				truths =  DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+				
+				// Get the center point of each bud
+				centerpoint = budDetector.Listordering.getMeanCord(truths);
+			    System.out.println(centerpoint + " " + currentpoint);
 				if(parent.jpb!=null )
-					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * percent / (parent.thirdDimensionSize +  parent.pixellist.size()-1),
+					utility.BudProgressBar.SetProgressBar(parent.jpb, 100 * (percent - 1) / (parent.thirdDimensionSize +  parent.pixellist.size()),
 							"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = " 
 									+ (parent.pixellist.size()-1));
-			// Skeletonize Bud
-			OpService ops = parent.ij.op();
+		
 			
-			SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.getB(), ops);
-			//skelmake.setClosingRadius(2);
-			skelmake.run();
-			ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
-			
-			
-			
-			List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons , ops);
-			
-			ArrayList<Budpointobject> Budpointlist = new ArrayList<Budpointobject>();
-			
-			for(RealLocalizable budpoints:skeletonEndPoints) {
 				
-				
-				Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints, truths.size() * parent.calibration, label, new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
-				
-				Budpointlist.add(Budpoint);
-				
-			}
-			Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label, truths.size() * parent.calibration);
-			Budlist.add(Curreentbud);
-			
-			parent.AllBuds.put(uniqueID, Budlist);
-			
-			parent.AllBudpoints.put(uniqueID, Budpointlist);
-			
-			DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths),skeletonEndPoints, uniqueID);
 			
 			
-			//Allow the user to choose or deselect buds
-			
-			if(parent.thirdDimension == 1) {
-			BudSelectBudsListener.markbuds(parent);
-			
+			Common( PairCurrentViewBit, truths, Budlist ,
+					centerpoint, uniqueID,label);
 			
 			}
 			
 			
-				}
+			}
+				
+			}
 			
 			}
+			
+			
+			
 		}
+		
+	}
+	
+	public void  Common(Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType> > PairCurrentViewBit,List<RealLocalizable> truths, ArrayList<Budobject> Budlist ,
+			RealLocalizable centerpoint, String uniqueID, int label) {
+		
+		// Skeletonize Bud
+					OpService ops = parent.ij.op();
+					
+					SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.getB(), ops);
+					//skelmake.setClosingRadius(2);
+					skelmake.run();
+					ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
+					
+					
+					
+					List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton( Allskeletons , ops);
+					
+					ArrayList<Budpointobject> Budpointlist = new ArrayList<Budpointobject>();
+					
+					for(RealLocalizable budpoints:skeletonEndPoints) {
+						
+						
+						Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints, truths.size() * parent.calibration, label, new double[] {budpoints.getDoublePosition(0),  budpoints.getDoublePosition(1)}, parent.thirdDimension, 0);
+						
+						Budpointlist.add(Budpoint);
+						
+					}
+					Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label, truths.size() * parent.calibration);
+					Budlist.add(Curreentbud);
+					
+					parent.AllBuds.put(uniqueID, Budlist);
+					
+					parent.AllBudpoints.put(uniqueID, Budpointlist);
+					
+					
+					DisplayListOverlay.ArrowDisplay(parent, new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths),skeletonEndPoints, uniqueID);
+					
+					//Allow the user to choose or deselect buds
+					if(parent.thirdDimension == 1) 
+					BudSelectBudsListener.markbuds(parent);
+					
+					
 		
 	}
 	

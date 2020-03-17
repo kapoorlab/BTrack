@@ -3,6 +3,7 @@ package tracker;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,6 +19,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.gui.ImageCanvas;
+import ij.gui.OvalRoi;
+import ij.gui.Roi;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
@@ -88,7 +91,114 @@ public class DisplaySelectedTrack {
 		
        public static void Mark(final InteractiveBud parent) {
 
-		
+    	   
+			Color Drawcolor = Color.ORANGE;
+
+    	   
+		parent.table.addMouseListener(parent.tvl = new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				
+				
+                Roi[] Roipoints = parent.imp.getOverlay().toArray();
+				
+				for(Roi point:Roipoints) {
+				if(Roi.getColor() == Drawcolor) {
+					
+					parent.imp.getOverlay().remove(point);
+					
+				}
+				
+				}
+					parent.imp.updateAndDraw();
+				
+				
+				    Point point = event.getPoint();
+			        int row  = parent.table.rowAtPoint(point);
+			
+			        parent.rowchoice = row;
+			        String ID = (String) parent.table.getValueAt(row, 0); 
+			        String CordX = (String) parent.table.getValueAt(row, 1);
+					String CordY = (String) parent.table.getValueAt(row, 2);
+			        
+					for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+						
+						String ImageID = Track.getA();
+						
+						
+						if(ID.equals(ImageID)) {
+							
+							
+							OvalRoi points =  new OvalRoi((int) Integer.parseInt(CordX), (int) Integer.parseInt(CordY),
+									25, 25);
+							parent.imp.getOverlay().add(points);
+							points.setStrokeColor(Drawcolor);
+							points.setStrokeWidth(40);
+							System.out.println(ID + " " + ImageID + " " + points.getContourCentroid()[0] + " " + points.getContourCentroid()[1] );
+							parent.imp.updateAndDraw();
+						}
+						
+						
+						
+					}
+			   			parent.imp.updateAndDraw();
+			        displayclicked(parent, row);
+			    	if (!parent.jFreeChartFrameRate.isVisible())
+						parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartVelocity, new Dimension(500, 500));
+			    	parent.table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+						@Override
+						public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+								boolean hasFocus, int row, int col) {
+
+							super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+							if (row == parent.rowchoice) {
+								setBackground(Color.green);
+
+							} else {
+								setBackground(Color.white);
+							}
+							return this;
+						}
+					});
+
+					parent.table.validate();
+					parent.scrollPane.validate();
+					parent.panelFirst.repaint();
+					parent.panelFirst.validate();
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
+			
+			
+		});
+    	   
+    	   
 		if (parent.ml != null)
 			parent.imp.getCanvas().removeMouseMotionListener(parent.ml);
 		parent.imp.getCanvas().addMouseMotionListener(parent.ml = new MouseMotionListener() {

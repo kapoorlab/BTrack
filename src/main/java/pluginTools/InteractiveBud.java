@@ -36,6 +36,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.JTableHeader;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -99,6 +100,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public final String NameB;
 	public int ndims;
 	public MouseListener mvl;
+	public MouseListener tvl;
+	public MouseMotionListener tvml;
 	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
 	public HashMap<String, ArrayList<Budobject>> AllBuds;
 	public CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
@@ -168,6 +171,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	public ImageStack prestack;
 	public JTable table;
+	public JTableHeader header;
 	public static enum ValueChange {
 		
 		THIRDDIMmouse, All;
@@ -371,6 +375,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		}
 		
 		table = new JTable(rowvalues, colnames);
+		header  = table.getTableHeader();
 		table.setFillsViewportHeight(true);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		

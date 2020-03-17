@@ -2,6 +2,11 @@ package tracker;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.table.JTableHeader;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -139,7 +144,6 @@ public class TrackResult extends SwingWorker<Void, Void> {
 			CreateTableView(parent);
 			DisplaySelectedTrack.Select(parent);
 			DisplaySelectedTrack.Mark(parent);
-
 		}
 	}
 	
@@ -224,7 +228,8 @@ for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 		LabelCovered.put(ID, false);
 		
 }
-		
+NumberFormat format = NumberFormat.getIntegerInstance();
+format.setGroupingUsed(false);
 		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			String ID = Track.getA();
@@ -236,8 +241,8 @@ for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			if(currentbud.t == parent.thirdDimension) {
 				
 			parent.table.getModel().setValueAt(ID, parent.row, 0);
-			parent.table.getModel().setValueAt(f.format(currentbud.Location[0]), parent.row, 1);
-			parent.table.getModel().setValueAt(f.format(currentbud.Location[1]), parent.row, 2);
+			parent.table.getModel().setValueAt(format.format(currentbud.Location[0]), parent.row, 1);
+			parent.table.getModel().setValueAt(format.format(currentbud.Location[1]), parent.row, 2);
 			parent.table.getModel().setValueAt(f.format(currentbud.t), parent.row, 3);
 			parent.table.getModel().setValueAt(f.format(currentbud.velocity), parent.row, 4);
 			parent.row++;
@@ -253,7 +258,7 @@ for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 		makeGUI(parent);
 
 	}
-	
+
 	
 	public static void makeGUI(final InteractiveBud parent) {
 		
@@ -263,8 +268,8 @@ for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			parent.table.setFillsViewportHeight(true);
 
 			parent.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-
+		    
+			
 			int size = 100;
 			parent.table.getColumnModel().getColumn(0).setPreferredWidth(size);
 			parent.table.getColumnModel().getColumn(1).setPreferredWidth(size);
