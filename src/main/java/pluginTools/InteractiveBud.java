@@ -258,6 +258,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			imp.getOverlay().clear();
+			imp.updateAndDraw();
 			//CovistoKalmanPanel.Skeletontime.setEnabled(false);
 			//CovistoKalmanPanel.Timetrack.setEnabled(false);
 			StartDisplayer();

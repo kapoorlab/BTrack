@@ -23,7 +23,7 @@ import utility.GetNearest;
 public class BudSelectBudsListener {
 
 
-	public static double maxdist = 150;
+	public static double maxdist = 50;
 	public static void choosebuds(final InteractiveBud parent, final RealLocalizable ceneterpoint) {
 		
 		
