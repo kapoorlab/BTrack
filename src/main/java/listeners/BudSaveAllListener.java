@@ -61,30 +61,25 @@ public class BudSaveAllListener implements ActionListener {
 
 				
 
-				Iterator<Integer> pixels = parent.pixellist.iterator();
-				while(pixels.hasNext()) {
-					
-					int Label = pixels.next();
+			
 					
 					try {
 						
-						if(Label > 0) {
-	            File budfile = new File(parent.saveFile + "//" + "ExtraBudInformation" + parent.addToName + "BudID" + Label + ".txt");
+	            File budfile = new File(parent.saveFile + "//" + "AllBudInformation" + parent.addToName + "BudIDs"  + ".txt");
     				
     				
     				FileWriter fwbud = new FileWriter(budfile);
     				BufferedWriter bwbud = new BufferedWriter(fwbud);
     				   
     				bwbud.write(
-    						" Time, LocationX , LocationY , Perimeter \n");
+    						"TrackLabel, Time, LocationX , LocationY , Perimeter \n");
                 for (ValuePair<String, Budobject> Track: parent.BudTracklist) {
                 	
-                	int TrackLabel = Track.getB().ID;
+                	String TrackLabel = Track.getA();
                 	
              
 					
 						
-						if(TrackLabel == Label) {
 						
 							
 							double time = Track.getB().t * parent.timecal;
@@ -92,7 +87,7 @@ public class BudSaveAllListener implements ActionListener {
 							double LocationY = Track.getB().Budcenter.getDoublePosition(1) * parent.calibration;
 							double Perimeter = Track.getB().perimeter;
 						    
-							bwbud.write((int)time + "," 
+							bwbud.write(TrackLabel + "," + (int)time + "," 
 									+ parent.nf.format(LocationX) + "," 
 									+ parent.nf.format(LocationY) + "," 
 									+ parent.nf.format(Perimeter) + 
@@ -106,7 +101,7 @@ public class BudSaveAllListener implements ActionListener {
 						
 					
                 
-			}
+			
                 
 
                 bwbud.close();
@@ -115,10 +110,10 @@ public class BudSaveAllListener implements ActionListener {
 				
               
 				
-			}
+			
 			catch (IOException te) {
 			}
-				}
+				
 				
 				for(int tablepos = 0; tablepos< parent.table.getRowCount(); ++tablepos) {
 					

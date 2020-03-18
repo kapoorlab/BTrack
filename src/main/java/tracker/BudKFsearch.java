@@ -109,7 +109,6 @@ import net.imglib2.RealPoint;
 			// KalmanFilterMap
 			for (int i = 1; i < Allblobs.size();++i) {
 				
-			
 				List<Budobject> measurements = Allblobs.get(i);
 				// Make the preditiction map
 				final Map<ComparableRealPoint, CVMKalmanFilter> predictionMap = new HashMap<ComparableRealPoint, CVMKalmanFilter>(
@@ -158,6 +157,7 @@ import net.imglib2.RealPoint;
 
 						graph.addVertex(source);
 						graph.addVertex(target);
+						if(source.hashCode()!=target.hashCode()) {
 						final DefaultWeightedEdge edge = graph.addEdge(source, target);
 						final double cost = costs.get(cm);
 						graph.setEdgeWeight(edge, cost);
@@ -172,6 +172,7 @@ import net.imglib2.RealPoint;
 
 						// Remove from childless KF set
 						childlessKFs.remove(kf);
+					}
 					}
 				}
 

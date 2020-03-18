@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 import javax.swing.JProgressBar;
 
+import budDetector.Budobject;
+import budDetector.Budpointobject;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
@@ -54,7 +56,7 @@ public class BoundaryTrack {
 	public void ShowBoundaryTime() {
 		
 		int percent = 0;
-		for(int t = 1; t <= parent.thirdDimensionSize; ++t) {
+		for(int t = 1; t <= parent.AutoendTime; ++t) {
 			
 			if (parent.mvl != null) {
 				parent.imp.getCanvas().removeMouseListener(parent.mvl);
@@ -89,18 +91,23 @@ public class BoundaryTrack {
 		IntType min = new IntType();
 		IntType max = new IntType();
 		computeMinMax(Views.iterable(BudSeg), min, max);
-		
-		
-		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
+		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
+		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
+		TrackEachBud compute = new TrackEachBud(parent, BudSeg,Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
 		
 		compute.displayBuds();
+			parent.AllBuds.put(Integer.toString(t), Budlist);
 			
+
+			parent.AllBudpoints.put(Integer.toString(t), Budpointlist);
+			
+			System.out.println(Budpointlist.size() + " " + Budlist.size() );
 		
 		percent++;
 		
 		}
 		
-		if(parent.jpb!=null && parent.thirdDimension == parent.thirdDimensionSize) {
+		if(parent.jpb!=null && parent.thirdDimension == parent.AutoendTime) {
 			CovistoKalmanPanel.Skeletontime.setEnabled(true);
 			CovistoKalmanPanel.Timetrack.setEnabled(true);
 			parent.SaveAllbutton.setEnabled(true);
@@ -121,20 +128,17 @@ public class BoundaryTrack {
 		computeMinMax(Views.iterable(intimg), min, max);
 		Cursor<IntType> intCursor = Views.iterable(intimg).cursor();
 		// Neglect the background class label
-		int currentLabel = max.get();
 		parent.pixellist.clear();
 		
 		
 		while (intCursor.hasNext()) {
 			intCursor.fwd();
 			int i = intCursor.get().get();
-			if (i != currentLabel ) {
 
+			if(!parent.pixellist.contains(i) && i > 0)
 				parent.pixellist.add(i);
 
-				currentLabel = i;
 
-			}
 
 		}
 

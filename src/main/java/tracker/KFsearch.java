@@ -157,6 +157,7 @@ import net.imglib2.RealPoint;
 
 						graph.addVertex(source);
 						graph.addVertex(target);
+						if(source.hashCode()!=target.hashCode()) {
 						final DefaultWeightedEdge edge = graph.addEdge(source, target);
 						final double cost = costs.get(cm);
 						graph.setEdgeWeight(edge, cost);
@@ -171,6 +172,7 @@ import net.imglib2.RealPoint;
 
 						// Remove from childless KF set
 						childlessKFs.remove(kf);
+					}
 					}
 				}
 

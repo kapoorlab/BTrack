@@ -48,11 +48,14 @@ public class BudRestartListener implements ActionListener {
 		parent.timeslider.validate();
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
+		parent.table.removeAll();
+		parent.Tracklist.clear();
+		parent.table.repaint();
+		parent.table.validate();
 		CovistoKalmanPanel.Skeletontime.setEnabled(true);
 		
 		parent.updatePreview(ValueChange.THIRDDIMmouse);
 		
-		parent.StartDisplayer();
 		
 
 	}

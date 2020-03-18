@@ -52,6 +52,7 @@ import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
+import listeners.BTrackAutoEndListener;
 import listeners.BTrackFilenameListener;
 import listeners.BudLinkobjectListener;
 import listeners.BudPREIniSearchListener;
@@ -110,6 +111,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public MouseMotionListener tvml;
 	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
 	public HashMap<String, ArrayList<Budobject>> AllBuds;
+	public HashMap<String, Integer> BudLastTime;
 	public CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
 	public CostFunction<Budobject, Budobject> BudUserchosenCostFunction;
 	public int[] Clickedpoints;
@@ -198,6 +200,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	@Override
 	public void run(String arg0) {
 
+		
+		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
@@ -422,6 +426,12 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		table.setFillsViewportHeight(true);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
+		autoTend = new Label("End time for tracking");
+		endT = new TextField(textwidth);
+		endT.setText(Integer.toString(AutoendTime));
+		
+		
+		
 		scrollPane = new JScrollPane(table);
 		Original.setLayout(layout);
 		scrollPane.getViewport().add(table);
@@ -452,11 +462,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		}
 
-		autoTstart = new Label("Start time for automation");
+		autoTstart = new Label("Start time for tracking");
 		startT = new TextField(textwidth);
 		startT.setText(Integer.toString(AutostartTime));
 
-		autoTend = new Label("End time for automation");
+		autoTend = new Label("End time for tracking");
 		endT = new TextField(textwidth);
 		endT.setText(Integer.toString(AutoendTime));
 		
@@ -475,6 +485,12 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 		Timeselect.add(inputFieldT, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Timeselect.add(autoTend, new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		Timeselect.add(endT, new GridBagConstraints(2, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		
 		Timeselect.add(explain, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
@@ -524,6 +540,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		timeslider.addAdjustmentListener(new BudTimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));
+		endT.addTextListener(new BTrackAutoEndListener(this));
 		
 		CovistoKalmanPanel.Skeletontime.addActionListener(new BudSkeletonListener(this));
 		CovistoKalmanPanel.Restart.addActionListener(new BudRestartListener(this));

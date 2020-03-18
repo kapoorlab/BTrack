@@ -48,6 +48,7 @@ public class BudLinkobjectListener implements ActionListener {
 		parent.table.repaint();
 		parent.table.validate();
 		
+		
 		TrackResult track = new TrackResult(parent);
 		track.execute();
 		

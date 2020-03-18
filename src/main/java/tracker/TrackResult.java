@@ -30,6 +30,8 @@ import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.ImageStack;
 import kalmanGUI.CovistoKalmanPanel;
+import net.imglib2.RealLocalizable;
+import net.imglib2.ops.parse.token.Int;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.BoundaryTrack;
@@ -55,17 +57,20 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				java.awt.image.ColorModel.getRGBdefault());
 
 		
-		
+		System.out.println("TrackingA ");
 		TrackingFunctions track = new TrackingFunctions(parent);
-		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
-		
 		// Seperate graph for buds
 		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
+		System.out.println("TrackingB ");
 		
+		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
 		
+	
+		System.out.println("TrackingC ");
+	
 		// Display Graph results, make table etc
-		DisplayGraph(simplegraph);
-		BudDisplayGraph(Budsimplegraph);
+		DisplayGraph(simplegraph,Budsimplegraph);
+		System.out.println("TrackingD ");
 	
 		if(parent.jpb!=null )
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
@@ -77,8 +82,11 @@ public class TrackResult extends SwingWorker<Void, Void> {
 	}
 
 	
-	protected void DisplayGraph(SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph) {
+	protected void DisplayGraph(SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph, SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph) {
 
+		
+		BudDisplayGraph(Budsimplegraph);
+		
 		int minid = Integer.MAX_VALUE;
 		int maxid = Integer.MIN_VALUE;
 		TrackModel model = new TrackModel(simplegraph);
@@ -94,7 +102,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		if (minid != Integer.MAX_VALUE) {
 
 			for (final Integer id : model.trackIDs(true)) {
-
+				
 				Comparator<Pair<String, Budpointobject>> ThirdDimcomparison = new Comparator<Pair<String, Budpointobject>>() {
 
 					@Override
@@ -110,7 +118,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				model.setName(id, "Track" + id);
 				parent.Globalmodel = model;
 				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
-				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.thirdDimensionSize) {
+				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.AutoendTime) {
 			
 				Iterator<Budpointobject> Angleiter = Angleset.iterator();
 			
@@ -181,16 +189,14 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				model.setName(id, "Track" + id);
 				parent.BudGlobalModel = model;
 				final HashSet<Budobject> Angleset = model.trackBudobjects(id);
-				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.thirdDimensionSize) {
+				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.AutoendTime) {
 			
 				Iterator<Budobject> Angleiter = Angleset.iterator();
 				while (Angleiter.hasNext()) {
 					
 					
-                    double velocity = 0; 
                     Budobject currentbud = Angleiter.next();
 					
-					velocity = velocity * (parent.calibration/parent.timecal);
 					parent.BudTracklist.add(new ValuePair<String, Budobject>(ID, currentbud));
 				}
 				Collections.sort(parent.BudTracklist, ThirdDimcomparison);
@@ -221,24 +227,60 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		
 		
 		HashMap<String, Boolean> LabelCovered = new HashMap<String, Boolean>();
-		
+		HashMap<String, Boolean> BudLabelCovered = new HashMap<String, Boolean>();
 for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			String ID = Track.getA();
 		LabelCovered.put(ID, false);
 		
 }
+for (ValuePair<String, Budobject> Track: parent.BudTracklist) {
+	
+	String ID = Track.getA();
+BudLabelCovered.put(ID, false);
+
+}
+
 NumberFormat format = NumberFormat.getIntegerInstance();
 format.setGroupingUsed(false);
+HashMap<String, Pair<RealLocalizable, Integer>> BudTime = new HashMap<String,Pair<RealLocalizable, Integer>>();
+
+
+
+
+
+
+for (ValuePair<String, Budobject> BudTrack: parent.BudTracklist) {
+	
+	
+	
+	Budobject masterbud = BudTrack.getB();
+	String IDbud  = BudTrack.getA();
+    RealLocalizable masterpoint = masterbud.Budcenter;	
+	int budmaxtime = masterbud.t;
+    double X =  masterbud.getDoublePosition(0);
+    double Y =  masterbud.getDoublePosition(1);
+	BudTime.put(IDbud, new ValuePair<RealLocalizable, Integer>(masterpoint, budmaxtime));
+
+		
+	
+	System.out.println("Bud of Bud ID " + IDbud + " Spotted in frame " + budmaxtime + " At XY location" + X + " " + Y  );	
+    
+}
+for (ValuePair<String, Budobject> BudTrack: parent.BudTracklist) {
+	String IDbud  = BudTrack.getA();
+
+
 		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			String ID = Track.getA();
 			
 			Budpointobject currentbud = Track.getB();
-			
+			int maxtime = BudTime.get(IDbud).getB();
 			if(LabelCovered.get(ID)!=null)
 				if(!LabelCovered.get(ID))
-			if(currentbud.t == parent.thirdDimension) {
+			
+			if(currentbud.t == maxtime) {
 				
 			parent.table.getModel().setValueAt(ID, parent.row, 0);
 			parent.table.getModel().setValueAt(format.format(currentbud.Location[0]), parent.row, 1);
@@ -253,6 +295,7 @@ format.setGroupingUsed(false);
 			
 			
 		}
+}
 		
 
 		makeGUI(parent);

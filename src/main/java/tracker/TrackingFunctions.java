@@ -42,9 +42,12 @@ public class TrackingFunctions {
 		
 		for (Map.Entry<String, ArrayList<Budpointobject>> entry : parent.AllBudpoints.entrySet()) {
 
+
 			ArrayList<Budpointobject> bloblist = entry.getValue();
 			if(bloblist.size() > 0) {
 			colllist.add(bloblist);
+			
+		
 			}
 
 		}
@@ -67,22 +70,26 @@ public SimpleWeightedGraph<Budobject, DefaultWeightedEdge> BudTrackfunction() {
 		
 
 		ArrayList<ArrayList<Budobject>> colllist = new ArrayList<ArrayList<Budobject>>();
-		
+		System.out.println("TrackingBC ");
 		parent.AllBuds = sortBudByIntegerInter(parent.AllBuds);
 	
+		System.out.println("TrackingBCC " + " " + parent.AllBuds.size());
 		
 		for (Map.Entry<String, ArrayList<Budobject>> entry : parent.AllBuds.entrySet()) {
 
 			ArrayList<Budobject> bloblist = entry.getValue();
 			if(bloblist.size() > 0) {
 			colllist.add(bloblist);
+			
+			
+			
 			}
 
 		}
 
 		
-		BudKFsearch Tsearch = new BudKFsearch(colllist, parent.BudUserchosenCostFunction,  CovistoKalmanPanel.maxSearchradius ,
-				CovistoKalmanPanel.initialSearchradius, 
+		BudKFsearch Tsearch = new BudKFsearch(colllist, parent.BudUserchosenCostFunction,  parent.originalimg.dimension(0) * parent.originalimg.dimension(1) ,
+				parent.originalimg.dimension(0) * parent.originalimg.dimension(1), 
 				CovistoKalmanPanel.maxframegap, parent.AccountedT, parent.jpb);
 		Tsearch.process();
 		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> simplegraph = Tsearch.getResult();
