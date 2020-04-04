@@ -120,8 +120,14 @@
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-common</artifactId>
-		</dependency>
+		
+</dependency>
 
+	<dependency>
+<groupId>org.jgrapht</groupId>
+  <artifactId>jgrapht-core</artifactId>
+  <version>1.4.0</version>
+  </dependency>
 		<!-- SCIFIO dependencies -->
 		<dependency>
 			<groupId>io.scif</groupId>
@@ -132,10 +138,6 @@
 		<dependency>
 			<groupId>ome</groupId>
 			<artifactId>formats-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>bio-formats_plugins</artifactId>
 		</dependency>
 
 		<!-- Third party dependencies -->
@@ -151,18 +153,7 @@
 			<version>5.5.0</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.4.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-			<version>5.1.0</version>
-			<scope>test</scope>
-		</dependency>
+	
 		<dependency>
 			<groupId>net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>
@@ -174,24 +165,8 @@
 			<artifactId>commons-io</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-ij</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-roi</artifactId>
-		</dependency>
+		
+	
 
 		<!-- ImageJ dependencies -->
 		<dependency>
@@ -217,13 +192,7 @@
 			<artifactId>legacy-imglib1</artifactId>
 		</dependency>
 
-		<!-- Third party dependencies -->
-		<dependency>
-			<!-- NB: dependency:analyze erroneously flags this, but it's required -->
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${commons-io.version}</version>
-		</dependency>
+	
 
 		
 	

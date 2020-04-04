@@ -42,9 +42,13 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
+import listeners.BTrackGoBudListener;
+import listeners.BTrackGoRedListener;
+import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoThreeChForceFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.simplifiedio.SimplifiedIO;
@@ -58,7 +62,7 @@ public class BudFileChooser extends JPanel {
 		private static final long serialVersionUID = 1L;
 		  public JFrame Cardframe = new JFrame("Bud n Cell tracker");
 		  public JPanel panelCont = new JPanel();
-		  public ImagePlus impOrig, impOrigSec, impSegA, impSegB, impSegC;
+		  public ImagePlus impOrig, impOrigRGB, impSegA, impSegB, impSegC;
 		  public File impOrigfile, impOrigSecfile, impSegAfile, impSegBfile, impSegCfile;
 		  public JPanel panelFirst = new JPanel();
 		  public JPanel Panelfile = new JPanel();
@@ -74,9 +78,10 @@ public class BudFileChooser extends JPanel {
 		  public JComboBox<String> ChooseImage;
 		  public JComboBox<String> ChoosesuperImage;
 		  public JComboBox<String> ChooseoriginalImage;
-		  public JComboBox<String> ChoosesecImage;
+		  public JComboBox<String> ChooseRGBImage;
 		  public JButton Done =  new JButton("Finished choosing files, start BTrack");
-		  public boolean superpixel = false;
+		  public boolean OnlyBud = true;
+		  public boolean RGBBud = false;
 		  public boolean simple = false;
 		  public boolean curvesuper = true;
 		  public boolean curvesimple = false;
@@ -85,12 +90,23 @@ public class BudFileChooser extends JPanel {
 
 		  
 		  
-		  public String chooseSegstring = "Segmentation Images (Buds and Cells)"; 
-		  public Border chooseSeg = new CompoundBorder(new TitledBorder(chooseSegstring),
+		  public String chooseBudSegstring = "Segmentation Image for buds"; 
+		  public Border chooseBudSeg = new CompoundBorder(new TitledBorder(chooseBudSegstring),
 					new EmptyBorder(c.insets));
-		  public String chooseoriginalfilestring = "Choose original Image (Bud and Cell)";
-		  public Border chooseoriginalfile = new CompoundBorder(new TitledBorder(chooseoriginalfilestring),
+		  
+		  public String chooseRedSegstring = "Segmentation Image for buds and cell"; 
+		  public Border chooseredSeg = new CompoundBorder(new TitledBorder(chooseRedSegstring),
 					new EmptyBorder(c.insets));
+		  
+		  public String chooseoriginalbudfilestring = "We analyze only Buds";
+		  public Border chooseoriginalbudfile = new CompoundBorder(new TitledBorder(chooseoriginalbudfilestring),
+					new EmptyBorder(c.insets));
+		  
+		  public String chooseoriginalrgbfilestring = "We analyze Buds & cell(s)";
+		  public Border chooseoriginalrgbfile = new CompoundBorder(new TitledBorder(chooseoriginalrgbfilestring),
+					new EmptyBorder(c.insets));
+		  
+		  
 		  public String donestring = "Done Selection";
 		  public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring),
 					new EmptyBorder(c.insets));
@@ -100,6 +116,10 @@ public class BudFileChooser extends JPanel {
 
 		  public TextField inputFieldcalX, Fieldwavesize;
 		  public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"), new EmptyBorder(c.insets));
+		  public boolean budonly = true;
+		  public CheckboxGroup budmode = new CheckboxGroup();
+		  public Checkbox GoBud = new Checkbox("Only Bud", OnlyBud, budmode);
+		  public Checkbox GoRed = new Checkbox("Input RGB", RGBBud, budmode);
 		  
 		  
 		  public BudFileChooser() {
@@ -115,6 +135,7 @@ public class BudFileChooser extends JPanel {
 			   panelFirst.setLayout(layout);
 			   
 			   Paneldone.setLayout(layout);
+			   
 		       CardLayout cl = new CardLayout();
 		       calibration = Float.parseFloat(inputFieldcalX.getText());
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
@@ -130,25 +151,33 @@ public class BudFileChooser extends JPanel {
 				
 				ChooseImage = new JComboBox<String>(blankimageNames);
 				ChooseoriginalImage = new JComboBox<String>(blankimageNames);
-				ChoosesecImage = new JComboBox<String>(blankimageNames);
+				ChooseRGBImage = new JComboBox<String>(blankimageNames);
 				ChoosesuperImage = new JComboBox<String>(blankimageNames);
 				
 				
 				
-				CovistoTwoChForceFileLoader original = new CovistoTwoChForceFileLoader(chooseoriginalfilestring, blankimageNames);
-				
-				Panelfileoriginal = original.TwoChannelOption();
-				
-				
-				panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(GoBud, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				panelFirst.add(GoRed, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
-				CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(chooseSegstring, blankimageNames);
-				Panelfile = segmentation.TwoChannelOption();
+				CovistoOneChFileLoader original = new CovistoOneChFileLoader(chooseoriginalbudfilestring, blankimageNames);
+				
+				Panelfileoriginal = original.SingleChannelOption();
 				
 				
-				panelFirst.add(Panelfile, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
+				original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
+				
+				
+				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseRedSegstring, blankimageNames);
+				Panelfile = segmentation.SingleChannelOption();
+				
+				
+				panelFirst.add(Panelfile, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -172,16 +201,16 @@ public class BudFileChooser extends JPanel {
 		
 				
 				Microscope.setBorder(microborder);
-				panelFirst.add(Microscope, new GridBagConstraints(0, 3, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				panelFirst.add(Microscope, new GridBagConstraints(0, 5, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 				
 				// Listeneres 
 				
+				GoBud.addItemListener(new BTrackGoBudListener(this));
+				GoRed.addItemListener(new BTrackGoRedListener(this));
 				
-				original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
-				original.ChoosesecImage.addActionListener(new ChooseBudSecOrigMap(this, original.ChoosesecImage));
 				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
-				segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(this, segmentation.ChoosesecImage));
+				
 				inputFieldcalX.addTextListener(new CalXListener());
 				Fieldwavesize.addTextListener(new WaveListener());
 				Done.addActionListener(new BudDoneListener());
@@ -258,13 +287,9 @@ public class BudFileChooser extends JPanel {
 			    org.apache.log4j.BasicConfigurator.configure();
 				
 				RandomAccessibleInterval<FloatType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
-						//new ImgOpener().openImgs(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType()).iterator().next();
-				RandomAccessibleInterval<FloatType> imageOrigSec =  SimplifiedIO.openImage(impOrigSec.getOriginalFileInfo().directory + impOrigSec.getOriginalFileInfo().fileName, new FloatType());
-						//new ImgOpener().openImgs(impOrigSec.getOriginalFileInfo().directory + impOrigSec.getOriginalFileInfo().fileName, new FloatType()).iterator().next();
+				
 				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType());
-						//new ImgOpener().openImgs(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType()).iterator().next();
-				RandomAccessibleInterval<FloatType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType());
-						//new ImgOpener().openImgs(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType()).iterator().next();
+				
 				String name = impOrig.getOriginalFileInfo().fileName;
 				
 				WindowManager.closeAllWindows();
@@ -272,7 +297,18 @@ public class BudFileChooser extends JPanel {
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("Wavesize:" + Wavesize);
-				new InteractiveBud(imageOrig, imageOrigSec, imageSegA, imageSegB,impOrig.getOriginalFileInfo().fileName,impOrigSec.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+				if(budonly)
+				
+					new InteractiveBud(imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+				if(!budonly) {
+					
+					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
+					RandomAccessibleInterval<FloatType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType());
+					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					
+				}
+				
+				
 				close(parent);
 				
 				

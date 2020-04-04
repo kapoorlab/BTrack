@@ -15,14 +15,16 @@ public class PanelZero {
 
 	
 
-	
+		ImagePlus impB = new Opener()
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Yellow.tif");
+		impB.show();
 		
 		ImagePlus impC = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SuperTest.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/BudOriginal.tif");
 		impC.show();
 
 		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/TRResults/SuperSegmentation.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/BudSegment.tif");
 		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();

@@ -31,7 +31,7 @@ public class ChooseBudSecOrigMap implements ActionListener {
 		
 		
 		
-    	parent.impOrigSec = WindowManager.getImage(imagename);
+    	parent.impOrigRGB = WindowManager.getImage(imagename);
     	
 
 		

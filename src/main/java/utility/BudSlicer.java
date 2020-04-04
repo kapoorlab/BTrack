@@ -9,11 +9,16 @@ import mpicbg.imglib.util.Util;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.display.ScaledARGBConverter.ARGB;
 import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
@@ -21,6 +26,24 @@ import pluginTools.InteractiveBud;
 
 public class BudSlicer {
 
+	public static <T extends RealType<T> & NativeType<T>> RandomAccessibleInterval<FloatType> createRGB(RandomAccessibleInterval<T> ImageA, RandomAccessibleInterval<T> ImageB) {
+		
+		for(int d = 0; d < ImageA.numDimensions(); ++d) 
+		assert ImageA.dimension(d) == ImageB.dimension(d);
+		
+		RandomAccessibleInterval<FloatType> colorImage = new ArrayImgFactory< FloatType >().create(ImageA, new FloatType());
+		
+		
+		LoopBuilder.setImages(ImageA,ImageB, colorImage).forEachPixel( (a,b, c) -> 
+		{
+			c.set( (a.getRealFloat() + b.getRealFloat()) );
+		});
+		
+	
+		
+		return colorImage;
+	}
+	
 	public static RandomAccessibleInterval<FloatType> getCurrentViewLarge(
 			RandomAccessibleInterval<FloatType> originalimg, int thirdDimension) {
 

@@ -77,6 +77,7 @@ import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.roi.labeling.ImgLabeling;
 import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
@@ -98,13 +99,16 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Set<Integer> pixellist;
 	public NumberFormat nf;
 	public RandomAccessibleInterval<FloatType> originalimg;
-	public RandomAccessibleInterval<FloatType> originalSecimg;
+	public RandomAccessibleInterval<ARGBType> originalimgRGB;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
 	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
+	
+	
+	
 	public RandomAccessibleInterval<FloatType> CurrentView;
+	public RandomAccessibleInterval<FloatType> CurrentViewSec;
 	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
-	public final String NameB;
 	public int ndims;
 	public MouseListener mvl;
 	public MouseListener tvl;
@@ -150,21 +154,38 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public File saveFile;
 	
 	
-	
+	// Input Bud and its segmentation
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-			final RandomAccessibleInterval<FloatType> originalSecimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
-			final RandomAccessibleInterval<FloatType> SegSecoriginalimg,
-			final String NameA,
-			final String NameB,final double calibration, final double timecal, String inputstring) {
+			final String NameA,final double calibration, final double timecal, String inputstring) {
 		
 		
 		this.originalimg = originalimg;
-		this.originalSecimg = originalSecimg;
+		this.Segoriginalimg = Segoriginalimg;
+		this.NameA = NameA;
+		this.calibration = calibration;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+		
+		
+	}
+	
+	
+	// Input RGB and two channel segmentation images
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
+			final RandomAccessibleInterval<IntType> Segoriginalimg,
+			final RandomAccessibleInterval<FloatType> SegSecoriginalimg,
+			final String NameA,final double calibration, final double timecal, String inputstring) {
+	
+		
+		this.originalimgRGB = originalimgRGB;
 		this.Segoriginalimg = Segoriginalimg;
 		this.SegSecoriginalimg = SegSecoriginalimg;
 		this.NameA = NameA;
-		this.NameB = NameB;
 		this.calibration = calibration;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
