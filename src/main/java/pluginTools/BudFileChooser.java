@@ -43,7 +43,9 @@ import ij.WindowManager;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
 import listeners.BTrackGoBudListener;
+import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoRedListener;
+import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoThreeChForceFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
@@ -62,7 +64,7 @@ public class BudFileChooser extends JPanel {
 		private static final long serialVersionUID = 1L;
 		  public JFrame Cardframe = new JFrame("Bud n Cell tracker");
 		  public JPanel panelCont = new JPanel();
-		  public ImagePlus impOrig, impOrigRGB, impSegA, impSegB, impSegC;
+		  public ImagePlus impOrig, impOrigRGB, impSegA, impSegB, impSegC, impSegD;
 		  public File impOrigfile, impOrigSecfile, impSegAfile, impSegBfile, impSegCfile;
 		  public JPanel panelFirst = new JPanel();
 		  public JPanel Panelfile = new JPanel();
@@ -93,8 +95,8 @@ public class BudFileChooser extends JPanel {
 		  public Border chooseBudSeg = new CompoundBorder(new TitledBorder(chooseBudSegstring),
 					new EmptyBorder(c.insets));
 		  
-		  public String chooseRedSegstring = "Segmentation Image for buds and cell"; 
-		  public Border chooseredSeg = new CompoundBorder(new TitledBorder(chooseRedSegstring),
+		  public String chooseYellowSegstring = "Segmentation Image for buds and cell Ch 1"; 
+		  public Border chooseYellowSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
 					new EmptyBorder(c.insets));
 		  
 		  public String chooseoriginalbudfilestring = "We analyze only Buds";
@@ -229,6 +231,10 @@ public class BudFileChooser extends JPanel {
 				
 				GoBud.addItemListener(new BTrackGoBudListener(this));
 				GoRed.addItemListener(new BTrackGoRedListener(this));
+				FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
+				YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
+				//GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
+				//RedMode.addItemListener(new BTrackGoRedFLListener(this));
 				
 				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
 				
@@ -318,14 +324,35 @@ public class BudFileChooser extends JPanel {
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("Wavesize:" + Wavesize);
-				if(OnlyBud)
+				if(OnlyBud || (RGBBud && !DoYellow && !DoGreen && !DoRed))
 				
 					new InteractiveBud(imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
-				if(RGBBud) {
+				
+				
+				if(RGBBud && DoYellow) {
 					
 					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
-					RandomAccessibleInterval<FloatType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType());
+					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					
+				}
+				
+				if(RGBBud && DoGreen) {
+					
+					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
+					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
+					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
+					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					
+				}
+				
+                if(RGBBud && DoRed) {
+					
+					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
+					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
+					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
+					RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName , new IntType());
+					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}
 				

@@ -101,12 +101,14 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public RandomAccessibleInterval<FloatType> originalimg;
 	public RandomAccessibleInterval<ARGBType> originalimgRGB;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
-	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
 	
+	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
+	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
+	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	
 	
 	public RandomAccessibleInterval<FloatType> CurrentView;
-	public RandomAccessibleInterval<FloatType> CurrentViewSec;
+	public RandomAccessibleInterval<ARGBType> CurrentViewRGB;
 	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
 	public int ndims;
@@ -175,16 +177,16 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	}
 	
 	
-	// Input RGB and two channel segmentation images
+	// Input RGB and one flourescent channel segmentation images
 	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
-			final RandomAccessibleInterval<FloatType> SegSecoriginalimg,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
 			final String NameA,final double calibration, final double timecal, String inputstring) {
 	
 		
 		this.originalimgRGB = originalimgRGB;
 		this.Segoriginalimg = Segoriginalimg;
-		this.SegSecoriginalimg = SegSecoriginalimg;
+		this.SegYelloworiginalimg = SegYelloworiginalimg;
 		this.NameA = NameA;
 		this.calibration = calibration;
 		this.timecal = timecal;
@@ -196,6 +198,57 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		
 	}
+	
+	// Input RGB and two flourescent channel segmentation images
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
+			final RandomAccessibleInterval<IntType> Segoriginalimg,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
+			final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
+			final String NameA,final double calibration, final double timecal, String inputstring) {
+	
+		
+		this.originalimgRGB = originalimgRGB;
+		this.Segoriginalimg = Segoriginalimg;
+		this.SegYelloworiginalimg = SegYelloworiginalimg;
+		this.SegGreenoriginalimg = SegGreenoriginalimg;
+		this.NameA = NameA;
+		this.calibration = calibration;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+		
+		
+	}
+	
+	// Input RGB and three flourescent channel segmentation images
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
+			final RandomAccessibleInterval<IntType> Segoriginalimg,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
+			final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
+			final RandomAccessibleInterval<IntType> SegRedoriginalimg,
+			final String NameA,final double calibration, final double timecal, String inputstring) {
+	
+		
+		this.originalimgRGB = originalimgRGB;
+		this.Segoriginalimg = Segoriginalimg;
+		this.SegYelloworiginalimg = SegYelloworiginalimg;
+		this.SegGreenoriginalimg = SegGreenoriginalimg;
+		this.SegRedoriginalimg = SegRedoriginalimg;
+		this.NameA = NameA;
+		this.calibration = calibration;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+		
+		
+	}
+	
 	
 	
 	public ImageStack prestack;
@@ -263,15 +316,15 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelFirst.validate();
 		saveFile = new java.io.File(".");
 		
-		//Get Labelled image
+		//Get Labelled images
 		
-		 final long[] dims = new long[Segoriginalimg.numDimensions()];
+		  long[] dims = new long[Segoriginalimg.numDimensions()];
         // get image dimension
 		 Segoriginalimg.dimensions(dims);
         // create labeling index image
-        final RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
-        final ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
-        final Iterator<Integer> labels = new Iterator<Integer>()
+         RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
+         ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
+         Iterator<Integer> labels = new Iterator<Integer>()
         {
             private int i = 1;
 
@@ -296,6 +349,117 @@ public class InteractiveBud  extends JPanel implements PlugIn{
         
 		Segoriginalimg = labeling.getIndexImg();
 		
+		if(SegYelloworiginalimg!=null) {
+			
+			
+			
+			  dims = new long[SegYelloworiginalimg.numDimensions()];
+		        // get image dimension
+			  SegYelloworiginalimg.dimensions(dims);
+		        // create labeling index image
+		         indexImg = ArrayImgs.ints(dims);
+		        labeling = new ImgLabeling<>(indexImg);
+		        labels = new Iterator<Integer>()
+		        {
+		            private int i = 1;
+
+		            @Override
+		            public boolean hasNext()
+		            {
+		                return true;
+		            }
+
+		            @Override
+		            public Integer next()
+		            {
+		                return i++;
+		            }
+
+		            @Override
+		            public void remove()
+		            {}
+		        };
+		        
+		        ConnectedComponents.labelAllConnectedComponents(SegYelloworiginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        
+		        SegYelloworiginalimg = labeling.getIndexImg();
+			
+		}
+		
+		
+		if(SegGreenoriginalimg!=null) {
+			
+			
+			
+			  dims = new long[SegGreenoriginalimg.numDimensions()];
+		        // get image dimension
+			  SegGreenoriginalimg.dimensions(dims);
+		        // create labeling index image
+		         indexImg = ArrayImgs.ints(dims);
+		        labeling = new ImgLabeling<>(indexImg);
+		        labels = new Iterator<Integer>()
+		        {
+		            private int i = 1;
+
+		            @Override
+		            public boolean hasNext()
+		            {
+		                return true;
+		            }
+
+		            @Override
+		            public Integer next()
+		            {
+		                return i++;
+		            }
+
+		            @Override
+		            public void remove()
+		            {}
+		        };
+		        
+		        ConnectedComponents.labelAllConnectedComponents(SegGreenoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        
+		        SegGreenoriginalimg = labeling.getIndexImg();
+			
+		}
+		
+		if(SegRedoriginalimg!=null) {
+			
+			
+			
+			  dims = new long[SegRedoriginalimg.numDimensions()];
+		        // get image dimension
+			  SegRedoriginalimg.dimensions(dims);
+		        // create labeling index image
+		         indexImg = ArrayImgs.ints(dims);
+		        labeling = new ImgLabeling<>(indexImg);
+		        labels = new Iterator<Integer>()
+		        {
+		            private int i = 1;
+
+		            @Override
+		            public boolean hasNext()
+		            {
+		                return true;
+		            }
+
+		            @Override
+		            public Integer next()
+		            {
+		                return i++;
+		            }
+
+		            @Override
+		            public void remove()
+		            {}
+		        };
+		        
+		        ConnectedComponents.labelAllConnectedComponents(SegRedoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        
+		        SegRedoriginalimg = labeling.getIndexImg();
+			
+		}
 		
 		StartDisplayer();
 		Card();
