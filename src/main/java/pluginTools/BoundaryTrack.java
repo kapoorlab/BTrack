@@ -8,6 +8,7 @@ import javax.swing.JProgressBar;
 
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import ij.IJ;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;

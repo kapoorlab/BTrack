@@ -91,7 +91,7 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 	// Display the found points as arrows on the bud
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
-	
+
 		Color displayColor; 
 		if (Contains(parent.ChosenBudcenter, Ordered.getA()))
 			displayColor = Color.GREEN;
@@ -133,57 +133,10 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 		}
 		
         
-        if(parent.SegYelloworiginalimg!=null) {
-        	RandomAccessibleInterval<IntType> CurrentViewInt = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg, parent.thirdDimension, parent.thirdDimensionSize);
-        	Cursor<IntType> intcursor = Views.iterable(CurrentViewInt).localizingCursor();
-        	HashMap<Integer, Boolean> DoneList = new HashMap<Integer, Boolean>();
-        	
-        	
-        	while(intcursor.hasNext()) {
-        		
-        		
-        		intcursor.fwd();
-        		
-        		int label = intcursor.get().get();
-        		DoneList.put(label, false);
-        		
-        		
-        	}
-        	
-        	
-        	
-        	for(Integer label: DoneList.keySet())
-        		
-        		if(label > 0) {
-        			
-				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud.CurrentLabelBinaryImage(
-						CurrentViewInt, label);
 
-				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
-				
-		
-				
-				for(RealLocalizable truth:truths) {
-				
-				Integer xPts = (int) truth.getFloatPosition(0);	
-				Integer yPts = (int) truth.getFloatPosition(1);
-				OvalRoi points =  new OvalRoi(xPts, yPts,
-						2, 2);		
-				points.setStrokeColor(Color.YELLOW);
-				points.setStrokeWidth(2);
-				parent.overlay.add(points);
-				
-				}
-        		}
-				
-        	
-        	
-        	
-        	
-        }
 		
 		parent.imp.updateAndDraw();
+		IJ.wait(1000);
 		
 	}
 	

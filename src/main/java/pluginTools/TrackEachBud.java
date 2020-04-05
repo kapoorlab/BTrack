@@ -14,6 +14,7 @@ import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.ImagePlus;
+import ij.gui.OvalRoi;
 import kalmanGUI.CovistoKalmanPanel;
 import listeners.BudSelectBudsListener;
 import net.imagej.ImageJ;
@@ -118,7 +119,55 @@ public class TrackEachBud {
 
 			if (label > 0) {
 
-			
+		        if(parent.SegYelloworiginalimg!=null) {
+		        	RandomAccessibleInterval<IntType> CurrentViewInt = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg, parent.thirdDimension, parent.thirdDimensionSize);
+		        	Cursor<IntType> intcursor = Views.iterable(CurrentViewInt).localizingCursor();
+		        	HashMap<Integer, Boolean> DoneList = new HashMap<Integer, Boolean>();
+		        	
+		        	DoneList.put(0, false);
+		        	while(intcursor.hasNext()) {
+		        		
+		        		
+		        		intcursor.fwd();
+		        		
+		        		int labelyellow = intcursor.get().get();
+		        		DoneList.put(labelyellow, false);
+		        		
+		        		
+		        	}
+		        	
+		        	
+		        	
+		        	for(Integer labelyellow: DoneList.keySet())
+		        		
+		        		if(label > 0) {
+		        			
+						Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud.CurrentLabelBinaryImage(
+								CurrentViewInt, labelyellow);
+
+						// For each bud get the list of points
+						List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+						
+				
+						
+						for(RealLocalizable truth:truths) {
+						
+						Integer xPts = (int) truth.getFloatPosition(0);	
+						Integer yPts = (int) truth.getFloatPosition(1);
+						OvalRoi points =  new OvalRoi(xPts, yPts,
+								2, 2);		
+						points.setStrokeColor(Color.YELLOW);
+						points.setStrokeWidth(2);
+						parent.overlay.add(points);
+						
+						}
+		        		}
+						
+		        	
+		        	
+		        	parent.imp.updateAndDraw();
+		        	
+		        }
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
