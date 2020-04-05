@@ -7,6 +7,7 @@ import java.awt.event.ItemListener;
 
 import fileListeners.ChooseBudOrigMap;
 import fileListeners.ChooseBudSecOrigMap;
+import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
 import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
@@ -39,7 +40,7 @@ public class BTrackGoYellowFLListener implements ItemListener {
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
-	
+			segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
 			segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(parent, segmentation.ChoosesecImage));
 			parent.DoYellow = true;
 			parent.DoGreen = false;

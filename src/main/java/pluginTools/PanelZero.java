@@ -13,7 +13,10 @@ public class PanelZero {
 		
 		JFrame frame = new JFrame("");
 
-	
+		ImagePlus impA = new Opener()
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/YellowSeg.tif");
+		impA.show();
+		
 
 		ImagePlus impB = new Opener()
 				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Yellow.tif");

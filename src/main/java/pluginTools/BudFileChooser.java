@@ -44,6 +44,8 @@ import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
 import listeners.BTrackGoBudListener;
 import listeners.BTrackGoFreeFlListener;
+import listeners.BTrackGoGreenFLListener;
+import listeners.BTrackGoRedFLListener;
 import listeners.BTrackGoRedListener;
 import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
@@ -241,8 +243,8 @@ public class BudFileChooser extends JPanel {
 				GoRed.addItemListener(new BTrackGoRedListener(this));
 				FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
 				YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
-				//GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
-				//RedMode.addItemListener(new BTrackGoRedFLListener(this));
+				GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
+				RedMode.addItemListener(new BTrackGoRedFLListener(this));
 				
 				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
 				
@@ -320,8 +322,8 @@ public class BudFileChooser extends JPanel {
 				// Tracking and Measurement is done with imageA 
 		        
 			    org.apache.log4j.BasicConfigurator.configure();
-				IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
-				IJ.run("RGB Color");
+				//IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
+				//IJ.run("RGB Color");
 
 				RandomAccessibleInterval<ARGBType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
 				
@@ -333,7 +335,7 @@ public class BudFileChooser extends JPanel {
 				calibration = Float.parseFloat(inputFieldcalX.getText());
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
-				System.out.println("Wavesize:" + Wavesize);
+				System.out.println("CalibrationT:" + Wavesize);
 				if(OnlyBud || (RGBBud && !DoYellow && !DoGreen && !DoRed))
 				
 					new InteractiveBud( imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
@@ -341,28 +343,25 @@ public class BudFileChooser extends JPanel {
 				
 				if(RGBBud && DoYellow) {
 					
-					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
-					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					new InteractiveBud(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}
 				
 				if(RGBBud && DoGreen) {
 					
-					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
-					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					new InteractiveBud(imageOrig, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}
 				
                 if(RGBBud && DoRed) {
 					
-					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName , new IntType());
-					new InteractiveBud(imageOrigRGB, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					new InteractiveBud(imageOrig, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}
 				

@@ -35,8 +35,6 @@ public class BTrackGoBudListener implements ItemListener {
 			parent.Panelfileoriginal = original.SingleChannelOption();
 			
 			
-//			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
-//			parent.Panelfile = segmentation.SingleChannelOption();
 			
 			
 		
@@ -46,7 +44,6 @@ public class BTrackGoBudListener implements ItemListener {
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 	
 			original.ChooseImage.addActionListener(new ChooseBudOrigMap(parent, original.ChooseImage));
-		//	segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
 			parent.OnlyBud = true;
 			parent.RGBBud = false;
 		parent.Panelfileoriginal.validate();
