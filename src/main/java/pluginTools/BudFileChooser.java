@@ -98,6 +98,14 @@ public class BudFileChooser extends JPanel {
 		  public String chooseYellowSegstring = "Segmentation Image for buds and cell Ch 1"; 
 		  public Border chooseYellowSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
 					new EmptyBorder(c.insets));
+		  public String chooseGreenSegstring = "Segmentation Image for buds and cell Ch 1,2"; 
+		  public Border chooseGreenSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
+					new EmptyBorder(c.insets));
+		  
+		  
+		  public String chooseRedSegstring = "Segmentation Image for buds and cell Ch 1,2,3"; 
+		  public Border chooseRedSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
+					new EmptyBorder(c.insets));
 		  
 		  public String chooseoriginalbudfilestring = "We analyze only Buds";
 		  public Border chooseoriginalbudfile = new CompoundBorder(new TitledBorder(chooseoriginalbudfilestring),
@@ -312,8 +320,10 @@ public class BudFileChooser extends JPanel {
 				// Tracking and Measurement is done with imageA 
 		        
 			    org.apache.log4j.BasicConfigurator.configure();
-				
-				RandomAccessibleInterval<FloatType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
+				IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
+				IJ.run("RGB Color");
+
+				RandomAccessibleInterval<ARGBType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
 				
 				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType());
 				
@@ -326,7 +336,7 @@ public class BudFileChooser extends JPanel {
 				System.out.println("Wavesize:" + Wavesize);
 				if(OnlyBud || (RGBBud && !DoYellow && !DoGreen && !DoRed))
 				
-					new InteractiveBud(imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
+					new InteractiveBud( imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 				
 				
 				if(RGBBud && DoYellow) {

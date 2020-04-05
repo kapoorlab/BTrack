@@ -19,14 +19,12 @@ import loci.plugins.in.ImporterOptions;
 import net.imagej.Dataset;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.converter.Converters;
-import net.imglib2.converter.RealTypeConverters;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgView;
-import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImgPlusViews;
 import net.imglib2.img.display.imagej.ImgToVirtualStack;
 import net.imglib2.type.NativeType;
@@ -194,7 +192,7 @@ public class SimplifiedIO {
 					o.set( ARGBType.rgba( value, value, value, 255 ) );
 				},
 				new ARGBType() );
-		Img< ARGBType > convertedImg = ImgView.wrap( convertedRAI, new ArrayImgFactory< ARGBType >( new ARGBType() ) );
+		Img< ARGBType > convertedImg = ImgView.wrap( convertedRAI, null );
 		return new ImgPlus<>( convertedImg, image );
 	}
 
@@ -202,24 +200,22 @@ public class SimplifiedIO {
 	private static < T extends NativeType< T > > ImgPlus< T >
 			convertBetweenRealType( ImgPlus image, RealType type ) {
 		RandomAccessibleInterval< T > convertedRAI = RealTypeConverters.convert( image, type );
-		Img< T > convertedImg = ImgView.wrap( convertedRAI, new ArrayImgFactory<T>( convertedRAI.randomAccess().get().createVariable() ) );
+		Img< T > convertedImg = ImgView.wrap( convertedRAI, null );
 		return new ImgPlus<>( convertedImg, image );
 	}
 
-	@SuppressWarnings("rawtypes")
-	private static < T extends NativeType< T > > ImgPlus< T > convertARGBTypeToRealType( ImgPlus< ARGBType > image,
-			RealType type) {
-		final ImgPlus< T > imgPlus = convertBetweenRealType(
-				new ImgPlus<>( ImgView.wrap( Converters.argbChannels( image ), null ) ), type );
-
+	private static < T extends RealType< T > > ImgPlus< T >
+			convertARGBTypeToRealType( ImgPlus< ARGBType > image, T type ) {
+		RandomAccessibleInterval< T > convertedRAI =
+				RealTypeConverters.convert( Converters.argbChannels( image ), type );
+		Img< T > convertedImg = ImgView.wrap( convertedRAI, null );
 		int n = image.numDimensions();
-		for ( int i = 0; i < n; i++ )
-		{
-			imgPlus.setAxis( image.axis( i ), i );
+		CalibratedAxis[] axis = new CalibratedAxis[ n + 1 ];
+		for ( int i = 0; i < n; i++ ) {
+			axis[ i ] = image.axis( i );
 		}
-		imgPlus.setAxis( new DefaultLinearAxis( Axes.CHANNEL ), n );
-		imgPlus.setName( image.getName() );
-		return imgPlus;
+		axis[ n ] = new DefaultLinearAxis( Axes.CHANNEL );
+		return new ImgPlus<>( convertedImg, image.getName(), axis );
 	}
 
 	private static SCIFIO getScifio() {
@@ -227,4 +223,10 @@ public class SimplifiedIO {
 			scifio = new SCIFIO();
 		return scifio;
 	}
+	
+
+
+
+	
+	
 }

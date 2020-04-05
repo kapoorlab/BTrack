@@ -88,7 +88,7 @@ import tracker.CostFunction;
 import tracker.TrackModel;
 import zGUI.CovistoZselectPanel;
 
-public class InteractiveBud  extends JPanel implements PlugIn{
+public class InteractiveBud  extends JPanel implements PlugIn {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -98,8 +98,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public final int scrollbarSize = 1000;
 	public Set<Integer> pixellist;
 	public NumberFormat nf;
-	public RandomAccessibleInterval<FloatType> originalimg;
-	public RandomAccessibleInterval<ARGBType> originalimgRGB;
+	public RandomAccessibleInterval<ARGBType> originalimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
 	
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
@@ -107,8 +106,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	
 	
-	public RandomAccessibleInterval<FloatType> CurrentView;
-	public RandomAccessibleInterval<ARGBType> CurrentViewRGB;
+	public RandomAccessibleInterval<ARGBType> CurrentView;
 	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
 	public int ndims;
@@ -157,7 +155,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	
 	// Input Bud and its segmentation
-	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final String NameA,final double calibration, final double timecal, String inputstring) {
 		
@@ -178,13 +176,13 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	
 	// Input RGB and one flourescent channel segmentation images
-	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
 			final String NameA,final double calibration, final double timecal, String inputstring) {
 	
 		
-		this.originalimgRGB = originalimgRGB;
+		this.originalimg = originalimg;
 		this.Segoriginalimg = Segoriginalimg;
 		this.SegYelloworiginalimg = SegYelloworiginalimg;
 		this.NameA = NameA;
@@ -200,14 +198,14 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	}
 	
 	// Input RGB and two flourescent channel segmentation images
-	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
 			final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
 			final String NameA,final double calibration, final double timecal, String inputstring) {
 	
 		
-		this.originalimgRGB = originalimgRGB;
+		this.originalimg = originalimg;
 		this.Segoriginalimg = Segoriginalimg;
 		this.SegYelloworiginalimg = SegYelloworiginalimg;
 		this.SegGreenoriginalimg = SegGreenoriginalimg;
@@ -224,7 +222,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	}
 	
 	// Input RGB and three flourescent channel segmentation images
-	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimgRGB,
+	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
 			final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
@@ -232,7 +230,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			final String NameA,final double calibration, final double timecal, String inputstring) {
 	
 		
-		this.originalimgRGB = originalimgRGB;
+		this.originalimg = originalimg;
 		this.Segoriginalimg = Segoriginalimg;
 		this.SegYelloworiginalimg = SegYelloworiginalimg;
 		this.SegGreenoriginalimg = SegGreenoriginalimg;
@@ -509,7 +507,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		display.execute();
 	}
 	
-	public void repaintView( RandomAccessibleInterval<FloatType> Activeimage) {
+	public void repaintView( RandomAccessibleInterval<ARGBType> Activeimage) {
 		
 		
 		
@@ -521,7 +519,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		else {
 
 			final float[] pixels = (float[]) imp.getProcessor().getPixels();
-			final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
+			final Cursor<ARGBType> c = Views.iterable(Activeimage).cursor();
 
 			for (int i = 0; i < pixels.length; ++i)
 				pixels[i] = c.next().get();
