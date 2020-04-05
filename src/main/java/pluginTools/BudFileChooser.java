@@ -71,7 +71,7 @@ public class BudFileChooser extends JPanel {
 		  public JPanel Paneldone = new JPanel();
 		  public JPanel Panelrun = new JPanel();
 		  public JPanel Microscope = new JPanel();
-		  public final Insets insets = new Insets(10, 0, 0, 0);
+		  public final Insets insets = new Insets(10, 10, 0, 10);
 		  public final GridBagLayout layout = new GridBagLayout();
 		  public final GridBagConstraints c = new GridBagConstraints();
 		  public final String[] imageNames, blankimageNames;
@@ -80,8 +80,7 @@ public class BudFileChooser extends JPanel {
 		  public JComboBox<String> ChooseoriginalImage;
 		  public JComboBox<String> ChooseRGBImage;
 		  public JButton Done =  new JButton("Finished choosing files, start BTrack");
-		  public boolean OnlyBud = true;
-		  public boolean RGBBud = false;
+		
 		  public boolean simple = false;
 		  public boolean curvesuper = true;
 		  public boolean curvesimple = false;
@@ -116,10 +115,22 @@ public class BudFileChooser extends JPanel {
 
 		  public TextField inputFieldcalX, Fieldwavesize;
 		  public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"), new EmptyBorder(c.insets));
-		  public boolean budonly = true;
 		  public CheckboxGroup budmode = new CheckboxGroup();
+		  public boolean OnlyBud = true;
+		  public boolean RGBBud = false;
 		  public Checkbox GoBud = new Checkbox("Only Bud", OnlyBud, budmode);
 		  public Checkbox GoRed = new Checkbox("Input RGB", RGBBud, budmode);
+		  
+		  public boolean DoYellow = false;
+		  public boolean DoGreen = false;
+		  public boolean DoRed = false;
+		  public boolean NoChannel = true;
+		  
+		  public CheckboxGroup cellmode = new CheckboxGroup();
+		  public Checkbox FreeMode = new Checkbox("No Flourescent Channel", NoChannel, cellmode);
+		  public Checkbox YellowMode = new Checkbox("Flourescent Channel 1", DoYellow, cellmode);
+		  public Checkbox GreenMode = new Checkbox("Flourescent Channel 2", DoGreen, cellmode);
+		  public Checkbox RedMode = new Checkbox("Flourescent Channel 3", DoRed, cellmode);
 		  
 		  
 		  public BudFileChooser() {
@@ -135,7 +146,7 @@ public class BudFileChooser extends JPanel {
 			   panelFirst.setLayout(layout);
 			   
 			   Paneldone.setLayout(layout);
-			   
+			   Microscope.setLayout(layout);
 		       CardLayout cl = new CardLayout();
 		       calibration = Float.parseFloat(inputFieldcalX.getText());
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
@@ -173,17 +184,27 @@ public class BudFileChooser extends JPanel {
 				original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
 				
 				
-				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseRedSegstring, blankimageNames);
+				panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				panelFirst.add(YellowMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				panelFirst.add(GreenMode, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				panelFirst.add(RedMode, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
+				
+				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseBudSegstring, blankimageNames);
 				Panelfile = segmentation.SingleChannelOption();
 				
 				
-				panelFirst.add(Panelfile, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 				Paneldone.setBorder(LoadBtrack);
-				panelFirst.add(Paneldone, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(Paneldone, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -192,16 +213,16 @@ public class BudFileChooser extends JPanel {
 				Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.RELATIVE, insets, 0, 0));
 				
-				Microscope.add(wavesize, new GridBagConstraints(3, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				Microscope.add(wavesize, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
-				Microscope.add(Fieldwavesize, new GridBagConstraints(3, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+				Microscope.add(Fieldwavesize, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.RELATIVE, insets, 0, 0));
 				
 		
 				
 				Microscope.setBorder(microborder);
-				panelFirst.add(Microscope, new GridBagConstraints(0, 5, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				panelFirst.add(Microscope, new GridBagConstraints(0, 8, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 				
 				// Listeneres 
@@ -297,10 +318,10 @@ public class BudFileChooser extends JPanel {
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("Wavesize:" + Wavesize);
-				if(budonly)
+				if(OnlyBud)
 				
 					new InteractiveBud(imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
-				if(!budonly) {
+				if(RGBBud) {
 					
 					RandomAccessibleInterval<ARGBType> imageOrigRGB =  SimplifiedIO.openImage(impOrigRGB.getOriginalFileInfo().directory + impOrigRGB.getOriginalFileInfo().fileName, new ARGBType());
 					RandomAccessibleInterval<FloatType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new FloatType());

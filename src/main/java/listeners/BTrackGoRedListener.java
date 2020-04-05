@@ -28,7 +28,6 @@ public class BTrackGoRedListener implements ItemListener {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			
 			parent.panelFirst.remove(parent.Panelfileoriginal);
-			parent.panelFirst.remove(parent.Panelfile);
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
 			CovistoOneChFileLoader original = new CovistoOneChFileLoader(parent.chooseoriginalrgbfilestring, parent.blankimageNames);
@@ -37,18 +36,17 @@ public class BTrackGoRedListener implements ItemListener {
 			
 			
 			
-			CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(parent.chooseRedSegstring, parent.blankimageNames);
-			parent.Panelfile = segmentation.TwoChannelOption();
+		//	CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(parent.chooseRedSegstring, parent.blankimageNames);
+		//	parent.Panelfile = segmentation.TwoChannelOption();
 			
 			
-			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 			parent.panelFirst.add(parent.Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 	
 			original.ChooseImage.addActionListener(new ChooseBudSecOrigMap(parent, original.ChooseImage));
-			segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(parent, segmentation.ChoosesecImage));
-			parent.budonly = false;
+//			segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(parent, segmentation.ChoosesecImage));
+			parent.RGBBud = true;
+			parent.OnlyBud = false;
 		parent.Panelfileoriginal.validate();
 		parent.Panelfileoriginal.repaint();
 		
@@ -59,7 +57,8 @@ public class BTrackGoRedListener implements ItemListener {
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			
-			parent.budonly = true;
+			parent.RGBBud = false;
+			parent.OnlyBud = true;
 			parent.Panelfileoriginal.validate();
 			parent.Panelfileoriginal.repaint();
 			parent.panelFirst.validate();

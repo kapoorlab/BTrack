@@ -27,7 +27,6 @@ public class BTrackGoBudListener implements ItemListener {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			
 			parent.panelFirst.remove(parent.Panelfileoriginal);
-			parent.panelFirst.remove(parent.Panelfile);
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
 			
@@ -36,20 +35,20 @@ public class BTrackGoBudListener implements ItemListener {
 			parent.Panelfileoriginal = original.SingleChannelOption();
 			
 			
-			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
-			parent.Panelfile = segmentation.SingleChannelOption();
+//			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
+//			parent.Panelfile = segmentation.SingleChannelOption();
 			
 			
-			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
+		
 			
 			
 			parent.panelFirst.add(parent.Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 	
 			original.ChooseImage.addActionListener(new ChooseBudOrigMap(parent, original.ChooseImage));
-			segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
-			parent.budonly = true;
+		//	segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
+			parent.OnlyBud = true;
+			parent.RGBBud = false;
 		parent.Panelfileoriginal.validate();
 		parent.Panelfileoriginal.repaint();
 		parent.panelFirst.validate();
@@ -59,7 +58,8 @@ public class BTrackGoBudListener implements ItemListener {
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			
-			parent.budonly = false;
+			parent.OnlyBud = false;
+			parent.RGBBud = true;
 			parent.Panelfileoriginal.validate();
 			parent.Panelfileoriginal.repaint();
 			parent.panelFirst.validate();
