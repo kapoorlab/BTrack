@@ -426,7 +426,7 @@ public class TrackEachBud {
 		RandomAccessibleInterval<BitType> outsmooth = new ArrayImgFactory<BitType>().create(outimg, new BitType());
 		try {
 
-			net.imglib2.algorithm.gauss3.Gauss3.gauss(10, Views.extendBorder(outimg), outsmooth);
+			net.imglib2.algorithm.gauss3.Gauss3.gauss(1, Views.extendBorder(outimg), outsmooth);
 
 		} catch (IncompatibleTypeException es) {
 

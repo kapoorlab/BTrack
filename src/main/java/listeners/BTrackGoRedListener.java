@@ -36,15 +36,12 @@ public class BTrackGoRedListener implements ItemListener {
 			
 			
 			
-		//	CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(parent.chooseRedSegstring, parent.blankimageNames);
-		//	parent.Panelfile = segmentation.TwoChannelOption();
 			
 			
 			parent.panelFirst.add(parent.Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 	
-			original.ChooseImage.addActionListener(new ChooseBudSecOrigMap(parent, original.ChooseImage));
-//			segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(parent, segmentation.ChoosesecImage));
+			original.ChooseImage.addActionListener(new ChooseBudOrigMap(parent, original.ChooseImage));
 			parent.RGBBud = true;
 			parent.OnlyBud = false;
 		parent.Panelfileoriginal.validate();

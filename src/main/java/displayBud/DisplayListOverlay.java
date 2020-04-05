@@ -2,23 +2,31 @@ package displayBud;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections15.iterators.EntrySetMapIterator;
 
 import budDetector.Distance;
 import ij.IJ;
 import ij.gui.Arrow;
 import ij.gui.Line;
 import ij.gui.OvalRoi;
+import ij.gui.PointRoi;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
+import pluginTools.TrackEachBud;
 
 public class DisplayListOverlay {
 
@@ -124,6 +132,56 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 			parent.overlay.add(points);
 		}
 		
+        
+        if(parent.SegYelloworiginalimg!=null) {
+        	RandomAccessibleInterval<IntType> CurrentViewInt = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg, parent.thirdDimension, parent.thirdDimensionSize);
+        	Cursor<IntType> intcursor = Views.iterable(CurrentViewInt).localizingCursor();
+        	HashMap<Integer, Boolean> DoneList = new HashMap<Integer, Boolean>();
+        	
+        	
+        	while(intcursor.hasNext()) {
+        		
+        		
+        		intcursor.fwd();
+        		
+        		int label = intcursor.get().get();
+        		DoneList.put(label, false);
+        		
+        		
+        	}
+        	
+        	
+        	
+        	for(Integer label: DoneList.keySet())
+        		
+        		if(label > 0) {
+        			
+				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud.CurrentLabelBinaryImage(
+						CurrentViewInt, label);
+
+				// For each bud get the list of points
+				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+				
+		
+				
+				for(RealLocalizable truth:truths) {
+				
+				Integer xPts = (int) truth.getFloatPosition(0);	
+				Integer yPts = (int) truth.getFloatPosition(1);
+				OvalRoi points =  new OvalRoi(xPts, yPts,
+						2, 2);		
+				points.setStrokeColor(Color.YELLOW);
+				points.setStrokeWidth(2);
+				parent.overlay.add(points);
+				
+				}
+        		}
+				
+        	
+        	
+        	
+        	
+        }
 		
 		parent.imp.updateAndDraw();
 		

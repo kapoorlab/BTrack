@@ -518,7 +518,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 
 		else {
 
-			final float[] pixels = (float[]) imp.getProcessor().getPixels();
+			final int[] pixels = (int[]) imp.getProcessor().getPixels();
 			final Cursor<ARGBType> c = Views.iterable(Activeimage).cursor();
 
 			for (int i = 0; i < pixels.length; ++i)

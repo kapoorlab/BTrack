@@ -101,7 +101,6 @@ public class BoundaryTrack {
 
 			parent.AllBudpoints.put(Integer.toString(t), Budpointlist);
 			
-			System.out.println(Budpointlist.size() + " " + Budlist.size() );
 		
 		percent++;
 		
