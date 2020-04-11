@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BudTrackobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import ij.ImagePlus;
@@ -126,15 +127,15 @@ public class BudSaveAllListener implements ActionListener {
 			
 				
 				ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
-				for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+				for (BudTrackobject Track: parent.Tracklist) {
 					
-					if(Track.getA().equals(ID)) {
+					if(Track.ID.equals(ID)) {
 					
 						
-					double time = Track.getB().t * parent.timecal;
-					double LocationX = Track.getB().Location[0] * parent.calibration;
-					double LocationY = Track.getB().Location[1] * parent.calibration;
-					double Velocity = Track.getB().velocity;
+					double time = Track.budpoints.t * parent.timecal;
+					double LocationX = Track.budpoints.Location[0] * parent.calibration;
+					double LocationY = Track.budpoints.Location[1] * parent.calibration;
+					double Velocity = Track.budpoints.velocity;
 					
 					Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 					

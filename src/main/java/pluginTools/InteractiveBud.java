@@ -42,6 +42,7 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import budDetector.BudTrackobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import fileListeners.BTrackSaveDirectoryListener;
@@ -120,7 +121,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public CostFunction<Budobject, Budobject> BudUserchosenCostFunction;
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
-	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
+	public ArrayList<BudTrackobject> Tracklist;
 	public ArrayList<ValuePair<String, Budobject>> BudTracklist;
 	public Overlay overlay;
 	public ImagePlus imp;
@@ -286,7 +287,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		nf.setGroupingUsed(false);
 		Clickedpoints = new int[2];
 		pixellist = new HashSet<Integer>();
-		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
+		Tracklist = new ArrayList<BudTrackobject>();
 		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
 		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
 		AllBuds = new HashMap<String, ArrayList<Budobject>>();

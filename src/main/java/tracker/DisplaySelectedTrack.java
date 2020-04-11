@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import budDetector.BudTrackobject;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.gui.ImageCanvas;
@@ -121,21 +122,21 @@ public class DisplaySelectedTrack {
 			        String ID = (String) parent.table.getValueAt(row, 0); 
 			        String CordX = (String) parent.table.getValueAt(row, 1);
 					String CordY = (String) parent.table.getValueAt(row, 2);
+					
 			        
-					for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+					for (BudTrackobject Track: parent.Tracklist) {
 						
-						String ImageID = Track.getA();
+						String ImageID = Track.ID;
 						
 						
 						if(ID.equals(ImageID)) {
 							
 							
-							OvalRoi points =  new OvalRoi((int) Integer.parseInt(CordX), (int) Integer.parseInt(CordY),
-									25, 25);
+							OvalRoi points =  new OvalRoi((int) Integer.parseInt(CordX) - 20, (int) Integer.parseInt(CordY) - 20,
+									40, 40);
 							parent.imp.getOverlay().add(points);
 							points.setStrokeColor(Drawcolor);
-							points.setStrokeWidth(40);
-							System.out.println(ID + " " + ImageID + " " + points.getContourCentroid()[0] + " " + points.getContourCentroid()[1] );
+						
 							parent.imp.updateAndDraw();
 						}
 						
@@ -297,15 +298,15 @@ public class DisplaySelectedTrack {
    		
    		
    		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
-		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+		for (BudTrackobject Track: parent.Tracklist) {
 			
-			if(Track.getA().equals(ID)) {
+			if(Track.ID.equals(ID)) {
 			
 				
-			double time = Track.getB().t * parent.timecal;
-			double LocationX = Track.getB().Location[0] * parent.calibration;
-			double LocationY = Track.getB().Location[1] * parent.calibration;
-			double Velocity = Track.getB().velocity;
+			double time = Track.budpoints.t * parent.timecal;
+			double LocationX = Track.budpoints.Location[0] * parent.calibration;
+			double LocationY = Track.budpoints.Location[1] * parent.calibration;
+			double Velocity = Track.budpoints.velocity;
 			
 			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 			

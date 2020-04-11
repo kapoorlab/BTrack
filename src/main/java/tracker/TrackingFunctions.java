@@ -70,10 +70,8 @@ public SimpleWeightedGraph<Budobject, DefaultWeightedEdge> BudTrackfunction() {
 		
 
 		ArrayList<ArrayList<Budobject>> colllist = new ArrayList<ArrayList<Budobject>>();
-		System.out.println("TrackingBC ");
 		parent.AllBuds = sortBudByIntegerInter(parent.AllBuds);
 	
-		System.out.println("TrackingBCC " + " " + parent.AllBuds.size());
 		
 		for (Map.Entry<String, ArrayList<Budobject>> entry : parent.AllBuds.entrySet()) {
 
