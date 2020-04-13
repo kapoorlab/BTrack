@@ -43,6 +43,15 @@
 			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/sc/fiji/3D_Viewer/4.0.2/3D_Viewer-4.0.2.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="sc.fiji"/>
+			<attribute name="maven.artifactId" value="3D_Viewer"/>
+			<attribute name="maven.version" value="4.0.2"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3.jar">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

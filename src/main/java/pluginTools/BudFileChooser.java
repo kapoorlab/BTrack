@@ -343,7 +343,12 @@ public class BudFileChooser extends JPanel {
 				
 				if(RGBBud && DoYellow) {
 					
+					
+					
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
+					
+					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
+					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
 					new InteractiveBud(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}
@@ -352,6 +357,10 @@ public class BudFileChooser extends JPanel {
 					
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
+					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
+					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
+					assert (imageOrig.numDimensions() == imageSegC.numDimensions());
+					
 					new InteractiveBud(imageOrig, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}
@@ -361,6 +370,12 @@ public class BudFileChooser extends JPanel {
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName , new IntType());
+					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
+					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
+					assert (imageOrig.numDimensions() == imageSegC.numDimensions());
+					assert (imageOrig.numDimensions() == imageSegD.numDimensions());
+					
+					
 					new InteractiveBud(imageOrig, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 					
 				}

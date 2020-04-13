@@ -56,6 +56,7 @@ import kalmanGUI.CovistoKalmanPanel;
 import listeners.BTrackAutoEndListener;
 import listeners.BTrackFilenameListener;
 import listeners.BudLinkobjectListener;
+import listeners.BudMastadonListener;
 import listeners.BudPREIniSearchListener;
 import listeners.BudPRELostFrameListener;
 import listeners.BudPREMaxSearchTListener;
@@ -561,6 +562,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public JScrollBar timeslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
 			scrollbarSize + 10);
 	public JButton Savebutton = new JButton("Save Track");
+	public JButton Cellbutton = new JButton("Enter Mastadon");
 	public JButton Restartbutton = new JButton("Restart");
 	public JButton Batchbutton = new JButton("Save Parameters for batch mode and exit");
 	public JButton SaveAllbutton = new JButton("Save All Tracks");
@@ -687,6 +689,10 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
+		if(SegYelloworiginalimg!=null || SegRedoriginalimg!=null || SegGreenoriginalimg!=null)
+		panelFirst.add(Cellbutton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
 		panelFirst.add(PanelSelectFile, new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
@@ -746,6 +752,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		Batchbutton.addActionListener(new BudSaveBatchListener(this));
 		inputField.addTextListener(new BTrackFilenameListener(this));
 		Savebutton.addActionListener(new BudSaveListener(this));
+		Cellbutton.addActionListener(new BudMastadonListener(this));
 		SaveAllbutton.addActionListener(new BudSaveAllListener(this));
 		ChooseDirectory.addActionListener(new BTrackSaveDirectoryListener(this));
 		inputField.addTextListener(new BTrackFilenameListener(this));
