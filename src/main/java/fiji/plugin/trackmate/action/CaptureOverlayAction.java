@@ -27,7 +27,7 @@ import ij.process.ColorProcessor;
 public class CaptureOverlayAction extends AbstractTMAction
 {
 
-	public static final ImageIcon ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_go.png" ) );
+	//public static final ImageIcon ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_go.png" ) );
 
 	public static final String NAME = "Capture overlay";
 
@@ -219,7 +219,8 @@ public class CaptureOverlayAction extends AbstractTMAction
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return null;
+			//return ICON;
 		}
 
 		@Override

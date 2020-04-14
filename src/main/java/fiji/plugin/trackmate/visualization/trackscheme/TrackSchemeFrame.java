@@ -64,7 +64,7 @@ public class TrackSchemeFrame extends JFrame
 		this.graph = trackScheme.getGraph();
 
 		// Frame look
-		setIconImage( TrackScheme.TRACK_SCHEME_ICON.getImage() );
+		//setIconImage( TrackScheme.TRACK_SCHEME_ICON.getImage() );
 
 		// Layout
 		getContentPane().setLayout( new BorderLayout() );

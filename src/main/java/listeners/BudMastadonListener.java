@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import fiji.plugin.trackmate.LoadTrackMatePlugIn_;
+import fiji.plugin.trackmate.TrackMatePlugIn_;
 import pluginTools.InteractiveBud;
 
 public class BudMastadonListener implements ActionListener {
@@ -19,7 +20,7 @@ public class BudMastadonListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		LoadTrackMatePlugIn_ plugin = new LoadTrackMatePlugIn_();
+		TrackMatePlugIn_ plugin = new TrackMatePlugIn_();
 		plugin.run(null);
 		
 		

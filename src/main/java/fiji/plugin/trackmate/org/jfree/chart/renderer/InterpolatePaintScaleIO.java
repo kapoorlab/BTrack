@@ -34,7 +34,7 @@ public class InterpolatePaintScaleIO
 	{
 		try
 		{
-			final URI BUILTIN_LUT_FOLDER = InterpolatePaintScaleIO.class.getResource( "luts/" ).toURI();
+			final URI BUILTIN_LUT_FOLDER = InterpolatePaintScaleIO.class.getResource( "/luts/" ).toURI();
 			LUT_FOLDERS.add( BUILTIN_LUT_FOLDER );
 		}
 		catch ( final URISyntaxException e )

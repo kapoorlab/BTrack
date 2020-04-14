@@ -1,6 +1,6 @@
 package fiji.plugin.trackmate.features;
 
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.TRACK_SCHEME_ICON;
+//import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.TRACK_SCHEME_ICON;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -81,7 +81,7 @@ public abstract class AbstractFeatureGrapher
 		// The frame
 		final JFrame frame = new JFrame();
 		frame.setTitle( "Feature plot for Track scheme" );
-		frame.setIconImage( TRACK_SCHEME_ICON.getImage() );
+		//frame.setIconImage( TRACK_SCHEME_ICON.getImage() );
 		frame.getContentPane().add( scrollPane );
 		frame.validate();
 		frame.setSize( new java.awt.Dimension( 520, 320 ) );

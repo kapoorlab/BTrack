@@ -53,7 +53,7 @@ public class TrackMateWizard extends JFrame implements ActionListener
 	public static final Font SMALL_FONT = FONT.deriveFont( 8 );
 
 	public static final Dimension TEXTFIELD_DIMENSION = new Dimension( 40, 18 );
-
+   
 	public static final Icon NEXT_ICON = new ImageIcon( TrackMateWizard.class.getResource( "images/arrow_right.png" ) );
 
 	public static final String NEXT_TEXT = "Next";

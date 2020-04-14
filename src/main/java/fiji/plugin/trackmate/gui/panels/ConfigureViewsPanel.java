@@ -13,7 +13,7 @@ import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACKS_
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_COLORING;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_MODE;
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.TRACK_SCHEME_ICON_16x16;
+//import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.TRACK_SCHEME_ICON_16x16;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -941,7 +941,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 				jButtonShowTrackScheme = new JButton();
 				jPanelButtons.add( jButtonShowTrackScheme );
 				jButtonShowTrackScheme.setText( "TrackScheme" );
-				jButtonShowTrackScheme.setIcon( TRACK_SCHEME_ICON_16x16 );
+			//	jButtonShowTrackScheme.setIcon( TRACK_SCHEME_ICON_16x16 );
 				jButtonShowTrackScheme.setFont( FONT );
 				jButtonShowTrackScheme.setToolTipText( TRACKSCHEME_BUTTON_TOOLTIP );
 				{

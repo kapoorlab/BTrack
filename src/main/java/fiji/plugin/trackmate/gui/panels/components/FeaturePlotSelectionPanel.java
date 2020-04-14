@@ -45,11 +45,11 @@ public class FeaturePlotSelectionPanel extends ActionListenablePanel
 
 	private static final long serialVersionUID = 1L;
 
-	private static final ImageIcon PLOT_ICON = new ImageIcon( TrackScheme.class.getResource( "resources/plots.png" ) );
+	//private static final ImageIcon PLOT_ICON = new ImageIcon( TrackScheme.class.getResource( "resources/plots.png" ) );
 
-	private static final ImageIcon ADD_ICON = new ImageIcon( TrackScheme.class.getResource( "resources/add.png" ) );
+	//private static final ImageIcon ADD_ICON = new ImageIcon( TrackScheme.class.getResource( "resources/add.png" ) );
 
-	private static final ImageIcon REMOVE_ICON = new ImageIcon( TrackScheme.class.getResource( "resources/delete.png" ) );
+//	private static final ImageIcon REMOVE_ICON = new ImageIcon( TrackScheme.class.getResource( "resources/delete.png" ) );
 
 	private static final Dimension BUTTON_SIZE = new Dimension( 24, 24 );
 
@@ -223,7 +223,7 @@ public class FeaturePlotSelectionPanel extends ActionListenablePanel
 				topPanel.setMinimumSize( new Dimension( 300, 100 ) );
 				add( topPanel, BorderLayout.NORTH );
 				topPanel.setLayout( null );
-				final JButton plotButton = new JButton( "Plot features", PLOT_ICON );
+				final JButton plotButton = new JButton( "Plot features");//, PLOT_ICON );
 				plotButton.setBounds( 80, 27, 140, 40 );
 				plotButton.addActionListener( new ActionListener()
 				{
@@ -289,7 +289,7 @@ public class FeaturePlotSelectionPanel extends ActionListenablePanel
 				{
 					jButtonAdd = new JButton();
 					jPanelButtons.add( jButtonAdd );
-					jButtonAdd.setIcon( ADD_ICON );
+					//jButtonAdd.setIcon( ADD_ICON );
 					jButtonAdd.setMaximumSize( BUTTON_SIZE );
 					jButtonAdd.addActionListener( new ActionListener()
 					{
@@ -303,7 +303,7 @@ public class FeaturePlotSelectionPanel extends ActionListenablePanel
 				{
 					jButtonRemove = new JButton();
 					jPanelButtons.add( jButtonRemove );
-					jButtonRemove.setIcon( REMOVE_ICON );
+					//jButtonRemove.setIcon( REMOVE_ICON );
 					jButtonRemove.setMaximumSize( BUTTON_SIZE );
 					jButtonRemove.addActionListener( new ActionListener()
 					{

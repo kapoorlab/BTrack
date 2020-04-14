@@ -24,7 +24,7 @@ import org.scijava.plugin.Plugin;
 public class PlotNSpotsVsTimeAction extends AbstractTMAction {
 
 
-	public static final ImageIcon ICON = new ImageIcon(TrackSchemeFrame.class.getResource("resources/plots.png"));
+	//public static final ImageIcon ICON = new ImageIcon(TrackSchemeFrame.class.getResource("resources/plots.png"));
 	public static final String NAME = "Plot N spots vs time";
 
 	public static final String KEY = "PLOT_NSPOTS_VS_TIME";
@@ -105,7 +105,8 @@ public class PlotNSpotsVsTimeAction extends AbstractTMAction {
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return null;
+			//return ICON;
 		}
 
 		@Override

@@ -70,15 +70,15 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 	static final int DEFAULT_CELL_HEIGHT = 40;
 
-	public static final ImageIcon TRACK_SCHEME_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/Icon3a_print_transparency.png" ) );
+	//public static final ImageIcon TRACK_SCHEME_ICON = new ImageIcon( TrackSchemeFrame.class.getResource("/images/Icon3b_print_transparency.png" ) );
 
-	public static final ImageIcon TRACK_SCHEME_ICON_16x16;
+	//public static final ImageIcon TRACK_SCHEME_ICON_16x16;
 
 	static
 	{
-		final Image image = TRACK_SCHEME_ICON.getImage();
-		final Image newimg = image.getScaledInstance( 16, 16, java.awt.Image.SCALE_SMOOTH );
-		TRACK_SCHEME_ICON_16x16 = new ImageIcon( newimg ); // transform it back
+		//final Image image = TRACK_SCHEME_ICON.getImage();
+		//final Image newimg = image.getScaledInstance( 16, 16, java.awt.Image.SCALE_SMOOTH );
+		//TRACK_SCHEME_ICON_16x16 = new ImageIcon( newimg ); // transform it back
 	}
 
 	public static final String DEFAULT_COLOR = "#FF00FF";
