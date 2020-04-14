@@ -1,5 +1,6 @@
 package budDetector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,9 +14,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public static AtomicInteger IDcounter = new AtomicInteger( -1 );
 	
 	// Bud the cell is inside
-	public final Budobject mybud;
+	public final ArrayList<Budobject> mybuds;
 	// Growth points of the bud
-	public final Budpointobject mybudpoints;
+	public final ArrayList<Budpointobject> mybudpoints;
 	// Location of the cell
 	public double[] Location;
 	// Distance from center of cell to nearest bud growth point
@@ -23,16 +24,27 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	// Distance from center of cell to nearest bud point
 	public double closestBudPoint;
 	
-	public BCellobject(final Budobject mybud, final Budpointobject mybudpoints, final double[] Location, final double closestGrowthPoint, final double closestBudPoint	 ) {
+	// Other non important cell properties
+	public double cellArea;
+	public double TotalIntensity;
+	public double AverageIntensity;
+	
+	
+	
+	public BCellobject(final ArrayList<Budobject> mybuds, final ArrayList<Budpointobject> mybudpoints, final double[] Location, final double closestGrowthPoint, final double closestBudPoint,
+			final double cellArea, final double TotalIntenity, final double AverageIntensity) {
 		
 		
 		
 		super(3);
-		this.mybud = mybud;
+		this.mybuds = mybuds;
 		this.mybudpoints = mybudpoints;
 		this.Location = Location;
 		this.closestGrowthPoint = closestGrowthPoint;
 		this.closestBudPoint = closestBudPoint;
+		this.cellArea = cellArea;
+		this.TotalIntensity = TotalIntenity;
+		this.AverageIntensity = AverageIntensity;
 		
 	}
 

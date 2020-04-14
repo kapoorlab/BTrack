@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -42,6 +43,7 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import budDetector.BCellobject;
 import budDetector.BudTrackobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
@@ -115,8 +117,12 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public MouseListener mvl;
 	public MouseListener tvl;
 	public MouseMotionListener tvml;
-	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
-	public HashMap<String, ArrayList<Budobject>> AllBuds;
+	
+	// Create hash maps to be used in tracking
+	public ConcurrentHashMap<String, ArrayList<Budpointobject>> AllBudpoints;
+	public ConcurrentHashMap<String, ArrayList<Budobject>> AllBuds;
+	public ConcurrentHashMap<String, ArrayList<BCellobject>> AllBudcells;
+	
 	public HashMap<String, Integer> BudLastTime;
 	public CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
 	public CostFunction<Budobject, Budobject> BudUserchosenCostFunction;
@@ -290,8 +296,9 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<BudTrackobject>();
 		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
-		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
-		AllBuds = new HashMap<String, ArrayList<Budobject>>();
+		AllBudpoints = new ConcurrentHashMap<String, ArrayList<Budpointobject>>(); 
+		AllBuds = new ConcurrentHashMap<String, ArrayList<Budobject>>();
+		AllBudcells = new ConcurrentHashMap<String, ArrayList<BCellobject>>();
 		ij = new ImageJ();
 		ij.ui().showUI();
 		if (ndims == 3) {
