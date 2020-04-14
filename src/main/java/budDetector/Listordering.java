@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.imglib2.KDTree;
+import net.imglib2.Localizable;
+import net.imglib2.Point;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.util.Pair;
@@ -120,6 +122,29 @@ public class Listordering {
 
 		return meanCord;
 	}
+	
+	
+	public static Localizable getIntMeanCord(List<RealLocalizable> truths) {
+
+		
+		Iterator<RealLocalizable> iter = truths.iterator();
+		
+		double Xmean = 0, Ymean = 0;
+		while (iter.hasNext()) {
+
+			RealLocalizable currentpair = iter.next();
+
+			RealLocalizable currentpoint = currentpair;
+
+			Xmean += currentpoint.getDoublePosition(0);
+			Ymean += currentpoint.getDoublePosition(1);
+
+		}
+		Point meanCord = new Point(new int[] { (int) (Xmean / truths.size()), (int) (Ymean / truths.size()) });
+
+		return meanCord;
+	}
+	
 	
 	/**
 	 * 

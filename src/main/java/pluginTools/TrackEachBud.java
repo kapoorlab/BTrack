@@ -50,10 +50,11 @@ public class TrackEachBud {
 	final int maxlabel;
 	int percent;
 	final ArrayList<Budobject> Budlist;
-	final ArrayList<Budpointobject> Budpointlist; 
+	final ArrayList<Budpointobject> Budpointlist;
 
-	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,ArrayList<Budobject> Budlist,ArrayList<Budpointobject> Budpointlist ,
-			final int t, final int maxlabel, final int percent) {
+	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, final int maxlabel,
+			final int percent) {
 
 		this.parent = parent;
 		this.CurrentViewInt = CurrentViewInt;
@@ -64,7 +65,7 @@ public class TrackEachBud {
 		this.Budpointlist = Budpointlist;
 
 	}
-	
+
 	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
 			final int t, final int maxlabel, final int percent) {
 
@@ -78,99 +79,105 @@ public class TrackEachBud {
 
 	}
 
-	
-	
-	public ArrayList<Budobject> returnBudlist(){
-		
-		
+	public ArrayList<Budobject> returnBudlist() {
+
 		return Budlist;
 	}
-	
-    public ArrayList<Budpointobject> returnBudpointlist(){
-		
-		
+
+	public ArrayList<Budpointobject> returnBudpointlist() {
+
 		return Budpointlist;
 	}
-	
+
 	public void computeBuds() {
-		
-		
-		
-		
+
 	}
+
 	public void displayBuds() {
 
 		int sidecutpixel = 10;
 		int nThreads = Runtime.getRuntime().availableProcessors();
-		
-		
+
 		String uniqueID = Integer.toString(parent.thirdDimension);
-		
-		
+
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		Set<Integer> copyList = parent.pixellist;
 		parent.overlay.clear();
+
+		if (parent.SegYelloworiginalimg != null) {
+			RandomAccessibleInterval<IntType> CurrentCellViewInt = utility.BudSlicer
+					.getCurrentBudView(parent.SegYelloworiginalimg, parent.thirdDimension, parent.thirdDimensionSize);
+
 	
+			Cursor<IntType> intcursor = Views.iterable(CurrentCellViewInt).localizingCursor();
+			HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
+			HashMap<Integer, Boolean> AllCellList = new HashMap<Integer, Boolean>();
+			RandomAccess<IntType> budintran = CurrentViewInt.randomAccess();
+
+			// Select all yellow cells
+			AllCellList.put(0, false);
+			while (intcursor.hasNext()) {
+
+				intcursor.fwd();
+				budintran.setPosition(intcursor);
+				int labelyellow = intcursor.get().get();
+				AllCellList.put(labelyellow, false);
+
+			}
+
+			// Select only inside cells
+			for (Integer labelyellow : AllCellList.keySet()) {
+
+				// For each bud get the list of points
+
+				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
+						.CurrentLabelBinaryImage(CurrentCellViewInt, labelyellow);
+				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+				Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(truths);
+				budintran.setPosition(cellcenterpoint);
+				int labelbud = budintran.get().get();
+
+				if (labelbud > 0 && labelyellow > 0) {
+
+					InsideCellList.put(labelyellow, true);
+
+				}
+
+			}
+
+			for (Integer labelyellow : InsideCellList.keySet()) {
+					Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
+							.CurrentLabelBinaryImage(CurrentCellViewInt, labelyellow);
+
+					// For each bud get the list of points
+					List<RealLocalizable> insidetruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+
+					
+					for (RealLocalizable insidetruth : insidetruths) {
+
+						Integer xPts = (int) insidetruth.getFloatPosition(0);
+						Integer yPts = (int) insidetruth.getFloatPosition(1);
+						OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
+						points.setStrokeColor(Color.YELLOW);
+						points.setStrokeWidth(2);
+						parent.overlay.add(points);
+
+					}
+			}
+
+			parent.imp.updateAndDraw();
+
+		}
 		while (setiter.hasNext()) {
 
 			int label = setiter.next();
 
 			if (label > 0) {
 
-		        if(parent.SegYelloworiginalimg!=null) {
-		        	RandomAccessibleInterval<IntType> CurrentViewInt = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg, parent.thirdDimension, parent.thirdDimensionSize);
-		        	Cursor<IntType> intcursor = Views.iterable(CurrentViewInt).localizingCursor();
-		        	HashMap<Integer, Boolean> DoneList = new HashMap<Integer, Boolean>();
-		        	
-		        	DoneList.put(0, false);
-		        	while(intcursor.hasNext()) {
-		        		
-		        		
-		        		intcursor.fwd();
-		        		
-		        		int labelyellow = intcursor.get().get();
-		        		DoneList.put(labelyellow, false);
-		        		
-		        		
-		        	}
-		        	
-		        	
-		        	
-		        	for(Integer labelyellow: DoneList.keySet())
-		        		
-		        		if(label > 0) {
-		        			
-						Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud.CurrentLabelBinaryImage(
-								CurrentViewInt, labelyellow);
-
-						// For each bud get the list of points
-						List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
-						
-				
-						
-						for(RealLocalizable truth:truths) {
-						
-						Integer xPts = (int) truth.getFloatPosition(0);	
-						Integer yPts = (int) truth.getFloatPosition(1);
-						OvalRoi points =  new OvalRoi(xPts, yPts,
-								2, 2);		
-						points.setStrokeColor(Color.YELLOW);
-						points.setStrokeWidth(2);
-						parent.overlay.add(points);
-						
-						}
-		        		}
-						
-		        	
-		        	
-		        	parent.imp.updateAndDraw();
-		        	
-		        }
-
 				// Input the integer image of bud with the label and output the binary border
-				// for that label
+				// for that label, first one is the border n second binary is the filled bud
 				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = CurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
@@ -197,8 +204,6 @@ public class TrackEachBud {
 
 		Iterator<Integer> setitersecond = copyList.iterator();
 
-		
-
 		HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
 		for (Integer Track : copyList) {
 
@@ -212,8 +217,6 @@ public class TrackEachBud {
 			int label = setitersecond.next();
 
 			if (label > 0) {
-
-		
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
@@ -232,8 +235,8 @@ public class TrackEachBud {
 						utility.BudProgressBar.SetProgressBar(parent.jpb,
 								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
-										+ (parent.pixellist.size() ));
-					Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
+										+ (parent.pixellist.size()));
+					Common(PairCurrentViewBit, truths, centerpoint, uniqueID, label);
 
 				}
 
@@ -253,7 +256,7 @@ public class TrackEachBud {
 
 							if (parent.jpb != null)
 								utility.BudProgressBar.SetProgressBar(parent.jpb,
-										100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size() ),
+										100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 										"No buddies here! What are you doing?");
 
 						}
@@ -282,7 +285,7 @@ public class TrackEachBud {
 														"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize
 																+ " Total Buddies = " + (parent.pixellist.size()));
 
-											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
+											Common(PairCurrentViewBit, truths, centerpoint, uniqueID, label);
 
 										}
 
@@ -293,16 +296,11 @@ public class TrackEachBud {
 			}
 
 		}
-		
-	
-		
-		
 
 	}
 
 	public void Common(Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit,
-			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
-			int label) {
+			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID, int label) {
 
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
@@ -314,28 +312,22 @@ public class TrackEachBud {
 
 		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons, ops);
 
-	
-		if(!CovistoKalmanPanel.Skeletontime.isEnabled()) {
-		for (RealLocalizable budpoints : skeletonEndPoints) {
+		if (!CovistoKalmanPanel.Skeletontime.isEnabled()) {
+			for (RealLocalizable budpoints : skeletonEndPoints) {
 
-			Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
-					truths.size() * parent.calibration, label,
-					new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
-					parent.thirdDimension, 0);
+				Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
+						truths.size() * parent.calibration, label,
+						new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
+						parent.thirdDimension, 0);
 
-			Budpointlist.add(Budpoint);
+				Budpointlist.add(Budpoint);
+
+			}
+			Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
+					truths.size() * parent.calibration);
+			Budlist.add(Curreentbud);
 
 		}
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
-				truths.size() * parent.calibration);
-		Budlist.add(Curreentbud);
-
-		
-		
-		
-		}
-		
-
 
 		DisplayListOverlay.ArrowDisplay(parent,
 				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,

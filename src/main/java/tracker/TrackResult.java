@@ -71,7 +71,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 	
 		if(parent.jpb!=null )
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
-					"Bud Tracking Done" );
+					"Bud Tracking Done Click on Enter Mastadon for cell tracking" );
 		
 		
 
