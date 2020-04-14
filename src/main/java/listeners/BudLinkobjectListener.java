@@ -52,7 +52,7 @@ public class BudLinkobjectListener implements ActionListener {
 		TrackResult track = new TrackResult(parent);
 		track.execute();
 		
-		
+		parent.Cellbutton.setEnabled(true);
 
 	}
 

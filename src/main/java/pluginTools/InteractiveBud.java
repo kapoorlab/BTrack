@@ -578,7 +578,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public void Card() {
 		
 		
-		
+		Cellbutton.setEnabled(false);
 		CardLayout cl = new CardLayout();
 
 		c.insets = new Insets(5, 5, 5, 5);
