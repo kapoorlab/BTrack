@@ -17,6 +17,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public final ArrayList<Budobject> mybuds;
 	// Growth points of the bud
 	public final ArrayList<Budpointobject> mybudpoints;
+	
+	public final Cellobject currentcell;
 	// Location of the cell
 	public double[] Location;
 	// Distance from center of cell to nearest bud growth point
@@ -24,27 +26,21 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	// Distance from center of cell to nearest bud point
 	public double closestBudPoint;
 	
-	// Other non important cell properties
-	public double cellArea;
-	public double TotalIntensity;
-	public double AverageIntensity;
 	
 	
 	
-	public BCellobject(final ArrayList<Budobject> mybuds, final ArrayList<Budpointobject> mybudpoints, final double[] Location, final double closestGrowthPoint, final double closestBudPoint,
-			final double cellArea, final double TotalIntenity, final double AverageIntensity) {
+	
+	public BCellobject(final ArrayList<Budobject> mybuds, final ArrayList<Budpointobject> mybudpoints, final Cellobject currentcell, final double closestGrowthPoint, final double closestBudPoint) {
 		
 		
 		
 		super(3);
 		this.mybuds = mybuds;
 		this.mybudpoints = mybudpoints;
-		this.Location = Location;
+		this.currentcell = currentcell;
 		this.closestGrowthPoint = closestGrowthPoint;
 		this.closestBudPoint = closestBudPoint;
-		this.cellArea = cellArea;
-		this.TotalIntensity = TotalIntenity;
-		this.AverageIntensity = AverageIntensity;
+		
 		
 	}
 

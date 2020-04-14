@@ -10,8 +10,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Cellobject;
 import budDetector.Distance;
 import ij.ImagePlus;
 import ij.gui.OvalRoi;
@@ -40,30 +42,35 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import skeleton.*;
+import utility.GetNearest;
 import displayBud.DisplayListOverlay;
 
 public class TrackEachBud {
 
 	final InteractiveBud parent;
 	final RandomAccessibleInterval<IntType> CurrentViewInt;
+	final RandomAccessibleInterval<IntType> CurrentViewYellowInt;
 	final int t;
 	final int maxlabel;
 	int percent;
 	final ArrayList<Budobject> Budlist;
 	final ArrayList<Budpointobject> Budpointlist;
-
+	final ArrayList<BCellobject> Budcelllist;
+    ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
+    
 	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
 			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, final int maxlabel,
 			final int percent) {
 
 		this.parent = parent;
 		this.CurrentViewInt = CurrentViewInt;
+		this.CurrentViewYellowInt = null;
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
 		this.Budlist = Budlist;
 		this.Budpointlist = Budpointlist;
-
+        this.Budcelllist = null;
 	}
 
 	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
@@ -71,11 +78,29 @@ public class TrackEachBud {
 
 		this.parent = parent;
 		this.CurrentViewInt = CurrentViewInt;
+		this.CurrentViewYellowInt = null;
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
 		this.Budlist = null;
 		this.Budpointlist = null;
+        this.Budcelllist = null;
+
+	}
+	
+	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt, final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist,ArrayList<BCellobject> Budcelllist, final int t, final int maxlabel,
+			final int percent) {
+
+		this.parent = parent;
+		this.CurrentViewInt = CurrentViewInt;
+		this.CurrentViewYellowInt = CurrentViewYellowInt;
+		this.t = t;
+		this.maxlabel = maxlabel;
+		this.percent = percent;
+		this.Budlist = Budlist;
+		this.Budpointlist = Budpointlist;
+		this.Budcelllist = Budcelllist;
 
 	}
 
@@ -88,10 +113,14 @@ public class TrackEachBud {
 
 		return Budpointlist;
 	}
+	
+	public ArrayList<BCellobject> returnBudcelllist() {
 
-	public void computeBuds() {
-
+		return Budcelllist;
 	}
+
+
+	
 
 	public void displayBuds() {
 
@@ -106,70 +135,11 @@ public class TrackEachBud {
 		Set<Integer> copyList = parent.pixellist;
 		parent.overlay.clear();
 
-		if (parent.SegYelloworiginalimg != null) {
-			RandomAccessibleInterval<IntType> CurrentCellViewInt = utility.BudSlicer
-					.getCurrentBudView(parent.SegYelloworiginalimg, parent.thirdDimension, parent.thirdDimensionSize);
+		if (parent.SegYelloworiginalimg != null) 
+		
+          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
 
-	
-			Cursor<IntType> intcursor = Views.iterable(CurrentCellViewInt).localizingCursor();
-			HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
-			HashMap<Integer, Boolean> AllCellList = new HashMap<Integer, Boolean>();
-			RandomAccess<IntType> budintran = CurrentViewInt.randomAccess();
-
-			// Select all yellow cells
-			AllCellList.put(0, false);
-			while (intcursor.hasNext()) {
-
-				intcursor.fwd();
-				budintran.setPosition(intcursor);
-				int labelyellow = intcursor.get().get();
-				AllCellList.put(labelyellow, false);
-
-			}
-
-			// Select only inside cells
-			for (Integer labelyellow : AllCellList.keySet()) {
-
-				// For each bud get the list of points
-
-				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
-						.CurrentLabelBinaryImage(CurrentCellViewInt, labelyellow);
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
-				Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(truths);
-				budintran.setPosition(cellcenterpoint);
-				int labelbud = budintran.get().get();
-
-				if (labelbud > 0 && labelyellow > 0) {
-
-					InsideCellList.put(labelyellow, true);
-
-				}
-
-			}
-
-			for (Integer labelyellow : InsideCellList.keySet()) {
-					Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
-							.CurrentLabelBinaryImage(CurrentCellViewInt, labelyellow);
-
-					// For each bud get the list of points
-					List<RealLocalizable> insidetruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
-
-					
-					for (RealLocalizable insidetruth : insidetruths) {
-
-						Integer xPts = (int) insidetruth.getFloatPosition(0);
-						Integer yPts = (int) insidetruth.getFloatPosition(1);
-						OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
-						points.setStrokeColor(Color.YELLOW);
-						points.setStrokeWidth(2);
-						parent.overlay.add(points);
-
-					}
-			}
-
-			parent.imp.updateAndDraw();
-
-		}
+		
 		while (setiter.hasNext()) {
 
 			int label = setiter.next();
@@ -323,9 +293,28 @@ public class TrackEachBud {
 				Budpointlist.add(Budpoint);
 
 			}
-			Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
+			Budobject Currentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
 					truths.size() * parent.calibration);
-			Budlist.add(Curreentbud);
+			Budlist.add(Currentbud);
+			ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Currentbud);
+			
+			for(Cellobject currentbudcell:budcelllist) {
+				
+				Localizable centercell = currentbudcell.Location;
+				// For each cell get nearest bud growth point
+				RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(skeletonEndPoints, centercell);
+				// Get distance between the center of cell and bud growth point
+				double closestGrowthPoint = Distance.DistanceSqrt(centercell, closestdynamicskel);
+				// For each cell get nearest bud point
+				RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
+				// and the distance
+				double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
+				
+				// Make the bud n cell object, each cell has all information about the bud n itself 
+				BCellobject budncell = new BCellobject(Budlist, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint);
+                Budcelllist.add(budncell); 
+			}
+			
 
 		}
 

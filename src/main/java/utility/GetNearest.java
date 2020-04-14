@@ -1,17 +1,161 @@
 package utility;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import budDetector.Budobject;
+import budDetector.Cellobject;
+import budDetector.Distance;
+import displayBud.DisplayListOverlay;
 import ij.gui.OvalRoi;
 import ij.gui.Roi;
+import net.imglib2.Cursor;
 import net.imglib2.KDTree;
+import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.util.Pair;
+import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
+import pluginTools.TrackEachBud;
 
 public class GetNearest {
+	
+	
+	
+	public static ArrayList<Cellobject> getLabelInteriorCells(InteractiveBud parent,final RandomAccessibleInterval<IntType> CurrentViewInt,
+			ArrayList<Cellobject> InteriorCells,Budobject Currentbud) {
+		
+		ArrayList<Cellobject> AllLabelcells = new ArrayList<Cellobject>();
+		
+		RealLocalizable centerpoint = Currentbud.Budcenter;
+		
+		List<RealLocalizable> skelpoints = Currentbud.dynamiclinelist;
+		
+		int ID = Currentbud.ID;
+		
+		RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
+		
+		for(Cellobject currentcell:InteriorCells) {
+			
+			Localizable cellcenter = currentcell.Location;
+			intranac.setPosition(cellcenter);
+			int label = intranac.get().get();
+			
+			if(label == ID) {
+				
+				
+				AllLabelcells.add(currentcell);
+			}
+			
+			
+		}
+		
+		
+		return AllLabelcells;
+		
+	}
+	
+	
+	public static boolean isInterior(List<RealLocalizable> skelpoints, RealLocalizable centerpoint, RealLocalizable targetpoint) {
+		
+		
+		double distbudcenter = Distance.DistanceSqrt(centerpoint, targetpoint);
+		
+		RealLocalizable skelpoint = getNearestskelPoint(skelpoints, targetpoint);
+		
+		double distcenterskel = Distance.DistanceSqrt(centerpoint, skelpoint);
+		
+        boolean isInterior = (distbudcenter < distcenterskel)?true:false; 		
+		
+		return isInterior;
+	}
+	
+	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
+			final RandomAccessibleInterval<IntType> CurrentViewYellowInt) {
+		
+		
+		Cursor<IntType> intcursor = Views.iterable(CurrentViewYellowInt).localizingCursor();
+		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
+		HashMap<Integer, Boolean> AllCellList = new HashMap<Integer, Boolean>();
+		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
+		RandomAccess<IntType> budintran = CurrentViewInt.randomAccess();
+
+		// Select all yellow cells
+		AllCellList.put(0, false);
+		while (intcursor.hasNext()) {
+
+			intcursor.fwd();
+			budintran.setPosition(intcursor);
+			int labelyellow = intcursor.get().get();
+			AllCellList.put(labelyellow, false);
+
+		}
+		// Select only inside cells
+					for (Integer labelyellow : AllCellList.keySet()) {
+
+						// For each bud get the list of points
+
+						Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
+								.CurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
+						
+						List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+						
+						Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(truths);
+						
+						
+						budintran.setPosition(cellcenterpoint);
+						
+						
+						int labelbud = budintran.get().get();
+
+						if (labelbud > 0 && labelyellow > 0) {
+
+							InsideCellList.put(labelyellow, true);
+
+			
+							
+						}
+
+					}
+					
+
+					for (Integer labelyellow : InsideCellList.keySet()) {
+							Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
+									.CurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
+
+							// For each bud get the list of points
+							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getB());
+							double cellArea = interiorcelltruths.size() * parent.calibration;
+							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
+							
+							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, cellArea);
+							Allcells.add(insidecells);
+							for (RealLocalizable insidetruth : bordercelltruths) {
+
+								Integer xPts = (int) insidetruth.getFloatPosition(0);
+								Integer yPts = (int) insidetruth.getFloatPosition(1);
+								OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
+								points.setStrokeColor(Color.YELLOW);
+								points.setStrokeWidth(2);
+								parent.overlay.add(points);
+
+							}
+					}
+					
+					parent.imp.updateAndDraw();
+		return Allcells;
+		
+	}
+	
 	
 	public static OvalRoi getNearestRois(ArrayList<OvalRoi> Allrois, double[] Clickedpoint) {
 
@@ -47,6 +191,46 @@ public class GetNearest {
 
 		return KDtreeroi;
 	}
+	
+	
+public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> skelPoints, RealLocalizable ClickedPoint) {
+		
+		
+		RealLocalizable KDtreeroi = null;
+		
+		
+        List<RealLocalizable> Allrois = skelPoints;
+		final List<RealPoint> targetCoords = new ArrayList<RealPoint>(Allrois.size());
+		final List<FlagNode<RealLocalizable>> targetNodes = new ArrayList<FlagNode<RealLocalizable>>(Allrois.size());
+		for (int index = 0; index < Allrois.size(); ++index) {
+
+			RealLocalizable r = Allrois.get(index);
+
+			targetCoords.add(new RealPoint(r));
+
+			targetNodes.add(new FlagNode<RealLocalizable>(Allrois.get(index)));
+
+		}
+
+		if (targetNodes.size() > 0 && targetCoords.size() > 0) {
+
+			final KDTree<FlagNode<RealLocalizable>> Tree = new KDTree<FlagNode<RealLocalizable>>(targetNodes, targetCoords);
+
+			final NNFlagsearchKDtree<RealLocalizable> Search = new NNFlagsearchKDtree<RealLocalizable>(Tree);
+
+			final RealLocalizable source = ClickedPoint;
+			final RealPoint sourceCoords = new RealPoint(source);
+			Search.search(sourceCoords);
+			final FlagNode<RealLocalizable> targetNode = Search.getSampler().get();
+
+			KDtreeroi = targetNode.getValue();
+
+		}
+
+		return KDtreeroi;
+		
+	}
+	
 	public static RealLocalizable getNearestPoint(final InteractiveBud parent, RealLocalizable ClickedPoint) {
 		
 		
