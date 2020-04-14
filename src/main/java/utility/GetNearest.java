@@ -78,25 +78,22 @@ public class GetNearest {
 		return isInterior;
 	}
 	
-	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
-			final RandomAccessibleInterval<IntType> CurrentViewYellowInt) {
-		
+	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt, final RandomAccessibleInterval<IntType> CurrentViewYellowInt) {
 		
 		Cursor<IntType> intcursor = Views.iterable(CurrentViewYellowInt).localizingCursor();
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> AllCellList = new HashMap<Integer, Boolean>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 		RandomAccess<IntType> budintran = CurrentViewInt.randomAccess();
-
 		// Select all yellow cells
 		AllCellList.put(0, false);
+		
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();
 			budintran.setPosition(intcursor);
 			int labelyellow = intcursor.get().get();
 			AllCellList.put(labelyellow, false);
-
 		}
 		// Select only inside cells
 					for (Integer labelyellow : AllCellList.keySet()) {
@@ -136,7 +133,6 @@ public class GetNearest {
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getB());
 							double cellArea = interiorcelltruths.size() * parent.calibration;
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
-							
 							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, cellArea);
 							Allcells.add(insidecells);
 							for (RealLocalizable insidetruth : bordercelltruths) {

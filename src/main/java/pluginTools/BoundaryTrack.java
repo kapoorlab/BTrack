@@ -6,8 +6,10 @@ import java.util.Iterator;
 
 import javax.swing.JProgressBar;
 
+import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Cellobject;
 import ij.IJ;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
@@ -47,9 +49,18 @@ public class BoundaryTrack {
 		computeMinMax(Views.iterable(BudSeg), min, max);
 		
 		
-		TrackEachBud compute = new TrackEachBud(parent, BudSeg, parent.thirdDimension, max.get(), percent);
+		if(parent.SegYelloworiginalimg!=null) {
+			RandomAccessibleInterval<IntType> BudYellowSeg = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
+					(int)parent.thirdDimensionSize);
+		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg, parent.thirdDimension, max.get(), percent);
+		    compute.displayBuds();
+		}
 		
-		compute.displayBuds();
+		else {
+		  TrackEachBud compute = new TrackEachBud(parent, BudSeg,  parent.thirdDimension, max.get(), percent);
+			
+		  compute.displayBuds();
+		}
 		
 	}
 	
@@ -94,9 +105,20 @@ public class BoundaryTrack {
 		computeMinMax(Views.iterable(BudSeg), min, max);
 		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
 		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
-		TrackEachBud compute = new TrackEachBud(parent, BudSeg,Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
+		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
+		if(parent.SegYelloworiginalimg!=null) {
+			RandomAccessibleInterval<IntType> BudYellowSeg = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
+					(int)parent.thirdDimensionSize);
+		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg, Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
+		    compute.displayBuds();
+		}
 		
-		compute.displayBuds();
+		else {
+		  TrackEachBud compute = new TrackEachBud(parent, BudSeg, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
+			
+		  compute.displayBuds();
+		}
+		
 			parent.AllBuds.put(Integer.toString(t), Budlist);
 			
 

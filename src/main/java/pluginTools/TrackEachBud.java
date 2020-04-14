@@ -89,6 +89,22 @@ public class TrackEachBud {
 	}
 	
 	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt, final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
+			final int t, final int maxlabel, final int percent) {
+
+		this.parent = parent;
+		this.CurrentViewInt = CurrentViewInt;
+		this.CurrentViewYellowInt = CurrentViewYellowInt;
+		this.t = t;
+		this.maxlabel = maxlabel;
+		this.percent = percent;
+		this.Budlist = null;
+		this.Budpointlist = null;
+        this.Budcelllist = null;
+
+	}
+	
+	
+	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt, final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
 			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist,ArrayList<BCellobject> Budcelllist, final int t, final int maxlabel,
 			final int percent) {
 
@@ -135,11 +151,12 @@ public class TrackEachBud {
 		Set<Integer> copyList = parent.pixellist;
 		parent.overlay.clear();
 
-		if (parent.SegYelloworiginalimg != null) 
+		
+		if (parent.SegYelloworiginalimg != null) {
 		
           celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
 
-		
+		}
 		while (setiter.hasNext()) {
 
 			int label = setiter.next();
@@ -171,7 +188,6 @@ public class TrackEachBud {
 			}
 
 		}
-
 		Iterator<Integer> setitersecond = copyList.iterator();
 
 		HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
@@ -180,7 +196,6 @@ public class TrackEachBud {
 			LabelCovered.put(Track, false);
 
 		}
-
 		while (setitersecond.hasNext()) {
 
 			percent++;
@@ -207,7 +222,6 @@ public class TrackEachBud {
 								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
 										+ (parent.pixellist.size()));
 					Common(PairCurrentViewBit, truths, centerpoint, uniqueID, label);
-
 				}
 
 				int ndims = centerpoint.numDimensions();
@@ -279,7 +293,6 @@ public class TrackEachBud {
 		skelmake.setClosingRadius(2);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
-
 		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons, ops);
 
 		if (!CovistoKalmanPanel.Skeletontime.isEnabled()) {
@@ -296,8 +309,9 @@ public class TrackEachBud {
 			Budobject Currentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
 					truths.size() * parent.calibration);
 			Budlist.add(Currentbud);
+			System.out.println(celllist.size());
 			ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Currentbud);
-			
+			System.out.println(budcelllist.size());
 			for(Cellobject currentbudcell:budcelllist) {
 				
 				Localizable centercell = currentbudcell.Location;

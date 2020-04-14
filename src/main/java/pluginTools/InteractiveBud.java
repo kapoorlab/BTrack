@@ -111,6 +111,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	
 	
 	public RandomAccessibleInterval<ARGBType> CurrentView;
+	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
 	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
 	public int ndims;
@@ -155,7 +156,8 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public XYSeriesCollection Velocitydataset;
-	public ImageJ ij; 
+	public ImageJ ij = new ImageJ();
+	
 	public JFreeChart chartVelocity;
 	public double calibration;
 	public double timecal;
@@ -201,7 +203,6 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
 		this.jFreeChartFrameRate.setVisible(false);
 		this.inputstring = inputstring;
-		
 		
 	}
 	
@@ -280,7 +281,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	@Override
 	public void run(String arg0) {
 
-		
+	
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
@@ -299,8 +300,6 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		AllBudpoints = new ConcurrentHashMap<String, ArrayList<Budpointobject>>(); 
 		AllBuds = new ConcurrentHashMap<String, ArrayList<Budobject>>();
 		AllBudcells = new ConcurrentHashMap<String, ArrayList<BCellobject>>();
-		ij = new ImageJ();
-		ij.ui().showUI();
 		if (ndims == 3) {
 
 			thirdDimension = 1;
@@ -311,8 +310,11 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 			maxframegap = thirdDimensionSize / 4;
 		}
 		setTime(thirdDimension);
-		CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 		
+		
+		CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+		if(SegYelloworiginalimg!=null)
+		CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
 		imp = ImageJFunctions.show(CurrentView, "Original Image");
 		imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 		
@@ -491,6 +493,8 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 			String TID = Integer.toString( thirdDimension);
 			AccountedT.put(TID,  thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+			if(SegYelloworiginalimg!=null)
+				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
 		repaintView(CurrentView);
 		
 		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
