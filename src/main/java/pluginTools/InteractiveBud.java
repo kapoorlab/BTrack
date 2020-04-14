@@ -3,6 +3,7 @@ package pluginTools;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -563,7 +564,8 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
 	
-	public Label explain = new Label("Left click selcts/deselects buds (first step)" , Label.CENTER);
+	public Label explain = new Label("Left click selcts/deselects buds (Label 1 chosen by default)" , Label.CENTER);
+	
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
 	public Label fourthexplain = new Label("Click Skeletonize buddies after selection" , Label.CENTER);
 	public String timestring = "Current T";
@@ -588,7 +590,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public final JButton ChooseDirectory = new JButton("Choose Directory to save results in");
 	public void Card() {
 		
-		
+	
 		Cellbutton.setEnabled(false);
 		CardLayout cl = new CardLayout();
 

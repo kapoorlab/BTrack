@@ -214,8 +214,12 @@ public class TrackEachBud {
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 
+				
+				
 				if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
 
+					if(label == 1)
+						 parent.ChosenBudcenter.add(centerpoint);
 					if (parent.jpb != null)
 						utility.BudProgressBar.SetProgressBar(parent.jpb,
 								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
@@ -309,9 +313,7 @@ public class TrackEachBud {
 			Budobject Currentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
 					truths.size() * parent.calibration);
 			Budlist.add(Currentbud);
-			System.out.println(celllist.size());
 			ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Currentbud);
-			System.out.println(budcelllist.size());
 			for(Cellobject currentbudcell:budcelllist) {
 				
 				Localizable centercell = currentbudcell.Location;
