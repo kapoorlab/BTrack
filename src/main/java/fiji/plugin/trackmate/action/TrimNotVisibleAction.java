@@ -7,9 +7,9 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.TrackModel;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
@@ -22,7 +22,7 @@ public class TrimNotVisibleAction extends AbstractTMAction
 			+ "This action trims the tracking data by removing anything that is "
 			+ "not marked as visible. "
 			+ "<p>"
-			+ "The spots that do not belong to a visible track will be "
+			+ "The BCellobjects that do not belong to a visible track will be "
 			+ "removed. The tracks that are not marked "
 			+ "as visible will be removed as well. "
 			+ "<p>"
@@ -47,24 +47,24 @@ public class TrimNotVisibleAction extends AbstractTMAction
 		final Model model = trackmate.getModel();
 		final TrackModel tm = model.getTrackModel();
 
-		final SpotCollection spots = new SpotCollection();
-		spots.setNumThreads( trackmate.getNumThreads() );
-		final Collection< Spot > toRemove = new ArrayList<>();
+		final BCellobjectCollection BCellobjects = new BCellobjectCollection();
+		BCellobjects.setNumThreads( trackmate.getNumThreads() );
+		final Collection< BCellobject > toRemove = new ArrayList<>();
 
 		for ( final Integer trackID : tm.unsortedTrackIDs( false ) )
 		{
 			if ( !tm.isVisible( trackID ) )
 			{
-				for ( final Spot spot : tm.trackSpots( trackID ) )
+				for ( final BCellobject BCellobject : tm.trackBCellobjects( trackID ) )
 				{
-					toRemove.add( spot );
+					toRemove.add( BCellobject );
 				}
 			}
 			else
 			{
-				for ( final Spot spot : tm.trackSpots( trackID ) )
+				for ( final BCellobject BCellobject : tm.trackBCellobjects( trackID ) )
 				{
-					spots.add( spot, spot.getFeature( Spot.FRAME ).intValue() );
+					BCellobjects.add( BCellobject, BCellobject.getFeature( BCellobject.POSITION_T ).intValue() );
 				}
 			}
 
@@ -72,11 +72,11 @@ public class TrimNotVisibleAction extends AbstractTMAction
 		model.beginUpdate();
 		try
 		{
-			for ( final Spot spot : toRemove )
+			for ( final BCellobject BCellobject : toRemove )
 			{
-				model.removeSpot( spot );
+				model.removeBCellobject( BCellobject );
 			}
-			model.setSpots( spots, false );
+			model.setBCellobjects( BCellobjects, false );
 		}
 		finally
 		{
@@ -106,16 +106,18 @@ public class TrimNotVisibleAction extends AbstractTMAction
 			return new TrimNotVisibleAction();
 		}
 
-		@Override
-		public ImageIcon getIcon()
-		{
-			return ICON;
-		}
+	
 
 		@Override
 		public String getName()
 		{
 			return NAME;
+		}
+
+		@Override
+		public ImageIcon getIcon() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

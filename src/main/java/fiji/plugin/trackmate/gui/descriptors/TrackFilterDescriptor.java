@@ -54,7 +54,6 @@ public class TrackFilterDescriptor implements WizardPanelDescriptor
 	public void aboutToDisplayPanel()
 	{
 		component = new FilterGuiPanel( trackmate.getModel(), Arrays.asList( new Category[] { Category.TRACKS, Category.DEFAULT } ) );
-		component.setFilters( trackmate.getSettings().getTrackFilters() );
 		component.setColorFeature( TrackIndexAnalyzer.TRACK_INDEX );
 		component.addActionListener( new ActionListener()
 		{

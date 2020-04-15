@@ -2,14 +2,17 @@ package budDetector;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.util.AlphanumComparator;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 
@@ -34,6 +37,29 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public int time;
 	private final int ID;
 	
+	/** A user-supplied name for this spot. */
+	private String name;
+	
+	
+	public BCellobject( final Cellobject currentcell,  final int time) {
+		
+		
+		
+		super(3);
+		this.ID = IDcounter.incrementAndGet();
+		putFeature( POSITION_X, Double.valueOf( currentcell.Location.getDoublePosition(0) ) );
+		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
+		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
+		putFeature( POSITION_T, Double.valueOf( time) );
+		this.mybud = null;
+		this.mybudpoints = null;
+		this.currentcell = currentcell;
+		this.closestGrowthPoint = 0;
+		this.closestBudPoint = 0;
+		this.time = time;
+		this.name = "ID" + ID;
+		
+	}
 	
 	public BCellobject(final Budobject mybud, final ArrayList<Budpointobject> mybudpoints, final Cellobject currentcell, final double closestGrowthPoint, final double closestBudPoint, final int time) {
 		
@@ -51,6 +77,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		this.closestGrowthPoint = closestGrowthPoint;
 		this.closestBudPoint = closestBudPoint;
 		this.time = time;
+		this.name = "ID" + ID;
 		
 	}
 
@@ -82,8 +109,25 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public final static Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( totalfeatures );
 
 	/** The 7 privileged spot feature isInt flags. */
-	public final static Map< String, Boolean > IS_INT = new HashMap< >( 3 );
+	public final static Map< String, Boolean > IS_INT = new HashMap< >( totalfeatures );
+	/**
+	 * @return the name for this Spot.
+	 */
+	public String getName()
+	{
+		return this.name;
+	}
 
+	/**
+	 * Set the name of this Spot.
+	 * 
+	 * @param name
+	 *            the name to use.
+	 */
+	public void setName( final String name )
+	{
+		this.name = name;
+	}
 	static
 	{
 		FEATURES.add( POSITION_X );
@@ -195,6 +239,36 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		final double f2 = s.getFeature( feature ).doubleValue();
 		return f1 - f2;
 	}
+	
+	public double normalizeDiffTo( final BCellobject s, final String feature )
+	{
+		final double a = features.get( feature ).doubleValue();
+		final double b = s.getFeature( feature ).doubleValue();
+		if ( a == -b )
+			return 0d;
+		
+		return Math.abs( a - b ) / ( ( a + b ) / 2 );
+	}
+	public final static Comparator< BCellobject > featureComparator( final String feature )
+	{
+		final Comparator< BCellobject > comparator = new Comparator< BCellobject >()
+		{
+			@Override
+			public int compare( final BCellobject o1, final BCellobject o2 )
+			{
+				final double diff = o2.diffTo( o1, feature );
+				if ( diff == 0 )
+					return 0;
+				else if ( diff < 0 )
+					return 1;
+				else
+					return -1;
+			}
+		};
+		return comparator;
+	}
+	/** A comparator used to sort spots by ascending time frame. */
+	public final static Comparator<BCellobject> frameComparator = featureComparator( POSITION_T );
 	/**
 	 * Returns the squared distance between two clouds.
 	 *
@@ -235,5 +309,31 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			return distance;
 	}
 
+	/**
+	 * A comparator used to sort spots by name. The comparison uses numerical
+	 * natural sorting, So that "Spot_4" comes before "Spot_122".
+	 */
+	public final static Comparator< BCellobject > nameComparator = new Comparator< BCellobject >()
+	{
+		private final AlphanumComparator comparator = AlphanumComparator.instance;
+
+		@Override
+		public int compare( final BCellobject o1, final BCellobject o2 )
+		{
+			return comparator.compare( o1.getName(), o2.getName() );
+		}
+	};
+
+
+	/**
+	 * Exposes the storage map of features for this spot. Altering the returned
+	 * map will alter the spot.
+	 *
+	 * @return a map of {@link String}s to {@link Double}s.
+	 */
+	public Map< String, Double > getFeatures()
+	{
+		return features;
+	}
 
 }

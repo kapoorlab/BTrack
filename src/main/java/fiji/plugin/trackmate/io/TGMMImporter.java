@@ -26,10 +26,10 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
+import budDetector.BCellobject;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
 
 public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 {
@@ -141,8 +141,8 @@ public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 		final long start = System.currentTimeMillis();
 
 		model = new Model();
-		final SpotCollection sc = new SpotCollection();
-		final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph = new SimpleWeightedGraph< >( DefaultWeightedEdge.class );
+		final BCellobjectCollection sc = new BCellobjectCollection();
+		final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph = new SimpleWeightedGraph< >( DefaultWeightedEdge.class );
 
 		final double[] targetCoordsHolder = new double[ 3 ];
 		final double[] sourceCoordsHolder = new double[ 3 ];
@@ -194,8 +194,8 @@ public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 		{
 			final SAXBuilder saxBuilder = new SAXBuilder();
 
-			Map< Integer, Spot > previousSpotID = null;
-			Map< Integer, Spot > currentSpotID;
+			Map< Integer, BCellobject > previousBCellobjectID = null;
+			Map< Integer, BCellobject > currentBCellobjectID;
 
 			for ( int t = 0; t < frames.length; t++ )
 			{
@@ -207,13 +207,13 @@ public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 				final Element root = doc.getRootElement();
 				final List< Element > detectionEls = root.getChildren( XML_DETECTION_NAME );
 
-				final Collection< Spot > spots = new ArrayList< >( detectionEls.size() );
+				final Collection< BCellobject > BCellobjects = new ArrayList< >( detectionEls.size() );
 
 				/*
 				 * Parse all detections
 				 */
 
-				currentSpotID = new HashMap< >( detectionEls.size() );
+				currentBCellobjectID = new HashMap< >( detectionEls.size() );
 
 				for ( final Element detectionEl : detectionEls )
 				{
@@ -353,29 +353,11 @@ public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 						final double radius = nSigmas * Util.average( radii );
 
 						/*
-						 * Make a spot and add it to this frame collection.
+						 * Make a BCellobject and add it to this frame collection.
 						 */
 
-						final Spot spot = new Spot( mx, my, mz, radius, score, lineage + " (" + id + ")" );
-						spots.add( spot );
-						currentSpotID.put( Integer.valueOf( id ), spot );
+		
 
-						graph.addVertex( spot );
-						if ( parent >= 0 && previousSpotID != null )
-						{
-							final Spot source = previousSpotID.get( Integer.valueOf( parent ) );
-							if ( null == source )
-							{
-								System.out.println( BASE_ERROR_MSG + "The parent of the current spot (frame " + frames[ t ] + ", id = " + id + " could not be found (was expected in frame " + ( frames[ t ] - 1 ) + " with id = " + parent + ".\n" );
-								continue;
-							}
-							final DefaultWeightedEdge edge = graph.addEdge( source, spot );
-							if ( null == edge )
-							{
-								System.out.println( BASE_ERROR_MSG + "Trouble adding edge between " + source + " and " + spot + ". Edge already exists?" );
-								continue;
-							}
-						}
 					}
 					catch ( final NumberFormatException nfe )
 					{
@@ -387,12 +369,12 @@ public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 				}
 
 				/*
-				 * Finished inspecting a frame. Store it in the spot collection.
+				 * Finished inspecting a frame. Store it in the BCellobject collection.
 				 */
 
-				sc.put( frames[ t ], spots );
-				previousSpotID = currentSpotID;
-				logger.log( "Found " + spots.size() + " spots.\n" );
+				sc.put( frames[ t ], BCellobjects );
+				previousBCellobjectID = currentBCellobjectID;
+				logger.log( "Found " + BCellobjects.size() + " BCellobjects.\n" );
 				logger.setProgress( ( double ) t / frames.length );
 			}
 		}
@@ -408,8 +390,7 @@ public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 		}
 		finally
 		{
-			sc.setVisible( true );
-			model.setSpots( sc, false );
+			model.setBCellobjects( sc, false );
 			model.setTracks( graph, false );
 
 			final long end = System.currentTimeMillis();

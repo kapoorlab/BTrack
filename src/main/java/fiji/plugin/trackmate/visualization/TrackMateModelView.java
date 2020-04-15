@@ -3,9 +3,8 @@ package fiji.plugin.trackmate.visualization;
 import java.awt.Color;
 import java.util.Map;
 
-
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
 
 public interface TrackMateModelView
@@ -59,29 +58,29 @@ public interface TrackMateModelView
 	public static final String KEY_TRACK_COLORING = "TrackColoring";
 
 	/**
-	 * Defines the key for the spot visibility. Values are boolean. If
-	 * <code>false</code>, spots are not visible.
+	 * Defines the key for the BCellobject visibility. Values are boolean. If
+	 * <code>false</code>, BCellobjects are not visible.
 	 */
-	public static final String KEY_SPOTS_VISIBLE = "SpotsVisible";
+	public static final String KEY_BCellobjectS_VISIBLE = "BCellobjectsVisible";
 
 	/**
-	 * Defines the key for the spot name display. Values are boolean. If
-	 * <code>false</code>, spot names are not visible.
+	 * Defines the key for the BCellobject name display. Values are boolean. If
+	 * <code>false</code>, BCellobject names are not visible.
 	 */
-	public static final String KEY_DISPLAY_SPOT_NAMES = "DisplaySpotNames";
+	public static final String KEY_DISPLAY_BCellobject_NAMES = "DisplayBCellobjectNames";
 
 	/**
-	 * Defines the key for the spot radius ratio. Value should be a positive
-	 * {@link Double} object. Spots will be rendered with a radius equals to
+	 * Defines the key for the BCellobject radius ratio. Value should be a positive
+	 * {@link Double} object. BCellobjects will be rendered with a radius equals to
 	 * their actual radius multiplied by this ratio.
 	 */
-	public static final String KEY_SPOT_RADIUS_RATIO = "SpotRadiusRatio";
+	public static final String KEY_BCellobject_RADIUS_RATIO = "BCellobjectRadiusRatio";
 
 	/**
-	 * Defines the key for the spot coloring method. Accepted values are
+	 * Defines the key for the BCellobject coloring method. Accepted values are
 	 * implementation of {@link FeatureColorGenerator}
 	 */
-	public static final String KEY_SPOT_COLORING = "SpotColoring";
+	public static final String KEY_BCellobject_COLORING = "BCellobjectColoring";
 
 	/**
 	 * Defines the key for the color map to use for painting overlay. Acceptable
@@ -184,9 +183,9 @@ public interface TrackMateModelView
 	 */
 
 	/**
-	 * The default color for spots.
+	 * The default color for BCellobjects.
 	 */
-	public static final Color DEFAULT_SPOT_COLOR = new Color( 1f, 0, 1f );
+	public static final Color DEFAULT_BCellobject_COLOR = new Color( 1f, 0, 1f );
 
 	/**
 	 * The default track color.
@@ -261,14 +260,14 @@ public interface TrackMateModelView
 	public void refresh();
 
 	/**
-	 * Removes any overlay (for spots or tracks) from this displayer.
+	 * Removes any overlay (for BCellobjects or tracks) from this displayer.
 	 */
 	public void clear();
 
 	/**
-	 * Centers the view on the given spot.
+	 * Centers the view on the given BCellobject.
 	 */
-	public void centerViewOn( final Spot spot );
+	public void centerViewOn( final BCellobject BCellobject );
 
 	/**
 	 * Returns the current display settings map.
@@ -280,7 +279,6 @@ public interface TrackMateModelView
 	 *
 	 * @param key
 	 *            the key of the parameter to change.
-	 * @param value
 	 *            the value for the display parameter
 	 */
 	public void setDisplaySettings( final String key, final Object value );

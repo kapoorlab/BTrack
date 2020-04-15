@@ -27,22 +27,22 @@ import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Logger.SlaveLogger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.BCellobjectCollection;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
-public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotTracker
+public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker
 {
 	private final static String BASE_ERROR_MESSAGE = "[SparseLAPTracker] ";
 
-	private SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
+	private SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
 
 	private Logger logger = Logger.VOID_LOGGER;
 
-	private final SpotCollection spots;
+	private final BCellobjectCollection BCellobjects;
 
 	private final Map< String, Object > settings;
 
@@ -50,9 +50,9 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 	 * CONSTRUCTOR
 	 */
 
-	public SparseLAPTracker( final SpotCollection spots, final Map< String, Object > settings )
+	public SparseLAPTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
-		this.spots = spots;
+		this.BCellobjects = BCellobjects;
 		this.settings = settings;
 	}
 
@@ -61,7 +61,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 	 */
 
 	@Override
-	public SimpleWeightedGraph< Spot, DefaultWeightedEdge > getResult()
+	public SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > getResult()
 	{
 		return graph;
 	}
@@ -81,24 +81,24 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		 */
 
 		// Check that the objects list itself isn't null
-		if ( null == spots )
+		if ( null == BCellobjects )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is null.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is null.";
 			return false;
 		}
 
 		// Check that the objects list contains inner collections.
-		if ( spots.keySet().isEmpty() )
+		if ( BCellobjects.keySet().isEmpty() )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
-		for ( final int frame : spots.keySet() )
+		for ( final int frame : BCellobjects.keySet() )
 		{
-			if ( spots.getNSpots( frame, true ) > 0 )
+			if ( BCellobjects.getNBCellobjects( frame, true ) > 0 )
 			{
 				empty = false;
 				break;
@@ -106,7 +106,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		}
 		if ( empty )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 		// Check parameters
@@ -134,7 +134,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		ftfSettings.put( KEY_ALTERNATIVE_LINKING_COST_FACTOR, settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR ) );
 		ftfSettings.put( KEY_LINKING_FEATURE_PENALTIES, settings.get( KEY_LINKING_FEATURE_PENALTIES ) );
 
-		final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( spots, ftfSettings );
+		final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( BCellobjects, ftfSettings );
 		frameToFrameLinker.setNumThreads( numThreads );
 		final SlaveLogger ftfLogger = new SlaveLogger( logger, 0, 0.5 );
 		frameToFrameLinker.setLogger( ftfLogger );

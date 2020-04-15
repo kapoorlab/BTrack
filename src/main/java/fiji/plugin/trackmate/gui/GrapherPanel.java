@@ -2,8 +2,8 @@ package fiji.plugin.trackmate.gui;
 
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.features.BCellobjectFeatureGrapher;
 import fiji.plugin.trackmate.features.EdgeFeatureGrapher;
-import fiji.plugin.trackmate.features.SpotFeatureGrapher;
 import fiji.plugin.trackmate.features.TrackFeatureGrapher;
 import fiji.plugin.trackmate.features.edges.EdgeTimeLocationAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
@@ -26,6 +26,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+
+import budDetector.BCellobject;
 
 public class GrapherPanel extends ActionListenablePanel
 {
@@ -105,8 +107,8 @@ public class GrapherPanel extends ActionListenablePanel
 	{
 		// regen spot features
 		panelSpot.removeAll();
-		final Collection< String > spotFeatures = trackmate.getModel().getFeatureModel().getSpotFeatures();
-		final Map< String, String > spotFeatureNames = trackmate.getModel().getFeatureModel().getSpotFeatureNames();
+		final Collection< String > spotFeatures = trackmate.getModel().getFeatureModel().getBCellobjectFeatures();
+		final Map< String, String > spotFeatureNames = trackmate.getModel().getFeatureModel().getBCellobjectFeatureNames();
 		spotFeatureSelectionPanel = new FeaturePlotSelectionPanel( Spot.POSITION_T, spotFeatures, spotFeatureNames );
 		panelSpot.add( spotFeatureSelectionPanel );
 		spotFeatureSelectionPanel.addActionListener( new ActionListener()
@@ -181,12 +183,12 @@ public class GrapherPanel extends ActionListenablePanel
 		final String xFeature = spotFeatureSelectionPanel.getXKey();
 		final Set< String > yFeatures = spotFeatureSelectionPanel.getYKeys();
 		// Collect only the spots that are in tracks
-		final List< Spot > spots = new ArrayList< >( trackmate.getModel().getSpots().getNSpots( true ) );
+		final List< BCellobject > spots = new ArrayList< >( trackmate.getModel().getBCellobjects().getNBCellobjects( true ) );
 		for ( final Integer trackID : trackmate.getModel().getTrackModel().trackIDs( true ) )
 		{
-			spots.addAll( trackmate.getModel().getTrackModel().trackSpots( trackID ) );
+			spots.addAll( trackmate.getModel().getTrackModel().trackBCellobjects( trackID ) );
 		}
-		final SpotFeatureGrapher grapher = new SpotFeatureGrapher( xFeature, yFeatures, spots, trackmate.getModel() );
+		final BCellobjectFeatureGrapher grapher = new BCellobjectFeatureGrapher( xFeature, yFeatures, spots, trackmate.getModel() );
 		grapher.render();
 	}
 

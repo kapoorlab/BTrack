@@ -14,10 +14,10 @@ import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Logger.SlaveLogger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanSegmentCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import net.imglib2.algorithm.Benchmark;
@@ -54,12 +54,12 @@ import net.imglib2.algorithm.Benchmark;
  * The class itself uses a sparse version of the cost matrix and a solver that
  * can exploit it. Therefore it is optimized for memory usage rather than speed.
  */
-public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
+public class SparseLAPSegmentTracker implements BCellobjectTracker, Benchmark
 {
 
 	private static final String BASE_ERROR_MESSAGE = "[SparseLAPSegmentTracker] ";
 
-	private final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
+	private final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
 
 	private final Map< String, Object > settings;
 
@@ -71,7 +71,7 @@ public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 
 	private int numThreads;
 
-	public SparseLAPSegmentTracker( final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph, final Map< String, Object > settings )
+	public SparseLAPSegmentTracker( final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph, final Map< String, Object > settings )
 	{
 		this.graph = graph;
 		this.settings = settings;
@@ -79,7 +79,7 @@ public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 	}
 
 	@Override
-	public SimpleWeightedGraph< Spot, DefaultWeightedEdge > getResult()
+	public SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > getResult()
 	{
 		return graph;
 	}
@@ -127,7 +127,7 @@ public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 		final JaqamanSegmentCostMatrixCreator costMatrixCreator = new JaqamanSegmentCostMatrixCreator( graph, settings );
 		costMatrixCreator.setNumThreads( numThreads );
 		final SlaveLogger jlLogger = new SlaveLogger( logger, 0, 0.9 );
-		final JaqamanLinker< Spot, Spot > linker = new JaqamanLinker<>( costMatrixCreator, jlLogger );
+		final JaqamanLinker< BCellobject, BCellobject > linker = new JaqamanLinker<>( costMatrixCreator, jlLogger );
 		if ( !linker.checkInput() || !linker.process() )
 		{
 			errorMessage = linker.getErrorMessage();
@@ -142,12 +142,12 @@ public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 		logger.setProgress( 0.9d );
 		logger.setStatus( "Creating links..." );
 
-		final Map< Spot, Spot > assignment = linker.getResult();
-		final Map< Spot, Double > costs = linker.getAssignmentCosts();
+		final Map< BCellobject, BCellobject > assignment = linker.getResult();
+		final Map< BCellobject, Double > costs = linker.getAssignmentCosts();
 
-		for ( final Spot source : assignment.keySet() )
+		for ( final BCellobject source : assignment.keySet() )
 		{
-			final Spot target = assignment.get( source );
+			final BCellobject target = assignment.get( source );
 			final DefaultWeightedEdge edge = graph.addEdge( source, target );
 
 			final double cost = costs.get( source );

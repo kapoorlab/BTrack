@@ -1,14 +1,14 @@
 package fiji.plugin.trackmate.providers;
 
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 
-public class TrackerProvider extends AbstractProvider< SpotTrackerFactory >
+public class TrackerProvider extends AbstractProvider< BCellobjectTrackerFactory >
 {
 
 
 	public TrackerProvider()
 	{
-		super( SpotTrackerFactory.class );
+		super( BCellobjectTrackerFactory.class );
 	}
 
 	public static void main( final String[] args )

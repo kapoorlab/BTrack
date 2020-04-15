@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Jama.Matrix;
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.algorithm.OutputAlgorithm;
@@ -35,7 +35,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
  * <li>Must be within a certain distance.</li>
  * </ul>
  * 
- * @see LAPUtils#computeLinkingCostFor(Spot, Spot, double, double, Map)
+ * @see LAPUtils#computeLinkingCostFor(BCellobject, BCellobject, double, double, Map)
  * @author Nicholas Perry
  * @author Jean-Yves Tinevez
  *
@@ -56,14 +56,14 @@ public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm impleme
 	/** Thresholds for the feature ratios. */
 	protected final Map< String, Double > featurePenalties;
 
-	protected final List< SortedSet< Spot > > trackSegments;
+	protected final List< SortedSet< BCellobject > > trackSegments;
 
-	protected final List< Spot > middlePoints;
+	protected final List< BCellobject > middlePoints;
 
 	protected Matrix m;
 
 	@SuppressWarnings( "unchecked" )
-	public MergingCostFunction( final Map< String, Object > settings, final List< SortedSet< Spot > > trackSegments, final List< Spot > middlePoints )
+	public MergingCostFunction( final Map< String, Object > settings, final List< SortedSet< BCellobject > > trackSegments, final List< BCellobject > middlePoints )
 	{
 		this.maxDist = ( Double ) settings.get( KEY_MERGING_MAX_DISTANCE );
 		this.blockingValue = ( Double ) settings.get( KEY_BLOCKING_VALUE );
@@ -109,16 +109,16 @@ public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm impleme
 
 						for ( int i = ai.getAndIncrement(); i < trackSegments.size(); i = ai.getAndIncrement() )
 						{
-							final Spot end = trackSegments.get( i ).last();
+							final BCellobject end = trackSegments.get( i ).last();
 
 							for ( int j = 0; j < middlePoints.size(); j++ )
 							{
-								final Spot middle = middlePoints.get( j );
+								final BCellobject middle = middlePoints.get( j );
 
-								// Frame threshold - middle Spot must be one
-								// frame ahead of the end Spot
-								final int endFrame = end.getFeature( Spot.FRAME ).intValue();
-								final int middleFrame = middle.getFeature( Spot.FRAME ).intValue();
+								// Frame threshold - middle BCellobject must be one
+								// frame ahead of the end BCellobject
+								final int endFrame = end.getFeature( BCellobject.POSITION_T ).intValue();
+								final int middleFrame = middle.getFeature( BCellobject.POSITION_T ).intValue();
 								// We only merge from one frame to the next one,
 								// no more
 								if ( middleFrame - endFrame != 1 )

@@ -3,29 +3,30 @@
  */
 package fiji.plugin.trackmate.graph;
 
-import fiji.plugin.trackmate.Spot;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class TimeDirectedDepthFirstIterator extends SortedDepthFirstIterator<Spot, DefaultWeightedEdge> {
+import budDetector.BCellobject;
 
-	public TimeDirectedDepthFirstIterator(Graph<Spot, DefaultWeightedEdge> g, Spot startVertex) {
+public class TimeDirectedDepthFirstIterator extends SortedDepthFirstIterator<BCellobject, DefaultWeightedEdge> {
+
+	public TimeDirectedDepthFirstIterator(Graph<BCellobject, DefaultWeightedEdge> g, BCellobject startVertex) {
 		super(g, startVertex, null);
 	}
 	
     @Override
-	protected void addUnseenChildrenOf(Spot vertex) {
+	protected void addUnseenChildrenOf(BCellobject vertex) {
     	
-    	int ts = vertex.getFeature(Spot.FRAME).intValue();
+    	int ts = vertex.getFeature(BCellobject.POSITION_T).intValue();
         for (DefaultWeightedEdge edge : specifics.edgesOf(vertex)) {
             if (nListeners != 0) {
                 fireEdgeTraversed(createEdgeTraversalEvent(edge));
             }
 
-            Spot oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
-            int tt = oppositeV.getFeature(Spot.FRAME).intValue();
+            BCellobject oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
+            int tt = oppositeV.getFeature(BCellobject.POSITION_T).intValue();
             if (tt <= ts) {
             	continue;
             }

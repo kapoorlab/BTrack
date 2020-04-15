@@ -14,6 +14,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
@@ -35,44 +36,38 @@ public class EdgeTimeLocationAnalyzer implements EdgeAnalyzer
 
 	public static final String Y_LOCATION = "EDGE_Y_LOCATION";
 
-	public static final String Z_LOCATION = "EDGE_Z_LOCATION";
 
-	public static final List< String > FEATURES = new ArrayList< >( 4 );
+	public static final List< String > FEATURES = new ArrayList< >( 3 );
 
-	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 4 );
+	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 3 );
 
-	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 4 );
+	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 3 );
 
-	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 4 );
+	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 3 );
 
-	public static final Map< String, Boolean > IS_INT = new HashMap< >( 4 );
+	public static final Map< String, Boolean > IS_INT = new HashMap< >( 3 );
 
 	static
 	{
 		FEATURES.add( TIME );
 		FEATURES.add( X_LOCATION );
 		FEATURES.add( Y_LOCATION );
-		FEATURES.add( Z_LOCATION );
 
 		FEATURE_NAMES.put( TIME, "Time (mean)" );
 		FEATURE_NAMES.put( X_LOCATION, "X Location (mean)" );
 		FEATURE_NAMES.put( Y_LOCATION, "Y Location (mean)" );
-		FEATURE_NAMES.put( Z_LOCATION, "Z Location (mean)" );
 
 		FEATURE_SHORT_NAMES.put( TIME, "T" );
 		FEATURE_SHORT_NAMES.put( X_LOCATION, "X" );
 		FEATURE_SHORT_NAMES.put( Y_LOCATION, "Y" );
-		FEATURE_SHORT_NAMES.put( Z_LOCATION, "Z" );
 
 		FEATURE_DIMENSIONS.put( TIME, Dimension.TIME );
 		FEATURE_DIMENSIONS.put( X_LOCATION, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( Y_LOCATION, Dimension.POSITION );
-		FEATURE_DIMENSIONS.put( Z_LOCATION, Dimension.POSITION );
 
 		IS_INT.put( TIME, Boolean.FALSE );
 		IS_INT.put( X_LOCATION, Boolean.FALSE );
 		IS_INT.put( Y_LOCATION, Boolean.FALSE );
-		IS_INT.put( Z_LOCATION, Boolean.FALSE );
 	}
 
 	private int numThreads;
@@ -116,18 +111,16 @@ public class EdgeTimeLocationAnalyzer implements EdgeAnalyzer
 					while ( ( edge = queue.poll() ) != null )
 					{
 
-						final Spot source = model.getTrackModel().getEdgeSource( edge );
-						final Spot target = model.getTrackModel().getEdgeTarget( edge );
+						final BCellobject source = model.getTrackModel().getEdgeSource( edge );
+						final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
 
 						final double x = 0.5 * ( source.getFeature( Spot.POSITION_X ) + target.getFeature( Spot.POSITION_X ) );
 						final double y = 0.5 * ( source.getFeature( Spot.POSITION_Y ) + target.getFeature( Spot.POSITION_Y ) );
-						final double z = 0.5 * ( source.getFeature( Spot.POSITION_Z ) + target.getFeature( Spot.POSITION_Z ) );
 						final double t = 0.5 * ( source.getFeature( Spot.POSITION_T ) + target.getFeature( Spot.POSITION_T ) );
 
 						featureModel.putEdgeFeature( edge, TIME, t );
 						featureModel.putEdgeFeature( edge, X_LOCATION, x );
 						featureModel.putEdgeFeature( edge, Y_LOCATION, y );
-						featureModel.putEdgeFeature( edge, Z_LOCATION, z );
 					}
 
 				}
@@ -201,11 +194,7 @@ public class EdgeTimeLocationAnalyzer implements EdgeAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -223,5 +212,11 @@ public class EdgeTimeLocationAnalyzer implements EdgeAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

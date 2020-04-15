@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMateOptionUtils;
 import fiji.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
@@ -21,11 +21,11 @@ import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.gui.panels.ConfigureViewsPanel;
 import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotColorGenerator;
+import fiji.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGeneratorPerTrackFeature;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGenerator;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 
 public class FloatingDisplayConfigFrame extends JFrame
@@ -58,12 +58,12 @@ public class FloatingDisplayConfigFrame extends JFrame
 		final TrackMateGUIModel guimodel = new TrackMateGUIModel();
 
 		final Map< String, Object > displaySettings = view.getDisplaySettings();
-		panel.setSpotColorGenerator( createSpotColorGenerator() );
+		panel.setBCellobjectColorGenerator( createBCellobjectColorGenerator() );
 		panel.setTrackColorGenerator( createTrackColorGenerator() );
 		panel.setEdgeColorGenerator( createEdgeColorGenerator() );
-		panel.setSpotColorGeneratorPerTrackFeature( createSpotColorGeneratorPerTrackFeature() );
+		panel.setBCellobjectColorGeneratorPerTrackFeature( createBCellobjectColorGeneratorPerTrackFeature() );
 		panel.setManualEdgeColorGenerator( createManualEdgeColorGenerator() );
-		panel.setManualSpotColorGenerator( createManualSpotColorGenerator() );
+		panel.setManualBCellobjectColorGenerator( createManualBCellobjectColorGenerator() );
 
 		panel.getTrackSchemeButton().setVisible( false );
 		panel.getDoAnalysisButton().setVisible( false );
@@ -94,9 +94,9 @@ public class FloatingDisplayConfigFrame extends JFrame
 	}
 
 
-	protected FeatureColorGenerator< Spot > createSpotColorGenerator()
+	protected FeatureColorGenerator< BCellobject > createBCellobjectColorGenerator()
 	{
-		return new SpotColorGenerator( model );
+		return new BCellobjectColorGenerator( model );
 	}
 
 	protected PerEdgeFeatureColorGenerator createEdgeColorGenerator()
@@ -110,9 +110,9 @@ public class FloatingDisplayConfigFrame extends JFrame
 		return generator;
 	}
 
-	protected ManualSpotColorGenerator createManualSpotColorGenerator()
+	protected ManualBCellobjectColorGenerator createManualBCellobjectColorGenerator()
 	{
-		return new ManualSpotColorGenerator();
+		return new ManualBCellobjectColorGenerator();
 	}
 
 	protected ManualEdgeColorGenerator createManualEdgeColorGenerator()
@@ -120,9 +120,9 @@ public class FloatingDisplayConfigFrame extends JFrame
 		return new ManualEdgeColorGenerator( model );
 	}
 
-	protected FeatureColorGenerator< Spot > createSpotColorGeneratorPerTrackFeature()
+	protected FeatureColorGenerator< BCellobject > createBCellobjectColorGeneratorPerTrackFeature()
 	{
-		final FeatureColorGenerator< Spot > generator = new SpotColorGeneratorPerTrackFeature( model, TrackIndexAnalyzer.TRACK_INDEX );
+		final FeatureColorGenerator< BCellobject > generator = new BCellobjectColorGeneratorPerTrackFeature( model, TrackIndexAnalyzer.TRACK_INDEX );
 		return generator;
 	}
 

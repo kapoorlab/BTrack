@@ -761,12 +761,12 @@ public class BudTrackModel {
 	 *            the comparator to use to pick children in order when branching.
 	 * @return a new depth-first iterator.
 	 */
-	public SortedDepthFirstIterator<Budobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
+	public MyBuddySortedDepthFirstIterator<Budobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
 			final Budobject start, final Comparator<Budobject> comparator, final boolean directed) {
 		if (directed) {
 			return new BudTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
 		} else {
-			return new SortedDepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start, comparator);
+			return new MyBuddySortedDepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start, comparator);
 		}
 	}
 

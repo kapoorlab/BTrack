@@ -16,10 +16,10 @@ import net.imglib2.util.Util;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 
 @SuppressWarnings( "deprecation" )
 @Plugin( type = TrackAnalyzer.class )
@@ -157,12 +157,12 @@ public class TrackSpeedStatisticsAnalyzer implements TrackAnalyzer
 
 						for ( final DefaultWeightedEdge edge : track )
 						{
-							final Spot source = model.getTrackModel().getEdgeSource( edge );
-							final Spot target = model.getTrackModel().getEdgeTarget( edge );
+							final BCellobject source = model.getTrackModel().getEdgeSource( edge );
+							final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
 
 							// Edge velocity
 							final double d2 = source.squareDistanceTo( target );
-							final double dt = source.diffTo( target, Spot.POSITION_T );
+							final double dt = source.diffTo( target, BCellobject.POSITION_T );
 							val = Math.sqrt( d2 ) / Math.abs( dt );
 
 							// For median, min and max
@@ -278,11 +278,6 @@ public class TrackSpeedStatisticsAnalyzer implements TrackAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
 
 	@Override
 	public String getName()
@@ -300,5 +295,11 @@ public class TrackSpeedStatisticsAnalyzer implements TrackAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

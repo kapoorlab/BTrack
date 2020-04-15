@@ -11,14 +11,14 @@ import javax.swing.ImageIcon;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.trackscheme.SpotIconGrabber;
+import fiji.plugin.trackmate.visualization.trackscheme.BCellobjectIconGrabber;
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -40,18 +40,18 @@ public class ExtractTrackStackAction extends AbstractTMAction
 
 	public static final String INFO_TEXT = "<html> "
 			+ "Generate a stack of images taken from the track "
-			+ "that joins two selected spots. "
+			+ "that joins two selected BCellobjects. "
 			+ "<p> "
-			+ "There must be exactly 1 or 2 spots selected for this action "
-			+ "to work. If only one spot is selected, then the stack is extracted from "
-			+ "the track it belongs to, from the first spot in time to the last in time. "
-			+ "If there are two spots selected, they must belong to a track that connects "
+			+ "There must be exactly 1 or 2 BCellobjects selected for this action "
+			+ "to work. If only one BCellobject is selected, then the stack is extracted from "
+			+ "the track it belongs to, from the first BCellobject in time to the last in time. "
+			+ "If there are two BCellobjects selected, they must belong to a track that connects "
 			+ "them. A path is then found that joins them and the stack is extracted "
 			+ "from this path."
 			+ "<p> "
-			+ "A stack of images will be generated from the spots that join "
+			+ "A stack of images will be generated from the BCellobjects that join "
 			+ "them. A GUI allows specifying the size of the extract, in units of the largest "
-			+ "spot in the track, and whether to capture a 2D or 3D stack over time. "
+			+ "BCellobject in the track, and whether to capture a 2D or 3D stack over time. "
 			+ "All channels are captured. " +
 			"</html>";
 
@@ -59,7 +59,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 
 	/**
 	 * By how much we resize the capture window to get a nice border around the
-	 * spot.
+	 * BCellobject.
 	 */
 	private static final float RESIZE_FACTOR = 1.5f;
 
@@ -91,32 +91,32 @@ public class ExtractTrackStackAction extends AbstractTMAction
 		logger.log( "Capturing " + ( do3d ? "3D" : "2D" ) + " track stack.\n" );
 
 		final Model model = trackmate.getModel();
-		final Set< Spot > selection = selectionModel.getSpotSelection();
-		int nspots = selection.size();
-		if ( nspots != 2 )
+		final Set< BCellobject > selection = selectionModel.getBCellobjectSelection();
+		int nBCellobjects = selection.size();
+		if ( nBCellobjects != 2 )
 		{
-			if ( nspots == 1 )
+			if ( nBCellobjects == 1 )
 			{
-				final Integer trackID = model.getTrackModel().trackIDOf( selectionModel.getSpotSelection().iterator().next() );
-				final List< Spot > spots = new ArrayList<>( model.getTrackModel().trackSpots( trackID ) );
-				Collections.sort( spots, Spot.frameComparator );
+				final Integer trackID = model.getTrackModel().trackIDOf( selectionModel.getBCellobjectSelection().iterator().next() );
+				final List< BCellobject > BCellobjects = new ArrayList<>( model.getTrackModel().trackBCellobjects( trackID ) );
+				Collections.sort( BCellobjects, BCellobject.frameComparator );
 				selectionModel.clearSelection();
-				selectionModel.addSpotToSelection( spots.get( 0 ) );
-				selectionModel.addSpotToSelection( spots.get( spots.size() - 1 ) );
+				selectionModel.addBCellobjectToSelection( BCellobjects.get( 0 ) );
+				selectionModel.addBCellobjectToSelection( BCellobjects.get( BCellobjects.size() - 1 ) );
 			}
 			else
 			{
-				logger.error( "Expected 1 or 2 spots in the selection, got " + nspots + ".\nAborting.\n" );
+				logger.error( "Expected 1 or 2 BCellobjects in the selection, got " + nBCellobjects + ".\nAborting.\n" );
 				return;
 			}
 		}
 
 		// Get start & end
-		Spot tmp1, tmp2, start, end;
-		final Iterator< Spot > it = selection.iterator();
+		BCellobject tmp1, tmp2, start, end;
+		final Iterator< BCellobject > it = selection.iterator();
 		tmp1 = it.next();
 		tmp2 = it.next();
-		if ( tmp1.getFeature( Spot.POSITION_T ) > tmp2.getFeature( Spot.POSITION_T ) )
+		if ( tmp1.getFeature( BCellobject.POSITION_T ) > tmp2.getFeature( BCellobject.POSITION_T ) )
 		{
 			end = tmp1;
 			start = tmp2;
@@ -131,19 +131,19 @@ public class ExtractTrackStackAction extends AbstractTMAction
 		final List< DefaultWeightedEdge > edges = model.getTrackModel().dijkstraShortestPath( start, end );
 		if ( null == edges )
 		{
-			logger.error( "The 2 spots are not connected.\nAborting\n" );
+			logger.error( "The 2 BCellobjects are not connected.\nAborting\n" );
 			return;
 		}
 		selectionModel.clearEdgeSelection();
 		selectionModel.addEdgeToSelection( edges );
 
-		// Build spot list
+		// Build BCellobject list
 		// & Get largest diameter
-		final List< Spot > path = new ArrayList<>( edges.size() );
+		final List< BCellobject > path = new ArrayList<>( edges.size() );
 		path.add( start );
-		Spot previous = start;
-		Spot current;
-		double radius = Math.abs( start.getFeature( Spot.RADIUS ) ) * radiusRatio;
+		BCellobject previous = start;
+		BCellobject current;
+		double radius = Math.abs( start.getFeature( BCellobject.RADIUS ) ) * radiusRatio;
 		for ( final DefaultWeightedEdge edge : edges )
 		{
 			current = model.getTrackModel().getEdgeSource( edge );
@@ -152,7 +152,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 				current = model.getTrackModel().getEdgeTarget( edge ); // We have to check both in case of bad oriented edges
 			}
 			path.add( current );
-			final double ct = Math.abs( current.getFeature( Spot.RADIUS ) );
+			final double ct = Math.abs( current.getFeature( BCellobject.RADIUS ) );
 			if ( ct > radius )
 			{
 				radius = ct;
@@ -161,10 +161,10 @@ public class ExtractTrackStackAction extends AbstractTMAction
 		}
 		path.add( end );
 
-		// Sort spot by ascending frame number
-		final TreeSet< Spot > sortedSpots = new TreeSet<>( Spot.timeComparator );
-		sortedSpots.addAll( path );
-		nspots = sortedSpots.size();
+		// Sort BCellobject by ascending frame number
+		final TreeSet< BCellobject > sortedBCellobjects = new TreeSet<>( BCellobject.frameComparator );
+		sortedBCellobjects.addAll( path );
+		nBCellobjects = sortedBCellobjects.size();
 
 		// Common coordinates
 		final Settings settings = trackmate.getSettings();
@@ -188,32 +188,23 @@ public class ExtractTrackStackAction extends AbstractTMAction
 		final int nChannels = settings.imp.getNChannels();
 
 
-		for ( final Spot spot : sortedSpots )
+		for ( final BCellobject BCellobject : sortedBCellobjects )
 		{
 
 			// Extract image for current frame
-			final int frame = spot.getFeature( Spot.FRAME ).intValue();
+			final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 
 			for ( int c = 0; c < nChannels; c++ )
 			{
 				final ImgPlus imgC = HyperSliceImgPlus.fixChannelAxis( img, c );
 				final ImgPlus imgCT = HyperSliceImgPlus.fixTimeAxis( imgC, frame );
 
-				// Compute target coordinates for current spot
-				final int x = ( int ) ( Math.round( ( spot.getFeature( Spot.POSITION_X ) ) / calibration[ 0 ] ) - width / 2 );
-				final int y = ( int ) ( Math.round( ( spot.getFeature( Spot.POSITION_Y ) ) / calibration[ 1 ] ) - height / 2 );
+				// Compute target coordinates for current BCellobject
+				final int x = ( int ) ( Math.round( ( BCellobject.getFeature( BCellobject.POSITION_X ) ) / calibration[ 0 ] ) - width / 2 );
+				final int y = ( int ) ( Math.round( ( BCellobject.getFeature( BCellobject.POSITION_Y ) ) / calibration[ 1 ] ) - height / 2 );
 				long slice = 0;
-				if ( imgCT.numDimensions() > 2 )
-				{
-					slice = Math.round( spot.getFeature( Spot.POSITION_Z ) / calibration[ 2 ] );
-					if ( slice < 0 )
-						slice = 0;
-
-					if ( slice >= imgCT.dimension( 2 ) )
-						slice = imgCT.dimension( 2 ) - 1;
-				}
-
-				final SpotIconGrabber< ? > grabber = new SpotIconGrabber( imgCT );
+			
+				final BCellobjectIconGrabber< ? > grabber = new BCellobjectIconGrabber( imgCT );
 				if ( do3d )
 				{
 					final Img crop = grabber.grabImage( x, y, slice, width, height, depth );
@@ -221,17 +212,17 @@ public class ExtractTrackStackAction extends AbstractTMAction
 					for ( int i = 0; i < crop.dimension( 2 ); i++ )
 					{
 						final ImageProcessor processor = ImageJFunctions.wrap( Views.hyperSlice( crop, 2, i ), crop.toString() ).getProcessor();
-						stack.addSlice( spot.toString(), processor );
+						stack.addSlice( BCellobject.toString(), processor );
 					}
 				}
 				else
 				{
 					final Img crop = grabber.grabImage( x, y, slice, width, height );
-					stack.addSlice( spot.toString(), ImageJFunctions.wrap( crop, crop.toString() ).getProcessor() );
+					stack.addSlice( BCellobject.toString(), ImageJFunctions.wrap( crop, crop.toString() ).getProcessor() );
 				}
 
 			}
-			logger.setProgress( ( float ) ( progress + 1 ) / nspots );
+			logger.setProgress( ( float ) ( progress + 1 ) / nBCellobjects );
 			progress++;
 
 		}
@@ -246,7 +237,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 		impCal.pixelHeight = calibration[ 1 ];
 		impCal.pixelDepth = calibration[ 2 ];
 		impCal.frameInterval = settings.dt;
-		stackTrack.setDimensions( nChannels, depth, nspots );
+		stackTrack.setDimensions( nChannels, depth, nBCellobjects );
 		stackTrack.setOpenAsHyperStack( true );
 
 		//Display it

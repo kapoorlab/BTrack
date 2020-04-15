@@ -1,7 +1,7 @@
 package fiji.plugin.trackmate.tracking;
 
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
 
 import java.util.Map;
@@ -11,8 +11,8 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = SpotTrackerFactory.class, priority = -1d )
-public class ManualTrackerFactory implements SpotTrackerFactory
+@Plugin( type = BCellobjectTrackerFactory.class, priority = -1d )
+public class ManualTrackerFactory implements BCellobjectTrackerFactory
 {
 	public static final String TRACKER_KEY = "MANUAL_TRACKER";
 
@@ -47,7 +47,7 @@ public class ManualTrackerFactory implements SpotTrackerFactory
 	}
 
 	@Override
-	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings )
+	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
 		return null;
 	}

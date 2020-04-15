@@ -16,9 +16,9 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 
 @SuppressWarnings( "deprecation" )
 @Plugin( type = TrackAnalyzer.class )
@@ -40,7 +40,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer
 
 	public static final String NUMBER_COMPLEX = "NUMBER_COMPLEX";
 
-	public static final String NUMBER_SPOTS = "NUMBER_SPOTS";
+	public static final String NUMBER_BCellobjectS = "NUMBER_BCellobjectS";
 
 	public static final List< String > FEATURES = new ArrayList< >( 5 );
 
@@ -54,35 +54,35 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer
 
 	static
 	{
-		FEATURES.add( NUMBER_SPOTS );
+		FEATURES.add( NUMBER_BCellobjectS );
 		FEATURES.add( NUMBER_GAPS );
 		FEATURES.add( LONGEST_GAP );
 		FEATURES.add( NUMBER_SPLITS );
 		FEATURES.add( NUMBER_MERGES );
 		FEATURES.add( NUMBER_COMPLEX );
 
-		FEATURE_NAMES.put( NUMBER_SPOTS, "Number of spots in track" );
+		FEATURE_NAMES.put( NUMBER_BCellobjectS, "Number of BCellobjects in track" );
 		FEATURE_NAMES.put( NUMBER_GAPS, "Number of gaps" );
 		FEATURE_NAMES.put( LONGEST_GAP, "Longest gap" );
 		FEATURE_NAMES.put( NUMBER_SPLITS, "Number of split events" );
 		FEATURE_NAMES.put( NUMBER_MERGES, "Number of merge events" );
 		FEATURE_NAMES.put( NUMBER_COMPLEX, "Complex points" );
 
-		FEATURE_SHORT_NAMES.put( NUMBER_SPOTS, "N spots" );
+		FEATURE_SHORT_NAMES.put( NUMBER_BCellobjectS, "N BCellobjects" );
 		FEATURE_SHORT_NAMES.put( NUMBER_GAPS, "Gaps" );
 		FEATURE_SHORT_NAMES.put( LONGEST_GAP, "Longest gap" );
 		FEATURE_SHORT_NAMES.put( NUMBER_SPLITS, "Splits" );
 		FEATURE_SHORT_NAMES.put( NUMBER_MERGES, "Merges" );
 		FEATURE_SHORT_NAMES.put( NUMBER_COMPLEX, "Complex" );
 
-		FEATURE_DIMENSIONS.put( NUMBER_SPOTS, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( NUMBER_BCellobjectS, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( NUMBER_GAPS, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( LONGEST_GAP, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( NUMBER_SPLITS, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( NUMBER_MERGES, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( NUMBER_COMPLEX, Dimension.NONE );
 
-		IS_INT.put( NUMBER_SPOTS, Boolean.TRUE );
+		IS_INT.put( NUMBER_BCellobjectS, Boolean.TRUE );
 		IS_INT.put( NUMBER_GAPS, Boolean.TRUE );
 		IS_INT.put( LONGEST_GAP, Boolean.TRUE );
 		IS_INT.put( NUMBER_SPLITS, Boolean.TRUE );
@@ -125,30 +125,30 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer
 					while ( ( trackID = queue.poll() ) != null )
 					{
 
-						final Set< Spot > track = model.getTrackModel().trackSpots( trackID );
+						final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 
 						int nmerges = 0;
 						int nsplits = 0;
 						int ncomplex = 0;
-						for ( final Spot spot : track )
+						for ( final BCellobject BCellobject : track )
 						{
-							final Set< DefaultWeightedEdge > edges = model.getTrackModel().edgesOf( spot );
+							final Set< DefaultWeightedEdge > edges = model.getTrackModel().edgesOf( BCellobject );
 
 							// get neighbors
-							final Set< Spot > neighbors = new HashSet< >();
+							final Set< BCellobject > neighbors = new HashSet< >();
 							for ( final DefaultWeightedEdge edge : edges )
 							{
 								neighbors.add( model.getTrackModel().getEdgeSource( edge ) );
 								neighbors.add( model.getTrackModel().getEdgeTarget( edge ) );
 							}
-							neighbors.remove( spot );
+							neighbors.remove( BCellobject );
 
 							// inspect neighbors relative time position
 							int earlier = 0;
 							int later = 0;
-							for ( final Spot neighbor : neighbors )
+							for ( final BCellobject neighbor : neighbors )
 							{
-								if ( spot.diffTo( neighbor, Spot.FRAME ) > 0 )
+								if ( BCellobject.diffTo( neighbor, BCellobject.POSITION_T ) > 0 )
 								{
 									earlier++; // neighbor is before in time
 								}
@@ -158,13 +158,13 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer
 								}
 							}
 
-							// Test for classical spot
+							// Test for classical BCellobject
 							if ( earlier == 1 && later == 1 )
 							{
 								continue;
 							}
 
-							// classify spot
+							// classify BCellobject
 							if ( earlier <= 1 && later > 1 )
 							{
 								nsplits++;
@@ -182,9 +182,9 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer
 						int ngaps = 0, longestgap = 0;
 						for ( final DefaultWeightedEdge edge : model.getTrackModel().trackEdges( trackID ) )
 						{
-							final Spot source = model.getTrackModel().getEdgeSource( edge );
-							final Spot target = model.getTrackModel().getEdgeTarget( edge );
-							final int gaplength = (int)Math.abs( target.diffTo( source, Spot.FRAME ) ) - 1;
+							final BCellobject source = model.getTrackModel().getEdgeSource( edge );
+							final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
+							final int gaplength = (int)Math.abs( target.diffTo( source, BCellobject.POSITION_T ) ) - 1;
 							if ( gaplength > 0 )
 							{
 								ngaps++;
@@ -201,7 +201,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer
 						model.getFeatureModel().putTrackFeature( trackID, NUMBER_SPLITS, Double.valueOf( nsplits ) );
 						model.getFeatureModel().putTrackFeature( trackID, NUMBER_MERGES, Double.valueOf( nmerges ) );
 						model.getFeatureModel().putTrackFeature( trackID, NUMBER_COMPLEX, Double.valueOf( ncomplex ) );
-						model.getFeatureModel().putTrackFeature( trackID, NUMBER_SPOTS, Double.valueOf( track.size() ) );
+						model.getFeatureModel().putTrackFeature( trackID, NUMBER_BCellobjectS, Double.valueOf( track.size() ) );
 
 					}
 

@@ -16,8 +16,8 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.util.TMUtils;
 import fiji.plugin.trackmate.visualization.TrackColorGenerator;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
@@ -97,7 +97,7 @@ public class TrackOverlay extends Roi
 		final Composite originalComposite = g2d.getComposite();
 		final Stroke originalStroke = g2d.getStroke();
 		final Color originalColor = g2d.getColor();
-		Spot source, target;
+		BCellobject source, target;
 
 		// Normal edges
 		final int currentFrame = imp.getFrame() - 1;
@@ -148,14 +148,10 @@ public class TrackOverlay extends Roi
 					continue;
 
 				source = model.getTrackModel().getEdgeSource( edge );
-				final int sourceFrame = source.getFeature( Spot.FRAME ).intValue();
+				final int sourceFrame = source.getFeature( BCellobject.POSITION_T ).intValue();
 				if ( sourceFrame < minT || sourceFrame >= maxT )
 					continue;
 
-				final double zs = source.getFeature( Spot.POSITION_Z ).doubleValue();
-				final double zt = target.getFeature( Spot.POSITION_Z ).doubleValue();
-				if ( doLimitDrawingDepth && Math.abs( zs - zslice ) > drawingDepth && Math.abs( zt - zslice ) > drawingDepth )
-					continue;
 
 				final Integer trackID = model.getTrackModel().trackIDOf( edge );
 				colorGenerator.setCurrentTrackID( trackID );
@@ -184,10 +180,6 @@ public class TrackOverlay extends Roi
 					if ( !isOnClip( source, target, minx, miny, maxx, maxy, calibration ) )
 						continue;
 
-					final double zs = source.getFeature( Spot.POSITION_Z ).doubleValue();
-					final double zt = target.getFeature( Spot.POSITION_Z ).doubleValue();
-					if ( doLimitDrawingDepth && Math.abs( zs - zslice ) > drawingDepth && Math.abs( zt - zslice ) > drawingDepth )
-						continue;
 
 					g2d.setColor( colorGenerator.color( edge ) );
 					drawEdge( g2d, source, target, xcorner, ycorner, magnification );
@@ -214,7 +206,7 @@ public class TrackOverlay extends Roi
 				for ( final DefaultWeightedEdge edge : track )
 				{
 					source = model.getTrackModel().getEdgeSource( edge );
-					final int sourceFrame = source.getFeature( Spot.FRAME ).intValue();
+					final int sourceFrame = source.getFeature( BCellobject.POSITION_T ).intValue();
 					if ( sourceFrame < minT || sourceFrame >= maxT )
 						continue;
 
@@ -222,10 +214,6 @@ public class TrackOverlay extends Roi
 					if ( !isOnClip( source, target, minx, miny, maxx, maxy, calibration ) )
 						continue;
 
-					final double zs = source.getFeature( Spot.POSITION_Z ).doubleValue();
-					final double zt = target.getFeature( Spot.POSITION_Z ).doubleValue();
-					if ( doLimitDrawingDepth && Math.abs( zs - zslice ) > drawingDepth && Math.abs( zt - zslice ) > drawingDepth )
-						continue;
 
 					g2d.setColor( colorGenerator.color( edge ) );
 					drawEdge( g2d, source, target, xcorner, ycorner, magnification );
@@ -252,7 +240,7 @@ public class TrackOverlay extends Roi
 				for ( final DefaultWeightedEdge edge : track )
 				{
 					source = model.getTrackModel().getEdgeSource( edge );
-					final int sourceFrame = source.getFeature( Spot.FRAME ).intValue();
+					final int sourceFrame = source.getFeature( BCellobject.POSITION_T ).intValue();
 					if ( sourceFrame < minT || sourceFrame >= maxT )
 						continue;
 
@@ -294,20 +282,20 @@ public class TrackOverlay extends Roi
 
 	}
 
-	private static final boolean isOnClip( final Spot source, final Spot target, final double minx, final double miny, final double maxx, final double maxy, final double[] calibration )
+	private static final boolean isOnClip( final BCellobject source, final BCellobject target, final double minx, final double miny, final double maxx, final double maxy, final double[] calibration )
 	{
 		// Find x & y in physical coordinates
-		final double x0i = source.getFeature( Spot.POSITION_X );
-		final double y0i = source.getFeature( Spot.POSITION_Y );
-		final double x1i = target.getFeature( Spot.POSITION_X );
-		final double y1i = target.getFeature( Spot.POSITION_Y );
+		final double x0i = source.getFeature( BCellobject.POSITION_X );
+		final double y0i = source.getFeature( BCellobject.POSITION_Y );
+		final double x1i = target.getFeature( BCellobject.POSITION_X );
+		final double y1i = target.getFeature( BCellobject.POSITION_Y );
 		// In pixel units
 		final double x0p = x0i / calibration[ 0 ] + 0.5f;
 		final double y0p = y0i / calibration[ 1 ] + 0.5f;
 		final double x1p = x1i / calibration[ 0 ] + 0.5f;
 		final double y1p = y1i / calibration[ 1 ] + 0.5f;
 
-		// Is any spot inside the clip?
+		// Is any BCellobject inside the clip?
 		if ( ( x0p > minx && x0p < maxx && y0p > miny && y0p < maxy ) || ( x1p > minx && x1p < maxx && y1p > miny && y1p < maxy ) ) { return true; }
 
 		// Do we cross any of the 4 borders of the clip?
@@ -339,13 +327,13 @@ public class TrackOverlay extends Roi
 		return ( s >= 0 && s <= det && t >= 0 && t <= det );
 	}
 
-	protected void drawEdge( final Graphics2D g2d, final Spot source, final Spot target, final int xcorner, final int ycorner, final double magnification, final float transparency )
+	protected void drawEdge( final Graphics2D g2d, final BCellobject source, final BCellobject target, final int xcorner, final int ycorner, final double magnification, final float transparency )
 	{
 		// Find x & y in physical coordinates
-		final double x0i = source.getFeature( Spot.POSITION_X );
-		final double y0i = source.getFeature( Spot.POSITION_Y );
-		final double x1i = target.getFeature( Spot.POSITION_X );
-		final double y1i = target.getFeature( Spot.POSITION_Y );
+		final double x0i = source.getFeature( BCellobject.POSITION_X );
+		final double y0i = source.getFeature( BCellobject.POSITION_Y );
+		final double x1i = target.getFeature( BCellobject.POSITION_X );
+		final double y1i = target.getFeature( BCellobject.POSITION_Y );
 		// In pixel units
 		final double x0p = x0i / calibration[ 0 ] + 0.5f;
 		final double y0p = y0i / calibration[ 1 ] + 0.5f;
@@ -367,13 +355,13 @@ public class TrackOverlay extends Roi
 
 	}
 
-	protected void drawEdge( final Graphics2D g2d, final Spot source, final Spot target, final int xcorner, final int ycorner, final double magnification )
+	protected void drawEdge( final Graphics2D g2d, final BCellobject source, final BCellobject target, final int xcorner, final int ycorner, final double magnification )
 	{
 		// Find x & y in physical coordinates
-		final double x0i = source.getFeature( Spot.POSITION_X );
-		final double y0i = source.getFeature( Spot.POSITION_Y );
-		final double x1i = target.getFeature( Spot.POSITION_X );
-		final double y1i = target.getFeature( Spot.POSITION_Y );
+		final double x0i = source.getFeature( BCellobject.POSITION_X );
+		final double y0i = source.getFeature( BCellobject.POSITION_Y );
+		final double x1i = target.getFeature( BCellobject.POSITION_X );
+		final double y1i = target.getFeature( BCellobject.POSITION_Y );
 		// In pixel units
 		final double x0p = x0i / calibration[ 0 ] + 0.5f;
 		final double y0p = y0i / calibration[ 1 ] + 0.5f;

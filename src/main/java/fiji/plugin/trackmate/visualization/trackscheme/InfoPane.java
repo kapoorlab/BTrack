@@ -39,13 +39,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionChangeEvent;
 import fiji.plugin.trackmate.SelectionChangeListener;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.SpotFeatureGrapher;
+import fiji.plugin.trackmate.features.BCellobjectFeatureGrapher;
 import fiji.plugin.trackmate.util.OnRequestUpdater;
 import fiji.plugin.trackmate.util.OnRequestUpdater.Refreshable;
 import fiji.plugin.trackmate.util.TMUtils;
@@ -69,14 +69,14 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 	private final SelectionModel selectionModel;
 
 	/**
-	 * A copy of the last spot collection highlighted in this infopane, sorted
+	 * A copy of the last BCellobject collection highlighted in this infopane, sorted
 	 * by frame order.
 	 */
-	private Collection< Spot > spotSelection;
+	private Collection< BCellobject > BCellobjectSelection;
 
 	private final OnRequestUpdater updater;
 
-	/** The table headers, taken from spot feature names. */
+	/** The table headers, taken from BCellobject feature names. */
 	private final String[] headers;
 
 	/*
@@ -84,11 +84,11 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 	 */
 
 	/**
-	 * Creates a new Info pane that displays information on the current spot
+	 * Creates a new Info pane that displays information on the current BCellobject
 	 * selection in a table.
 	 *
 	 * @param model
-	 *            the {@link Model} from which the spot collection is taken.
+	 *            the {@link Model} from which the BCellobject collection is taken.
 	 * @param selectionModel
 	 *            the {@link SelectionModel} from which we read what to show in
 	 *            the table.
@@ -97,8 +97,8 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 	{
 		this.model = model;
 		this.selectionModel = selectionModel;
-		final List< String > features = new ArrayList< >( model.getFeatureModel().getSpotFeatures() );
-		final Map< String, String > featureNames = model.getFeatureModel().getSpotFeatureShortNames();
+		final List< String > features = new ArrayList< >( model.getFeatureModel().getBCellobjectFeatures() );
+		final Map< String, String > featureNames = model.getFeatureModel().getBCellobjectFeatureShortNames();
 		final List< String > headerList = TMUtils.getArrayFromMaping( features, featureNames );
 		headerList.add( 0, "Track ID" );
 		headers = headerList.toArray( new String[] {} );
@@ -153,21 +153,21 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 			@Override
 			public void run()
 			{
-				highlightSpots( selectionModel.getSpotSelection() );
+				highlightBCellobjects( selectionModel.getBCellobjectSelection() );
 			}
 		} );
 	}
 
 	/**
-	 * Show the given spot selection as a table displaying their individual
+	 * Show the given BCellobject selection as a table displaying their individual
 	 * features.
 	 */
-	private void highlightSpots( final Collection< Spot > spots )
+	private void highlightBCellobjects( final Collection< BCellobject > BCellobjects )
 	{
 		if ( !doHighlightSelection )
 			return;
-		spotSelection = spots;
-		if ( spots.size() == 0 )
+		BCellobjectSelection = BCellobjects;
+		if ( BCellobjects.size() == 0 )
 		{
 			// Clear display of the table, but not the table.
 			final DefaultTableModel tableModel = ( DefaultTableModel ) table.getModel();
@@ -188,8 +188,8 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 		 * Sort using a list; TreeSet does not allow several identical frames,
 		 * which is likely to happen.
 		 */
-		final List< Spot > sortedSpots = new ArrayList< >( spotSelection );
-		Collections.sort( sortedSpots, Spot.frameComparator );
+		final List< BCellobject > sortedBCellobjects = new ArrayList< >( BCellobjectSelection );
+		Collections.sort( sortedBCellobjects, BCellobject.frameComparator );
 
 		@SuppressWarnings( "serial" )
 		final DefaultTableModel dm = new DefaultTableModel()
@@ -201,24 +201,24 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 			}
 		};
 
-		final List< String > features = new ArrayList< >( model.getFeatureModel().getSpotFeatures() );
-		for ( final Spot spot : sortedSpots )
+		final List< String > features = new ArrayList< >( model.getFeatureModel().getBCellobjectFeatures() );
+		for ( final BCellobject BCellobject : sortedBCellobjects )
 		{
-			if ( null == spot )
+			if ( null == BCellobject )
 			{
 				continue;
 			}
 			final Object[] columnData = new Object[ features.size() + 1 ];
-			columnData[ 0 ] = String.format( "%d", model.getTrackModel().trackIDOf( spot ) );
+			columnData[ 0 ] = String.format( "%d", model.getTrackModel().trackIDOf( BCellobject ) );
 			for ( int i = 1; i < columnData.length; i++ )
 			{
 				final String feature = features.get( i - 1 );
-				final Double feat = spot.getFeature( feature );
+				final Double feat = BCellobject.getFeature( feature );
 				if ( null == feat )
 				{
 					columnData[ i ] = "";
 				}
-				else if ( model.getFeatureModel().getSpotFeatureIsInt().get( feature ).booleanValue() )
+				else if ( model.getFeatureModel().getBCellobjectFeatureIsInt().get( feature ).booleanValue() )
 				{
 					columnData[ i ] = "" + feat.intValue();
 				}
@@ -227,7 +227,7 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 					columnData[ i ] = String.format( "%.4g", feat.doubleValue() );
 				}
 			}
-			dm.addColumn( spot.toString(), columnData );
+			dm.addColumn( BCellobject.toString(), columnData );
 		}
 		table.setModel( dm );
 
@@ -296,11 +296,11 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 	{
 		final ResultsTable lTable = new ResultsTable();
 		final FeatureModel fm = model.getFeatureModel();
-		final List< String > features = new ArrayList< >( fm.getSpotFeatures() );
+		final List< String > features = new ArrayList< >( fm.getBCellobjectFeatures() );
 
-		final int ncols = spotSelection.size();
+		final int ncols = BCellobjectSelection.size();
 		final int nrows = headers.length;
-		final Spot[] spotArray = spotSelection.toArray( new Spot[] {} );
+		final BCellobject[] BCellobjectArray = BCellobjectSelection.toArray( new BCellobject[] {} );
 
 		/*
 		 * Track ID
@@ -310,15 +310,15 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 		lTable.setLabel( "TRACK_ID", 0 );
 		for ( int i = 0; i < ncols; i++ )
 		{
-			final Spot spot = spotArray[ i ];
-			final Integer trackID = model.getTrackModel().trackIDOf( spot );
+			final BCellobject BCellobject = BCellobjectArray[ i ];
+			final Integer trackID = model.getTrackModel().trackIDOf( BCellobject );
 			if ( null == trackID )
 			{
-				lTable.addValue( spot.getName(), "None" );
+				lTable.addValue( BCellobject.getName(), "None" );
 			}
 			else
 			{
-				lTable.addValue( spot.getName(), "" + trackID.intValue() );
+				lTable.addValue( BCellobject.getName(), "" + trackID.intValue() );
 			}
 		}
 
@@ -333,21 +333,21 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 			lTable.setLabel( feature, j + 1 );
 			for ( int i = 0; i < ncols; i++ )
 			{
-				final Spot spot = spotArray[ i ];
-				final Double val = spot.getFeature( feature );
+				final BCellobject BCellobject = BCellobjectArray[ i ];
+				final Double val = BCellobject.getFeature( feature );
 				if ( val == null )
 				{
-					lTable.addValue( spot.getName(), "None" );
+					lTable.addValue( BCellobject.getName(), "None" );
 				}
 				else
 				{
-					if ( fm.getSpotFeatureIsInt().get( feature ) )
+					if ( fm.getBCellobjectFeatureIsInt().get( feature ) )
 					{
-						lTable.addValue( spot.getName(), "" + val.intValue() );
+						lTable.addValue( BCellobject.getName(), "" + val.intValue() );
 					}
 					else
 					{
-						lTable.addValue( spot.getName(), val.doubleValue() );
+						lTable.addValue( BCellobject.getName(), val.doubleValue() );
 					}
 				}
 			}
@@ -417,9 +417,9 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 		scrollTable.setOpaque( false );
 		scrollTable.getViewport().setOpaque( false );
 
-		final List< String > features = new ArrayList< >( model.getFeatureModel().getSpotFeatures() );
-		final Map< String, String > featureNames = model.getFeatureModel().getSpotFeatureShortNames();
-		featureSelectionPanel = new FeaturePlotSelectionPanel( Spot.POSITION_T, features, featureNames );
+		final List< String > features = new ArrayList< >( model.getFeatureModel().getBCellobjectFeatures() );
+		final Map< String, String > featureNames = model.getFeatureModel().getBCellobjectFeatureShortNames();
+		featureSelectionPanel = new FeaturePlotSelectionPanel( BCellobject.POSITION_T, features, featureNames );
 
 		final JSplitPane inner = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scrollTable, featureSelectionPanel );
 		inner.setDividerLocation( 200 );
@@ -443,8 +443,8 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 	}
 
 	/**
-	 * Reads the content of the current spot selection and plot the selected
-	 * features in this {@link InfoPane} for the target spots.
+	 * Reads the content of the current BCellobject selection and plot the selected
+	 * features in this {@link InfoPane} for the target BCellobjects.
 	 *
 	 * @param xFeature
 	 *            the feature to use as X axis.
@@ -453,10 +453,10 @@ public class InfoPane extends JPanel implements SelectionChangeListener
 	 */
 	private void plotSelectionData( final String xFeature, final Set< String > yFeatures )
 	{
-		final Set< Spot > spots = selectionModel.getSpotSelection();
-		if ( yFeatures.isEmpty() || spots.isEmpty() ) { return; }
+		final Set< BCellobject > BCellobjects = selectionModel.getBCellobjectSelection();
+		if ( yFeatures.isEmpty() || BCellobjects.isEmpty() ) { return; }
 
-		final SpotFeatureGrapher grapher = new SpotFeatureGrapher( xFeature, yFeatures, spots, model );
+		final BCellobjectFeatureGrapher grapher = new BCellobjectFeatureGrapher( xFeature, yFeatures, BCellobjects, model );
 		grapher.render();
 	}
 

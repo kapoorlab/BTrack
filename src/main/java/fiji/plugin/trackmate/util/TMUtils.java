@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.ImgPlusMetadata;
@@ -208,26 +208,26 @@ public class TMUtils
 	}
 
 	/**
-	 * Translate each spot of the given collection by the amount specified in
+	 * Translate each BCellobject of the given collection by the amount specified in
 	 * argument. The distances are all understood in physical units.
 	 * <p>
 	 * This is meant to deal with a cropped image. The translation will bring
-	 * the spot coordinates back to the top-left corner of the un-cropped image
+	 * the BCellobject coordinates back to the top-left corner of the un-cropped image
 	 * reference.
 	 */
-	public static void translateSpots( final Collection< Spot > spots, final double dx, final double dy, final double dz )
+	public static void translateBCellobjects( final Collection< BCellobject > BCellobjects, final double dx, final double dy, final double dz )
 	{
 		final double[] dval = new double[] { dx, dy, dz };
-		final String[] features = new String[] { Spot.POSITION_X, Spot.POSITION_Y, Spot.POSITION_Z };
+		final String[] features = new String[] { BCellobject.POSITION_X, BCellobject.POSITION_Y };
 		Double val;
-		for ( final Spot spot : spots )
+		for ( final BCellobject BCellobject : BCellobjects )
 		{
 			for ( int i = 0; i < features.length; i++ )
 			{
-				val = spot.getFeature( features[ i ] );
+				val = BCellobject.getFeature( features[ i ] );
 				if ( null != val )
 				{
-					spot.putFeature( features[ i ], val + dval[ i ] );
+					BCellobject.putFeature( features[ i ], val + dval[ i ] );
 				}
 			}
 		}
@@ -303,10 +303,7 @@ public class TMUtils
 		final double[] calibration = Util.getArrayFromValue( 1d, 3 );
 		calibration[ 0 ] = imp.getCalibration().pixelWidth;
 		calibration[ 1 ] = imp.getCalibration().pixelHeight;
-		if ( imp.getNSlices() > 1 )
-		{
-			calibration[ 2 ] = imp.getCalibration().pixelDepth;
-		}
+		
 		return calibration;
 	}
 
@@ -365,14 +362,13 @@ public class TMUtils
 	}
 
 	/**
-	 * Store the x, y, z coordinates of the specified spot in the first 3
+	 * Store the x, y, z coordinates of the specified BCellobject in the first 3
 	 * elements of the specified double array.
 	 */
-	public static final void localize( final Spot spot, final double[] coords )
+	public static final void localize( final BCellobject bCellobject, final double[] coords )
 	{
-		coords[ 0 ] = spot.getFeature( Spot.POSITION_X ).doubleValue();
-		coords[ 1 ] = spot.getFeature( Spot.POSITION_Y ).doubleValue();
-		coords[ 2 ] = spot.getFeature( Spot.POSITION_Z ).doubleValue();
+		coords[ 0 ] = bCellobject.getFeature( BCellobject.POSITION_X ).doubleValue();
+		coords[ 1 ] = bCellobject.getFeature( BCellobject.POSITION_Y ).doubleValue();
 	}
 
 	/**

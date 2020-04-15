@@ -14,10 +14,9 @@ import java.util.Set;
 
 import fiji.plugin.trackmate.action.ExportTracksToXML;
 import fiji.plugin.trackmate.detection.DetectorKeys;
-import fiji.plugin.trackmate.detection.LogDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackBranchingAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
@@ -26,7 +25,7 @@ import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.trackmate.io.TmXmlWriter;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
@@ -146,11 +145,11 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 	private static final String ARG_DISPLAY_RESULTS = "display_results";
 
 	/**
-	 * The macro parameter to set the track filter value on the number of spots
-	 * in tracks. If used, tracks made of less spots than the specified value
+	 * The macro parameter to set the track filter value on the number of BCellobjects
+	 * in tracks. If used, tracks made of less BCellobjects than the specified value
 	 * will be filtered out.
 	 */
-	private static final String ARG_FILTER_TRACKS_NSPOTS_ABOVE = "filter_tracks_nspots_above";
+	private static final String ARG_FILTER_TRACKS_NBCellobjectS_ABOVE = "filter_tracks_nBCellobjects_above";
 
 	/**
 	 * The collection of supported macro parameters.
@@ -174,7 +173,7 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 		SUPPORTED_ARGS.add( ARG_THRESHOLD );
 		SUPPORTED_ARGS.add( ARG_USE_GUI );
 		SUPPORTED_ARGS.add( ARG_RADIUS );
-		SUPPORTED_ARGS.add( ARG_FILTER_TRACKS_NSPOTS_ABOVE );
+		SUPPORTED_ARGS.add( ARG_FILTER_TRACKS_NBCellobjectS_ABOVE );
 	}
 
 	/*
@@ -297,10 +296,7 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 				final Map< String, ValuePair< String, MacroArgumentConverter > > trackerParsers = prepareTrackerParsableArguments();
 				final Map< String, FilterGenerator > trackFiltersParsers = prepareTrackFiltersParsableArguments();
 
-				// Default detector.
-				settings.detectorFactory = new LogDetectorFactory< >();
-				settings.detectorSettings = settings.detectorFactory.getDefaultSettings();
-
+	
 				// Default tracker.
 				settings.trackerFactory = new SimpleSparseLAPTrackerFactory();
 				settings.trackerSettings = settings.trackerFactory.getDefaultSettings();
@@ -543,13 +539,13 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 	{
 		final Settings s = super.createSettings( imp );
 
-		s.clearSpotAnalyzerFactories();
-		final SpotAnalyzerProvider spotAnalyzerProvider = new SpotAnalyzerProvider();
-		final List< String > spotAnalyzerKeys = spotAnalyzerProvider.getKeys();
-		for ( final String key : spotAnalyzerKeys )
+		s.clearBCellobjectAnalyzerFactories();
+		final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider = new BCellobjectAnalyzerProvider();
+		final List< String > BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
+		for ( final String key : BCellobjectAnalyzerKeys )
 		{
-			final SpotAnalyzerFactory< ? > spotFeatureAnalyzer = spotAnalyzerProvider.getFactory( key );
-			s.addSpotAnalyzerFactory( spotFeatureAnalyzer );
+			final BCellobjectAnalyzerFactory< ? > BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+			s.addBCellobjectAnalyzerFactory( BCellobjectFeatureAnalyzer );
 		}
 
 		s.clearEdgeAnalyzers();
@@ -589,12 +585,12 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 		final IntegerMacroArgumentConverter integerConverter = new IntegerMacroArgumentConverter();
 		final BooleanMacroArgumentConverter booleanConverter = new BooleanMacroArgumentConverter();
 
-		// Spot radius.
+		// BCellobject radius.
 		final ValuePair< String, MacroArgumentConverter > radiusPair =
 				new ValuePair< >( DetectorKeys.KEY_RADIUS, doubleConverter );
 		parsers.put( ARG_RADIUS, radiusPair );
 
-		// Spot quality threshold.
+		// BCellobject quality threshold.
 		final ValuePair< String, MacroArgumentConverter > thresholdPair =
 				new ValuePair< >( DetectorKeys.KEY_THRESHOLD, doubleConverter );
 		parsers.put( ARG_THRESHOLD, thresholdPair );
@@ -655,10 +651,10 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 		// Map
 		final Map< String, FilterGenerator > parsers = new HashMap<>();
 
-		// Filter on NSpots.
-		final FilterGenerator nSpotsFilter = new FilterAboveGenerator( TrackBranchingAnalyzer.NUMBER_SPOTS );
+		// Filter on NBCellobjects.
+		final FilterGenerator nBCellobjectsFilter = new FilterAboveGenerator( TrackBranchingAnalyzer.NUMBER_BCellobjectS );
 
-		parsers.put( ARG_FILTER_TRACKS_NSPOTS_ABOVE, nSpotsFilter );
+		parsers.put( ARG_FILTER_TRACKS_NBCellobjectS_ABOVE, nBCellobjectsFilter );
 		return parsers;
 	}
 

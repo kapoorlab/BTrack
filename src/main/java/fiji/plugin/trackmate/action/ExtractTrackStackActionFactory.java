@@ -37,11 +37,6 @@ public class ExtractTrackStackActionFactory implements TrackMateActionFactory
 		return ExtractTrackStackAction.KEY;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return ExtractTrackStackAction.ICON;
-	}
 
 	@Override
 	public TrackMateAction create( final TrackMateGUIController controller )
@@ -77,6 +72,12 @@ public class ExtractTrackStackActionFactory implements TrackMateActionFactory
 		final boolean do3D = dimChoice == 1;
 
 		return new ExtractTrackStackAction( controller.getSelectionModel(), diameterFactor, do3D );
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

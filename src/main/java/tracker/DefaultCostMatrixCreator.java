@@ -16,7 +16,7 @@ import net.imglib2.util.Util;
  * 
  * @param <K>
  */
-public class DefaultCostMatrixCreator< K extends Comparable< K >, J extends Comparable< J > > implements CostMatrixCreator< K, J >
+public class DefaultCostMatrixCreator< K extends Comparable< K >, J extends Comparable< J > > implements BudCostMatrixCreator< K, J >
 {
 
 	private static final String BASE_ERROR_MESSAGE = "[DefaultCostMatrixCreator] ";

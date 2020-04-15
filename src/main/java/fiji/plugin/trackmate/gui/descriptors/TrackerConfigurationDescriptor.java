@@ -7,7 +7,7 @@ import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.providers.TrackerProvider;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 
 public class TrackerConfigurationDescriptor implements WizardPanelDescriptor
 {
@@ -39,7 +39,7 @@ public class TrackerConfigurationDescriptor implements WizardPanelDescriptor
 	 */
 	private void updateComponent()
 	{
-		final SpotTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
+		final BCellobjectTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
 		// Regenerate panel
 		configPanel = trackerFactory.getTrackerConfigurationPanel( trackmate.getModel() );
 		Map< String, Object > settings = trackmate.getSettings().trackerSettings;
@@ -82,7 +82,7 @@ public class TrackerConfigurationDescriptor implements WizardPanelDescriptor
 	@Override
 	public void aboutToHidePanel()
 	{
-		final SpotTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
+		final BCellobjectTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
 		Map< String, Object > settings = configPanel.getSettings();
 		final boolean settingsOk = trackerFactory.checkSettingsValidity( settings );
 		if ( !settingsOk )

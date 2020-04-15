@@ -5,7 +5,6 @@ package fiji.plugin.trackmate.action;
 
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
@@ -26,9 +25,10 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
+
 public class MergeFileAction extends AbstractTMAction {
 
-	public static final ImageIcon ICON = new ImageIcon(TrackMateWizard.class.getResource("images/arrow_merge.png"));
 	public static final String NAME = "Merge a TrackMate file";
 
 	public static final String KEY = "MERGE_OTHER_FILE";
@@ -39,7 +39,7 @@ public class MergeFileAction extends AbstractTMAction {
 			+ "if two operators have been annotating the same datasets <br>"
 			+ "and want to merge their work in a single file."
 			+ "<p>"
-			+ "Only the spots belonging to visible tracks are imported <br>"
+			+ "Only the BCellobjects belonging to visible tracks are imported <br>"
 			+ "from the target file, which makes this action non-entirely <br>"
 			+ "symmetrical.  Numerical features are re-calculated using <br>"
 			+ "the current settings. There is no check that the imported <br>"
@@ -92,39 +92,39 @@ public class MergeFileAction extends AbstractTMAction {
 		int progress = 0;
 		model.beginUpdate();
 
-		int nNewSpots = 0;
+		int nNewBCellobjects = 0;
 		try {
 			for (final int id : modelToMerge.getTrackModel().trackIDs(true)) {
 
 				/*
-				 * Add new spots built on the ones in the file.
+				 * Add new BCellobjects built on the ones in the file.
 				 */
 
-				final Set<Spot> spots = modelToMerge.getTrackModel().trackSpots(id);
-				final HashMap<Spot, Spot> mapOldToNew = new HashMap<>(spots.size());
+				final Set<BCellobject> BCellobjects = modelToMerge.getTrackModel().trackBCellobjects(id);
+				final HashMap<BCellobject, BCellobject> mapOldToNew = new HashMap<>(BCellobjects.size());
 
-				Spot newSpot = null; // we keep a reference to the new spot, needed below
-				for (final Spot oldSpot : spots) {
-					// An awkward way to avoid spot ID conflicts after loading two files
-					newSpot = new Spot( oldSpot );
-					for (final String feature : oldSpot.getFeatures().keySet()) {
-						newSpot.putFeature(feature, oldSpot.getFeature(feature));
+				BCellobject newBCellobject = null; // we keep a reference to the new BCellobject, needed below
+				for (final BCellobject oldBCellobject : BCellobjects) {
+					// An awkward way to avoid BCellobject ID conflicts after loading two files
+					newBCellobject = oldBCellobject;
+					for (final String feature : oldBCellobject.getFeatures().keySet()) {
+						newBCellobject.putFeature(feature, oldBCellobject.getFeature(feature));
 					}
-					mapOldToNew.put(oldSpot, newSpot);
-					model.addSpotTo(newSpot, oldSpot.getFeature(Spot.FRAME).intValue());
-					nNewSpots++;
+					mapOldToNew.put(oldBCellobject, newBCellobject);
+					model.addBCellobjectTo(newBCellobject, oldBCellobject.getFeature(BCellobject.POSITION_T).intValue());
+					nNewBCellobjects++;
 				}
 
 				/*
-				 * Link new spots from info in the file.
+				 * Link new BCellobjects from info in the file.
 				 */
 
 				final Set<DefaultWeightedEdge> edges = modelToMerge.getTrackModel().trackEdges(id);
 				for (final DefaultWeightedEdge edge : edges) {
-					final Spot oldSource = modelToMerge.getTrackModel().getEdgeSource(edge);
-					final Spot oldTarget = modelToMerge.getTrackModel().getEdgeTarget(edge);
-					final Spot newSource = mapOldToNew.get(oldSource);
-					final Spot newTarget = mapOldToNew.get(oldTarget);
+					final BCellobject oldSource = modelToMerge.getTrackModel().getEdgeSource(edge);
+					final BCellobject oldTarget = modelToMerge.getTrackModel().getEdgeTarget(edge);
+					final BCellobject newSource = mapOldToNew.get(oldSource);
+					final BCellobject newTarget = mapOldToNew.get(oldTarget);
 					final double weight = modelToMerge.getTrackModel().getEdgeWeight(edge);
 
 					model.addEdge(newSource, newTarget, weight);
@@ -135,7 +135,7 @@ public class MergeFileAction extends AbstractTMAction {
 				 */
 
 				final String trackName = modelToMerge.getTrackModel().name(id);
-				final int newId = model.getTrackModel().trackIDOf(newSpot);
+				final int newId = model.getTrackModel().trackIDOf(newBCellobject);
 				model.getTrackModel().setName(newId, trackName);
 
 				progress++;
@@ -145,7 +145,7 @@ public class MergeFileAction extends AbstractTMAction {
 		} finally {
 			model.endUpdate();
 			logger.setProgress(0);
-			logger.log("Imported " + nNewTracks + " tracks made of " + nNewSpots + " spots.\n");
+			logger.log("Imported " + nNewTracks + " tracks made of " + nNewBCellobjects + " BCellobjects.\n");
 		}
 
 	}
@@ -172,16 +172,18 @@ public class MergeFileAction extends AbstractTMAction {
 			return KEY;
 		}
 
-		@Override
-		public ImageIcon getIcon()
-		{
-			return ICON;
-		}
+
 
 		@Override
 		public TrackMateAction create( final TrackMateGUIController controller )
 		{
 			return new MergeFileAction( controller.getGUI() );
+		}
+
+		@Override
+		public ImageIcon getIcon() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

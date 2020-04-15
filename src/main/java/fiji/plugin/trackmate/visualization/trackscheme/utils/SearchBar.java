@@ -17,8 +17,8 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 
@@ -52,7 +52,7 @@ public class SearchBar extends JTextField
 	 * @param model
 	 *            the model to search in.
 	 * @param view
-	 *            the view to update when a spot is found.
+	 *            the view to update when a BCellobject is found.
 	 */
 	public SearchBar( final Model model, final TrackMateModelView view )
 	{
@@ -117,10 +117,10 @@ public class SearchBar extends JTextField
 //		setText( "Search" );
 	}
 
-	private class SearchAction implements PropertyChangeListener, Iterator< Spot >
+	private class SearchAction implements PropertyChangeListener, Iterator< BCellobject >
 	{
 
-		private Iterator< Spot > iterator;
+		private Iterator< BCellobject > iterator;
 
 		private Iterator< Integer > trackIterator;
 
@@ -130,8 +130,8 @@ public class SearchBar extends JTextField
 			if ( trackIterator.hasNext() )
 			{
 				final Integer currentTrackID = trackIterator.next();
-				final Spot trackStart = firstSpotOf( currentTrackID );
-				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, Spot.nameComparator, false );
+				final BCellobject trackStart = firstBCellobjectOf( currentTrackID );
+				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, BCellobject.nameComparator, false );
 			}
 			else
 			{
@@ -151,17 +151,17 @@ public class SearchBar extends JTextField
 
 		private void search( final String text )
 		{
-			Spot start = null;
-			Spot spot;
-			while ( ( spot = next() ) != start )
+			BCellobject start = null;
+			BCellobject BCellobject;
+			while ( ( BCellobject = next() ) != start )
 			{
 				if ( start == null )
 				{
-					start = spot;
+					start = BCellobject;
 				}
-				if ( spot.getName().contains( text ) )
+				if ( BCellobject.getName().contains( text ) )
 				{
-					view.centerViewOn( spot );
+					view.centerViewOn( BCellobject );
 					return;
 				}
 			}
@@ -175,7 +175,7 @@ public class SearchBar extends JTextField
 		}
 
 		@Override
-		public Spot next()
+		public BCellobject next()
 		{
 			if ( null == iterator || !iterator.hasNext() )
 			{
@@ -184,17 +184,17 @@ public class SearchBar extends JTextField
 					trackIterator = model.getTrackModel().trackIDs( true ).iterator();
 				}
 				final Integer currentTrackID = trackIterator.next();
-				final Spot trackStart = firstSpotOf( currentTrackID );
-				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, Spot.nameComparator, false );
+				final BCellobject trackStart = firstBCellobjectOf( currentTrackID );
+				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, BCellobject.nameComparator, false );
 			}
 			return iterator.next();
 		}
 
-		private Spot firstSpotOf( final Integer trackID )
+		private BCellobject firstBCellobjectOf( final Integer trackID )
 		{
-			final List< Spot > trackSpots = new ArrayList<>( model.getTrackModel().trackSpots( trackID ) );
-			Collections.sort( trackSpots, Spot.frameComparator );
-			return trackSpots.get( 0 );
+			final List< BCellobject > trackBCellobjects = new ArrayList<>( model.getTrackModel().trackBCellobjects( trackID ) );
+			Collections.sort( trackBCellobjects, BCellobject.frameComparator );
+			return trackBCellobjects.get( 0 );
 		}
 
 		@Override

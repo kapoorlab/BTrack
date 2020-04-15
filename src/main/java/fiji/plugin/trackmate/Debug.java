@@ -27,12 +27,12 @@ public class Debug
 		}
 
 		final Model model = reader.getModel();
-		final SpotCollection spots = model.getSpots();
+		final BCellobjectCollection BCellobjects = model.getBCellobjects();
 
 		final double maxSearchRadius = 2;
 		final int maxFrameGap = 2;
 		final double initialSearchRadius = 1.5;
-		final KalmanTracker tracker = new KalmanTracker( spots, maxSearchRadius, maxFrameGap, initialSearchRadius );
+		final KalmanTracker tracker = new KalmanTracker( BCellobjects, maxSearchRadius, maxFrameGap, initialSearchRadius );
 		if ( !tracker.checkInput() || !tracker.process() )
 		{
 			System.err.println( tracker.getErrorMessage() );

@@ -17,10 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.BCellobjectCollection;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.sparselap.costfunction.CostFunction;
 import fiji.plugin.trackmate.tracking.sparselap.costfunction.FeaturePenaltyCostFunction;
 import fiji.plugin.trackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
@@ -30,15 +30,15 @@ import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.multithreading.SimpleMultiThreading;
 
 @SuppressWarnings( "deprecation" )
-public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorithm implements SpotTracker
+public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker
 {
 	private final static String BASE_ERROR_MESSAGE = "[SparseLAPFrameToFrameTracker] ";
 
-	protected SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
+	protected SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
 
 	protected Logger logger = Logger.VOID_LOGGER;
 
-	protected final SpotCollection spots;
+	protected final BCellobjectCollection BCellobjects;
 
 	protected final Map< String, Object > settings;
 
@@ -46,9 +46,9 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 	 * CONSTRUCTOR
 	 */
 
-	public SparseLAPFrameToFrameTracker( final SpotCollection spots, final Map< String, Object > settings )
+	public SparseLAPFrameToFrameTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
-		this.spots = spots;
+		this.BCellobjects = BCellobjects;
 		this.settings = settings;
 	}
 
@@ -57,7 +57,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 	 */
 
 	@Override
-	public SimpleWeightedGraph< Spot, DefaultWeightedEdge > getResult()
+	public SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > getResult()
 	{
 		return graph;
 	}
@@ -76,24 +76,24 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		 */
 
 		// Check that the objects list itself isn't null
-		if ( null == spots )
+		if ( null == BCellobjects )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is null.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is null.";
 			return false;
 		}
 
 		// Check that the objects list contains inner collections.
-		if ( spots.keySet().isEmpty() )
+		if ( BCellobjects.keySet().isEmpty() )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
-		for ( final int frame : spots.keySet() )
+		for ( final int frame : BCellobjects.keySet() )
 		{
-			if ( spots.getNSpots( frame, true ) > 0 )
+			if ( BCellobjects.getNBCellobjects( frame, true ) > 0 )
 			{
 				empty = false;
 				break;
@@ -101,7 +101,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		}
 		if ( empty )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 		// Check parameters
@@ -119,8 +119,8 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		final long start = System.currentTimeMillis();
 
 		// Prepare frame pairs in order, not necessarily separated by 1.
-		final ArrayList< int[] > framePairs = new ArrayList<>( spots.keySet().size() - 1 );
-		final Iterator< Integer > frameIterator = spots.keySet().iterator();
+		final ArrayList< int[] > framePairs = new ArrayList<>( BCellobjects.keySet().size() - 1 );
+		final Iterator< Integer > frameIterator = BCellobjects.keySet().iterator();
 		int frame0 = frameIterator.next();
 		int frame1;
 		while ( frameIterator.hasNext() )
@@ -133,7 +133,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		// Prepare cost function
 		@SuppressWarnings( "unchecked" )
 		final Map< String, Double > featurePenalties = ( Map< String, Double > ) settings.get( KEY_LINKING_FEATURE_PENALTIES );
-		final CostFunction< Spot, Spot > costFunction = getCostFunction( featurePenalties );
+		final CostFunction< BCellobject, BCellobject > costFunction = getCostFunction( featurePenalties );
 		final Double maxDist = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
 		final double costThreshold = maxDist * maxDist;
 		final double alternativeCostFactor = ( Double ) settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
@@ -166,14 +166,14 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 						final int lFrame0 = framePairs.get( i )[ 0 ];
 						final int lFrame1 = framePairs.get( i )[ 1 ];
 
-						// Get spots - we have to create a list from each
+						// Get BCellobjects - we have to create a list from each
 						// content.
-						final List< Spot > sources = new ArrayList<>( spots.getNSpots( lFrame0, true ) );
-						for ( final Iterator< Spot > iterator = spots.iterator( lFrame0, true ); iterator.hasNext(); )
+						final List< BCellobject > sources = new ArrayList<>( BCellobjects.getNBCellobjects( lFrame0, true ) );
+						for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( lFrame0, true ); iterator.hasNext(); )
 							sources.add( iterator.next() );
 
-						final List< Spot > targets = new ArrayList<>( spots.getNSpots( lFrame1, true ) );
-						for ( final Iterator< Spot > iterator = spots.iterator( lFrame1, true ); iterator.hasNext(); )
+						final List< BCellobject > targets = new ArrayList<>( BCellobjects.getNBCellobjects( lFrame1, true ) );
+						for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( lFrame1, true ); iterator.hasNext(); )
 							targets.add( iterator.next() );
 
 						if ( sources.isEmpty() || targets.isEmpty() )
@@ -183,8 +183,8 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 						 * Run the linker.
 						 */
 
-						final JaqamanLinkingCostMatrixCreator< Spot, Spot > creator = new JaqamanLinkingCostMatrixCreator<>( sources, targets, costFunction, costThreshold, alternativeCostFactor, 1d );
-						final JaqamanLinker< Spot, Spot > linker = new JaqamanLinker<>( creator );
+						final JaqamanLinkingCostMatrixCreator< BCellobject, BCellobject > creator = new JaqamanLinkingCostMatrixCreator<>( sources, targets, costFunction, costThreshold, alternativeCostFactor, 1d );
+						final JaqamanLinker< BCellobject, BCellobject > linker = new JaqamanLinker<>( creator );
 						if ( !linker.checkInput() || !linker.process() )
 						{
 							errorMessage = "At frame " + lFrame0 + " to " + lFrame1 + ": " + linker.getErrorMessage();
@@ -198,12 +198,12 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 
 						synchronized ( graph )
 						{
-							final Map< Spot, Double > costs = linker.getAssignmentCosts();
-							final Map< Spot, Spot > assignment = linker.getResult();
-							for ( final Spot source : assignment.keySet() )
+							final Map< BCellobject, Double > costs = linker.getAssignmentCosts();
+							final Map< BCellobject, BCellobject > assignment = linker.getResult();
+							for ( final BCellobject source : assignment.keySet() )
 							{
 								final double cost = costs.get( source );
-								final Spot target = assignment.get( source );
+								final BCellobject target = assignment.get( source );
 								graph.addVertex( source );
 								graph.addVertex( target );
 								final DefaultWeightedEdge edge = graph.addEdge( source, target );
@@ -236,7 +236,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 	 *            feature penalties to base costs on. Can be <code>null</code>.
 	 * @return a new {@link CostFunction}
 	 */
-	protected CostFunction< Spot, Spot > getCostFunction( final Map< String, Double > featurePenalties )
+	protected CostFunction< BCellobject, BCellobject > getCostFunction( final Map< String, Double > featurePenalties )
 	{
 		if ( null == featurePenalties || featurePenalties.isEmpty() )
 			return new SquareDistCostFunction();

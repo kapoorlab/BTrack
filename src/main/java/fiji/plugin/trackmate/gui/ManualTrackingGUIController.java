@@ -5,7 +5,7 @@ import java.util.List;
 import fiji.plugin.trackmate.Settings;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
 
@@ -45,12 +45,12 @@ public class ManualTrackingGUIController extends TrackMateGUIController
 
 		final Settings settings = trackmate.getSettings();
 
-		settings.clearSpotAnalyzerFactories();
-		final List< String > spotAnalyzerKeys = spotAnalyzerProvider.getKeys();
-		for ( final String key : spotAnalyzerKeys )
+		settings.clearBCellobjectAnalyzerFactories();
+		final List< String > BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
+		for ( final String key : BCellobjectAnalyzerKeys )
 		{
-			final SpotAnalyzerFactory< ? > spotFeatureAnalyzer = spotAnalyzerProvider.getFactory( key );
-			settings.addSpotAnalyzerFactory( spotFeatureAnalyzer );
+			final BCellobjectAnalyzerFactory< ? > BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+			settings.addBCellobjectAnalyzerFactory( BCellobjectFeatureAnalyzer );
 		}
 
 		settings.clearEdgeAnalyzers();
@@ -75,7 +75,7 @@ public class ManualTrackingGUIController extends TrackMateGUIController
 		 * Immediately declare features to model.
 		 */
 
-		trackmate.computeSpotFeatures( false );
+		trackmate.computeBCellobjectFeatures( false );
 		trackmate.computeEdgeFeatures( false );
 		trackmate.computeTrackFeatures( false );
 	}

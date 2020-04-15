@@ -18,40 +18,40 @@ import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.panels.tracker.KalmanTrackerConfigPanel;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 
-@Plugin( type = SpotTrackerFactory.class )
-public class KalmanTrackerFactory implements SpotTrackerFactory
+@Plugin( type = BCellobjectTrackerFactory.class )
+public class KalmanTrackerFactory implements BCellobjectTrackerFactory
 {
 
 	private static final String INFO_TEXT_PART2 = "This tracker needs two parameters (on top of the maximal frame gap tolerated): "
 			+ "<br/>"
 			+ "\t - the max search radius defines how far from a predicted position it should look "
-			+ "for candidate spots;<br/>"
-			+ "\t - the initial search radius defines how far two spots can be apart when initiating "
+			+ "for candidate BCellobjects;<br/>"
+			+ "\t - the initial search radius defines how far two BCellobjects can be apart when initiating "
 			+ "a new track."
 			+ "<br/></html>";
 
 	private static final String INFO_TEXT = "<html>This tracker is best suited for objects that "
 			+ "move with a roughly constant velocity vector."
 			+ "<p>"
-			+ "It relies on the Kalman filter to predict the next most likely position of a spot. "
-			+ "The predictions for all current tracks are linked to the spots actually "
+			+ "It relies on the Kalman filter to predict the next most likely position of a BCellobject. "
+			+ "The predictions for all current tracks are linked to the BCellobjects actually "
 			+ "found in the next frame, thanks to the LAP framework already present in the LAP tracker. "
 			+ "Predictions are continuously refined and the tracker can accomodate moderate "
 			+ "velocity direction and magnitude changes. "
 			+ "<p>"
-			+ "This tracker can bridge gaps: If a spot is not found close enough to a prediction, "
+			+ "This tracker can bridge gaps: If a BCellobject is not found close enough to a prediction, "
 			+ "then the Kalman filter will make another prediction in the next frame and re-iterate "
 			+ "the search. "
 			+ "<p>"
 			+ "The first frames of a track are critical for this tracker to work properly: Tracks"
 			+ "are initiated by looking for close neighbors (again via the LAP tracker). "
-			+ "Spurious spots in the beginning of each track can confure the tracker."
+			+ "Spurious BCellobjects in the beginning of each track can confure the tracker."
 			+ "<p>"
 			+ INFO_TEXT_PART2;
 
@@ -90,12 +90,12 @@ public class KalmanTrackerFactory implements SpotTrackerFactory
 	}
 
 	@Override
-	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings )
+	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
 		final double maxSearchRadius = ( Double ) settings.get( KEY_KALMAN_SEARCH_RADIUS );
 		final int maxFrameGap = ( Integer ) settings.get( KEY_GAP_CLOSING_MAX_FRAME_GAP );
 		final double initialSearchRadius = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
-		return new KalmanTracker( spots, maxSearchRadius, maxFrameGap, initialSearchRadius );
+		return new KalmanTracker( BCellobjects, maxSearchRadius, maxFrameGap, initialSearchRadius );
 	}
 
 	@Override

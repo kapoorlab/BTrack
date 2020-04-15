@@ -89,7 +89,7 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import tracker.BudTrackModel;
-import tracker.CostFunction;
+import tracker.BudCostFunction;
 import tracker.TrackModel;
 import zGUI.CovistoZselectPanel;
 
@@ -126,8 +126,8 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public ConcurrentHashMap<String, ArrayList<BCellobject>> AllBudcells;
 	
 	public HashMap<String, Integer> BudLastTime;
-	public CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
-	public CostFunction<Budobject, Budobject> BudUserchosenCostFunction;
+	public BudCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
+	public BudCostFunction<Budobject, Budobject> BudUserchosenCostFunction;
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
 	public ArrayList<BudTrackobject> Tracklist;

@@ -2,7 +2,6 @@ package fiji.plugin.trackmate.util;
 
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.graph.TimeDirectedNeighborIndex;
 
 import java.util.Iterator;
@@ -10,6 +9,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+
+import budDetector.BCellobject;
 
 public class TrackNavigator {
 
@@ -24,8 +25,8 @@ public class TrackNavigator {
 	}
 
 	public synchronized void nextTrack() {
-		final Spot spot = getASpot();
-		if (null == spot) {
+		final BCellobject BCellobject = getABCellobject();
+		if (null == BCellobject) {
 			return;
 		}
 
@@ -34,7 +35,7 @@ public class TrackNavigator {
 			return;
 		}
 
-		Integer trackID = model.getTrackModel().trackIDOf(spot);
+		Integer trackID = model.getTrackModel().trackIDOf(BCellobject);
 		if (null == trackID) {
 			// No track? Then move to the first one.
 			trackID = model.getTrackModel().trackIDs(true).iterator().next();
@@ -53,25 +54,25 @@ public class TrackNavigator {
 			}
 		}
 
-		final Set<Spot> spots = model.getTrackModel().trackSpots(nextTrackID);
-		final TreeSet<Spot> ring = new TreeSet<>(Spot.frameComparator);
-		ring.addAll(spots);
-		Spot target = ring.ceiling(spot);
+		final Set<BCellobject> BCellobjects = model.getTrackModel().trackBCellobjects(nextTrackID);
+		final TreeSet<BCellobject> ring = new TreeSet<>(BCellobject.frameComparator);
+		ring.addAll(BCellobjects);
+		BCellobject target = ring.ceiling(BCellobject);
 		if (null == target) {
-			target = ring.floor(spot);
+			target = ring.floor(BCellobject);
 		}
 
 		selectionModel.clearSelection();
-		selectionModel.addSpotToSelection(target);
+		selectionModel.addBCellobjectToSelection(target);
 	}
 
 	public synchronized void previousTrack() {
-		final Spot spot = getASpot();
-		if (null == spot) {
+		final BCellobject BCellobject = getABCellobject();
+		if (null == BCellobject) {
 			return;
 		}
 
-		Integer trackID = model.getTrackModel().trackIDOf(spot);
+		Integer trackID = model.getTrackModel().trackIDOf(BCellobject);
 		final Set<Integer> trackIDs = model.getTrackModel().trackIDs(true); // if only it was navigable...
 		if (trackIDs.isEmpty()) {
 			return;
@@ -101,107 +102,107 @@ public class TrackNavigator {
 			previousTrackID = id;
 		}
 
-		final Set<Spot> spots = model.getTrackModel().trackSpots(previousTrackID);
-		final TreeSet<Spot> ring = new TreeSet<>(Spot.frameComparator);
-		ring.addAll(spots);
-		Spot target = ring.ceiling(spot);
+		final Set<BCellobject> BCellobjects = model.getTrackModel().trackBCellobjects(previousTrackID);
+		final TreeSet<BCellobject> ring = new TreeSet<>(BCellobject.frameComparator);
+		ring.addAll(BCellobjects);
+		BCellobject target = ring.ceiling(BCellobject);
 		if (null == target) {
-			target = ring.floor(spot);
+			target = ring.floor(BCellobject);
 		}
 
 		selectionModel.clearSelection();
-		selectionModel.addSpotToSelection(target);
+		selectionModel.addBCellobjectToSelection(target);
 	}
 
 	public synchronized void nextSibling() {
-		final Spot spot = getASpot();
-		if (null == spot) {
+		final BCellobject BCellobject = getABCellobject();
+		if (null == BCellobject) {
 			return;
 		}
 
-		final Integer trackID = model.getTrackModel().trackIDOf(spot);
+		final Integer trackID = model.getTrackModel().trackIDOf(BCellobject);
 		if (null == trackID) {
 			return;
 		}
 
-		final int frame = spot.getFeature(Spot.FRAME).intValue();
-		final TreeSet<Spot> ring = new TreeSet<>(Spot.nameComparator);
+		final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+		final TreeSet<BCellobject> ring = new TreeSet<>(BCellobject.nameComparator);
 
-		final Set<Spot> spots = model.getTrackModel().trackSpots(trackID);
-		for (final Spot s : spots) {
-			final int fs = s.getFeature(Spot.FRAME).intValue();
-			if (frame == fs && s != spot) {
+		final Set<BCellobject> BCellobjects = model.getTrackModel().trackBCellobjects(trackID);
+		for (final BCellobject s : BCellobjects) {
+			final int fs = s.getFeature(BCellobject.POSITION_T).intValue();
+			if (frame == fs && s != BCellobject) {
 				ring.add(s);
 			}
 		}
 
 		if (!ring.isEmpty()) {
-			Spot nextSibling = ring.ceiling(spot);
+			BCellobject nextSibling = ring.ceiling(BCellobject);
 			if (null == nextSibling) {
 				nextSibling = ring.first(); // loop
 			}
 			selectionModel.clearSelection();
-			selectionModel.addSpotToSelection(nextSibling);
+			selectionModel.addBCellobjectToSelection(nextSibling);
 		}
 	}
 
 	public synchronized void previousSibling() {
-		final Spot spot = getASpot();
-		if (null == spot) {
+		final BCellobject BCellobject = getABCellobject();
+		if (null == BCellobject) {
 			return;
 		}
 
-		final Integer trackID = model.getTrackModel().trackIDOf(spot);
+		final Integer trackID = model.getTrackModel().trackIDOf(BCellobject);
 		if (null == trackID) {
 			return;
 		}
 
-		final int frame = spot.getFeature(Spot.FRAME).intValue();
-		final TreeSet<Spot> ring = new TreeSet<>(Spot.nameComparator);
+		final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+		final TreeSet<BCellobject> ring = new TreeSet<>(BCellobject.nameComparator);
 
-		final Set<Spot> spots = model.getTrackModel().trackSpots(trackID);
-		for (final Spot s : spots) {
-			final int fs = s.getFeature(Spot.FRAME).intValue();
-			if (frame == fs && s != spot) {
+		final Set<BCellobject> BCellobjects = model.getTrackModel().trackBCellobjects(trackID);
+		for (final BCellobject s : BCellobjects) {
+			final int fs = s.getFeature(BCellobject.POSITION_T).intValue();
+			if (frame == fs && s != BCellobject) {
 				ring.add(s);
 			}
 		}
 
 		if (!ring.isEmpty()) {
-			Spot previousSibling = ring.floor(spot);
+			BCellobject previousSibling = ring.floor(BCellobject);
 			if (null == previousSibling) {
 				previousSibling = ring.last(); // loop
 			}
 			selectionModel.clearSelection();
-			selectionModel.addSpotToSelection(previousSibling);
+			selectionModel.addBCellobjectToSelection(previousSibling);
 		}
 	}
 
 	public synchronized void previousInTime() {
-		final Spot spot = getASpot();
-		if (null == spot) {
+		final BCellobject BCellobject = getABCellobject();
+		if (null == BCellobject) {
 			return;
 		}
 
-		final Set<Spot> predecessors = neighborIndex.predecessorsOf(spot);
+		final Set<BCellobject> predecessors = neighborIndex.predecessorsOf(BCellobject);
 		if (!predecessors.isEmpty()) {
-			final Spot next = predecessors.iterator().next();
+			final BCellobject next = predecessors.iterator().next();
 			selectionModel.clearSelection();
-			selectionModel.addSpotToSelection(next);
+			selectionModel.addBCellobjectToSelection(next);
 		}
 	}
 
 	public synchronized void nextInTime() {
-		final Spot spot = getASpot();
-		if (null == spot) {
+		final BCellobject BCellobject = getABCellobject();
+		if (null == BCellobject) {
 			return;
 		}
 
-		final Set<Spot> successors = neighborIndex.successorsOf(spot);
+		final Set<BCellobject> successors = neighborIndex.successorsOf(BCellobject);
 		if (!successors.isEmpty()) {
-			final Spot next = successors.iterator().next();
+			final BCellobject next = successors.iterator().next();
 			selectionModel.clearSelection();
-			selectionModel.addSpotToSelection(next);
+			selectionModel.addBCellobjectToSelection(next);
 		}
 	}
 
@@ -210,25 +211,25 @@ public class TrackNavigator {
 	 */
 
 	/**
-	 * Return a meaningful spot from the current selection, or <code>null</code>
+	 * Return a meaningful BCellobject from the current selection, or <code>null</code>
 	 * if the selection is empty.
 	 */
-	private Spot getASpot() {
-		// Get it from spot selection
-		final Set<Spot> spotSelection = selectionModel.getSpotSelection();
-		if (!spotSelection.isEmpty()) {
-			final Iterator<Spot> it = spotSelection.iterator();
-			Spot spot = it.next();
-			int minFrame = spot.getFeature(Spot.FRAME).intValue();
+	private BCellobject getABCellobject() {
+		// Get it from BCellobject selection
+		final Set<BCellobject> BCellobjectSelection = selectionModel.getBCellobjectSelection();
+		if (!BCellobjectSelection.isEmpty()) {
+			final Iterator<BCellobject> it = BCellobjectSelection.iterator();
+			BCellobject BCellobject = it.next();
+			int minFrame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
 			while (it.hasNext()) {
-				final Spot s = it.next();
-				final int frame = s.getFeature(Spot.FRAME).intValue();
+				final BCellobject s = it.next();
+				final int frame = s.getFeature(BCellobject.POSITION_T).intValue();
 				if (frame < minFrame) {
 					minFrame = frame;
-					spot = s;
+					BCellobject = s;
 				}
 			}
-			return spot;
+			return BCellobject;
 		}
 
 		// Nope? Then get it from edges
@@ -236,18 +237,18 @@ public class TrackNavigator {
 		if (!edgeSelection.isEmpty()) {
 			final Iterator<DefaultWeightedEdge> it = edgeSelection.iterator();
 			final DefaultWeightedEdge edge = it.next();
-			Spot spot = model.getTrackModel().getEdgeSource(edge);
-			int minFrame = spot.getFeature(Spot.FRAME).intValue();
+			BCellobject BCellobject = model.getTrackModel().getEdgeSource(edge);
+			int minFrame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
 			while (it.hasNext()) {
 				final DefaultWeightedEdge e = it.next();
-				final Spot s = model.getTrackModel().getEdgeSource(e);
-				final int frame = s.getFeature(Spot.FRAME).intValue();
+				final BCellobject s = model.getTrackModel().getEdgeSource(e);
+				final int frame = s.getFeature(BCellobject.POSITION_T).intValue();
 				if (frame < minFrame) {
 					minFrame = frame;
-					spot = s;
+					BCellobject = s;
 				}
 			}
-			return spot;
+			return BCellobject;
 		}
 
 		// Still nothing? Then give up.

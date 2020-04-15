@@ -5,14 +5,15 @@ import fiji.plugin.trackmate.ModelChangeListener;
 import fiji.plugin.trackmate.SelectionChangeEvent;
 import fiji.plugin.trackmate.SelectionChangeListener;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMateOptionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import budDetector.BCellobject;
+
 /**
- * An abstract class for spot displayers, that can overlay detected spots and
+ * An abstract class for BCellobject displayers, that can overlay detected BCellobjects and
  * tracks on top of the image data.
  * <p>
  *
@@ -77,15 +78,15 @@ public abstract class AbstractTrackMateModelView implements SelectionChangeListe
 	@Override
 	public void selectionChanged( final SelectionChangeEvent event )
 	{
-		// Center on selection if we added one spot exactly
-		final Map< Spot, Boolean > spotsAdded = event.getSpots();
-		if ( spotsAdded != null && spotsAdded.size() == 1 )
+		// Center on selection if we added one BCellobject exactly
+		final Map< BCellobject, Boolean > BCellobjectsAdded = event.getBCellobjects();
+		if ( BCellobjectsAdded != null && BCellobjectsAdded.size() == 1 )
 		{
-			final boolean added = spotsAdded.values().iterator().next();
+			final boolean added = BCellobjectsAdded.values().iterator().next();
 			if ( added )
 			{
-				final Spot spot = spotsAdded.keySet().iterator().next();
-				centerViewOn( spot );
+				final BCellobject BCellobject = BCellobjectsAdded.keySet().iterator().next();
+				centerViewOn( BCellobject );
 			}
 		}
 	}
@@ -106,12 +107,11 @@ public abstract class AbstractTrackMateModelView implements SelectionChangeListe
 	protected Map< String, Object > initDisplaySettings( final Model lModel )
 	{
 		final Map< String, Object > lDisplaySettings = new HashMap<>( 11 );
-		lDisplaySettings.put( KEY_COLOR, DEFAULT_SPOT_COLOR );
+		lDisplaySettings.put( KEY_COLOR, DEFAULT_BCellobject_COLOR );
 		lDisplaySettings.put( KEY_HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR );
-		lDisplaySettings.put( KEY_SPOTS_VISIBLE, true );
-		lDisplaySettings.put( KEY_DISPLAY_SPOT_NAMES, false );
-		lDisplaySettings.put( KEY_SPOT_COLORING, new DummySpotColorGenerator() );
-		lDisplaySettings.put( KEY_SPOT_RADIUS_RATIO, 1.0d );
+		lDisplaySettings.put( KEY_DISPLAY_BCellobject_NAMES, false );
+		lDisplaySettings.put( KEY_BCellobject_COLORING, new DummyBCellobjectColorGenerator() );
+		lDisplaySettings.put( KEY_BCellobject_RADIUS_RATIO, 1.0d );
 		lDisplaySettings.put( KEY_TRACKS_VISIBLE, true );
 		lDisplaySettings.put( KEY_TRACK_DISPLAY_MODE, DEFAULT_TRACK_DISPLAY_MODE );
 		lDisplaySettings.put( KEY_TRACK_DISPLAY_DEPTH, DEFAULT_TRACK_DISPLAY_DEPTH );

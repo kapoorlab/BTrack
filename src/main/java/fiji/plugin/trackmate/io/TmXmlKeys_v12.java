@@ -13,8 +13,8 @@ class TmXmlKeys_v12 {
 	 */
 	
 	public static final String FRAME_ATTRIBUTE_NAME_v12 				= "frame"; 
-	public static final String SPOT_ID_ATTRIBUTE_NAME_v12 				= "ID";
-	public static final String SPOT_NAME_v12_ATTRIBUTE_NAME_v12 			= "name";
+	public static final String BCellobject_ID_ATTRIBUTE_NAME_v12 				= "ID";
+	public static final String BCellobject_NAME_v12_ATTRIBUTE_NAME_v12 			= "name";
 	
 	/*
 	 * ROOT ELEMENT
@@ -74,24 +74,24 @@ class TmXmlKeys_v12 {
 	public static final String IMAGE_TIME_UNITS_ATTRIBUTE_NAME_v12 		= "timeunits";
 	
 	/*
-	 * ALL SPOTS element
+	 * ALL BCellobjectS element
 	 */
 
-	public static final String SPOT_COLLECTION_ELEMENT_KEY_v12 			= "AllSpots";
-	public static final String SPOT_FRAME_COLLECTION_ELEMENT_KEY_v12 	= "SpotsInFrame"; 
-	public static final String SPOT_ELEMENT_KEY_v12 					= "Spot"; 
+	public static final String BCellobject_COLLECTION_ELEMENT_KEY_v12 			= "AllBCellobjects";
+	public static final String BCellobject_FRAME_COLLECTION_ELEMENT_KEY_v12 	= "BCellobjectsInFrame"; 
+	public static final String BCellobject_ELEMENT_KEY_v12 					= "BCellobject"; 
 
 	/*
-	 * INITIAL SPOT FILTER element
+	 * INITIAL BCellobject FILTER element
 	 */
 	
-	public static final String INITIAL_SPOT_FILTER_ELEMENT_KEY_v12		= "InitialSpotFilter";
+	public static final String INITIAL_BCellobject_FILTER_ELEMENT_KEY_v12		= "InitialBCellobjectFilter";
 	
 	/*
-	 * FILTERS element for SPOTS and TRACKS
+	 * FILTERS element for BCellobjectS and TRACKS
 	 */
 	
-	public static final String SPOT_FILTER_COLLECTION_ELEMENT_KEY_v12		= "SpotFilterCollection";
+	public static final String BCellobject_FILTER_COLLECTION_ELEMENT_KEY_v12		= "BCellobjectFilterCollection";
 	public static final String TRACK_FILTER_COLLECTION_ELEMENT_KEY_v12		= "TrackFilterCollection";
 	public static final String FILTER_ELEMENT_KEY_v12						= "Filter";
 	public static final String FILTER_FEATURE_ATTRIBUTE_NAME_v12 			= "feature";
@@ -99,12 +99,12 @@ class TmXmlKeys_v12 {
 	public static final String FILTER_ABOVE_ATTRIBUTE_NAME_v12 				= "isabove";
 	
 	/*
-	 * SPOT FILTERED elements
+	 * BCellobject FILTERED elements
 	 */
 	
-	public static final String FILTERED_SPOT_ELEMENT_KEY_v12 				= "FilteredSpots";
-	public static final String FILTERED_SPOT_COLLECTION_ELEMENT_KEY_v12 	= "FilteredSpotsInFrame";
-	public static final String SPOT_ID_ELEMENT_KEY_v12 						= "SpotID";
+	public static final String FILTERED_BCellobject_ELEMENT_KEY_v12 				= "FilteredBCellobjects";
+	public static final String FILTERED_BCellobject_COLLECTION_ELEMENT_KEY_v12 	= "FilteredBCellobjectsInFrame";
+	public static final String BCellobject_ID_ELEMENT_KEY_v12 						= "BCellobjectID";
 
 	/*
 	 * TRACK elements

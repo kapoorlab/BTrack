@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import Jama.Matrix;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.oldlap.costfunction.GapClosingCostFunction;
 import fiji.plugin.trackmate.tracking.oldlap.costfunction.MergingCostFunction;
@@ -36,8 +36,8 @@ import fiji.plugin.trackmate.util.TMUtils;
  * <p> The overall matrix can be divided into <u>four quadrants</u>, outlined below. Each 
  * quadrant has dimensions <code>(number of track segments + number of M/S candidate points) x 
  * (number of track segments + number of M/S candidate points)</code>.
- * A merging or splitting (M/S) candidate point is defined as a Spot in a track segment 
- * with at least two spots.
+ * A merging or splitting (M/S) candidate point is defined as a BCellobject in a track segment 
+ * with at least two BCellobjects.
  * 
  * <ul>
  * <li>
@@ -98,13 +98,13 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 
 	private static final boolean DEBUG = false;
 	/** The track segments. */
-	protected List<SortedSet<Spot>> trackSegments;
-	/** Holds the Spots in the middle of track segments (not at end or start). */
-	protected List<Spot> middlePoints;
-	/** The list of middle Spots which can participate in merge events. */
-	protected List<Spot> mergingMiddlePoints;
-	/** The list of middle Spots which can participate in splitting events. */
-	protected List<Spot> splittingMiddlePoints;
+	protected List<SortedSet<BCellobject>> trackSegments;
+	/** Holds the BCellobjects in the middle of track segments (not at end or start). */
+	protected List<BCellobject> middlePoints;
+	/** The list of middle BCellobjects which can participate in merge events. */
+	protected List<BCellobject> mergingMiddlePoints;
+	/** The list of middle BCellobjects which can participate in splitting events. */
+	protected List<BCellobject> splittingMiddlePoints;
 
 	private Logger logger = Logger.VOID_LOGGER;
 
@@ -114,13 +114,13 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 
 	/**
 	 * 
-	 * @param trackSegments A list of track segments (each track segment is 
-	 * an <code>ArrayList</code> of <code>Spots</code>.
+	 * @param trackSegments2 A list of track segments (each track segment is 
+	 * an <code>ArrayList</code> of <code>BCellobjects</code>.
 	 */
 
-	public TrackSegmentCostMatrixCreator(final List<SortedSet<Spot>> trackSegments, final Map<String, Object> settings) {
+	public TrackSegmentCostMatrixCreator(final List<SortedSet<BCellobject>> trackSegments2, final Map<String, Object> settings) {
 		super(settings);
-		this.trackSegments = trackSegments;
+		this.trackSegments = trackSegments2;
 	}
 
 	/*
@@ -150,12 +150,12 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 	 * Returns a list which holds references to all the splitting middle points
 	 * within all the track segments. Notably, these middle points are in the
 	 * same order here as they are referenced in the cost matrix (so, the first
-	 * column index in the merging section, index 0, corresponds to the Spot at
+	 * column index in the merging section, index 0, corresponds to the BCellobject at
 	 * index 0 in this ArrayList.
 	 * 
-	 * @return the <code>List</code> of middle <code>Spots</code>
+	 * @return the <code>List</code> of middle <code>BCellobjects</code>
 	 */
-	public List<Spot> getSplittingMiddlePoints() {
+	public List<BCellobject> getSplittingMiddlePoints() {
 		return splittingMiddlePoints;
 	}
 
@@ -165,10 +165,10 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 	 * within all the track segments. Notably, these middle points are in the
 	 * same order here as they are referenced in the cost matrix (so, the 
 	 * first column index in the merging section, index 0, corresponds to
-	 * the Spot at index 0 in this ArrayList.
-	 * @return The <code>List</code> of middle <code>Spots</code>
+	 * the BCellobject at index 0 in this ArrayList.
+	 * @return The <code>List</code> of middle <code>BCellobjects</code>
 	 */
-	public List<Spot> getMergingMiddlePoints() {
+	public List<BCellobject> getMergingMiddlePoints() {
 		return mergingMiddlePoints;
 	}
 
@@ -236,19 +236,19 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 
 
 	/**
-	 * Create a List of candidate spots for splitting or merging events. 
-	 * A desirable candidate is a spot belonging to a track with at least 2 spots.
+	 * Create a List of candidate BCellobjects for splitting or merging events. 
+	 * A desirable candidate is a BCellobject belonging to a track with at least 2 BCellobjects.
 	 * 
-	 * @param lTrackSegments A List of track segments, where each segment is its own List of Spots.
-	 * @return A List containing references to all suitable candidate Spots in the track segments.
+	 * @param lTrackSegments A List of track segments, where each segment is its own List of BCellobjects.
+	 * @return A List containing references to all suitable candidate BCellobjects in the track segments.
 	 */
-	public List<Spot> getTrackSegmentMiddlePoints(final List<SortedSet<Spot>> lTrackSegments) {
-		int n_spots = 0;
-		for (final SortedSet<Spot> trackSegment : lTrackSegments) {
-			n_spots += trackSegment.size();
+	public List<BCellobject> getTrackSegmentMiddlePoints(final List<SortedSet<BCellobject>> lTrackSegments) {
+		int n_BCellobjects = 0;
+		for (final SortedSet<BCellobject> trackSegment : lTrackSegments) {
+			n_BCellobjects += trackSegment.size();
 		}
-		final List<Spot> lMiddlePoints = new ArrayList<>(n_spots);
-		for (final SortedSet<Spot> trackSegment : lTrackSegments) {
+		final List<BCellobject> lMiddlePoints = new ArrayList<>(n_BCellobjects);
+		for (final SortedSet<BCellobject> trackSegment : lTrackSegments) {
 			
 			if (trackSegment.size() > 1) {
 				lMiddlePoints.addAll(trackSegment);
@@ -396,7 +396,7 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 	 * that only contain BLOCKED (there are no useful columns with non-BLOCKED
 	 * values). Returns the pruned matrix with the empty columns.
 	 */
-	private Matrix pruneColumns (final Matrix m, final List<Spot> keptMiddleSpots) {
+	private Matrix pruneColumns (final Matrix m, final List<BCellobject> keptMiddleBCellobjects) {
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 		// Find all columns that contain a cost (a value != BLOCKED)
 		final double[][] full = m.copy().getArray();
@@ -412,7 +412,7 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 			}
 			if (containsCost) {
 				usefulColumns.add(curCol);
-				keptMiddleSpots.add(middlePoints.get(j));
+				keptMiddleBCellobjects.add(middlePoints.get(j));
 			}
 		}
 
@@ -435,7 +435,7 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 	 * that only contain BLOCKED (there are no useful rows with non-BLOCKED
 	 * values). Returns the pruned matrix with the empty rows.
 	 */
-	private Matrix pruneRows (final Matrix m, final List<Spot> keptMiddleSpots) {
+	private Matrix pruneRows (final Matrix m, final List<BCellobject> keptMiddleBCellobjects) {
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 		// Find all rows that contain a cost (a value != BLOCKED)
 		final double[][] full = m.copy().getArray();
@@ -451,7 +451,7 @@ public class TrackSegmentCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 			}
 			if (containsCost) {
 				usefulRows.add(curRow);
-				keptMiddleSpots.add(middlePoints.get(i));
+				keptMiddleBCellobjects.add(middlePoints.get(i));
 			}
 		}
 

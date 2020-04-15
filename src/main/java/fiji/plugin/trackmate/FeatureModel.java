@@ -9,9 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
+
 /**
  * This class represents the part of the {@link Model} that is in charge of
- * dealing with spot features and track features.
+ * dealing with BCellobject features and track features.
  *
  * @author Jean-Yves Tinevez, 2011, 2012
  *
@@ -55,15 +57,15 @@ public class FeatureModel
 
 	private final Map< String, Boolean > edgeFeatureIsInt = new HashMap< >();
 
-	private final Collection< String > spotFeatures = new LinkedHashSet< >();
+	private final Collection< String > BCellobjectFeatures = new LinkedHashSet< >();
 
-	private final Map< String, String > spotFeatureNames = new HashMap< >();
+	private final Map< String, String > BCellobjectFeatureNames = new HashMap< >();
 
-	private final Map< String, String > spotFeatureShortNames = new HashMap< >();
+	private final Map< String, String > BCellobjectFeatureShortNames = new HashMap< >();
 
-	private final Map< String, Dimension > spotFeatureDimensions = new HashMap< >();
+	private final Map< String, Dimension > BCellobjectFeatureDimensions = new HashMap< >();
 
-	private final Map< String, Boolean > spotFeatureIsInt = new HashMap< >();
+	private final Map< String, Boolean > BCellobjectFeatureIsInt = new HashMap< >();
 
 	private final Model model;
 
@@ -74,7 +76,7 @@ public class FeatureModel
 	 */
 
 	/**
-	 * Instantiates a new feature model. The basic spot features (POSITON_*,
+	 * Instantiates a new feature model. The basic BCellobject features (POSITON_*,
 	 * RADIUS, FRAME, QUALITY) are declared. Edge and track feature declarations
 	 * are left blank.
 	 *
@@ -84,8 +86,8 @@ public class FeatureModel
 	protected FeatureModel( final Model model )
 	{
 		this.model = model;
-		// Adds the base spot features
-		declareSpotFeatures( Spot.FEATURES, Spot.FEATURE_NAMES, Spot.FEATURE_SHORT_NAMES, Spot.FEATURE_DIMENSIONS, Spot.IS_INT );
+		// Adds the base BCellobject features
+		declareBCellobjectFeatures( BCellobject.FEATURES, BCellobject.FEATURE_NAMES, BCellobject.FEATURE_SHORT_NAMES, BCellobject.FEATURE_DIMENSIONS, BCellobject.IS_INT );
 	}
 
 	/*
@@ -472,17 +474,17 @@ public class FeatureModel
 	}
 
 	/*
-	 * SPOT FEATURES the spot features are stored in the Spot object themselves,
+	 * BCellobject FEATURES the BCellobject features are stored in the BCellobject object themselves,
 	 * but we declare them here.
 	 */
 
 	/**
-	 * Declares spot features, by specifying their names, short name and
+	 * Declares BCellobject features, by specifying their names, short name and
 	 * dimension. An {@link IllegalArgumentException} will be thrown if any of
 	 * the map misses a feature.
 	 *
 	 * @param features
-	 *            the list of spot feature to register.
+	 *            the list of BCellobject feature to register.
 	 * @param featureNames
 	 *            the name of these features.
 	 * @param featureShortNames
@@ -494,72 +496,72 @@ public class FeatureModel
 	 *            <code>true</code>) or <code>double</code>s (<code>false</code>
 	 *            ).
 	 */
-	public void declareSpotFeatures( final Collection< String > features, final Map< String, String > featureNames, final Map< String, String > featureShortNames, final Map< String, Dimension > featureDimensions, final Map< String, Boolean > isIntFeature )
+	public void declareBCellobjectFeatures( final Collection< String > features, final Map< String, String > featureNames, final Map< String, String > featureShortNames, final Map< String, Dimension > featureDimensions, final Map< String, Boolean > isIntFeature )
 	{
-		spotFeatures.addAll( features );
+		BCellobjectFeatures.addAll( features );
 		for ( final String feature : features )
 		{
 
 			final String name = featureNames.get( feature );
 			if ( null == name ) { throw new IllegalArgumentException( "Feature " + feature + " misses a name." ); }
-			spotFeatureNames.put( feature, name );
+			BCellobjectFeatureNames.put( feature, name );
 
 			final String shortName = featureShortNames.get( feature );
 			if ( null == shortName ) { throw new IllegalArgumentException( "Feature " + feature + " misses a short name." ); }
-			spotFeatureShortNames.put( feature, shortName );
+			BCellobjectFeatureShortNames.put( feature, shortName );
 
 			final Dimension dimension = featureDimensions.get( feature );
 			if ( null == dimension ) { throw new IllegalArgumentException( "Feature " + feature + " misses a dimension." ); }
-			spotFeatureDimensions.put( feature, dimension );
+			BCellobjectFeatureDimensions.put( feature, dimension );
 
 			final Boolean isInt = isIntFeature.get( feature );
 			if ( null == isInt ) { throw new IllegalArgumentException( "Feature " + feature + " misses the isInt flag." ); }
-			spotFeatureIsInt.put( feature, isInt );
+			BCellobjectFeatureIsInt.put( feature, isInt );
 
 		}
 	}
 
 	/**
-	 * Returns spot features as declared in this model.
+	 * Returns BCellobject features as declared in this model.
 	 *
-	 * @return the spot features.
+	 * @return the BCellobject features.
 	 */
-	public Collection< String > getSpotFeatures()
+	public Collection< String > getBCellobjectFeatures()
 	{
-		return spotFeatures;
+		return BCellobjectFeatures;
 	}
 
 	/**
-	 * Returns the name mapping of the spot features that are dealt with in this
+	 * Returns the name mapping of the BCellobject features that are dealt with in this
 	 * model.
 	 *
-	 * @return the map of spot feature names.
+	 * @return the map of BCellobject feature names.
 	 */
-	public Map< String, String > getSpotFeatureNames()
+	public Map< String, String > getBCellobjectFeatureNames()
 	{
-		return spotFeatureNames;
+		return BCellobjectFeatureNames;
 	}
 
 	/**
-	 * Returns the short name mapping of the spot features that are dealt with
+	 * Returns the short name mapping of the BCellobject features that are dealt with
 	 * in this model.
 	 *
-	 * @return the map of spot short names.
+	 * @return the map of BCellobject short names.
 	 */
-	public Map< String, String > getSpotFeatureShortNames()
+	public Map< String, String > getBCellobjectFeatureShortNames()
 	{
-		return spotFeatureShortNames;
+		return BCellobjectFeatureShortNames;
 	}
 
 	/**
-	 * Returns the dimension mapping of the spot features that are dealt with in
+	 * Returns the dimension mapping of the BCellobject features that are dealt with in
 	 * this model.
 	 *
-	 * @return the map of spot feature dimensions.
+	 * @return the map of BCellobject feature dimensions.
 	 */
-	public Map< String, Dimension > getSpotFeatureDimensions()
+	public Map< String, Dimension > getBCellobjectFeatureDimensions()
 	{
-		return spotFeatureDimensions;
+		return BCellobjectFeatureDimensions;
 	}
 
 	/**
@@ -568,9 +570,9 @@ public class FeatureModel
 	 *
 	 * @return the map of isInt flag.
 	 */
-	public Map< String, Boolean > getSpotFeatureIsInt()
+	public Map< String, Boolean > getBCellobjectFeatureIsInt()
 	{
-		return spotFeatureIsInt;
+		return BCellobjectFeatureIsInt;
 	}
 
 	@Override
@@ -578,9 +580,9 @@ public class FeatureModel
 	{
 		final StringBuilder str = new StringBuilder();
 
-		// Spots
-		str.append( "Spot features declared:\n" );
-		appendFeatureDeclarations( str, spotFeatures, spotFeatureNames, spotFeatureShortNames, spotFeatureDimensions, spotFeatureIsInt );
+		// BCellobjects
+		str.append( "BCellobject features declared:\n" );
+		appendFeatureDeclarations( str, BCellobjectFeatures, BCellobjectFeatureNames, BCellobjectFeatureShortNames, BCellobjectFeatureDimensions, BCellobjectFeatureIsInt );
 		str.append( '\n' );
 
 		// Edges
@@ -605,10 +607,10 @@ public class FeatureModel
 	{
 		final StringBuilder str = new StringBuilder();
 
-		// Spots
-		str.append( "Spot features:\n" );
+		// BCellobjects
+		str.append( "BCellobject features:\n" );
 		str.append( " - Declared:\n" );
-		appendFeatureDeclarations( str, spotFeatures, spotFeatureNames, spotFeatureShortNames, spotFeatureDimensions, spotFeatureIsInt );
+		appendFeatureDeclarations( str, BCellobjectFeatures, BCellobjectFeatureNames, BCellobjectFeatureShortNames, BCellobjectFeatureDimensions, BCellobjectFeatureIsInt );
 		str.append( '\n' );
 
 		// Edges
@@ -663,4 +665,6 @@ public class FeatureModel
 			}
 		}
 	}
+
+	
 }

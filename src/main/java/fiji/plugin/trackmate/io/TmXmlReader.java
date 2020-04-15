@@ -47,21 +47,21 @@ import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_PIXEL_WIDTH_ATTRIBUTE_NAM
 import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_TIME_INTERVAL_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_VOXEL_DEPTH_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_WIDTH_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.INITIAL_SPOT_FILTER_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.INITIAL_BCellobject_FILTER_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.LOG_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.MODEL_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.PLUGIN_VERSION_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.SETTINGS_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.SPATIAL_UNITS_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_ANALYSERS_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_FEATURES_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_FILTER_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_FRAME_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_ID_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_NAME_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_ANALYSERS_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_FEATURES_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_FILTER_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_FRAME_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_ID_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_NAME_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TIME_UNITS_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TRACKER_SETTINGS_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TRACK_ANALYSERS_ELEMENT_KEY;
@@ -95,6 +95,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Logger;
@@ -102,24 +104,21 @@ import fiji.plugin.trackmate.Logger.StringBuilderLogger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
+import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.providers.ViewProvider;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.plugin.trackmate.visualization.ViewFactory;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
@@ -136,15 +135,15 @@ public class TmXmlReader
 	protected final File file;
 
 	/**
-	 * A map of all spots loaded. We need this for performance, since we need to
-	 * recreate both the filtered spot collection and the tracks graph from the
-	 * same spot objects that the main spot collection.. In the file, they are
-	 * referenced by their {@link Spot#ID()}, and parsing them all to retrieve
+	 * A map of all BCellobjects loaded. We need this for performance, since we need to
+	 * recreate both the filtered BCellobject collection and the tracks graph from the
+	 * same BCellobject objects that the main BCellobject collection.. In the file, they are
+	 * referenced by their {@link BCellobject#ID()}, and parsing them all to retrieve
 	 * the one with the right ID is a drag. We made this cache a
 	 * {@link ConcurrentHashMap} because we hope to load large data in a
 	 * multi-threaded way.
 	 */
-	protected ConcurrentHashMap< Integer, Spot > cache;
+	protected ConcurrentHashMap< Integer, BCellobject > cache;
 
 	protected StringBuilderLogger logger = new StringBuilderLogger();
 
@@ -325,9 +324,9 @@ public class TmXmlReader
 		// Feature declarations
 		readFeatureDeclarations( modelElement, model );
 
-		// Spots
-		final SpotCollection spots = getSpots( modelElement );
-		model.setSpots( spots, false );
+		// BCellobjects
+		final BCellobjectCollection BCellobjects = getBCellobjects( modelElement );
+		model.setBCellobjects( BCellobjects, false );
 
 		// Tracks
 		if ( !readTracks( modelElement, model ) )
@@ -379,16 +378,16 @@ public class TmXmlReader
 	 *            the {@link Settings} object to flesh out.
 	 * @param detectorProvider
 	 *            the detector provider, required to configure the settings with
-	 *            a correct {@link SpotDetectorFactory}. If <code>null</code>,
+	 *            a correct {@link BCellobjectDetectorFactory}. If <code>null</code>,
 	 *            will skip reading detector parameters.
 	 * @param trackerProvider
 	 *            the tracker provider, required to configure the settings with
-	 *            a correct {@link fiji.plugin.trackmate.tracking.SpotTracker}.
+	 *            a correct {@link fiji.plugin.trackmate.tracking.BCellobjectTracker}.
 	 *            If <code>null</code>, will skip reading tracker parameters.
-	 * @param spotAnalyzerProvider
-	 *            the spot analyzer provider, required to instantiates the saved
-	 *            {@link SpotAnalyzerFactory}s. If <code>null</code>, will skip
-	 *            reading spot analyzers.
+	 * @param BCellobjectAnalyzerProvider
+	 *            the BCellobject analyzer provider, required to instantiates the saved
+	 *            {@link BCellobjectAnalyzerFactory}s. If <code>null</code>, will skip
+	 *            reading BCellobject analyzers.
 	 * @param edgeAnalyzerProvider
 	 *            the edge analyzer provider, required to instantiates the saved
 	 *            {@link EdgeAnalyzer}s. If <code>null</code>, will skip reading
@@ -402,7 +401,7 @@ public class TmXmlReader
 			final Settings settings,
 			final DetectorProvider detectorProvider,
 			final TrackerProvider trackerProvider,
-			final SpotAnalyzerProvider spotAnalyzerProvider,
+			final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
 			final EdgeAnalyzerProvider edgeAnalyzerProvider,
 			final TrackAnalyzerProvider trackAnalyzerProvider )
 	{
@@ -424,13 +423,13 @@ public class TmXmlReader
 		if ( null != trackerProvider )
 			getTrackerSettings( settingsElement, settings, trackerProvider );
 
-		// Spot Filters
+		// BCellobject Filters
 		final FeatureFilter initialFilter = getInitialFilter( settingsElement );
 		if ( null != initialFilter )
-			settings.initialSpotFilterValue = initialFilter.value;
+			settings.initialBCellobjectFilterValue = initialFilter.value;
 
-		final List< FeatureFilter > spotFilters = getSpotFeatureFilters( settingsElement );
-		settings.setSpotFilters( spotFilters );
+		final List< FeatureFilter > BCellobjectFilters = getBCellobjectFeatureFilters( settingsElement );
+		settings.setBCellobjectFilters( BCellobjectFilters );
 
 		// Track Filters
 		final List< FeatureFilter > trackFilters = getTrackFeatureFilters( settingsElement );
@@ -440,7 +439,7 @@ public class TmXmlReader
 		readAnalyzers(
 				settingsElement,
 				settings,
-				spotAnalyzerProvider,
+				BCellobjectAnalyzerProvider,
 				edgeAnalyzerProvider,
 				trackAnalyzerProvider );
 	}
@@ -588,7 +587,7 @@ public class TmXmlReader
 	 */
 	private FeatureFilter getInitialFilter( final Element settingsElement )
 	{
-		final Element itEl = settingsElement.getChild( INITIAL_SPOT_FILTER_ELEMENT_KEY );
+		final Element itEl = settingsElement.getChild( INITIAL_BCellobject_FILTER_ELEMENT_KEY );
 		final String feature = itEl.getAttributeValue( FILTER_FEATURE_ATTRIBUTE_NAME );
 		final Double value = readDoubleAttribute( itEl, FILTER_VALUE_ATTRIBUTE_NAME, logger );
 		final boolean isAbove = readBooleanAttribute( itEl, FILTER_ABOVE_ATTRIBUTE_NAME, logger );
@@ -597,16 +596,16 @@ public class TmXmlReader
 	}
 
 	/**
-	 * Return the list of {@link FeatureFilter} for spots stored in this file.
+	 * Return the list of {@link FeatureFilter} for BCellobjects stored in this file.
 	 *
 	 * @param settingsElement
 	 *            the settings {@link Element} to read from.
 	 * @return a list of {@link FeatureFilter}s.
 	 */
-	private List< FeatureFilter > getSpotFeatureFilters( final Element settingsElement )
+	private List< FeatureFilter > getBCellobjectFeatureFilters( final Element settingsElement )
 	{
 		final List< FeatureFilter > featureThresholds = new ArrayList< >();
-		final Element ftCollectionEl = settingsElement.getChild( SPOT_FILTER_COLLECTION_ELEMENT_KEY );
+		final Element ftCollectionEl = settingsElement.getChild( BCellobject_FILTER_COLLECTION_ELEMENT_KEY );
 		final List< Element > ftEls = ftCollectionEl.getChildren( FILTER_ELEMENT_KEY );
 		for ( final Element ftEl : ftEls )
 		{
@@ -687,7 +686,7 @@ public class TmXmlReader
 
 	/**
 	 * Update the given {@link Settings} object with the
-	 * {@link SpotDetectorFactory} and settings map fields named
+	 * {@link BCellobjectDetectorFactory} and settings map fields named
 	 * {@link Settings#detectorFactory} and {@link Settings#detectorSettings}
 	 * read within the XML file this reader is initialized with.
 	 *
@@ -723,7 +722,7 @@ public class TmXmlReader
 			return;
 		}
 
-		final SpotDetectorFactory< ? > factory = provider.getFactory( detectorKey );
+		final BCellobjectDetectorFactory< ? > factory = provider.getFactory( detectorKey );
 		if ( null == factory )
 		{
 			logger.error( "The detector identified by the key " + detectorKey + " is unknown to TrackMate.\n" );
@@ -740,7 +739,7 @@ public class TmXmlReader
 	}
 
 	/**
-	 * Update the given {@link Settings} object with {@link SpotTracker} proper
+	 * Update the given {@link Settings} object with {@link BCellobjectTracker} proper
 	 * settings map fields named {@link Settings#trackerSettings} and
 	 * {@link Settings#trackerFactory} read within the XML file this reader is
 	 * initialized with.
@@ -782,7 +781,7 @@ public class TmXmlReader
 			return;
 		}
 
-		final SpotTrackerFactory factory = provider.getFactory( trackerKey );
+		final BCellobjectTrackerFactory factory = provider.getFactory( trackerKey );
 		if ( null == factory )
 		{
 			logger.error( "The tracker identified by the key " + trackerKey + " is unknown to TrackMate.\n" );
@@ -798,7 +797,7 @@ public class TmXmlReader
 	}
 
 	/**
-	 * Read the list of all spots stored in this file.
+	 * Read the list of all BCellobjects stored in this file.
 	 * <p>
 	 * Internally, this methods also builds the cache field, which will be
 	 * required by the other methods.
@@ -809,50 +808,45 @@ public class TmXmlReader
 	 *
 	 * @param modelElement
 	 *            the {@link Element} in which the model content was written.
-	 * @return a new {@link SpotCollection}.
+	 * @return a new {@link BCellobjectCollection}.
 	 */
-	private SpotCollection getSpots( final Element modelElement )
+	private BCellobjectCollection getBCellobjects( final Element modelElement )
 	{
 		// Root element for collection
-		final Element spotCollection = modelElement.getChild( SPOT_COLLECTION_ELEMENT_KEY );
+		final Element BCellobjectCollection = modelElement.getChild( BCellobject_COLLECTION_ELEMENT_KEY );
 
 		// Retrieve children elements for each frame
-		final List< Element > frameContent = spotCollection.getChildren( SPOT_FRAME_COLLECTION_ELEMENT_KEY );
+		final List< Element > frameContent = BCellobjectCollection.getChildren( BCellobject_FRAME_COLLECTION_ELEMENT_KEY );
 
-		// Determine total number of spots
-		int nspots = readIntAttribute( spotCollection, SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME, Logger.VOID_LOGGER );
-		if ( nspots == 0 )
+		// Determine total number of BCellobjects
+		int nBCellobjects = readIntAttribute( BCellobjectCollection, BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, Logger.VOID_LOGGER );
+		if ( nBCellobjects == 0 )
 		{
 			/*
 			 * Could not find it or read it. Determine it by quick sweeping
 			 * through children element.
 			 */
 			for ( final Element currentFrameContent : frameContent )
-				nspots += currentFrameContent.getChildren( SPOT_ELEMENT_KEY ).size();
+				nBCellobjects += currentFrameContent.getChildren( BCellobject_ELEMENT_KEY ).size();
 		}
 
 		// Instantiate cache
-		cache = new ConcurrentHashMap< >( nspots );
+		cache = new ConcurrentHashMap< >( nBCellobjects );
 
 		// Load collection and build cache
 		int currentFrame = 0;
-		final Map< Integer, Set< Spot > > content = new HashMap< >( frameContent.size() );
+		final Map< Integer, Set< BCellobject > > content = new HashMap< >( frameContent.size() );
 		for ( final Element currentFrameContent : frameContent )
 		{
 
 			currentFrame = readIntAttribute( currentFrameContent, FRAME_ATTRIBUTE_NAME, logger );
-			final List< Element > spotContent = currentFrameContent.getChildren( SPOT_ELEMENT_KEY );
-			final Set< Spot > spotSet = new HashSet< >( spotContent.size() );
-			for ( final Element spotElement : spotContent )
-			{
-				final Spot spot = createSpotFrom( spotElement );
-				spotSet.add( spot );
-				cache.put( spot.ID(), spot );
-			}
-			content.put( currentFrame, spotSet );
+			final List< Element > BCellobjectContent = currentFrameContent.getChildren( BCellobject_ELEMENT_KEY );
+			final Set< BCellobject > BCellobjectSet = new HashSet< >( BCellobjectContent.size() );
+		
+			content.put( currentFrame, BCellobjectSet );
 		}
-		final SpotCollection allSpots = SpotCollection.fromMap( content );
-		return allSpots;
+		final BCellobjectCollection allBCellobjects = BCellobjectCollection.fromMap( content );
+		return allBCellobjects;
 	}
 
 	/**
@@ -869,8 +863,8 @@ public class TmXmlReader
 		final List< Element > trackElements = allTracksElement.getChildren( TRACK_ELEMENT_KEY );
 
 		// What we have to flesh out from the file
-		final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph = new SimpleWeightedGraph< >( DefaultWeightedEdge.class );
-		final Map< Integer, Set< Spot > > connectedVertexSet = new HashMap< >( trackElements.size() );
+		final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph = new SimpleWeightedGraph< >( DefaultWeightedEdge.class );
+		final Map< Integer, Set< BCellobject > > connectedVertexSet = new HashMap< >( trackElements.size() );
 		final Map< Integer, Set< DefaultWeightedEdge > > connectedEdgeSet = new HashMap< >( trackElements.size() );
 		final Map< Integer, String > savedTrackNames = new HashMap< >( trackElements.size() );
 
@@ -888,21 +882,21 @@ public class TmXmlReader
 			if ( null == trackName )
 				trackName = "Unnamed";
 
-			// Iterate over edges & spots
+			// Iterate over edges & BCellobjects
 			final List< Element > edgeElements = trackElement.getChildren( TRACK_EDGE_ELEMENT_KEY );
 			final Set< DefaultWeightedEdge > edges = new HashSet< >( edgeElements.size() );
-			final Set< Spot > spots = new HashSet< >( edgeElements.size() );
+			final Set< BCellobject > BCellobjects = new HashSet< >( edgeElements.size() );
 
 			for ( final Element edgeElement : edgeElements )
 			{
 
 				// Get source and target ID for this edge
-				final int sourceID = readIntAttribute( edgeElement, EdgeTargetAnalyzer.SPOT_SOURCE_ID, logger );
-				final int targetID = readIntAttribute( edgeElement, EdgeTargetAnalyzer.SPOT_TARGET_ID, logger );
+				final int sourceID = readIntAttribute( edgeElement, EdgeTargetAnalyzer.BCellobject_SOURCE_ID, logger );
+				final int targetID = readIntAttribute( edgeElement, EdgeTargetAnalyzer.BCellobject_TARGET_ID, logger );
 
-				// Get matching spots from the cache
-				final Spot sourceSpot = cache.get( sourceID );
-				final Spot targetSpot = cache.get( targetID );
+				// Get matching BCellobjects from the cache
+				final BCellobject sourceBCellobject = cache.get( sourceID );
+				final BCellobject targetBCellobject = cache.get( targetID );
 
 				// Get weight
 				double weight = 0;
@@ -910,35 +904,35 @@ public class TmXmlReader
 					weight = readDoubleAttribute( edgeElement, EdgeTargetAnalyzer.EDGE_COST, logger );
 
 				// Error check
-				if ( null == sourceSpot )
+				if ( null == sourceBCellobject )
 				{
-					logger.error( "Unknown spot ID: " + sourceID + "\n" );
+					logger.error( "Unknown BCellobject ID: " + sourceID + "\n" );
 					return false;
 				}
-				if ( null == targetSpot )
+				if ( null == targetBCellobject )
 				{
-					logger.error( "Unknown spot ID: " + targetID + "\n" );
+					logger.error( "Unknown BCellobject ID: " + targetID + "\n" );
 					return false;
 				}
 
-				if ( sourceSpot.equals( targetSpot ) )
+				if ( sourceBCellobject.equals( targetBCellobject ) )
 				{
 					logger.error( "Bad link for track " + trackID + ". Source = Target with ID: " + sourceID + "\n" );
 					return false;
 				}
 
 				/*
-				 * Add spots to connected set. We might add the same spot twice
+				 * Add BCellobjects to connected set. We might add the same BCellobject twice
 				 * (because we iterate over edges) but this is fine for we use a
 				 * set.
 				 */
-				spots.add( sourceSpot );
-				spots.add( targetSpot );
+				BCellobjects.add( sourceBCellobject );
+				BCellobjects.add( targetBCellobject );
 
-				// Add spots to graph and build edge
-				graph.addVertex( sourceSpot );
-				graph.addVertex( targetSpot );
-				final DefaultWeightedEdge edge = graph.addEdge( sourceSpot, targetSpot );
+				// Add BCellobjects to graph and build edge
+				graph.addVertex( sourceBCellobject );
+				graph.addVertex( targetBCellobject );
+				final DefaultWeightedEdge edge = graph.addEdge( sourceBCellobject, targetBCellobject );
 
 				if ( edge == null )
 				{
@@ -968,8 +962,8 @@ public class TmXmlReader
 
 			} // Finished parsing over the edges of the track
 
-			// Store one of the spot in the saved trackID key map
-			connectedVertexSet.put( trackID, spots );
+			// Store one of the BCellobject in the saved trackID key map
+			connectedVertexSet.put( trackID, BCellobjects );
 			connectedEdgeSet.put( trackID, edges );
 			savedTrackNames.put( trackID, trackName );
 		}
@@ -1053,30 +1047,6 @@ public class TmXmlReader
 		return filteredTrackIndices;
 	}
 
-	private Spot createSpotFrom( final Element spotEl )
-	{
-		final int ID = readIntAttribute( spotEl, SPOT_ID_ATTRIBUTE_NAME, logger );
-		final Spot spot = new Spot( ID );
-
-		final List< Attribute > atts = spotEl.getAttributes();
-		removeAttributeFromName( atts, SPOT_ID_ATTRIBUTE_NAME );
-
-		String name = spotEl.getAttributeValue( SPOT_NAME_ATTRIBUTE_NAME );
-		if ( null == name || name.equals( "" ) )
-			name = "ID" + ID;
-
-		spot.setName( name );
-		removeAttributeFromName( atts, SPOT_NAME_ATTRIBUTE_NAME );
-
-		for ( final Attribute att : atts )
-		{
-			if ( att.getName().equals( SPOT_NAME_ATTRIBUTE_NAME ) || att.getName().equals( SPOT_ID_ATTRIBUTE_NAME ) )
-				continue;
-
-			spot.putFeature( att.getName(), Double.valueOf( att.getValue() ) );
-		}
-		return spot;
-	}
 
 	protected static final void removeAttributeFromName( final List<Attribute> attributes, final String attributeNameToRemove)
 	{
@@ -1100,18 +1070,18 @@ public class TmXmlReader
 			return;
 		}
 
-		// Spots
-		final Element spotFeaturesElement = featuresElement.getChild( SPOT_FEATURES_ELEMENT_KEY );
-		if ( null == spotFeaturesElement )
+		// BCellobjects
+		final Element BCellobjectFeaturesElement = featuresElement.getChild( BCellobject_FEATURES_ELEMENT_KEY );
+		if ( null == BCellobjectFeaturesElement )
 		{
-			logger.error( "Could not find spot feature declarations in file.\n" );
+			logger.error( "Could not find BCellobject feature declarations in file.\n" );
 			ok = false;
 
 		}
 		else
 		{
 
-			final List< Element > children = spotFeaturesElement.getChildren( FEATURE_ELEMENT_KEY );
+			final List< Element > children = BCellobjectFeaturesElement.getChildren( FEATURE_ELEMENT_KEY );
 			final Collection< String > features = new ArrayList< >( children.size() );
 			final Map< String, String > featureNames = new HashMap< >( children.size() );
 			final Map< String, String > featureShortNames = new HashMap< >( children.size() );
@@ -1126,7 +1096,7 @@ public class TmXmlReader
 						featureDimensions,
 						isIntFeature );
 
-			fm.declareSpotFeatures( features, featureNames, featureShortNames, featureDimensions, isIntFeature );
+			fm.declareBCellobjectFeatures( features, featureNames, featureShortNames, featureDimensions, isIntFeature );
 		}
 
 		// Edges
@@ -1191,7 +1161,7 @@ public class TmXmlReader
 	private void readAnalyzers(
 			final Element settingsElement,
 			final Settings settings,
-			final SpotAnalyzerProvider spotAnalyzerProvider,
+			final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
 			final EdgeAnalyzerProvider edgeAnalyzerProvider,
 			final TrackAnalyzerProvider trackAnalyzerProvider )
 	{
@@ -1204,13 +1174,13 @@ public class TmXmlReader
 			return;
 		}
 
-		// Spot analyzers
-		if ( null != spotAnalyzerProvider )
+		// BCellobject analyzers
+		if ( null != BCellobjectAnalyzerProvider )
 		{
-			final Element spotAnalyzerEl = analyzersEl.getChild( SPOT_ANALYSERS_ELEMENT_KEY );
-			if ( null == spotAnalyzerEl )
+			final Element BCellobjectAnalyzerEl = analyzersEl.getChild( BCellobject_ANALYSERS_ELEMENT_KEY );
+			if ( null == BCellobjectAnalyzerEl )
 			{
-				logger.error( "Could not find the spot analyzer element.\n" );
+				logger.error( "Could not find the BCellobject analyzer element.\n" );
 				ok = false;
 
 			}
@@ -1219,14 +1189,14 @@ public class TmXmlReader
 
 				if ( settings.imp == null )
 				{
-					logger.error( "The source image is not loaded; cannot instantiates spot analyzers.\n" );
+					logger.error( "The source image is not loaded; cannot instantiates BCellobject analyzers.\n" );
 					ok = false;
 
 				}
 				else
 				{
 
-					final List< Element > children = spotAnalyzerEl.getChildren( ANALYSER_ELEMENT_KEY );
+					final List< Element > children = BCellobjectAnalyzerEl.getChildren( ANALYSER_ELEMENT_KEY );
 					for ( final Element child : children )
 					{
 
@@ -1238,16 +1208,16 @@ public class TmXmlReader
 							continue;
 						}
 
-						final SpotAnalyzerFactory< ? > spotAnalyzer = spotAnalyzerProvider.getFactory( key );
-						if ( null == spotAnalyzer )
+						final BCellobjectAnalyzerFactory< ? > BCellobjectAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+						if ( null == BCellobjectAnalyzer )
 						{
-							logger.error( "Unknown spot analyzer key: " + key + ".\n" );
+							logger.error( "Unknown BCellobject analyzer key: " + key + ".\n" );
 							ok = false;
 
 						}
 						else
 						{
-							settings.addSpotAnalyzerFactory( spotAnalyzer );
+							settings.addBCellobjectAnalyzerFactory( BCellobjectAnalyzer );
 						}
 					}
 				}

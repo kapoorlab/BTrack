@@ -1,7 +1,7 @@
 package fiji.plugin.trackmate.visualization;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import ij.ImagePlus;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
@@ -47,12 +47,11 @@ public class ViewUtils {
 		double maxZ = 0;
 		int nframes = 0;
 
-		for (final Spot spot : model.getSpots().iterable(true)) {
-			final double r = spot.getFeature(Spot.RADIUS);
-			final double x = Math.ceil(r + spot.getFeature(Spot.POSITION_X));
-			final double y = Math.ceil(r + spot.getFeature(Spot.POSITION_Y));
-			final double z = Math.ceil(spot.getFeature(Spot.POSITION_Z));
-			final int t = spot.getFeature(Spot.FRAME).intValue();
+		for (final BCellobject BCellobject : model.getBCellobjects().iterable(true)) {
+			final double r = BCellobject.getFeature(BCellobject.RADIUS);
+			final double x = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_X));
+			final double y = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_Y));
+			final int t = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
 
 			if (x > maxX) {
 				maxX = x;
@@ -60,9 +59,7 @@ public class ViewUtils {
 			if (y > maxY) {
 				maxY = y;
 			}
-			if (z > maxZ) {
-				maxZ = z;
-			}
+	
 			if (t > nframes) {
 				nframes = t;
 			}

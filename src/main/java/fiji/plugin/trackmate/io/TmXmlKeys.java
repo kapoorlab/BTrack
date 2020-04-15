@@ -12,8 +12,8 @@ public class TmXmlKeys {
 	 */
 
 	public static final String FRAME_ATTRIBUTE_NAME 				= "frame";
-	public static final String SPOT_ID_ATTRIBUTE_NAME 				= "ID";
-	public static final String SPOT_NAME_ATTRIBUTE_NAME 			= "name";
+	public static final String BCellobject_ID_ATTRIBUTE_NAME 				= "ID";
+	public static final String BCellobject_NAME_ATTRIBUTE_NAME 			= "name";
 
 	/*
 	 * ROOT ELEMENT
@@ -80,25 +80,25 @@ public class TmXmlKeys {
 	public static final String IMAGE_NFRAMES_ATTRIBUTE_NAME 		= "nframes";
 
 	/*
-	 * ALL SPOTS element
+	 * ALL BCellobjectS element
 	 */
 
-	public static final String SPOT_COLLECTION_ELEMENT_KEY 				= "AllSpots";
-	public static final String SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME 	= "nspots";
-	public static final String SPOT_FRAME_COLLECTION_ELEMENT_KEY 		= "SpotsInFrame";
-	public static final String SPOT_ELEMENT_KEY 						= "Spot";
+	public static final String BCellobject_COLLECTION_ELEMENT_KEY 				= "AllBCellobjects";
+	public static final String BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME 	= "nBCellobjects";
+	public static final String BCellobject_FRAME_COLLECTION_ELEMENT_KEY 		= "BCellobjectsInFrame";
+	public static final String BCellobject_ELEMENT_KEY 						= "BCellobject";
 
 	/*
-	 * INITIAL SPOT FILTER element
+	 * INITIAL BCellobject FILTER element
 	 */
 
-	public static final String INITIAL_SPOT_FILTER_ELEMENT_KEY		= "InitialSpotFilter";
+	public static final String INITIAL_BCellobject_FILTER_ELEMENT_KEY		= "InitialBCellobjectFilter";
 
 	/*
-	 * FILTERS element for SPOTS and TRACKS
+	 * FILTERS element for BCellobjectS and TRACKS
 	 */
 
-	public static final String SPOT_FILTER_COLLECTION_ELEMENT_KEY		= "SpotFilterCollection";
+	public static final String BCellobject_FILTER_COLLECTION_ELEMENT_KEY		= "BCellobjectFilterCollection";
 	public static final String TRACK_FILTER_COLLECTION_ELEMENT_KEY		= "TrackFilterCollection";
 	public static final String FILTER_ELEMENT_KEY						= "Filter";
 	public static final String FILTER_FEATURE_ATTRIBUTE_NAME 			= "feature";
@@ -132,7 +132,7 @@ public class TmXmlKeys {
 	 */
 
 	public static final String FEATURE_DECLARATIONS_ELEMENT_KEY 		= "FeatureDeclarations";
-	public static final String SPOT_FEATURES_ELEMENT_KEY 				= "SpotFeatures";
+	public static final String BCellobject_FEATURES_ELEMENT_KEY 				= "BCellobjectFeatures";
 	public static final String EDGE_FEATURES_ELEMENT_KEY 				= "EdgeFeatures";
 	public static final String TRACK_FEATURES_ELEMENT_KEY 				= "TrackFeatures";
 	public static final String FEATURE_ELEMENT_KEY 						= "Feature";
@@ -143,11 +143,11 @@ public class TmXmlKeys {
 	public static final String FEATURE_ISINT_ATTRIBUTE 					= "isint";
 
 	/*
-	 * SPOT< EDGE AND TRACK FEATURE ANALYZERS elements
+	 * BCellobject< EDGE AND TRACK FEATURE ANALYZERS elements
 	 */
 
 	public static final String ANALYZER_COLLECTION_ELEMENT_KEY 			= "AnalyzerCollection";
-	public static final String SPOT_ANALYSERS_ELEMENT_KEY 				= "SpotAnalyzers";
+	public static final String BCellobject_ANALYSERS_ELEMENT_KEY 				= "BCellobjectAnalyzers";
 	public static final String EDGE_ANALYSERS_ELEMENT_KEY 				= "EdgeAnalyzers";
 	public static final String TRACK_ANALYSERS_ELEMENT_KEY 				= "TrackAnalyzers";
 	public static final String ANALYSER_ELEMENT_KEY 					= "Analyzer";

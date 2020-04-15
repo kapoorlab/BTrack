@@ -146,11 +146,7 @@ public class TrackIndexAnalyzer implements TrackAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -168,5 +164,11 @@ public class TrackIndexAnalyzer implements TrackAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

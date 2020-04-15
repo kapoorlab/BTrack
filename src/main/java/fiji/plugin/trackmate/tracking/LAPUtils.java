@@ -54,7 +54,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 
 public class LAPUtils {
 
@@ -154,12 +154,12 @@ public class LAPUtils {
 	}
 
 	/**
-	 * Compute the cost to link two spots, in the default way for the TrackMate trackmate.
+	 * Compute the cost to link two BCellobjects, in the default way for the TrackMate trackmate.
 	 * <p>
 	 * This cost is calculated as follow:
 	 * <ul>
-	 * 	<li> The distance between the two spots <code>D</code> is calculated
-	 * 	<li> If the spots are separated by more than the distance cutoff, the cost is
+	 * 	<li> The distance between the two BCellobjects <code>D</code> is calculated
+	 * 	<li> If the BCellobjects are separated by more than the distance cutoff, the cost is
 	 * set to be the blocking value. If not,
 	 * 	<li> For each feature in the map, a penalty <code>p</code> is calculated as
 	 * <code>p = 3 × α × |f1-f2| / (f1+f2)</code>, where <code>α</code> is the factor
@@ -173,13 +173,13 @@ public class LAPUtils {
 	 * 	<li> All penalties are summed, to form <code>P = (1 + ∑ p )</code>
 	 *  <li> The cost is set to the square of the product: <code>C = ( D × P )²</code>
 	 * </ul>
-	 * For instance: if 2 spots differ by twice the value in a feature which is
+	 * For instance: if 2 BCellobjects differ by twice the value in a feature which is
 	 * in the penalty map with a factor of 1, they will <i>look</i> as if they were
 	 * twice as far.
 	 */
-	public static final double computeLinkingCostFor(final Spot s0, final Spot s1,
+	public static final double computeLinkingCostFor(final BCellobject end, final BCellobject lStart,
 			final double distanceCutOff, final double blockingValue, final Map<String, Double> featurePenalties) {
-		final double d2 = s0.squareDistanceTo(s1);
+		final double d2 = end.squareDistanceTo(lStart);
 
 		// Distance threshold
 		if (d2 > distanceCutOff * distanceCutOff) {
@@ -188,7 +188,7 @@ public class LAPUtils {
 
 		double penalty = 1;
 		for (final String feature : featurePenalties.keySet()) {
-			final double ndiff = s0.normalizeDiffTo(s1, feature);
+			final double ndiff = end.normalizeDiffTo(lStart, feature);
 			if (Double.isNaN(ndiff))
 				continue;
 			final double factor = featurePenalties.get(feature);
@@ -203,9 +203,9 @@ public class LAPUtils {
 
 	/**
 	 * @return true if the settings map can be used with the LAP trackers. We do
-	 *         not check that all the spot features used in penalties are indeed
-	 *         found in all spots, because if such a feature is absent from one
-	 *         spot, the LAP trackers simply ignores the penalty and does not
+	 *         not check that all the BCellobject features used in penalties are indeed
+	 *         found in all BCellobjects, because if such a feature is absent from one
+	 *         BCellobject, the LAP trackers simply ignores the penalty and does not
 	 *         generate an error.
 	 * @param settings
 	 *            the map to test.
@@ -340,11 +340,11 @@ public class LAPUtils {
 	 * Display the cost matrix solved by the Hungarian algorithm in the LAP approach.
 	 * @param costs  the cost matrix
 	 * @param nSegments  the number of track segments found in the first step of the LAP tracking
-	 * @param nSpots  the number of middle spots to consider
+	 * @param nBCellobjects  the number of middle BCellobjects to consider
 	 * @param blockingValue  the blocking value for cost
 	 * @param solutions  the Hungarian assignment couple
 	 */
-	public static final void displayCostMatrix(final double[][] costs, final int nSegments, final int nSpots, final double blockingValue, final int[][]solutions) {
+	public static final void displayCostMatrix(final double[][] costs, final int nSegments, final int nBCellobjects, final double blockingValue, final int[][]solutions) {
 		final int width = costs.length;
 		final int height = costs[0].length;
 		double val;
@@ -359,7 +359,7 @@ public class LAPUtils {
 			public String getColumnName(final int i) {
 				if (i < nSegments)
 					return "Ts "+i;
-				else if (i < nSegments + nSpots)
+				else if (i < nSegments + nBCellobjects)
 					return "Sp "+(i-nSegments);
 				else
 					return "ø";
@@ -379,22 +379,22 @@ public class LAPUtils {
 
 					if (row < nSegments)
 						label.setForeground(Color.BLUE);  // Gap closing
-					else if (row < nSegments + nSpots)
+					else if (row < nSegments + nBCellobjects)
 						label.setForeground(Color.GREEN.darker()); // Splitting
 					else
 						label.setForeground(Color.BLACK); // Initiating
 
-				} else if (col < nSegments + nSpots) {
+				} else if (col < nSegments + nBCellobjects) {
 
 					if (row < nSegments)
 						label.setForeground(Color.CYAN.darker());  // Merging
-					else if (row < nSegments + nSpots)
+					else if (row < nSegments + nBCellobjects)
 						label.setForeground(Color.RED.darker()); // Middle block
 					else
 						label.setForeground(Color.BLACK); // Initiating
 
 				} else {
-					if (row < nSegments + nSpots)
+					if (row < nSegments + nBCellobjects)
 						label.setForeground(Color.BLACK); // Terminating
 					else
 						label.setForeground(Color.GRAY); // Bottom right block
@@ -430,13 +430,13 @@ public class LAPUtils {
 		// Row headers
 		final TableModel rhm = new AbstractTableModel() {
 			private static final long serialVersionUID = 1L;
-			String headers[] = new String[2*(nSegments + nSpots)];
+			String headers[] = new String[2*(nSegments + nBCellobjects)];
 			{
 				for (int i = 0; i < nSegments; i++)
 					headers[i] = "Te "+i;
-				for (int i = nSegments; i < nSegments + nSpots; i++)
+				for (int i = nSegments; i < nSegments + nBCellobjects; i++)
 					headers[i] = "Sp "+(i-nSegments);
-				for (int i = nSegments + nSpots; i < headers.length; i++)
+				for (int i = nSegments + nBCellobjects; i < headers.length; i++)
 					headers[i] = "ø";
 			}
 

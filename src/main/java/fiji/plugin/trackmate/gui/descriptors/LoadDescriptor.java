@@ -10,9 +10,9 @@ import fiji.plugin.trackmate.io.IOUtils;
 import fiji.plugin.trackmate.io.TmXmlReader;
 import fiji.plugin.trackmate.io.TmXmlReader_v12;
 import fiji.plugin.trackmate.io.TmXmlReader_v20;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.providers.ViewProvider;
@@ -20,7 +20,7 @@ import fiji.plugin.trackmate.util.TMUtils;
 import fiji.plugin.trackmate.util.Version;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
-import fiji.plugin.trackmate.visualization.trackscheme.SpotImageUpdater;
+import fiji.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 
 import java.io.File;
@@ -102,7 +102,7 @@ public class LoadDescriptor extends SomeDialogDescriptor
 		// controller.
 		final DetectorProvider detectorProvider = newcontroller.getDetectorProvider();
 		final TrackerProvider trackerProvider = newcontroller.getTrackerProvider();
-		final SpotAnalyzerProvider spotAnalyzerProvider = newcontroller.getSpotAnalyzerProvider();
+		final BCellobjectAnalyzerProvider spotAnalyzerProvider = newcontroller.getBCellobjectAnalyzerProvider();
 		final EdgeAnalyzerProvider edgeAnalyzerProvider = newcontroller.getEdgeAnalyzerProvider();
 		final TrackAnalyzerProvider trackAnalyzerProvider = newcontroller.getTrackAnalyzerProvider();
 		reader.readSettings( settings, detectorProvider, trackerProvider, spotAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider );
@@ -121,7 +121,7 @@ public class LoadDescriptor extends SomeDialogDescriptor
 			if ( view instanceof TrackScheme )
 			{
 				final TrackScheme trackscheme = ( TrackScheme ) view;
-				trackscheme.setSpotImageUpdater( new SpotImageUpdater( settings ) );
+				trackscheme.setBCellobjectImageUpdater( new BCellobjectImageUpdater( settings ) );
 			}
 		}
 

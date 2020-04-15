@@ -3,12 +3,12 @@ package fiji.plugin.trackmate.gui.panels;
 import static fiji.plugin.trackmate.gui.TrackMateWizard.BIG_FONT;
 import static fiji.plugin.trackmate.gui.TrackMateWizard.FONT;
 import static fiji.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_SPOT_NAMES;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_BCellobject_NAMES;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DRAWING_DEPTH;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOTS_VISIBLE;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOT_COLORING;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOT_RADIUS_RATIO;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobjectS_VISIBLE;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_COLORING;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_RADIUS_RATIO;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACKS_VISIBLE;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_COLORING;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
@@ -50,8 +50,8 @@ import javax.swing.border.LineBorder;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.gui.DisplaySettingsEvent;
 import fiji.plugin.trackmate.gui.DisplaySettingsListener;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
@@ -60,18 +60,18 @@ import fiji.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel.Catego
 import fiji.plugin.trackmate.gui.panels.components.JNumericTextField;
 import fiji.plugin.trackmate.gui.panels.components.SetColorScaleDialog;
 import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotColorGenerator;
 import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGeneratorPerTrackFeature;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGenerator;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
 import fiji.plugin.trackmate.visualization.TrackColorGenerator;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.util.NumberParser;
 
 /**
- * A configuration panel used to tune the aspect of spots and tracks in multiple
+ * A configuration panel used to tune the aspect of BCellobjects and tracks in multiple
  * {@link fiji.plugin.trackmate.visualization.AbstractTrackMateModelView}. This
  * GUI takes the role of a controller.
  *
@@ -92,9 +92,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 
 	private static final String ANALYSIS_BUTTON_TOOLTIP = "<html>"
 			+ "Export the features of all tracks, edges and all <br>"
-			+ "spots belonging to a track to ImageJ tables. <br>"
+			+ "BCellobjects belonging to a track to ImageJ tables. <br>"
 			+ "With <code>shift</code> pressed, the features <br>"
-			+ "of all spot are exported.</html>";
+			+ "of all BCellobject are exported.</html>";
 
 	private static final String TRACKSCHEME_BUTTON_TOOLTIP = "<html>" + "Launch a new instance of TrackScheme.</html>";
 
@@ -113,9 +113,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 
 	private JLabel jLabelDisplayOptions;
 
-	private JPanel jPanelSpotOptions;
+	private JPanel jPanelBCellobjectOptions;
 
-	private JCheckBox jCheckBoxDisplaySpots;
+	private JCheckBox jCheckBoxDisplayBCellobjects;
 
 	private JPanel jPanelTrackOptions;
 
@@ -127,9 +127,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 
 	private JLabel jLabelFrameDepth;
 
-	private ColorByFeatureGUIPanel jPanelSpotColor;
+	private ColorByFeatureGUIPanel jPanelBCellobjectColor;
 
-	private JNumericTextField jTextFieldSpotRadius;
+	private JNumericTextField jTextFieldBCellobjectRadius;
 
 	private JCheckBox jCheckBoxDisplayNames;
 
@@ -143,13 +143,13 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 
 	private PerEdgeFeatureColorGenerator edgeColorGenerator;
 
-	private FeatureColorGenerator< Spot > spotColorGenerator;
+	private FeatureColorGenerator< BCellobject > BCellobjectColorGenerator;
 
-	private ManualSpotColorGenerator manualSpotColorGenerator;
+	private ManualBCellobjectColorGenerator manualBCellobjectColorGenerator;
 
 	private ManualEdgeColorGenerator manualEdgeColorGenerator;
 
-	private FeatureColorGenerator< Spot > spotColorGeneratorPerTrackFeature;
+	private FeatureColorGenerator< BCellobject > BCellobjectColorGeneratorPerTrackFeature;
 
 	private JNumericTextField textFieldDrawingDepth;
 
@@ -157,7 +157,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 
 	private JLabel lblDrawingDepthUnits;
 
-	private JLabel jLabelSpotRadius;
+	private JLabel jLabelBCellobjectRadius;
 
 	protected JPanel jPanelButtons;
 
@@ -263,43 +263,43 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 	}
 
 	/**
-	 * Overrides the spot color generator configured in this panel, allowing to
+	 * Overrides the BCellobject color generator configured in this panel, allowing to
 	 * share instances.
 	 *
-	 * @param spotColorGenerator
+	 * @param BCellobjectColorGenerator
 	 *            the new color generator.
 	 */
-	public void setSpotColorGenerator( final FeatureColorGenerator< Spot > spotColorGenerator )
+	public void setBCellobjectColorGenerator( final FeatureColorGenerator< BCellobject > BCellobjectColorGenerator )
 	{
-		if ( null != this.spotColorGenerator )
+		if ( null != this.BCellobjectColorGenerator )
 		{
-			this.spotColorGenerator.terminate();
+			this.BCellobjectColorGenerator.terminate();
 		}
-		this.spotColorGenerator = spotColorGenerator;
+		this.BCellobjectColorGenerator = BCellobjectColorGenerator;
 	}
 
-	public void setSpotColorGeneratorPerTrackFeature( final FeatureColorGenerator< Spot > spotColorGeneratorPerTrackFeature )
+	public void setBCellobjectColorGeneratorPerTrackFeature( final FeatureColorGenerator< BCellobject > BCellobjectColorGeneratorPerTrackFeature )
 	{
-		if ( null != this.spotColorGeneratorPerTrackFeature )
+		if ( null != this.BCellobjectColorGeneratorPerTrackFeature )
 		{
-			this.spotColorGeneratorPerTrackFeature.terminate();
+			this.BCellobjectColorGeneratorPerTrackFeature.terminate();
 		}
-		this.spotColorGeneratorPerTrackFeature = spotColorGeneratorPerTrackFeature;
+		this.BCellobjectColorGeneratorPerTrackFeature = BCellobjectColorGeneratorPerTrackFeature;
 	}
 
 	public void refreshColorFeatures()
 	{
-		if ( ( displaySettings.get( KEY_SPOT_COLORING ) instanceof SpotColorGenerator ) )
+		if ( ( displaySettings.get( KEY_BCellobject_COLORING ) instanceof BCellobjectColorGenerator ) )
 		{
-			jPanelSpotColor.setColorFeature( spotColorGenerator.getFeature() );
+			jPanelBCellobjectColor.setColorFeature( BCellobjectColorGenerator.getFeature() );
 		}
-		else if ( ( displaySettings.get( KEY_SPOT_COLORING ) instanceof ManualSpotColorGenerator ) )
+		else if ( ( displaySettings.get( KEY_BCellobject_COLORING ) instanceof ManualBCellobjectColorGenerator ) )
 		{
-			jPanelSpotColor.setColorFeature( ColorByFeatureGUIPanel.MANUAL_KEY );
+			jPanelBCellobjectColor.setColorFeature( ColorByFeatureGUIPanel.MANUAL_KEY );
 		}
-		else if ( ( ( displaySettings.get( KEY_SPOT_COLORING ) instanceof SpotColorGeneratorPerTrackFeature ) ) )
+		else if ( ( ( displaySettings.get( KEY_BCellobject_COLORING ) instanceof BCellobjectColorGeneratorPerTrackFeature ) ) )
 		{
-			jPanelSpotColor.setColorFeature( spotColorGeneratorPerTrackFeature.getFeature() );
+			jPanelBCellobjectColor.setColorFeature( BCellobjectColorGeneratorPerTrackFeature.getFeature() );
 		}
 
 		if ( !( displaySettings.get( KEY_TRACK_COLORING ) instanceof ManualEdgeColorGenerator ) )
@@ -308,13 +308,13 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 		}
 	}
 
-	public void setManualSpotColorGenerator( final ManualSpotColorGenerator manualSpotColorGenerator )
+	public void setManualBCellobjectColorGenerator( final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator )
 	{
-		if ( null != this.manualSpotColorGenerator )
+		if ( null != this.manualBCellobjectColorGenerator )
 		{
-			this.manualSpotColorGenerator.terminate();
+			this.manualBCellobjectColorGenerator.terminate();
 		}
-		this.manualSpotColorGenerator = manualSpotColorGenerator;
+		this.manualBCellobjectColorGenerator = manualBCellobjectColorGenerator;
 	}
 
 	public void setManualEdgeColorGenerator( final ManualEdgeColorGenerator manualEdgeColorGenerator )
@@ -333,37 +333,37 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 	{
 
 		/*
-		 * Spot coloring
+		 * BCellobject coloring
 		 */
 
-		if ( null != jPanelSpotColor )
+		if ( null != jPanelBCellobjectColor )
 		{
-			jPanelSpotOptions.remove( jPanelSpotColor );
+			jPanelBCellobjectOptions.remove( jPanelBCellobjectColor );
 		}
-		jPanelSpotColor = new ColorByFeatureGUIPanel( model, Arrays.asList( new Category[] { Category.SPOTS, Category.DEFAULT, Category.TRACKS } ) );
+		jPanelBCellobjectColor = new ColorByFeatureGUIPanel( model, Arrays.asList( new Category[] { Category.BCellobject, Category.DEFAULT, Category.TRACKS } ) );
 
-		jPanelSpotColor.addMouseListener( new MouseAdapter()
+		jPanelBCellobjectColor.addMouseListener( new MouseAdapter()
 		{
 			@Override
 			public void mouseClicked( final MouseEvent e )
 			{
 				if ( e.getClickCount() == 2 )
 				{
-					final FeatureColorGenerator< Spot > colorGenerator;
-					final Category category = jPanelSpotColor.getColorGeneratorCategory();
+					final FeatureColorGenerator< BCellobject > colorGenerator;
+					final Category category = jPanelBCellobjectColor.getColorGeneratorCategory();
 					switch ( category )
 					{
 					case TRACKS:
-						colorGenerator = spotColorGeneratorPerTrackFeature;
+						colorGenerator = BCellobjectColorGeneratorPerTrackFeature;
 						break;
 
 					default:
-						colorGenerator = spotColorGenerator;
+						colorGenerator = BCellobjectColorGenerator;
 						break;
 					}
 
 					final JFrame topFrame = ( JFrame ) SwingUtilities.getWindowAncestor( ConfigureViewsPanel.this );
-					final SetColorScaleDialog dialog = new SetColorScaleDialog( topFrame, "Set color scale for spots", colorGenerator );
+					final SetColorScaleDialog dialog = new SetColorScaleDialog( topFrame, "Set color scale for BCellobjects", colorGenerator );
 					dialog.setVisible( true );
 					if ( !dialog.hasUserPressedOK() ) { return; }
 
@@ -371,90 +371,90 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 					{
 						colorGenerator.autoMinMax();
 					}
-					jPanelSpotColor.setFrom( dialog );
-					jPanelSpotColor.autoMinMax();
+					jPanelBCellobjectColor.setFrom( dialog );
+					jPanelBCellobjectColor.autoMinMax();
 
-					final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_SPOT_COLORING, colorGenerator, colorGenerator );
+					final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_BCellobject_COLORING, colorGenerator, colorGenerator );
 					fireDisplaySettingsChange( event );
 				}
 
 			}
 		} );
 
-		jPanelSpotColor.addActionListener( new ActionListener()
+		jPanelBCellobjectColor.addActionListener( new ActionListener()
 		{
 			@Override
 			public void actionPerformed( final ActionEvent e )
 			{
 				@SuppressWarnings( "unchecked" )
-				final FeatureColorGenerator< Spot > oldValue = ( FeatureColorGenerator< Spot > ) displaySettings.get( KEY_SPOT_COLORING );
-				final FeatureColorGenerator< Spot > newValue;
-				final Category category = jPanelSpotColor.getColorGeneratorCategory();
+				final FeatureColorGenerator< BCellobject > oldValue = ( FeatureColorGenerator< BCellobject > ) displaySettings.get( KEY_BCellobject_COLORING );
+				final FeatureColorGenerator< BCellobject > newValue;
+				final Category category = jPanelBCellobjectColor.getColorGeneratorCategory();
 				switch ( category )
 				{
-				case SPOTS:
-					if ( null == spotColorGenerator ) { return; }
-					spotColorGenerator.setFeature( jPanelSpotColor.getColorFeature() );
-					newValue = spotColorGenerator;
+				case BCellobject:
+					if ( null == BCellobjectColorGenerator ) { return; }
+					BCellobjectColorGenerator.setFeature( jPanelBCellobjectColor.getColorFeature() );
+					newValue = BCellobjectColorGenerator;
 					break;
 				case TRACKS:
-					newValue = spotColorGeneratorPerTrackFeature;
-					spotColorGeneratorPerTrackFeature.setFeature( jPanelSpotColor.getColorFeature() );
+					newValue = BCellobjectColorGeneratorPerTrackFeature;
+					BCellobjectColorGeneratorPerTrackFeature.setFeature( jPanelBCellobjectColor.getColorFeature() );
 					break;
 				case DEFAULT:
-					if ( jPanelSpotColor.getColorFeature().equals( ColorByFeatureGUIPanel.UNIFORM_KEY ) )
+					if ( jPanelBCellobjectColor.getColorFeature().equals( ColorByFeatureGUIPanel.UNIFORM_KEY ) )
 					{
-						spotColorGenerator.setFeature( null );
-						newValue = spotColorGenerator;
+						BCellobjectColorGenerator.setFeature( null );
+						newValue = BCellobjectColorGenerator;
 					}
 					else
 					{
-						newValue = manualSpotColorGenerator;
+						newValue = manualBCellobjectColorGenerator;
 					}
 					break;
 				default:
-					throw new IllegalArgumentException( "Unknow spot color generator category: " + category );
+					throw new IllegalArgumentException( "Unknow BCellobject color generator category: " + category );
 				}
-				displaySettings.put( KEY_SPOT_COLORING, newValue );
-				final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_SPOT_COLORING, newValue, oldValue );
+				displaySettings.put( KEY_BCellobject_COLORING, newValue );
+				final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_BCellobject_COLORING, newValue, oldValue );
 				fireDisplaySettingsChange( event );
 			}
 		} );
-		jPanelSpotColor.autoMinMax();
-		final GroupLayout gl_jPanelSpotOptions = new GroupLayout( jPanelSpotOptions );
-		gl_jPanelSpotOptions.setHorizontalGroup(
-				gl_jPanelSpotOptions.createParallelGroup( Alignment.LEADING )
-						.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
+		jPanelBCellobjectColor.autoMinMax();
+		final GroupLayout gl_jPanelBCellobjectOptions = new GroupLayout( jPanelBCellobjectOptions );
+		gl_jPanelBCellobjectOptions.setHorizontalGroup(
+				gl_jPanelBCellobjectOptions.createParallelGroup( Alignment.LEADING )
+						.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
 								.addGap( 5 )
-								.addGroup( gl_jPanelSpotOptions.createParallelGroup( Alignment.LEADING )
-										.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
+								.addGroup( gl_jPanelBCellobjectOptions.createParallelGroup( Alignment.LEADING )
+										.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
 												.addComponent( jCheckBoxDisplayNames, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE )
 												.addContainerGap() )
-										.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
-												.addComponent( jLabelSpotRadius, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE )
+										.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
+												.addComponent( jLabelBCellobjectRadius, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE )
 												.addGap( 5 )
-												.addComponent( jTextFieldSpotRadius, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE )
+												.addComponent( jTextFieldBCellobjectRadius, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE )
 												.addGap( 103 ) ) ) )
-						.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
+						.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
 								.addContainerGap()
-								.addComponent( jPanelSpotColor, GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE )
+								.addComponent( jPanelBCellobjectColor, GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE )
 								.addContainerGap() ) );
-		gl_jPanelSpotOptions.setVerticalGroup(
-				gl_jPanelSpotOptions.createParallelGroup( Alignment.LEADING )
-						.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
-								.addGroup( gl_jPanelSpotOptions.createParallelGroup( Alignment.LEADING )
-										.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
+		gl_jPanelBCellobjectOptions.setVerticalGroup(
+				gl_jPanelBCellobjectOptions.createParallelGroup( Alignment.LEADING )
+						.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
+								.addGroup( gl_jPanelBCellobjectOptions.createParallelGroup( Alignment.LEADING )
+										.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
 												.addGap( 8 )
-												.addComponent( jLabelSpotRadius ) )
-										.addGroup( gl_jPanelSpotOptions.createSequentialGroup()
+												.addComponent( jLabelBCellobjectRadius ) )
+										.addGroup( gl_jPanelBCellobjectOptions.createSequentialGroup()
 												.addGap( 5 )
-												.addComponent( jTextFieldSpotRadius, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE ) ) )
+												.addComponent( jTextFieldBCellobjectRadius, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE ) ) )
 								.addPreferredGap( ComponentPlacement.RELATED )
 								.addComponent( jCheckBoxDisplayNames )
 								.addPreferredGap( ComponentPlacement.RELATED )
-								.addComponent( jPanelSpotColor, GroupLayout.PREFERRED_SIZE, 51, Short.MAX_VALUE )
+								.addComponent( jPanelBCellobjectColor, GroupLayout.PREFERRED_SIZE, 51, Short.MAX_VALUE )
 								.addContainerGap() ) );
-		jPanelSpotOptions.setLayout( gl_jPanelSpotOptions );
+		jPanelBCellobjectOptions.setLayout( gl_jPanelBCellobjectOptions );
 
 		/*
 		 * Track coloring
@@ -589,9 +589,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 								.addGap( 9 ) ) );
 		jPanelTrackOptions.setLayout( gl_jPanelTrackOptions );
 
-		if ( spotColorGenerator != null )
+		if ( BCellobjectColorGenerator != null )
 		{
-			jPanelSpotColor.setColorFeature( spotColorGenerator.getFeature() );
+			jPanelBCellobjectColor.setColorFeature( BCellobjectColorGenerator.getFeature() );
 		}
 		if ( trackColorGenerator != null )
 		{
@@ -751,26 +751,26 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 				} );
 			}
 			{
-				jCheckBoxDisplaySpots = new JCheckBox();
-				jCheckBoxDisplaySpots.setText( "Display spots" );
-				jCheckBoxDisplaySpots.setFont( FONT );
-				jCheckBoxDisplaySpots.setSelected( true );
-				jCheckBoxDisplaySpots.addActionListener( new ActionListener()
+				jCheckBoxDisplayBCellobjects = new JCheckBox();
+				jCheckBoxDisplayBCellobjects.setText( "Display BCellobjects" );
+				jCheckBoxDisplayBCellobjects.setFont( FONT );
+				jCheckBoxDisplayBCellobjects.setSelected( true );
+				jCheckBoxDisplayBCellobjects.addActionListener( new ActionListener()
 				{
 					@Override
 					public void actionPerformed( final ActionEvent e )
 					{
-						final Boolean oldValue = ( Boolean ) displaySettings.get( KEY_SPOTS_VISIBLE );
-						final Boolean newValue = jCheckBoxDisplaySpots.isSelected();
-						displaySettings.put( KEY_SPOTS_VISIBLE, newValue );
+						final Boolean oldValue = ( Boolean ) displaySettings.get( KEY_BCellobjectS_VISIBLE );
+						final Boolean newValue = jCheckBoxDisplayBCellobjects.isSelected();
+						displaySettings.put( KEY_BCellobjectS_VISIBLE, newValue );
 
-						final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_SPOTS_VISIBLE, newValue, oldValue );
+						final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_BCellobjectS_VISIBLE, newValue, oldValue );
 						fireDisplaySettingsChange( event );
 					}
 				} );
 			}
 			{
-				jPanelSpotOptions = new JPanel()
+				jPanelBCellobjectOptions = new JPanel()
 				{
 					private static final long serialVersionUID = 1L;
 
@@ -781,39 +781,39 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 							c.setEnabled( enabled );
 					}
 				};
-				jPanelSpotOptions.setBorder( new LineBorder( new java.awt.Color( 192, 192, 192 ), 1, true ) );
+				jPanelBCellobjectOptions.setBorder( new LineBorder( new java.awt.Color( 192, 192, 192 ), 1, true ) );
 				{
-					jLabelSpotRadius = new JLabel();
-					jLabelSpotRadius.setText( "  Spot display radius ratio:" );
-					jLabelSpotRadius.setFont( SMALL_FONT );
+					jLabelBCellobjectRadius = new JLabel();
+					jLabelBCellobjectRadius.setText( "  BCellobject display radius ratio:" );
+					jLabelBCellobjectRadius.setFont( SMALL_FONT );
 
-					jTextFieldSpotRadius = new JNumericTextField( "1" );
-					jTextFieldSpotRadius.setHorizontalAlignment( SwingConstants.CENTER );
-					jTextFieldSpotRadius.setPreferredSize( new java.awt.Dimension( 34, 20 ) );
-					jTextFieldSpotRadius.setFont( SMALL_FONT );
-					jTextFieldSpotRadius.addActionListener( new ActionListener()
+					jTextFieldBCellobjectRadius = new JNumericTextField( "1" );
+					jTextFieldBCellobjectRadius.setHorizontalAlignment( SwingConstants.CENTER );
+					jTextFieldBCellobjectRadius.setPreferredSize( new java.awt.Dimension( 34, 20 ) );
+					jTextFieldBCellobjectRadius.setFont( SMALL_FONT );
+					jTextFieldBCellobjectRadius.addActionListener( new ActionListener()
 					{
 						@Override
 						public void actionPerformed( final ActionEvent e )
 						{
-							final Double oldValue = ( Double ) displaySettings.get( KEY_SPOT_RADIUS_RATIO );
-							final Double newValue = ( double ) jTextFieldSpotRadius.getValue();
-							displaySettings.put( KEY_SPOT_RADIUS_RATIO, newValue );
+							final Double oldValue = ( Double ) displaySettings.get( KEY_BCellobject_RADIUS_RATIO );
+							final Double newValue = ( double ) jTextFieldBCellobjectRadius.getValue();
+							displaySettings.put( KEY_BCellobject_RADIUS_RATIO, newValue );
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_SPOT_RADIUS_RATIO, newValue, oldValue );
+							final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_BCellobject_RADIUS_RATIO, newValue, oldValue );
 							fireDisplaySettingsChange( event );
 						}
 					} );
-					jTextFieldSpotRadius.addFocusListener( new FocusListener()
+					jTextFieldBCellobjectRadius.addFocusListener( new FocusListener()
 					{
 						@Override
 						public void focusLost( final FocusEvent e )
 						{
-							final Double oldValue = ( Double ) displaySettings.get( KEY_SPOT_RADIUS_RATIO );
-							final Double newValue = ( double ) jTextFieldSpotRadius.getValue();
-							displaySettings.put( KEY_SPOT_RADIUS_RATIO, newValue );
+							final Double oldValue = ( Double ) displaySettings.get( KEY_BCellobject_RADIUS_RATIO );
+							final Double newValue = ( double ) jTextFieldBCellobjectRadius.getValue();
+							displaySettings.put( KEY_BCellobject_RADIUS_RATIO, newValue );
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_SPOT_RADIUS_RATIO, newValue, oldValue );
+							final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_BCellobject_RADIUS_RATIO, newValue, oldValue );
 							fireDisplaySettingsChange( event );
 						}
 
@@ -824,7 +824,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 				}
 				{
 					jCheckBoxDisplayNames = new JCheckBox();
-					jCheckBoxDisplayNames.setText( "Display spot names" );
+					jCheckBoxDisplayNames.setText( "Display BCellobject names" );
 					jCheckBoxDisplayNames.setFont( SMALL_FONT );
 					jCheckBoxDisplayNames.setSelected( false );
 					jCheckBoxDisplayNames.addActionListener( new ActionListener()
@@ -832,11 +832,11 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 						@Override
 						public void actionPerformed( final ActionEvent e )
 						{
-							final Boolean oldValue = ( Boolean ) displaySettings.get( KEY_DISPLAY_SPOT_NAMES );
+							final Boolean oldValue = ( Boolean ) displaySettings.get( KEY_DISPLAY_BCellobject_NAMES );
 							final Boolean newValue = jCheckBoxDisplayNames.isSelected();
-							displaySettings.put( KEY_DISPLAY_SPOT_NAMES, newValue );
+							displaySettings.put( KEY_DISPLAY_BCellobject_NAMES, newValue );
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_DISPLAY_SPOT_NAMES, newValue, oldValue );
+							final DisplaySettingsEvent event = new DisplaySettingsEvent( ConfigureViewsPanel.this, KEY_DISPLAY_BCellobject_NAMES, newValue, oldValue );
 							fireDisplaySettingsChange( event );
 						}
 					} );
@@ -908,7 +908,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 					@Override
 					public void focusLost( final FocusEvent e )
 					{
-						final Double oldValue = ( Double ) displaySettings.get( KEY_SPOT_RADIUS_RATIO );
+						final Double oldValue = ( Double ) displaySettings.get( KEY_BCellobject_RADIUS_RATIO );
 						final Double newValue = textFieldDrawingDepth.getValue();
 						displaySettings.put( KEY_DRAWING_DEPTH, newValue );
 
@@ -981,11 +981,11 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 									.addGap( 6 ) )
 							.addGroup( groupLayout.createSequentialGroup()
 									.addGap( 10 )
-									.addComponent( jCheckBoxDisplaySpots, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE )
+									.addComponent( jCheckBoxDisplayBCellobjects, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE )
 									.addGap( 10 ) )
 							.addGroup( groupLayout.createSequentialGroup()
 									.addGap( 10 )
-									.addComponent( jPanelSpotOptions, GroupLayout.PREFERRED_SIZE, 280, Short.MAX_VALUE )
+									.addComponent( jPanelBCellobjectOptions, GroupLayout.PREFERRED_SIZE, 280, Short.MAX_VALUE )
 									.addGap( 10 ) )
 							.addGroup( groupLayout.createSequentialGroup()
 									.addGap( 10 )
@@ -1007,9 +1007,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel
 									.addGap( 6 )
 									.addComponent( jLabelDisplayOptions, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE )
 									.addGap( 4 )
-									.addComponent( jCheckBoxDisplaySpots )
+									.addComponent( jCheckBoxDisplayBCellobjects )
 									.addGap( 2 )
-									.addComponent( jPanelSpotOptions, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE )
+									.addComponent( jPanelBCellobjectOptions, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE )
 									.addGap( 4 )
 									.addComponent( jCheckBoxDisplayTracks )
 									.addGap( 1 )

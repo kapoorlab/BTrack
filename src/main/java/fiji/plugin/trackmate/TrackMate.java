@@ -6,14 +6,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.scijava.util.VersionUtils;
+
+import budDetector.BCellobject;
+import fiji.plugin.trackmate.detection.BCellobjectDetector;
+import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
 import fiji.plugin.trackmate.detection.ManualDetectorFactory;
-import fiji.plugin.trackmate.detection.SpotDetector;
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
+import fiji.plugin.trackmate.features.BCellobjectFeatureCalculator;
 import fiji.plugin.trackmate.features.EdgeFeatureCalculator;
 import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.features.SpotFeatureCalculator;
 import fiji.plugin.trackmate.features.TrackFeatureCalculator;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.util.TMUtils;
 import ij.gui.ShapeRoi;
 import net.imagej.ImgPlus;
@@ -26,7 +28,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 /**
  * <p>
  * The TrackMate_ class runs on the currently active time-lapse image (2D or 3D)
- * and both identifies and tracks bright spots over time.
+ * and both identifies and tracks bright BCellobjects over time.
  * </p>
  *
  * <p>
@@ -86,54 +88,54 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	 * This method exists for the following reason:
 	 * <p>
 	 * The detector receives at each frame a cropped image to operate on,
-	 * depending on the user specifying a ROI. It therefore returns spots whose
+	 * depending on the user specifying a ROI. It therefore returns BCellobjects whose
 	 * coordinates are with respect to the top-left corner of the ROI, not of
 	 * the original image.
 	 * <p>
-	 * This method modifies the given spots to put them back in the image
+	 * This method modifies the given BCellobjects to put them back in the image
 	 * coordinate system. Additionally, is a non-square ROI was specified (e.g.
-	 * a polygon), it prunes the spots that are not within the polygon of the
+	 * a polygon), it prunes the BCellobjects that are not within the polygon of the
 	 * ROI.
 	 *
-	 * @param spotsThisFrame
-	 *            the spot list to inspect
+	 * @param BCellobjectsThisFrame
+	 *            the BCellobject list to inspect
 	 * @param lSettings
 	 *            the {@link Settings} object that will be used to retrieve the
 	 *            image ROI and cropping information
-	 * @return a list of spot. Depending on the presence of a polygon ROI, it
+	 * @return a list of BCellobject. Depending on the presence of a polygon ROI, it
 	 *         might be a new, pruned list. Or not.
 	 */
-	protected List< Spot > translateAndPruneSpots( final List< Spot > spotsThisFrame, final Settings lSettings )
+	protected List< BCellobject > translateAndPruneBCellobjects( final List< BCellobject > BCellobjectsThisFrame, final Settings lSettings )
 	{
 
 		// Put them back in the right referential
 		final double[] calibration = TMUtils.getSpatialCalibration( lSettings.imp );
-		TMUtils.translateSpots( spotsThisFrame, lSettings.xstart * calibration[ 0 ], lSettings.ystart * calibration[ 1 ], lSettings.zstart * calibration[ 2 ] );
-		List< Spot > prunedSpots;
+		TMUtils.translateBCellobjects( BCellobjectsThisFrame, lSettings.xstart * calibration[ 0 ], lSettings.ystart * calibration[ 1 ], lSettings.zstart * calibration[ 2 ] );
+		List< BCellobject > prunedBCellobjects;
 		// Prune if outside of ROI
 		if ( lSettings.roi instanceof ShapeRoi )
 		{
-			prunedSpots = new ArrayList<>();
-			for ( final Spot spot : spotsThisFrame )
+			prunedBCellobjects = new ArrayList<>();
+			for ( final BCellobject BCellobject : BCellobjectsThisFrame )
 			{
-				if ( lSettings.roi.contains( (int) Math.round( spot.getFeature( Spot.POSITION_X ) / calibration[ 0 ] ), (int) Math.round( spot.getFeature( Spot.POSITION_Y ) / calibration[ 1 ] ) ) )
-					prunedSpots.add( spot );
+				if ( lSettings.roi.contains( (int) Math.round( BCellobject.getFeature( BCellobject.POSITION_X ) / calibration[ 0 ] ), (int) Math.round( BCellobject.getFeature( BCellobject.POSITION_Y ) / calibration[ 1 ] ) ) )
+					prunedBCellobjects.add( BCellobject );
 			}
 		}
 		else if ( null != lSettings.polygon )
 		{
-			prunedSpots = new ArrayList<>();
-			for ( final Spot spot : spotsThisFrame )
+			prunedBCellobjects = new ArrayList<>();
+			for ( final BCellobject BCellobject : BCellobjectsThisFrame )
 			{
-				if ( lSettings.polygon.contains( spot.getFeature( Spot.POSITION_X ) / calibration[ 0 ], spot.getFeature( Spot.POSITION_Y ) / calibration[ 1 ] ) )
-					prunedSpots.add( spot );
+				if ( lSettings.polygon.contains( BCellobject.getFeature( BCellobject.POSITION_X ) / calibration[ 0 ], BCellobject.getFeature( BCellobject.POSITION_Y ) / calibration[ 1 ] ) )
+					prunedBCellobjects.add( BCellobject );
 			}
 		}
 		else
 		{
-			prunedSpots = spotsThisFrame;
+			prunedBCellobjects = BCellobjectsThisFrame;
 		}
-		return prunedSpots;
+		return prunedBCellobjects;
 	}
 
 	/*
@@ -155,9 +157,9 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	 */
 
 	/**
-	 * Calculate all features for all detected spots.
+	 * Calculate all features for all detected BCellobjects.
 	 * <p>
-	 * Features are calculated for each spot, using their location, and the raw
+	 * Features are calculated for each BCellobject, using their location, and the raw
 	 * image. Features to be calculated and analyzers are taken from the
 	 * settings field of this object.
 	 *
@@ -167,11 +169,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	 * @return <code>true</code> if the calculation was performed successfully,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean computeSpotFeatures( final boolean doLogIt )
+	public boolean computeBCellobjectFeatures( final boolean doLogIt )
 	{
 		final Logger logger = model.getLogger();
-		logger.log( "Computing spot features.\n" );
-		final SpotFeatureCalculator calculator = new SpotFeatureCalculator( model, settings );
+		logger.log( "Computing BCellobject features.\n" );
+		final BCellobjectFeatureCalculator calculator = new BCellobjectFeatureCalculator( model, settings );
 		calculator.setNumThreads( numThreads );
 		if ( calculator.checkInput() && calculator.process() )
 		{
@@ -180,14 +182,14 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 			return true;
 		}
 
-		errorMessage = "Spot features calculation failed:\n" + calculator.getErrorMessage();
+		errorMessage = "BCellobject features calculation failed:\n" + calculator.getErrorMessage();
 		return false;
 	}
 
 	/**
-	 * Calculate all features for all detected spots.
+	 * Calculate all features for all detected BCellobjects.
 	 * <p>
-	 * Features are calculated for each spot, using their location, and the raw
+	 * Features are calculated for each BCellobject, using their location, and the raw
 	 * image. Features to be calculated and analyzers are taken from the
 	 * settings field of this object.
 	 *
@@ -240,10 +242,10 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	/**
 	 * Execute the tracking part.
 	 * <p>
-	 * This method links all the selected spots from the thresholding part using
+	 * This method links all the selected BCellobjects from the thresholding part using
 	 * the selected tracking algorithm. This tracking process will generate a
 	 * graph (more precisely a {@link org.jgrapht.graph.SimpleWeightedGraph})
-	 * made of the spot election for its vertices, and edges representing the
+	 * made of the BCellobject election for its vertices, and edges representing the
 	 * links.
 	 * <p>
 	 * The {@link ModelChangeListener}s of the model will be notified when the
@@ -255,7 +257,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	{
 		final Logger logger = model.getLogger();
 		logger.log( "Starting tracking process.\n" );
-		final SpotTracker tracker = settings.trackerFactory.create( model.getSpots(), settings.trackerSettings );
+		final BCellobjectTracker tracker = settings.trackerFactory.create( model.getBCellobjects(), settings.trackerSettings );
 		tracker.setNumThreads( numThreads );
 		tracker.setLogger( logger );
 		if ( tracker.checkInput() && tracker.process() )
@@ -286,7 +288,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 				+ ( ( numThreads > 1 ) ? ( numThreads + " threads" ) : "1 thread" )
 				+ ".\n" );
 
-		final SpotDetectorFactory< ? > factory = settings.detectorFactory;
+		final BCellobjectDetectorFactory< ? > factory = settings.detectorFactory;
 		if ( null == factory )
 		{
 			errorMessage = "Detector factory is null.\n";
@@ -314,12 +316,12 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 
 		final int numFrames = settings.tend - settings.tstart + 1;
 		// Final results holder, for all frames
-		final SpotCollection spots = new SpotCollection();
-		spots.setNumThreads( numThreads );
+		final BCellobjectCollection BCellobjects = new BCellobjectCollection();
+		BCellobjects.setNumThreads( numThreads );
 		// To report progress
-		final AtomicInteger spotFound = new AtomicInteger( 0 );
+		final AtomicInteger BCellobjectFound = new AtomicInteger( 0 );
 		final AtomicInteger progress = new AtomicInteger( 0 );
-		// To translate spots, later
+		// To translate BCellobjects, later
 		final double[] calibration = TMUtils.getSpatialCalibration( settings.imp );
 
 		/*
@@ -345,7 +347,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 		for ( int ithread = 0; ithread < threads.length; ithread++ )
 		{
 
-			threads[ ithread ] = new Thread( "TrackMate spot detection thread " + ( 1 + ithread ) + "/" + threads.length )
+			threads[ ithread ] = new Thread( "TrackMate BCellobject detection thread " + ( 1 + ithread ) + "/" + threads.length )
 			{
 				private boolean wasInterrupted()
 				{
@@ -370,7 +372,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 						try
 						{
 							// Yield detector for target frame
-							final SpotDetector< ? > detector = factory.getDetector( interval, frame );
+							final BCellobjectDetector< ? > detector = factory.getDetector( interval, frame );
 							if ( detector instanceof MultiThreaded )
 							{
 								final MultiThreaded md = ( MultiThreaded ) detector;
@@ -384,7 +386,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 							if ( ok.get() && detector.checkInput() && detector.process() )
 							{
 								// On success, get results.
-								final List< Spot > spotsThisFrame = detector.getResult();
+								final List< BCellobject > BCellobjectsThisFrame = detector.getResult();
 
 								/*
 								 * Special case: if we have a single column
@@ -394,47 +396,47 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 								 */
 								if ( img.dimension( 0 ) < 2 && zindex < 0 )
 								{
-									for ( final Spot spot : spotsThisFrame )
+									for ( final BCellobject BCellobject : BCellobjectsThisFrame )
 									{
-										spot.putFeature( Spot.POSITION_Y, spot.getDoublePosition( 0 ) );
-										spot.putFeature( Spot.POSITION_X, 0d );
+										BCellobject.putFeature( BCellobject.POSITION_Y, BCellobject.getDoublePosition( 0 ) );
+										BCellobject.putFeature( BCellobject.POSITION_X, 0d );
 									}
 								}
 
-								List< Spot > prunedSpots;
+								List< BCellobject > prunedBCellobjects;
 								if ( settings.roi instanceof ShapeRoi )
 								{
-									prunedSpots = new ArrayList<>();
-									for ( final Spot spot : spotsThisFrame )
+									prunedBCellobjects = new ArrayList<>();
+									for ( final BCellobject BCellobject : BCellobjectsThisFrame )
 									{
-										if ( settings.roi.contains( (int) Math.round( spot.getFeature( Spot.POSITION_X ) / calibration[ 0 ] ), (int) Math.round( spot.getFeature( Spot.POSITION_Y ) / calibration[ 1 ] ) ) )
-											prunedSpots.add( spot );
+										if ( settings.roi.contains( (int) Math.round( BCellobject.getFeature( BCellobject.POSITION_X ) / calibration[ 0 ] ), (int) Math.round( BCellobject.getFeature( BCellobject.POSITION_Y ) / calibration[ 1 ] ) ) )
+											prunedBCellobjects.add( BCellobject );
 									}
 								}
 								else if ( null != settings.polygon )
 								{
-									prunedSpots = new ArrayList< >();
-									for ( final Spot spot : spotsThisFrame )
+									prunedBCellobjects = new ArrayList< >();
+									for ( final BCellobject BCellobject : BCellobjectsThisFrame )
 									{
-										if ( settings.polygon.contains( spot.getFeature( Spot.POSITION_X ) / calibration[ 0 ], spot.getFeature( Spot.POSITION_Y ) / calibration[ 1 ] ) )
-											prunedSpots.add( spot );
+										if ( settings.polygon.contains( BCellobject.getFeature( BCellobject.POSITION_X ) / calibration[ 0 ], BCellobject.getFeature( BCellobject.POSITION_Y ) / calibration[ 1 ] ) )
+											prunedBCellobjects.add( BCellobject );
 									}
 								}
 								else
 								{
-									prunedSpots = spotsThisFrame;
+									prunedBCellobjects = BCellobjectsThisFrame;
 								}
 								// Add detection feature other than position
-								for ( final Spot spot : prunedSpots )
+								for ( final BCellobject BCellobject : prunedBCellobjects )
 								{
 									// FRAME will be set upon adding to
-									// SpotCollection.
-									spot.putFeature( Spot.POSITION_T, frame * settings.dt );
+									// BCellobjectCollection.
+									BCellobject.putFeature( BCellobject.POSITION_T, frame * settings.dt );
 								}
 								// Store final results for this frame
-								spots.put( frame, prunedSpots );
+								BCellobjects.put( frame, prunedBCellobjects );
 								// Report
-								spotFound.addAndGet( prunedSpots.size() );
+								BCellobjectFound.addAndGet( prunedBCellobjects.size() );
 								logger.setProgress( progress.incrementAndGet() / ( double ) numFrames );
 
 							}
@@ -490,16 +492,16 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 				throw e;
 			}
 		}
-		model.setSpots( spots, true );
+		model.setBCellobjects( BCellobjects, true );
 
 		if ( ok.get() )
 		{
-			logger.log( "Found " + spotFound.get() + " spots.\n" );
+			logger.log( "Found " + BCellobjectFound.get() + " BCellobjects.\n" );
 		}
 		else
 		{
 			logger.error( "Detection failed after " + progress.get() + " frames:\n" + errorMessage );
-			logger.log( "Found " + spotFound.get() + " spots prior failure.\n" );
+			logger.log( "Found " + BCellobjectFound.get() + " BCellobjects prior failure.\n" );
 		}
 		logger.setProgress( 1 );
 		logger.setStatus( "" );
@@ -507,73 +509,70 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	}
 
 	/**
-	 * Execute the initial spot filtering part.
+	 * Execute the initial BCellobject filtering part.
 	 * <p>
 	 * Because of the presence of noise, it is possible that some of the
 	 * regional maxima found in the detection step have identified noise, rather
-	 * than objects of interest. This can generates a very high number of spots,
+	 * than objects of interest. This can generates a very high number of BCellobjects,
 	 * which is inconvenient to deal with when it comes to computing their
 	 * features, or displaying them.
 	 * <p>
-	 * Any {@link SpotDetector} is expected to at least compute the
-	 * {@link Spot#QUALITY} value for each spot it creates, so it is possible to
+	 * Any {@link BCellobjectDetector} is expected to at least compute the
+	 * {@link BCellobject#QUALITY} value for each BCellobject it creates, so it is possible to
 	 * set up an initial filtering on this feature, prior to any other
 	 * operation.
 	 * <p>
-	 * This method simply takes all the detected spots, and discard those whose
+	 * This method simply takes all the detected BCellobjects, and discard those whose
 	 * quality value is below the threshold set by
-	 * {@link Settings#initialSpotFilterValue}. The spot field is overwritten,
-	 * and discarded spots can't be recalled.
+	 * {@link Settings#initialBCellobjectFilterValue}. The BCellobject field is overwritten,
+	 * and discarded BCellobjects can't be recalled.
 	 * <p>
 	 * The {@link ModelChangeListener}s of this model will be notified with a
-	 * {@link ModelChangeEvent#SPOTS_COMPUTED} event.
+	 * {@link ModelChangeEvent#BCellobjectS_COMPUTED} event.
 	 *
 	 * @return <code>true</code> if the computation completed without errors.
 	 */
-	public boolean execInitialSpotFiltering()
+	public boolean execInitialBCellobjectFiltering()
 	{
 		final Logger logger = model.getLogger();
 		logger.log( "Starting initial filtering process.\n" );
 
-		final Double initialSpotFilterValue = settings.initialSpotFilterValue;
-		final FeatureFilter featureFilter = new FeatureFilter( Spot.QUALITY, initialSpotFilterValue, true );
+		final Double initialBCellobjectFilterValue = settings.initialBCellobjectFilterValue;
 
-		SpotCollection spots = model.getSpots();
-		spots.filter( featureFilter );
+		BCellobjectCollection BCellobjects = model.getBCellobjects();
+		BCellobjects = BCellobjects.crop();
 
-		spots = spots.crop();
-
-		model.setSpots( spots, true ); // Forget about the previous one
+		model.setBCellobjects( BCellobjects, true ); // Forget about the previous one
 		return true;
 	}
 
 	/**
-	 * Execute the spot feature filtering part.
+	 * Execute the BCellobject feature filtering part.
 	 * <p>
 	 * Because of the presence of noise, it is possible that some of the
 	 * regional maxima found in the detection step have identified noise, rather
 	 * than objects of interest. A filtering operation based on the calculated
 	 * features in this step should allow to rule them out.
 	 * <p>
-	 * This method simply takes all the detected spots, and mark as visible the
-	 * spots whose features satisfy all of the filters in the {@link Settings}
+	 * This method simply takes all the detected BCellobjects, and mark as visible the
+	 * BCellobjects whose features satisfy all of the filters in the {@link Settings}
 	 * object.
 	 * <p>
 	 * The {@link ModelChangeListener}s of this model will be notified with a
-	 * {@link ModelChangeEvent#SPOTS_FILTERED} event.
+	 * {@link ModelChangeEvent#BCellobjectS_FILTERED} event.
 	 *
 	 * @param doLogIt
 	 *            if <code>true</code>, will send a message to the model logger.
 	 * @return <code>true</code> if the computation completed without errors.
 	 */
-	public boolean execSpotFiltering( final boolean doLogIt )
+	public boolean execBCellobjectFiltering( final boolean doLogIt )
 	{
 		if ( doLogIt )
 		{
 			final Logger logger = model.getLogger();
-			logger.log( "Starting spot filtering process.\n" );
+			logger.log( "Starting BCellobject filtering process.\n" );
 		}
-		model.filterSpots( settings.getSpotFilters(), true );
+		model.filterBCellobjects( settings.getBCellobjectFilters(), true );
 		return true;
 	}
 
@@ -667,11 +666,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	{
 		if ( !execDetection() ) { return false; }
 
-		if ( !execInitialSpotFiltering() ) { return false; }
+		if ( !execInitialBCellobjectFiltering() ) { return false; }
 
-		if ( !computeSpotFeatures( true ) ) { return false; }
+		if ( !computeBCellobjectFeatures( true ) ) { return false; }
 
-		if ( !execSpotFiltering( true ) ) { return false; }
+		if ( !execBCellobjectFiltering( true ) ) { return false; }
 
 		if ( !execTracking() ) { return false; }
 

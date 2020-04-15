@@ -2,7 +2,7 @@ package tracker;
 
 import budDetector.Budobject;
 
-public class BudTrackCostFunction implements CostFunction< Budobject, Budobject >
+public class BudTrackCostFunction implements BudCostFunction< Budobject, Budobject >
 {
 
 	

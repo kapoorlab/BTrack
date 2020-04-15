@@ -24,9 +24,9 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition;
 import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
@@ -45,13 +45,7 @@ public class TrackBranchAnalysis extends AbstractTMAction
 
 	private static final String NAME = "Branch hierarchy analysis";
 
-	private static final ImageIcon ICON;
-	static
-	{
-		final Image image = new ImageIcon( TrackMateWizard.class.getResource( "images/Icons4_print_transparency.png" ) ).getImage();
-		final Image newimg = image.getScaledInstance( 16, 16, java.awt.Image.SCALE_SMOOTH );
-		ICON = new ImageIcon( newimg );
-	}
+
 
 	private static final String TABLE_NAME = "Branch analysis";
 
@@ -80,13 +74,13 @@ public class TrackBranchAnalysis extends AbstractTMAction
 		for ( final Integer trackID : model.getTrackModel().unsortedTrackIDs( true ) )
 		{
 			final TrackBranchDecomposition branchDecomposition = ConvexBranchesDecomposition.processTrack( trackID, model.getTrackModel(), neighborIndex, true, false );
-			final SimpleDirectedGraph< List< Spot >, DefaultEdge > branchGraph = ConvexBranchesDecomposition.buildBranchGraph( branchDecomposition );
+			final SimpleDirectedGraph< List< BCellobject >, DefaultEdge > branchGraph = ConvexBranchesDecomposition.buildBranchGraph( branchDecomposition );
 
-			final Map< Branch, Set< List< Spot >> > successorMap = new HashMap<>();
-			final Map< Branch, Set< List< Spot >> > predecessorMap = new HashMap<>();
-			final Map<List<Spot>, Branch> branchMap = new HashMap<>();
+			final Map< Branch, Set< List< BCellobject >> > successorMap = new HashMap<>();
+			final Map< Branch, Set< List< BCellobject >> > predecessorMap = new HashMap<>();
+			final Map<List<BCellobject>, Branch> branchMap = new HashMap<>();
 
-			for ( final List< Spot > branch : branchGraph.vertexSet() )
+			for ( final List< BCellobject > branch : branchGraph.vertexSet() )
 			{
 				final Branch br = new Branch();
 				branchMap.put( branch, br );
@@ -94,7 +88,7 @@ public class TrackBranchAnalysis extends AbstractTMAction
 				// Track name from ID
 				br.trackID = model.getTrackModel().name( trackID );
 
-				// First and last spot.
+				// First and last BCellobject.
 				br.first = branch.get( 0 );
 				br.last = branch.get( branch.size() - 1 );
 
@@ -109,12 +103,12 @@ public class TrackBranchAnalysis extends AbstractTMAction
 				}
 				else
 				{
-					final Iterator< Spot > it = branch.iterator();
-					Spot previous = it.next();
+					final Iterator< BCellobject > it = branch.iterator();
+					BCellobject previous = it.next();
 					double sum = 0;
 					while ( it.hasNext() )
 					{
-						final Spot next = it.next();
+						final BCellobject next = it.next();
 						final double dr = Math.sqrt( next.squareDistanceTo( previous ) );
 						sum += dr;
 						previous = next;
@@ -125,19 +119,19 @@ public class TrackBranchAnalysis extends AbstractTMAction
 
 				// Predecessors
 				final Set< DefaultEdge > incomingEdges = branchGraph.incomingEdgesOf( branch );
-				final Set< List< Spot >> predecessors = new HashSet<>( incomingEdges.size() );
+				final Set< List< BCellobject >> predecessors = new HashSet<>( incomingEdges.size() );
 				for ( final DefaultEdge edge : incomingEdges )
 				{
-					final List< Spot > predecessorBranch = branchGraph.getEdgeSource( edge );
+					final List< BCellobject > predecessorBranch = branchGraph.getEdgeSource( edge );
 					predecessors.add( predecessorBranch );
 				}
 
 				// Successors
 				final Set< DefaultEdge > outgoingEdges = branchGraph.outgoingEdgesOf( branch );
-				final Set< List< Spot >> successors = new HashSet<>( outgoingEdges.size() );
+				final Set< List< BCellobject >> successors = new HashSet<>( outgoingEdges.size() );
 				for ( final DefaultEdge edge : outgoingEdges )
 				{
-					final List< Spot > successorBranch = branchGraph.getEdgeTarget( edge );
+					final List< BCellobject > successorBranch = branchGraph.getEdgeTarget( edge );
 					successors.add( successorBranch );
 				}
 
@@ -147,18 +141,18 @@ public class TrackBranchAnalysis extends AbstractTMAction
 			
 			for ( final Branch br : successorMap.keySet() )
 			{
-				final Set< List< Spot >> succs = successorMap.get( br );
+				final Set< List< BCellobject >> succs = successorMap.get( br );
 				final Set<Branch> succBrs = new HashSet<>(succs.size());
-				for ( final List<Spot> branch : succs )
+				for ( final List<BCellobject> branch : succs )
 				{
 					final Branch succBr = branchMap.get( branch );
 					succBrs.add( succBr );
 				}
 				br.successors = succBrs;
 				
-				final Set< List< Spot >> preds = predecessorMap.get( br );
+				final Set< List< BCellobject >> preds = predecessorMap.get( br );
 				final Set<Branch> predBrs = new HashSet<>(preds.size());
-				for ( final List<Spot> branch : preds )
+				for ( final List<BCellobject> branch : preds )
 				{
 					final Branch predBr = branchMap.get( branch );
 					predBrs.add( predBr );
@@ -202,15 +196,15 @@ public class TrackBranchAnalysis extends AbstractTMAction
 					if ( line < 0 ) { return; }
 					final Branch br = brs.get( line );
 					final List< DefaultWeightedEdge > edges = model.getTrackModel().dijkstraShortestPath( br.first, br.last );
-					final Set< Spot > spots = new HashSet<>();
+					final Set< BCellobject > BCellobjects = new HashSet<>();
 					for ( final DefaultWeightedEdge edge : edges )
 					{
-						spots.add( model.getTrackModel().getEdgeSource( edge ) );
-						spots.add( model.getTrackModel().getEdgeTarget( edge ) );
+						BCellobjects.add( model.getTrackModel().getEdgeSource( edge ) );
+						BCellobjects.add( model.getTrackModel().getEdgeTarget( edge ) );
 					}
 					selectionModel.clearSelection();
 					selectionModel.addEdgeToSelection( edges );
-					selectionModel.addSpotToSelection( spots );
+					selectionModel.addBCellobjectToSelection( BCellobjects );
 				}
 
 			} );
@@ -234,9 +228,9 @@ public class TrackBranchAnalysis extends AbstractTMAction
 
 		String trackID;
 
-		Spot first;
+		BCellobject first;
 
-		Spot last;
+		BCellobject last;
 
 		Set< Branch > predecessors;
 
@@ -250,12 +244,12 @@ public class TrackBranchAnalysis extends AbstractTMAction
 
 		int dt()
 		{
-			return ( int ) last.diffTo( first, Spot.FRAME );
+			return ( int ) last.diffTo( first, BCellobject.POSITION_T );
 		}
 
 		/**
 		 * Sort by predecessors number, then successors number, then
-		 * alphabetically by first spot name.
+		 * alphabetically by first BCellobject name.
 		 */
 		@Override
 		public int compareTo( final Branch o )
@@ -300,9 +294,11 @@ public class TrackBranchAnalysis extends AbstractTMAction
 		}
 
 		@Override
-		public ImageIcon getIcon()
-		{
-			return ICON;
+		public ImageIcon getIcon() {
+			// TODO Auto-generated method stub
+			return null;
 		}
+
+	
 	}
 }

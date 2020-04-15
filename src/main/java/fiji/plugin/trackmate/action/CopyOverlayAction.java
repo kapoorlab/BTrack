@@ -1,16 +1,16 @@
 package fiji.plugin.trackmate.action;
 
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_SPOT_COLOR;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_BCellobject_COLOR;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_TRACK_DISPLAY_MODE;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_COLOR;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_COLORMAP;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_SPOT_NAMES;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_BCellobject_NAMES;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_HIGHLIGHT_COLOR;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOTS_VISIBLE;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOT_COLORING;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOT_RADIUS_RATIO;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobjectS_VISIBLE;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_COLORING;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_RADIUS_RATIO;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACKS_VISIBLE;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_COLORING;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
@@ -42,15 +42,15 @@ import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.gui.panels.ConfigureViewsPanel;
 import fiji.plugin.trackmate.gui.panels.components.ImagePlusChooser;
 import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotColorGenerator;
+import fiji.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGeneratorPerTrackFeature;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGenerator;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
-import fiji.plugin.trackmate.visualization.threedviewer.SpotDisplayer3DFactory;
-import fiji.plugin.trackmate.visualization.trackscheme.SpotImageUpdater;
+import fiji.plugin.trackmate.visualization.threedviewer.BCellobjectDisplayer3DFactory;
+import fiji.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.ImagePlus;
 
@@ -64,8 +64,8 @@ public class CopyOverlayAction extends AbstractTMAction
 	public static final String KEY = "COPY_OVERLAY";
 
 	public static final String INFO_TEXT = "<html>"
-			+ "This action copies the overlay (spots and tracks) to a new existing ImageJ window <br> "
-			+ "or to a new 3D viewer window. This can be useful to have the tracks and spots <br> "
+			+ "This action copies the overlay (BCellobjects and tracks) to a new existing ImageJ window <br> "
+			+ "or to a new 3D viewer window. This can be useful to have the tracks and BCellobjects <br> "
 			+ "displayed on a modified image. "
 			+ "<p>"
 			+ "The new view will be independent, and will have its own control panel.<br> "
@@ -120,7 +120,7 @@ public class CopyOverlayAction extends AbstractTMAction
 							if ( null == dest )
 							{
 								logger.log( "Copying data and overlay to new 3D viewer\n" );
-								newDisplayer = new SpotDisplayer3DFactory().create( tm.getModel(), tm.getSettings(), selectionModel );
+								newDisplayer = new BCellobjectDisplayer3DFactory().create( tm.getModel(), tm.getSettings(), selectionModel );
 								title = "3D viewer overlay";
 							}
 							else
@@ -138,27 +138,27 @@ public class CopyOverlayAction extends AbstractTMAction
 							 */
 
 							guimodel = new TrackMateGUIModel();
-							final SpotColorGenerator spotColorGenerator = new SpotColorGenerator( tm.getModel() );
+							final BCellobjectColorGenerator BCellobjectColorGenerator = new BCellobjectColorGenerator( tm.getModel() );
 							final PerTrackFeatureColorGenerator trackColorGenerator = new PerTrackFeatureColorGenerator( tm.getModel(), TrackIndexAnalyzer.TRACK_INDEX );
 							final PerEdgeFeatureColorGenerator edgeColorGenerator = new PerEdgeFeatureColorGenerator( tm.getModel(), EdgeVelocityAnalyzer.VELOCITY );
 							final ManualEdgeColorGenerator manualEdgeColorGenerator = new ManualEdgeColorGenerator( tm.getModel() );
-							final ManualSpotColorGenerator manualSpotColorGenerator = new ManualSpotColorGenerator();
-							final SpotColorGeneratorPerTrackFeature spotColorGeneratorPerTrackFeature = new SpotColorGeneratorPerTrackFeature( tm.getModel(), TrackIndexAnalyzer.TRACK_INDEX );
+							final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator = new ManualBCellobjectColorGenerator();
+							final BCellobjectColorGeneratorPerTrackFeature BCellobjectColorGeneratorPerTrackFeature = new BCellobjectColorGeneratorPerTrackFeature( tm.getModel(), TrackIndexAnalyzer.TRACK_INDEX );
 
-							panel.setSpotColorGenerator( spotColorGenerator );
-							panel.setSpotColorGeneratorPerTrackFeature( spotColorGeneratorPerTrackFeature );
+							panel.setBCellobjectColorGenerator( BCellobjectColorGenerator );
+							panel.setBCellobjectColorGeneratorPerTrackFeature( BCellobjectColorGeneratorPerTrackFeature );
 							panel.setEdgeColorGenerator( edgeColorGenerator );
 							panel.setTrackColorGenerator( trackColorGenerator );
 							panel.setManualEdgeColorGenerator( manualEdgeColorGenerator );
-							panel.setManualSpotColorGenerator( manualSpotColorGenerator );
+							panel.setManualBCellobjectColorGenerator( manualBCellobjectColorGenerator );
 
 							final Map< String, Object > displaySettings = new HashMap<>();
-							displaySettings.put( KEY_COLOR, DEFAULT_SPOT_COLOR );
+							displaySettings.put( KEY_COLOR, DEFAULT_BCellobject_COLOR );
 							displaySettings.put( KEY_HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR );
-							displaySettings.put( KEY_SPOTS_VISIBLE, true );
-							displaySettings.put( KEY_DISPLAY_SPOT_NAMES, false );
-							displaySettings.put( KEY_SPOT_COLORING, spotColorGenerator );
-							displaySettings.put( KEY_SPOT_RADIUS_RATIO, 1.0d );
+							displaySettings.put( KEY_BCellobjectS_VISIBLE, true );
+							displaySettings.put( KEY_DISPLAY_BCellobject_NAMES, false );
+							displaySettings.put( KEY_BCellobject_COLORING, BCellobjectColorGenerator );
+							displaySettings.put( KEY_BCellobject_RADIUS_RATIO, 1.0d );
 							displaySettings.put( KEY_TRACKS_VISIBLE, true );
 							displaySettings.put( KEY_TRACK_DISPLAY_MODE, DEFAULT_TRACK_DISPLAY_MODE );
 							displaySettings.put( KEY_TRACK_DISPLAY_DEPTH, DEFAULT_TRACK_DISPLAY_DEPTH );
@@ -245,8 +245,8 @@ public class CopyOverlayAction extends AbstractTMAction
 			public void run()
 			{
 				final TrackScheme trackscheme = new TrackScheme( trackmate.getModel(), selectionModel );
-				final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( trackmate.getSettings() );
-				trackscheme.setSpotImageUpdater( thumbnailUpdater );
+				final BCellobjectImageUpdater thumbnailUpdater = new BCellobjectImageUpdater( trackmate.getSettings() );
+				trackscheme.setBCellobjectImageUpdater( thumbnailUpdater );
 				for ( final String settingKey : guimodel.getDisplaySettings().keySet() )
 				{
 					trackscheme.setDisplaySettings( settingKey, guimodel.getDisplaySettings().get( settingKey ) );

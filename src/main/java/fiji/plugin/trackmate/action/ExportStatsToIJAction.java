@@ -15,10 +15,10 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTimeLocationAnalyzer;
@@ -33,7 +33,6 @@ import ij.text.TextWindow;
 public class ExportStatsToIJAction extends AbstractTMAction
 {
 
-	public static final ImageIcon ICON = new ImageIcon( TrackMateWizard.class.getResource( "images/calculator.png" ) );
 
 	public static final String NAME = "Export statistics to tables";
 
@@ -43,16 +42,16 @@ public class ExportStatsToIJAction extends AbstractTMAction
 			+ "Compute and export all statistics to 3 ImageJ results table. "
 			+ "Statistisc are separated in features computed for: "
 			+ "<ol> "
-			+ "	<li> spots in filtered tracks; "
-			+ "	<li> links between those spots; "
+			+ "	<li> BCellobjects in filtered tracks; "
+			+ "	<li> links between those BCellobjects; "
 			+ "	<li> filtered tracks. "
 			+ "</ol> "
 			+ "For tracks and links, they are recalculated prior to exporting. Note "
-			+ "that spots and links that are not in a filtered tracks are not part "
+			+ "that BCellobjects and links that are not in a filtered tracks are not part "
 			+ "of this export."
 			+ "</html>";
 
-	private static final String SPOT_TABLE_NAME = "Spots in tracks statistics";
+	private static final String BCellobject_TABLE_NAME = "BCellobjects in tracks statistics";
 
 	private static final String EDGE_TABLE_NAME = "Links in tracks statistics";
 
@@ -62,7 +61,7 @@ public class ExportStatsToIJAction extends AbstractTMAction
 
 	private static final String TRACK_ID_COLUMN = "TRACK_ID";
 
-	private ResultsTable spotTable;
+	private ResultsTable BCellobjectTable;
 
 	private ResultsTable edgeTable;
 
@@ -84,43 +83,43 @@ public class ExportStatsToIJAction extends AbstractTMAction
 		final Model model = trackmate.getModel();
 		final FeatureModel fm = model.getFeatureModel();
 
-		// Export spots
-		logger.log( "  - Exporting spot statistics..." );
+		// Export BCellobjects
+		logger.log( "  - Exporting BCellobject statistics..." );
 		final Set< Integer > trackIDs = model.getTrackModel().trackIDs( true );
-		final Collection< String > spotFeatures = trackmate.getModel().getFeatureModel().getSpotFeatures();
+		final Collection< String > BCellobjectFeatures = trackmate.getModel().getFeatureModel().getBCellobjectFeatures();
 
-		this.spotTable = new ResultsTable();
+		this.BCellobjectTable = new ResultsTable();
 
-		// Parse spots to insert values as objects
+		// Parse BCellobjects to insert values as objects
 		for ( final Integer trackID : trackIDs )
 		{
-			final Set< Spot > track = model.getTrackModel().trackSpots( trackID );
+			final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 			// Sort by frame
-			final List< Spot > sortedTrack = new ArrayList<>( track );
-			Collections.sort( sortedTrack, Spot.frameComparator );
+			final List< BCellobject > sortedTrack = new ArrayList<>( track );
+			Collections.sort( sortedTrack, BCellobject.frameComparator );
 
-			for ( final Spot spot : sortedTrack )
+			for ( final BCellobject BCellobject : sortedTrack )
 			{
-				spotTable.incrementCounter();
-				spotTable.addLabel( spot.getName() );
-				spotTable.addValue( ID_COLUMN, "" + spot.ID() );
-				spotTable.addValue( "TRACK_ID", "" + trackID.intValue() );
-				for ( final String feature : spotFeatures )
+				BCellobjectTable.incrementCounter();
+				BCellobjectTable.addLabel( BCellobject.getName() );
+				BCellobjectTable.addValue( ID_COLUMN, "" + BCellobject.ID() );
+				BCellobjectTable.addValue( "TRACK_ID", "" + trackID.intValue() );
+				for ( final String feature : BCellobjectFeatures )
 				{
-					final Double val = spot.getFeature( feature );
+					final Double val = BCellobject.getFeature( feature );
 					if ( null == val )
 					{
-						spotTable.addValue( feature, "None" );
+						BCellobjectTable.addValue( feature, "None" );
 					}
 					else
 					{
-						if ( fm.getSpotFeatureIsInt().get( feature ).booleanValue() )
+						if ( fm.getBCellobjectFeatureIsInt().get( feature ).booleanValue() )
 						{
-							spotTable.addValue( feature, "" + val.intValue() );
+							BCellobjectTable.addValue( feature, "" + val.intValue() );
 						}
 						else
 						{
-							spotTable.addValue( feature, val.doubleValue() );
+							BCellobjectTable.addValue( feature, val.doubleValue() );
 						}
 					}
 				}
@@ -140,7 +139,7 @@ public class ExportStatsToIJAction extends AbstractTMAction
 		{
 			// Comparators
 			final Comparator< DefaultWeightedEdge > edgeTimeComparator = ModelTools.featureEdgeComparator( EdgeTimeLocationAnalyzer.TIME, fm );
-			final Comparator< DefaultWeightedEdge > edgeSourceSpotTimeComparator = new EdgeSourceSpotFrameComparator( model );
+			final Comparator< DefaultWeightedEdge > edgeSourceBCellobjectTimeComparator = new EdgeSourceBCellobjectFrameComparator( model );
 
 			final Set< DefaultWeightedEdge > track = model.getTrackModel().trackEdges( trackID );
 			final List< DefaultWeightedEdge > sortedTrack = new ArrayList<>( track );
@@ -153,7 +152,7 @@ public class ExportStatsToIJAction extends AbstractTMAction
 			if ( model.getFeatureModel().getEdgeFeatures().contains( EdgeTimeLocationAnalyzer.KEY ) )
 				Collections.sort( sortedTrack, edgeTimeComparator );
 			else
-				Collections.sort( sortedTrack, edgeSourceSpotTimeComparator );
+				Collections.sort( sortedTrack, edgeSourceBCellobjectTimeComparator );
 
 			for ( final DefaultWeightedEdge edge : sortedTrack )
 			{
@@ -226,7 +225,7 @@ public class ExportStatsToIJAction extends AbstractTMAction
 		logger.log( " Done.\n" );
 
 		// Show tables
-		spotTable.show( SPOT_TABLE_NAME );
+		BCellobjectTable.show( BCellobject_TABLE_NAME );
 		edgeTable.show( EDGE_TABLE_NAME );
 		trackTable.show( TRACK_TABLE_NAME );
 
@@ -235,34 +234,34 @@ public class ExportStatsToIJAction extends AbstractTMAction
 		{
 
 			/*
-			 * Spot table listener.
+			 * BCellobject table listener.
 			 */
 
-			final TextWindow spotTableWindow = ( TextWindow ) WindowManager.getWindow( SPOT_TABLE_NAME );
-			final TextPanel spotTableTextPanel = spotTableWindow.getTextPanel();
-			spotTableTextPanel.addMouseListener( new MouseAdapter()
+			final TextWindow BCellobjectTableWindow = ( TextWindow ) WindowManager.getWindow( BCellobject_TABLE_NAME );
+			final TextPanel BCellobjectTableTextPanel = BCellobjectTableWindow.getTextPanel();
+			BCellobjectTableTextPanel.addMouseListener( new MouseAdapter()
 			{
 
 				@Override
 				public void mouseReleased( final MouseEvent e )
 				{
-					final int selStart = spotTableTextPanel.getSelectionStart();
-					final int selEnd = spotTableTextPanel.getSelectionEnd();
+					final int selStart = BCellobjectTableTextPanel.getSelectionStart();
+					final int selEnd = BCellobjectTableTextPanel.getSelectionEnd();
 					if ( selStart < 0 || selEnd < 0 )
 						return;
 
 					final int minLine = Math.min( selStart, selEnd );
 					final int maxLine = Math.max( selStart, selEnd );
-					final Set< Spot > spots = new HashSet<>();
+					final Set< BCellobject > BCellobjects = new HashSet<>();
 					for ( int row = minLine; row <= maxLine; row++ )
 					{
-						final int spotID = Integer.parseInt( spotTableTextPanel.getResultsTable().getStringValue( ID_COLUMN, row ) );
-						final Spot spot = model.getSpots().search( spotID );
-						if ( null != spot )
-							spots.add( spot );
+						final int BCellobjectID = Integer.parseInt( BCellobjectTableTextPanel.getResultsTable().getStringValue( ID_COLUMN, row ) );
+						final BCellobject BCellobject = model.getBCellobjects().search( BCellobjectID );
+						if ( null != BCellobject )
+							BCellobjects.add( BCellobject );
 					}
 					selectionModel.clearSelection();
-					selectionModel.addSpotToSelection( spots );
+					selectionModel.addBCellobjectToSelection( BCellobjects );
 				}
 			} );
 
@@ -275,8 +274,8 @@ public class ExportStatsToIJAction extends AbstractTMAction
 			 * target ID columns.
 			 */
 
-			final int sourceIDColumn = edgeTable.getColumnIndex( EdgeTargetAnalyzer.SPOT_SOURCE_ID );
-			final int targetIDColumn = edgeTable.getColumnIndex( EdgeTargetAnalyzer.SPOT_TARGET_ID );
+			final int sourceIDColumn = edgeTable.getColumnIndex( EdgeTargetAnalyzer.BCellobject_SOURCE_ID );
+			final int targetIDColumn = edgeTable.getColumnIndex( EdgeTargetAnalyzer.BCellobject_TARGET_ID );
 			if ( sourceIDColumn != ResultsTable.COLUMN_NOT_FOUND && targetIDColumn != ResultsTable.COLUMN_NOT_FOUND )
 			{
 
@@ -299,9 +298,9 @@ public class ExportStatsToIJAction extends AbstractTMAction
 						for ( int row = minLine; row <= maxLine; row++ )
 						{
 							final int sourceID = Integer.parseInt( edgeTableTextPanel.getResultsTable().getStringValue( sourceIDColumn, row ) );
-							final Spot source = model.getSpots().search( sourceID );
+							final BCellobject source = model.getBCellobjects().search( sourceID );
 							final int targetID = Integer.parseInt( edgeTableTextPanel.getResultsTable().getStringValue( targetIDColumn, row ) );
-							final Spot target = model.getSpots().search( targetID );
+							final BCellobject target = model.getBCellobjects().search( targetID );
 							final DefaultWeightedEdge edge = model.getTrackModel().getEdge( source, target );
 							if ( null != edge )
 								edges.add( edge );
@@ -333,15 +332,15 @@ public class ExportStatsToIJAction extends AbstractTMAction
 					final int minLine = Math.min( selStart, selEnd );
 					final int maxLine = Math.max( selStart, selEnd );
 					final Set< DefaultWeightedEdge > edges = new HashSet<>();
-					final Set< Spot > spots = new HashSet<>();
+					final Set< BCellobject > BCellobjects = new HashSet<>();
 					for ( int row = minLine; row <= maxLine; row++ )
 					{
 						final int trackID = Integer.parseInt( trackTableTextPanel.getResultsTable().getStringValue( TRACK_ID_COLUMN, row ) );
-						spots.addAll( model.getTrackModel().trackSpots( trackID ) );
+						BCellobjects.addAll( model.getTrackModel().trackBCellobjects( trackID ) );
 						edges.addAll( model.getTrackModel().trackEdges( trackID ) );
 					}
 					selectionModel.clearSelection();
-					selectionModel.addSpotToSelection( spots );
+					selectionModel.addBCellobjectToSelection( BCellobjects );
 					selectionModel.addEdgeToSelection( edges );
 				}
 			} );
@@ -349,15 +348,15 @@ public class ExportStatsToIJAction extends AbstractTMAction
 	}
 
 	/**
-	 * Returns the results table containing the spot statistics, or
+	 * Returns the results table containing the BCellobject statistics, or
 	 * <code>null</code> if the {@link #execute(TrackMate)} method has not been
 	 * called.
 	 *
-	 * @return the results table containing the spot statistics.
+	 * @return the results table containing the BCellobject statistics.
 	 */
-	public ResultsTable getSpotTable()
+	public ResultsTable getBCellobjectTable()
 	{
-		return spotTable;
+		return BCellobjectTable;
 	}
 
 	/**
@@ -407,25 +406,26 @@ public class ExportStatsToIJAction extends AbstractTMAction
 			return new ExportStatsToIJAction( controller.getSelectionModel() );
 		}
 
-		@Override
-		public ImageIcon getIcon()
-		{
-			return ICON;
-		}
 
 		@Override
 		public String getName()
 		{
 			return NAME;
 		}
+
+		@Override
+		public ImageIcon getIcon() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
-	private static final class EdgeSourceSpotFrameComparator implements Comparator< DefaultWeightedEdge >
+	private static final class EdgeSourceBCellobjectFrameComparator implements Comparator< DefaultWeightedEdge >
 	{
 
 		private final Model model;
 
-		public EdgeSourceSpotFrameComparator( final Model model )
+		public EdgeSourceBCellobjectFrameComparator( final Model model )
 		{
 			this.model = model;
 		}
@@ -433,8 +433,8 @@ public class ExportStatsToIJAction extends AbstractTMAction
 		@Override
 		public int compare( final DefaultWeightedEdge e1, final DefaultWeightedEdge e2 )
 		{
-			final double t1 = model.getTrackModel().getEdgeSource( e1 ).getFeature( Spot.FRAME ).doubleValue();
-			final double t2 = model.getTrackModel().getEdgeSource( e2 ).getFeature( Spot.FRAME ).doubleValue();
+			final double t1 = model.getTrackModel().getEdgeSource( e1 ).getFeature( BCellobject.POSITION_T ).doubleValue();
+			final double t2 = model.getTrackModel().getEdgeSource( e2 ).getFeature( BCellobject.POSITION_T ).doubleValue();
 			if ( t1 < t2 ) { return -1; }
 			if ( t1 > t2 ) { return 1; }
 			return 0;

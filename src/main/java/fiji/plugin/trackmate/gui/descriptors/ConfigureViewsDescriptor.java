@@ -1,12 +1,12 @@
 package fiji.plugin.trackmate.gui.descriptors;
 
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.panels.ConfigureViewsPanel;
 import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotColorGenerator;
+import fiji.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
 
@@ -19,16 +19,16 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor
 
 	private final TrackMateGUIController controller;
 
-	public ConfigureViewsDescriptor( final TrackMate trackmate, final FeatureColorGenerator< Spot > spotColorGenerator, final PerEdgeFeatureColorGenerator edgeColorGenerator, final PerTrackFeatureColorGenerator trackColorGenerator, final FeatureColorGenerator< Spot > spotColorGeneratorPerTrackFeature, final ManualSpotColorGenerator manualSpotColorGenerator, final ManualEdgeColorGenerator manualEdgeColorGenerator, final TrackMateGUIController controller )
+	public ConfigureViewsDescriptor( final TrackMate trackmate, final FeatureColorGenerator< BCellobject > BCellobjectColorGenerator, final PerEdgeFeatureColorGenerator edgeColorGenerator, final PerTrackFeatureColorGenerator trackColorGenerator, final FeatureColorGenerator< BCellobject > BCellobjectColorGeneratorPerTrackFeature, final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator, final ManualEdgeColorGenerator manualEdgeColorGenerator, final TrackMateGUIController controller )
 	{
 		this.controller = controller;
 		this.panel = new ConfigureViewsPanel( trackmate.getModel() );
-		panel.setSpotColorGenerator( spotColorGenerator );
+		panel.setBCellobjectColorGenerator( BCellobjectColorGenerator );
 		panel.setEdgeColorGenerator( edgeColorGenerator );
 		panel.setTrackColorGenerator( trackColorGenerator );
-		panel.setManualSpotColorGenerator( manualSpotColorGenerator );
+		panel.setManualBCellobjectColorGenerator( manualBCellobjectColorGenerator );
 		panel.setManualEdgeColorGenerator( manualEdgeColorGenerator );
-		panel.setSpotColorGeneratorPerTrackFeature( spotColorGeneratorPerTrackFeature );
+		panel.setBCellobjectColorGeneratorPerTrackFeature( BCellobjectColorGeneratorPerTrackFeature );
 	}
 
 	@Override

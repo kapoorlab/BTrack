@@ -3,11 +3,11 @@ package fiji.plugin.trackmate.tracking.oldlap;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.panels.tracker.SimpleLAPTrackerSettingsPanel;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = SpotTrackerFactory.class, priority = 10d )
+@Plugin( type = BCellobjectTrackerFactory.class, priority = 10d )
 public class SimpleFastLAPTrackerFactory extends FastLAPTrackerFactory
 {
 	public static final String THIS2_TRACKER_KEY = "SIMPLE_FAST_LAP_TRACKER";

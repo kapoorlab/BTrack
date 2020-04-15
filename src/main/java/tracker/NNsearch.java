@@ -18,7 +18,7 @@ public class NNsearch implements BudTracker {
 	private final long maxframe;
 	private int currentframe;
 	private SimpleWeightedGraph< Budobject, DefaultWeightedEdge > graph;
-	protected Logger logger = Logger.DEFAULT_LOGGER;
+	protected BudLogger logger = BudLogger.DEFAULT_LOGGER;
 	protected String errorMessage;
 
 	public NNsearch(

@@ -6,44 +6,44 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+import budDetector.BCellobject;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 
 public class ModelChangeEvent extends EventObject {
 
 	private static final long serialVersionUID = -1L;
-	/** Indicate that a spot was added to the model. */
-	public static final int FLAG_SPOT_ADDED = 0;
-	/** Indicate that a spot was removed from the model. */
-	public static final int FLAG_SPOT_REMOVED = 1;
+	/** Indicate that a BCellobject was added to the model. */
+	public static final int FLAG_BCellobject_ADDED = 0;
+	/** Indicate that a BCellobject was removed from the model. */
+	public static final int FLAG_BCellobject_REMOVED = 1;
 	/**
-	 * Indicate a modification of the features of a spot. It may have changed of
+	 * Indicate a modification of the features of a BCellobject. It may have changed of
 	 * position and feature, but not of frame.
 	 */
-	public static final int FLAG_SPOT_MODIFIED = 2;
+	public static final int FLAG_BCellobject_MODIFIED = 2;
 	/**
-	 * Indicate that a spot has changed of frame, and possible of position,
+	 * Indicate that a BCellobject has changed of frame, and possible of position,
 	 * features, etc.. .
 	 */
-	public static final int FLAG_SPOT_FRAME_CHANGED = 3;
+	public static final int FLAG_BCellobject_FRAME_CHANGED = 3;
 	/** Indicate that an edge was added to the model. */
 	public static final int FLAG_EDGE_ADDED = 4;
 	/** Indicate that an edge was removed from the model. */
 	public static final int FLAG_EDGE_REMOVED = 5;
 	/**
 	 * Indicate that an edge has been modified. Edge modifications occur when
-	 * the target or source spots are modified, or when the weight of the edge
+	 * the target or source BCellobject are modified, or when the weight of the edge
 	 * has been modified.
 	 */
 	public static final int FLAG_EDGE_MODIFIED = 6;
 
 	public static final Map<Integer, String> flagsToString = new HashMap<>(7);
 	static {
-		flagsToString.put(FLAG_SPOT_ADDED, "Spot added");
-		flagsToString.put(FLAG_SPOT_FRAME_CHANGED, "Spot frame changed");
-		flagsToString.put(FLAG_SPOT_MODIFIED, "Spot modified");
-		flagsToString.put(FLAG_SPOT_REMOVED, "Spot removed");
+		flagsToString.put(FLAG_BCellobject_ADDED, "BCellobject added");
+		flagsToString.put(FLAG_BCellobject_FRAME_CHANGED, "BCellobject frame changed");
+		flagsToString.put(FLAG_BCellobject_MODIFIED, "BCellobject modified");
+		flagsToString.put(FLAG_BCellobject_REMOVED, "BCellobject removed");
 		flagsToString.put(FLAG_EDGE_ADDED, "Edge added");
 		flagsToString.put(FLAG_EDGE_MODIFIED, "Edge modified");
 		flagsToString.put(FLAG_EDGE_REMOVED, "Edge removed");
@@ -51,14 +51,14 @@ public class ModelChangeEvent extends EventObject {
 
 
 	/**
-	 * Event type indicating that the spots of the model were computed, and
-	 * are now accessible through {@link Model#getSpots()}.
+	 * Event type indicating that the BCellobject of the model were computed, and
+	 * are now accessible through {@link Model#getBCellobject()}.
 	 */
-	public static final int 	SPOTS_COMPUTED = 4;
+	public static final int 	BCellobject_COMPUTED = 4;
 	/**
-	 * Event type indicating that the spots of the model were filtered.
+	 * Event type indicating that the BCellobject of the model were filtered.
 	 */
-	public static final int 	SPOTS_FILTERED = 5;
+	public static final int 	BCellobject_FILTERED = 5;
 	/**
 	 * Event type indicating that the tracks of the model were computed.
 	 */
@@ -71,25 +71,25 @@ public class ModelChangeEvent extends EventObject {
 	
 	/**
 	 * Event type indicating that model was modified, by adding, removing or
-	 * changing the feature of some spots, and/or adding or removing edges in
+	 * changing the feature of some BCellobject, and/or adding or removing edges in
 	 * the tracks. Content of the modification can be accessed by
-	 * {@link #getSpots()}, {@link #getSpotFlag(Spot)},
-	 * {@link #getFromFrame(Spot)} and {@link #getToFrame(Spot)}, and for the
+	 * {@link #getBCellobject()}, {@link #getBCellobjectFlag(BCellobject)},
+	 * {@link #getFromFrame(BCellobject)} and {@link #getToFrame(BCellobject)}, and for the
 	 * tracks: {@link #getEdges()} and {@link #getEdgeFlag(DefaultWeightedEdge)}
 	 * .
 	 */
 	public static final int 	MODEL_MODIFIED = 8;
 
-	/** Spots affected by this event. */
-	private final HashSet<Spot> spots = new HashSet<>();
+	/** BCellobject affected by this event. */
+	private final HashSet<BCellobject> BCellobject = new HashSet<>();
 	/** Edges affected by this event. */
 	private final HashSet<DefaultWeightedEdge> edges = new HashSet<>();
-	/** For spots removed or moved: frame from which they were removed or moved. */
-	private final HashMap<Spot, Integer> fromFrame = new HashMap<>();
-	/** For spots removed or added: frame to which they were added or moved. */
-	private final HashMap<Spot, Integer> toFrame = new HashMap<>();
-	/** Modification flag for spots affected by this event. */
-	private final HashMap<Spot, Integer> spotFlags = new HashMap<>();
+	/** For BCellobject removed or moved: frame from which they were removed or moved. */
+	private final HashMap<BCellobject, Integer> fromFrame = new HashMap<>();
+	/** For BCellobject removed or added: frame to which they were added or moved. */
+	private final HashMap<BCellobject, Integer> toFrame = new HashMap<>();
+	/** Modification flag for BCellobject affected by this event. */
+	private final HashMap<BCellobject, Integer> BCellobjectFlags = new HashMap<>();
 	/** Modification flag for edges affected by this event. */
 	private final HashMap<DefaultWeightedEdge, Integer> edgeFlags = new HashMap<>();
 	/** The event type for this instance. */
@@ -113,12 +113,12 @@ public class ModelChangeEvent extends EventObject {
 		return this.eventID;
 	}
 
-	public boolean addAllSpots(final Collection<Spot> lSpots) {
-		return this.spots.addAll(lSpots);
+	public boolean addAllBCellobject(final Collection<BCellobject> lBCellobject) {
+		return this.BCellobject.addAll(lBCellobject);
 	}
 
-	public boolean addSpot(final Spot spot) {
-		return this.spots.add(spot);
+	public boolean addBCellobject(final BCellobject BCellobject) {
+		return this.BCellobject.add(BCellobject);
 	}
 
 	public boolean addAllEdges(final Collection<DefaultWeightedEdge> lEdges) {
@@ -132,24 +132,24 @@ public class ModelChangeEvent extends EventObject {
 		return edgeFlags.put(edge, flag);
 	}
 
-	public Integer putSpotFlag(final Spot spot, final Integer flag) {
-		return spotFlags.put(spot, flag);
+	public Integer putBCellobjectFlag(final BCellobject BCellobject, final Integer flag) {
+		return BCellobjectFlags.put(BCellobject, flag);
 	}
 
-	public Integer putFromFrame(final Spot spot, final Integer lFromFrame) {
-		return this.fromFrame.put(spot, lFromFrame);
+	public Integer putFromFrame(final BCellobject BCellobject, final Integer lFromFrame) {
+		return this.fromFrame.put(BCellobject, lFromFrame);
 	}
 
-	public Integer putToFrame(final Spot spot, final Integer lToFrame) {
-		return this.toFrame.put(spot, lToFrame);
+	public Integer putToFrame(final BCellobject BCellobject, final Integer lToFrame) {
+		return this.toFrame.put(BCellobject, lToFrame);
 	}
 
 	/**
-	 * @return  the set of spot that are affected by this event. Is empty
-	 * if no spot is affected by this event.
+	 * @return  the set of BCellobject that are affected by this event. Is empty
+	 * if no BCellobject is affected by this event.
 	 */
-	public Set<Spot> getSpots() {
-		return spots;
+	public Set<BCellobject> getBCellobject() {
+		return BCellobject;
 	}
 
 	/**
@@ -161,17 +161,17 @@ public class ModelChangeEvent extends EventObject {
 	}
 
 	/**
-	 * Returns the modification flag for the given spot affected by this event.
+	 * Returns the modification flag for the given BCellobject affected by this event.
 	 * 
-	 * @param spot
-	 *            the spot to query.
+	 * @param BCellobject
+	 *            the BCellobject to query.
 	 * @return the modification flag.
-	 * @see #FLAG_SPOT_ADDED
-	 * @see #FLAG_SPOT_MODIFIED
-	 * @see #FLAG_SPOT_REMOVED
+	 * @see #FLAG_BCellobject_ADDED
+	 * @see #FLAG_BCellobject_MODIFIED
+	 * @see #FLAG_BCellobject_REMOVED
 	 */
-	public Integer getSpotFlag(final Spot spot) {
-		return spotFlags.get(spot);
+	public Integer getBCellobjectFlag(final BCellobject BCellobject) {
+		return BCellobjectFlags.get(BCellobject);
 	}
 
 	/**
@@ -187,12 +187,12 @@ public class ModelChangeEvent extends EventObject {
 		return edgeFlags.get(edge);
 	}
 
-	public Integer getToFrame(final Spot spot) {
-		return toFrame.get(spot);
+	public Integer getToFrame(final BCellobject BCellobject) {
+		return toFrame.get(BCellobject);
 	}
 
-	public Integer getFromFrame(final Spot spot) {
-		return fromFrame.get(spot);
+	public Integer getFromFrame(final BCellobject BCellobject) {
+		return fromFrame.get(BCellobject);
 	}
 
 	public void setSource(final Object source) {
@@ -205,11 +205,11 @@ public class ModelChangeEvent extends EventObject {
 		str.append(" - source: "+source.getClass() + "_" + source.hashCode()+"\n");
 		str.append(" - event type: ");
 		switch (eventID) {
-		case SPOTS_COMPUTED:
-			str.append("Spots computed\n");
+		case BCellobject_COMPUTED:
+			str.append("BCellobject computed\n");
 			break;
-		case SPOTS_FILTERED:
-			str.append("Spots filtered\n");
+		case BCellobject_FILTERED:
+			str.append("BCellobject filtered\n");
 			break;
 		case TRACKS_COMPUTED:
 			str.append("Tracks computed\n");
@@ -219,9 +219,9 @@ public class ModelChangeEvent extends EventObject {
 			break;
 		case MODEL_MODIFIED:
 			str.append("Model modified, with:\n");
-			str.append("\t- spots modified: "+ (spots != null ? spots.size() : 0) +"\n");
-			for (final Spot spot : spots) {
-				str.append("\t\t" + spot + ": " + flagsToString.get(spotFlags.get(spot)) + "\n");
+			str.append("\t- BCellobject modified: "+ (BCellobject != null ? BCellobject.size() : 0) +"\n");
+			for (final BCellobject BCellobject : BCellobject) {
+				str.append("\t\t" + BCellobject + ": " + flagsToString.get(BCellobjectFlags.get(BCellobject)) + "\n");
 			}
 			str.append("\t- edges modified: "+ (edges != null ? edges.size() : 0) +"\n");
 			for (final DefaultWeightedEdge edge : edges) {

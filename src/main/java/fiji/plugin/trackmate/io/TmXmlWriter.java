@@ -44,22 +44,22 @@ import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_PIXEL_WIDTH_ATTRIBUTE_NAM
 import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_TIME_INTERVAL_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_VOXEL_DEPTH_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.IMAGE_WIDTH_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.INITIAL_SPOT_FILTER_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.INITIAL_BCellobject_FILTER_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.LOG_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.MODEL_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.PLUGIN_VERSION_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.ROOT_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.SETTINGS_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.SPATIAL_UNITS_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_ANALYSERS_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_FEATURES_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_FILTER_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_FRAME_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_ID_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys.SPOT_NAME_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_ANALYSERS_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_FEATURES_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_FILTER_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_FRAME_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_ID_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys.BCellobject_NAME_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TIME_UNITS_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TRACKER_SETTINGS_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TRACK_ANALYSERS_ELEMENT_KEY;
@@ -91,17 +91,17 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import fiji.plugin.trackmate.gui.TrackMateGUIModel;
@@ -204,8 +204,8 @@ public class TmXmlWriter
 		final Element featureDeclarationElement = echoFeaturesDeclaration( model );
 		modelElement.addContent( featureDeclarationElement );
 
-		final Element spotElement = echoSpots( model );
-		modelElement.addContent( spotElement );
+		final Element BCellobjectElement = echoBCellobjects( model );
+		modelElement.addContent( BCellobjectElement );
 
 		final Element trackElement = echoTracks( model );
 		modelElement.addContent( trackElement );
@@ -235,11 +235,11 @@ public class TmXmlWriter
 		final Element detectorElement = echoDetectorSettings( settings );
 		settingsElement.addContent( detectorElement );
 
-		final Element initFilter = echoInitialSpotFilter( settings );
+		final Element initFilter = echoInitialBCellobjectFilter( settings );
 		settingsElement.addContent( initFilter );
 
-		final Element spotFiltersElement = echoSpotFilters( settings );
-		settingsElement.addContent( spotFiltersElement );
+		final Element BCellobjectFiltersElement = echoBCellobjectFilters( settings );
+		settingsElement.addContent( BCellobjectFiltersElement );
 
 		final Element trackerElement = echoTrackerSettings( settings );
 		settingsElement.addContent( trackerElement );
@@ -362,8 +362,8 @@ public class TmXmlWriter
 
 		/*
 		 * Some numerical features are REQUIRED to be able to save to XML.
-		 * Namely: the track ID feature for track and the edge spot source and
-		 * spot target for edges. Whether the model provides them as features or
+		 * Namely: the track ID feature for track and the edge BCellobject source and
+		 * BCellobject target for edges. Whether the model provides them as features or
 		 * not, we get them from the model and put them in the XML.
 		 */
 
@@ -377,8 +377,8 @@ public class TmXmlWriter
 		// Same thing for edge features
 		final List< String > edgeFeatures = new ArrayList<>( model.getFeatureModel().getEdgeFeatures() );
 		// We will treat edge source and target separately.
-		edgeFeatures.remove( EdgeTargetAnalyzer.SPOT_SOURCE_ID );
-		edgeFeatures.remove( EdgeTargetAnalyzer.SPOT_TARGET_ID );
+		edgeFeatures.remove( EdgeTargetAnalyzer.BCellobject_SOURCE_ID );
+		edgeFeatures.remove( EdgeTargetAnalyzer.BCellobject_TARGET_ID );
 
 		final Set< Integer > trackIDs = model.getTrackModel().trackIDs( false );
 		for ( final int trackID : trackIDs )
@@ -412,7 +412,7 @@ public class TmXmlWriter
 			if ( track.isEmpty() )
 			{
 				/*
-				 * Special case: the track has only one spot in it, therefore no
+				 * Special case: the track has only one BCellobject in it, therefore no
 				 * edge. It just should not be, since the model never returns a
 				 * track with less than one edge. So we skip writing it.
 				 */
@@ -427,8 +427,8 @@ public class TmXmlWriter
 				 * Make sure the edge has the right orientation: forward in
 				 * time.
 				 */
-				final int sourceFrame = model.getTrackModel().getEdgeSource( edge ).getFeature( Spot.FRAME ).intValue();
-				final int targetFrame = model.getTrackModel().getEdgeTarget( edge ).getFeature( Spot.FRAME ).intValue();
+				final int sourceFrame = model.getTrackModel().getEdgeSource( edge ).getFeature( BCellobject.POSITION_T ).intValue();
+				final int targetFrame = model.getTrackModel().getEdgeTarget( edge ).getFeature( BCellobject.POSITION_T ).intValue();
 				final int sourceID;
 				final int targetID;
 				if ( targetFrame >= sourceFrame )
@@ -441,8 +441,8 @@ public class TmXmlWriter
 					sourceID = model.getTrackModel().getEdgeTarget( edge ).ID();
 					targetID = model.getTrackModel().getEdgeSource( edge ).ID();
 				}
-				edgeElement.setAttribute( EdgeTargetAnalyzer.SPOT_SOURCE_ID, Integer.toString( sourceID ) );
-				edgeElement.setAttribute( EdgeTargetAnalyzer.SPOT_TARGET_ID, Integer.toString( targetID ) );
+				edgeElement.setAttribute( EdgeTargetAnalyzer.BCellobject_SOURCE_ID, Integer.toString( sourceID ) );
+				edgeElement.setAttribute( EdgeTargetAnalyzer.BCellobject_TARGET_ID, Integer.toString( targetID ) );
 
 				for ( final String feature : edgeFeatures )
 				{
@@ -499,29 +499,29 @@ public class TmXmlWriter
 		return imEl;
 	}
 
-	private Element echoSpots( final Model model )
+	private Element echoBCellobjects( final Model model )
 	{
-		final SpotCollection spots = model.getSpots();
+		final BCellobjectCollection BCellobjects = model.getBCellobjects();
 
-		final Element spotCollectionElement = new Element( SPOT_COLLECTION_ELEMENT_KEY );
-		// Store total number of spots
-		spotCollectionElement.setAttribute( SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME, "" + spots.getNSpots( false ) );
+		final Element BCellobjectCollectionElement = new Element( BCellobject_COLLECTION_ELEMENT_KEY );
+		// Store total number of BCellobjects
+		BCellobjectCollectionElement.setAttribute( BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, "" + BCellobjects.getNBCellobjects( false ) );
 
-		for ( final int frame : spots.keySet() )
+		for ( final int frame : BCellobjects.keySet() )
 		{
 
-			final Element frameSpotsElement = new Element( SPOT_FRAME_COLLECTION_ELEMENT_KEY );
-			frameSpotsElement.setAttribute( FRAME_ATTRIBUTE_NAME, "" + frame );
+			final Element frameBCellobjectsElement = new Element( BCellobject_FRAME_COLLECTION_ELEMENT_KEY );
+			frameBCellobjectsElement.setAttribute( FRAME_ATTRIBUTE_NAME, "" + frame );
 
-			for ( final Iterator< Spot > it = spots.iterator( frame, false ); it.hasNext(); )
+			for ( final Iterator< BCellobject > it = BCellobjects.iterator( frame, false ); it.hasNext(); )
 			{
-				final Element spotElement = marshalSpot( it.next(), model.getFeatureModel() );
-				frameSpotsElement.addContent( spotElement );
+				final Element BCellobjectElement = marshalBCellobject( it.next(), model.getFeatureModel() );
+				frameBCellobjectsElement.addContent( BCellobjectElement );
 			}
-			spotCollectionElement.addContent( frameSpotsElement );
+			BCellobjectCollectionElement.addContent( frameBCellobjectsElement );
 		}
-		logger.log( "  Added " + spots.getNSpots( false ) + " spots.\n" );
-		return spotCollectionElement;
+		logger.log( "  Added " + BCellobjects.getNBCellobjects( false ) + " BCellobjects.\n" );
+		return BCellobjectCollectionElement;
 	}
 
 	private Element echoFeaturesDeclaration( final Model model )
@@ -530,13 +530,13 @@ public class TmXmlWriter
 		final FeatureModel fm = model.getFeatureModel();
 		final Element featuresElement = new Element( FEATURE_DECLARATIONS_ELEMENT_KEY );
 
-		// Spots
-		final Element spotFeaturesElement = new Element( SPOT_FEATURES_ELEMENT_KEY );
-		Collection< String > features = fm.getSpotFeatures();
-		Map< String, String > featureNames = fm.getSpotFeatureNames();
-		Map< String, String > featureShortNames = fm.getSpotFeatureShortNames();
-		Map< String, Dimension > featureDimensions = fm.getSpotFeatureDimensions();
-		Map< String, Boolean > featureIsInt = fm.getSpotFeatureIsInt();
+		// BCellobjects
+		final Element BCellobjectFeaturesElement = new Element( BCellobject_FEATURES_ELEMENT_KEY );
+		Collection< String > features = fm.getBCellobjectFeatures();
+		Map< String, String > featureNames = fm.getBCellobjectFeatureNames();
+		Map< String, String > featureShortNames = fm.getBCellobjectFeatureShortNames();
+		Map< String, Dimension > featureDimensions = fm.getBCellobjectFeatureDimensions();
+		Map< String, Boolean > featureIsInt = fm.getBCellobjectFeatureIsInt();
 		for ( final String feature : features )
 		{
 			final Element fel = new Element( FEATURE_ELEMENT_KEY );
@@ -545,9 +545,9 @@ public class TmXmlWriter
 			fel.setAttribute( FEATURE_SHORT_NAME_ATTRIBUTE, featureShortNames.get( feature ) );
 			fel.setAttribute( FEATURE_DIMENSION_ATTRIBUTE, featureDimensions.get( feature ).name() );
 			fel.setAttribute( FEATURE_ISINT_ATTRIBUTE, featureIsInt.get( feature ).toString() );
-			spotFeaturesElement.addContent( fel );
+			BCellobjectFeaturesElement.addContent( fel );
 		}
-		featuresElement.addContent( spotFeaturesElement );
+		featuresElement.addContent( BCellobjectFeaturesElement );
 
 		// Edges
 		final Element edgeFeaturesElement = new Element( EDGE_FEATURES_ELEMENT_KEY );
@@ -587,25 +587,24 @@ public class TmXmlWriter
 		}
 		featuresElement.addContent( trackFeaturesElement );
 
-		logger.log( "  Added spot, edge and track feature declarations.\n" );
+		logger.log( "  Added BCellobject, edge and track feature declarations.\n" );
 		return featuresElement;
 	}
 
-	protected Element echoInitialSpotFilter( final Settings settings )
+	protected Element echoInitialBCellobjectFilter( final Settings settings )
 	{
-		final Element itElement = new Element( INITIAL_SPOT_FILTER_ELEMENT_KEY );
-		itElement.setAttribute( FILTER_FEATURE_ATTRIBUTE_NAME, Spot.QUALITY );
-		itElement.setAttribute( FILTER_VALUE_ATTRIBUTE_NAME, "" + settings.initialSpotFilterValue );
+		final Element itElement = new Element( INITIAL_BCellobject_FILTER_ELEMENT_KEY );
+		itElement.setAttribute( FILTER_VALUE_ATTRIBUTE_NAME, "" + settings.initialBCellobjectFilterValue );
 		itElement.setAttribute( FILTER_ABOVE_ATTRIBUTE_NAME, "" + true );
-		logger.log( "  Added initial spot filter.\n" );
+		logger.log( "  Added initial BCellobject filter.\n" );
 		return itElement;
 	}
 
-	protected Element echoSpotFilters( final Settings settings )
+	protected Element echoBCellobjectFilters( final Settings settings )
 	{
-		final List< FeatureFilter > featureThresholds = settings.getSpotFilters();
+		final List< FeatureFilter > featureThresholds = settings.getBCellobjectFilters();
 
-		final Element filtersElement = new Element( SPOT_FILTER_COLLECTION_ELEMENT_KEY );
+		final Element filtersElement = new Element( BCellobject_FILTER_COLLECTION_ELEMENT_KEY );
 		for ( final FeatureFilter threshold : featureThresholds )
 		{
 			final Element thresholdElement = new Element( FILTER_ELEMENT_KEY );
@@ -614,7 +613,7 @@ public class TmXmlWriter
 			thresholdElement.setAttribute( FILTER_ABOVE_ATTRIBUTE_NAME, "" + threshold.isAbove );
 			filtersElement.addContent( thresholdElement );
 		}
-		logger.log( "  Added spot feature filters.\n" );
+		logger.log( "  Added BCellobject feature filters.\n" );
 		return filtersElement;
 	}
 
@@ -639,15 +638,15 @@ public class TmXmlWriter
 	{
 		final Element analyzersElement = new Element( ANALYZER_COLLECTION_ELEMENT_KEY );
 
-		// Spot analyzers
-		final Element spotAnalyzersEl = new Element( SPOT_ANALYSERS_ELEMENT_KEY );
-		for ( final SpotAnalyzerFactory< ? > analyzer : settings.getSpotAnalyzerFactories() )
+		// BCellobject analyzers
+		final Element BCellobjectAnalyzersEl = new Element( BCellobject_ANALYSERS_ELEMENT_KEY );
+		for ( final BCellobjectAnalyzerFactory< ? > analyzer : settings.getBCellobjectAnalyzerFactories() )
 		{
 			final Element el = new Element( ANALYSER_ELEMENT_KEY );
 			el.setAttribute( ANALYSER_KEY_ATTRIBUTE, analyzer.getKey() );
-			spotAnalyzersEl.addContent( el );
+			BCellobjectAnalyzersEl.addContent( el );
 		}
-		analyzersElement.addContent( spotAnalyzersEl );
+		analyzersElement.addContent( BCellobjectAnalyzersEl );
 
 		// Edge analyzers
 		final Element edgeAnalyzersEl = new Element( EDGE_ANALYSERS_ELEMENT_KEY );
@@ -669,7 +668,7 @@ public class TmXmlWriter
 		}
 		analyzersElement.addContent( trackAnalyzersEl );
 
-		logger.log( "  Added spot, edge and track analyzers.\n" );
+		logger.log( "  Added BCellobject, edge and track analyzers.\n" );
 		return analyzersElement;
 	}
 
@@ -677,19 +676,19 @@ public class TmXmlWriter
 	 * STATIC METHODS
 	 */
 
-	private static final Element marshalSpot( final Spot spot, final FeatureModel fm )
+	private static final Element marshalBCellobject( final BCellobject BCellobject, final FeatureModel fm )
 	{
 		final Collection< Attribute > attributes = new ArrayList<>();
-		final Attribute IDattribute = new Attribute( SPOT_ID_ATTRIBUTE_NAME, "" + spot.ID() );
+		final Attribute IDattribute = new Attribute( BCellobject_ID_ATTRIBUTE_NAME, "" + BCellobject.ID() );
 		attributes.add( IDattribute );
-		final Attribute nameAttribute = new Attribute( SPOT_NAME_ATTRIBUTE_NAME, spot.getName() );
+		final Attribute nameAttribute = new Attribute( BCellobject_NAME_ATTRIBUTE_NAME, BCellobject.getName() );
 		attributes.add( nameAttribute );
 		Double val;
 		Attribute featureAttribute;
 
-		for ( final String feature : spot.getFeatures().keySet() )
+		for ( final String feature : BCellobject.getFeatures().keySet() )
 		{
-			val = spot.getFeature( feature );
+			val = BCellobject.getFeature( feature );
 			if ( null == val )
 			{
 				// Skip missing features.
@@ -698,7 +697,7 @@ public class TmXmlWriter
 
 			final String str;
 
-			if ( fm.getSpotFeatureIsInt().get( feature ).booleanValue() )
+			if ( fm.getBCellobjectFeatureIsInt().get( feature ).booleanValue() )
 			{
 				str = "" + val.intValue();
 			}
@@ -710,8 +709,8 @@ public class TmXmlWriter
 			attributes.add( featureAttribute );
 		}
 
-		final Element spotElement = new Element( SPOT_ELEMENT_KEY );
-		spotElement.setAttributes( attributes );
-		return spotElement;
+		final Element BCellobjectElement = new Element( BCellobject_ELEMENT_KEY );
+		BCellobjectElement.setAttributes( attributes );
+		return BCellobjectElement;
 	}
 }

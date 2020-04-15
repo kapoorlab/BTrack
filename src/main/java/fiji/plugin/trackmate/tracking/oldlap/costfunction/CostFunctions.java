@@ -1,6 +1,7 @@
 package fiji.plugin.trackmate.tracking.oldlap.costfunction;
 
 import Jama.Matrix;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Spot;
 
 import java.util.List;
@@ -21,6 +22,6 @@ public interface CostFunctions {
 	 * We need to use a list, for the matrix index will reflect the spot position
 	 * in the lists.
 	 */
-	public Matrix getCostFunction(final List<Spot> t0, final List<Spot> t1);
+	public Matrix getCostFunction(final List<BCellobject> t0, final List<BCellobject> t1);
 	
 }

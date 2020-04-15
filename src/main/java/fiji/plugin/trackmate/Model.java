@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.features.FeatureFilter;
 
 /**
@@ -43,10 +44,10 @@ public class Model
 
 	private final TrackModel trackModel;
 
-	// SPOTS
+	// BCellobjectS
 
-	/** The spots managed by this model. */
-	protected SpotCollection spots = new SpotCollection();
+	/** The BCellobjects managed by this model. */
+	protected BCellobjectCollection BCellobjects = new BCellobjectCollection();
 
 	// TRANSACTION MODEL
 
@@ -58,13 +59,13 @@ public class Model
 	 */
 	private int updateLevel = 0;
 
-	private final HashSet< Spot > spotsAdded = new HashSet< >();
+	private final HashSet< BCellobject > BCellobjectsAdded = new HashSet< >();
 
-	private final HashSet< Spot > spotsRemoved = new HashSet< >();
+	private final HashSet< BCellobject > BCellobjectsRemoved = new HashSet< >();
 
-	private final HashSet< Spot > spotsMoved = new HashSet< >();
+	private final HashSet< BCellobject > BCellobjectsMoved = new HashSet< >();
 
-	private final HashSet< Spot > spotsUpdated = new HashSet< >();
+	private final HashSet< BCellobject > BCellobjectsUpdated = new HashSet< >();
 
 	/**
 	 * The event cache. During a transaction, some modifications might trigger
@@ -73,12 +74,12 @@ public class Model
 	 * the event ID in this cache in the meantime. The event cache contains only
 	 * the int IDs of the events listed in {@link ModelChangeEvent}, namely
 	 * <ul>
-	 * <li> {@link ModelChangeEvent#SPOTS_COMPUTED}
+	 * <li> {@link ModelChangeEvent#BCellobjectS_COMPUTED}
 	 * <li> {@link ModelChangeEvent#TRACKS_COMPUTED}
 	 * <li> {@link ModelChangeEvent#TRACKS_VISIBILITY_CHANGED}
 	 * </ul>
 	 * The {@link ModelChangeEvent#MODEL_MODIFIED} cannot be cached this way,
-	 * for it needs to be configured with modification spot and edge targets, so
+	 * for it needs to be configured with modification BCellobject and edge targets, so
 	 * it uses a different system (see {@link #flushUpdate()}).
 	 */
 	private final HashSet< Integer > eventCache = new HashSet< >();
@@ -149,21 +150,21 @@ public class Model
 		final StringBuilder str = new StringBuilder();
 
 		str.append( '\n' );
-		if ( null == spots || spots.keySet().size() == 0 )
+		if ( null == BCellobjects || BCellobjects.keySet().size() == 0 )
 		{
-			str.append( "No spots.\n" );
+			str.append( "No BCellobjects.\n" );
 		}
 		else
 		{
-			str.append( "Contains " + spots.getNSpots( false ) + " spots in total.\n" );
+			str.append( "Contains " + BCellobjects.getNBCellobjects( false ) + " BCellobjects in total.\n" );
 		}
-		if ( spots.getNSpots( true ) == 0 )
+		if ( BCellobjects.getNBCellobjects( true ) == 0 )
 		{
-			str.append( "No filtered spots.\n" );
+			str.append( "No filtered BCellobjects.\n" );
 		}
 		else
 		{
-			str.append( "Contains " + spots.getNSpots( true ) + " filtered spots.\n" );
+			str.append( "Contains " + BCellobjects.getNBCellobjects( true ) + " filtered BCellobjects.\n" );
 		}
 
 		str.append( '\n' );
@@ -320,7 +321,7 @@ public class Model
 	 *            if <code>true</code>, model listeners will be notified with a
 	 *            {@link ModelChangeEvent#TRACKS_COMPUTED} event.
 	 */
-	public void setTracks( final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph, final boolean doNotify )
+	public void setTracks( final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph, final boolean doNotify )
 	{
 		trackModel.setGraph( graph );
 		if ( doNotify )
@@ -332,73 +333,73 @@ public class Model
 	}
 
 	/*
-	 * GETTERS / SETTERS FOR SPOTS
+	 * GETTERS / SETTERS FOR BCellobjectS
 	 */
 
 	/**
-	 * Returns the spot collection managed by this model.
+	 * Returns the BCellobject collection managed by this model.
 	 *
-	 * @return the spot collection managed by this model.
+	 * @return the BCellobject collection managed by this model.
 	 */
-	public SpotCollection getSpots()
+	public BCellobjectCollection getBCellobjects()
 	{
-		return spots;
+		return BCellobjects;
 	}
 
 	/**
-	 * Removes all the spots from this model.
+	 * Removes all the BCellobjects from this model.
 	 *
 	 * @param doNotify
 	 *            if <code>true</code>, model listeners will be notified with a
-	 *            {@link ModelChangeEvent#SPOTS_COMPUTED} event.
+	 *            {@link ModelChangeEvent#BCellobjectS_COMPUTED} event.
 	 */
-	public void clearSpots( final boolean doNotify )
+	public void clearBCellobjects( final boolean doNotify )
 	{
-		spots.clear();
+		BCellobjects.clear();
 		if ( doNotify )
 		{
-			final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.SPOTS_COMPUTED );
+			final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.BCellobject_COMPUTED );
 			for ( final ModelChangeListener listener : modelChangeListeners )
 				listener.modelChanged( event );
 		}
 	}
 
 	/**
-	 * Set the {@link SpotCollection} managed by this model.
+	 * Set the {@link BCellobjectCollection} managed by this model.
 	 *
 	 * @param doNotify
-	 *            if true, will file a {@link ModelChangeEvent#SPOTS_COMPUTED}
+	 *            if true, will file a {@link ModelChangeEvent#BCellobjectS_COMPUTED}
 	 *            event.
-	 * @param spots
-	 *            the {@link SpotCollection} to set.
+	 * @param BCellobjects
+	 *            the {@link BCellobjectCollection} to set.
 	 */
-	public void setSpots( final SpotCollection spots, final boolean doNotify )
+	public void setBCellobjects( final BCellobjectCollection BCellobjects, final boolean doNotify )
 	{
-		this.spots = spots;
+		this.BCellobjects = BCellobjects;
 		if ( doNotify )
 		{
-			final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.SPOTS_COMPUTED );
+			final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.BCellobject_COMPUTED );
 			for ( final ModelChangeListener listener : modelChangeListeners )
 				listener.modelChanged( event );
 		}
 	}
 
 	/**
-	 * Filters the {@link SpotCollection} managed by this model with the
+	 * Filters the {@link BCellobjectCollection} managed by this model with the
 	 * {@link FeatureFilter}s specified.
 	 *
-	 * @param spotFilters
+	 * @param BCellobjectFilters
 	 *            the {@link FeatureFilter} collection to use for filtering.
 	 * @param doNotify
-	 *            if true, will file a {@link ModelChangeEvent#SPOTS_FILTERED}
+	 *            if true, will file a {@link ModelChangeEvent#BCellobjectS_FILTERED}
 	 *            event.
 	 */
-	public void filterSpots( final Collection< FeatureFilter > spotFilters, final boolean doNotify )
+	public void filterBCellobjects( final Collection< FeatureFilter > BCellobjectFilters, final boolean doNotify )
 	{
-		spots.filter( spotFilters );
+		BCellobjects.filter( BCellobjectFilters );
 		if ( doNotify )
 		{
-			final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.SPOTS_FILTERED );
+			final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.BCellobject_FILTERED );
 			for ( final ModelChangeListener listener : modelChangeListeners )
 				listener.modelChanged( event );
 		}
@@ -445,8 +446,8 @@ public class Model
 	 */
 
 	/**
-	 * Moves a single spot from a frame to another, make it visible if it was
-	 * not, then mark it for feature update. If the source spot could not be
+	 * Moves a single BCellobject from a frame to another, make it visible if it was
+	 * not, then mark it for feature update. If the source BCellobject could not be
 	 * found in the source frame, nothing is done and <code>null</code> is
 	 * returned.
 	 * <p>
@@ -462,40 +463,40 @@ public class Model
 	 * }
 	 * </pre>
 	 *
-	 * @param spotToMove
-	 *            the spot to move
+	 * @param BCellobjectToMove
+	 *            the BCellobject to move
 	 * @param fromFrame
-	 *            the frame the spot originated from
+	 *            the frame the BCellobject originated from
 	 * @param toFrame
 	 *            the destination frame
-	 * @return the spot that was moved, or <code>null</code> if it could not be
+	 * @return the BCellobject that was moved, or <code>null</code> if it could not be
 	 *         found in the source frame
 	 */
-	public synchronized Spot moveSpotFrom( final Spot spotToMove, final Integer fromFrame, final Integer toFrame )
+	public synchronized BCellobject moveBCellobjectFrom( final BCellobject BCellobjectToMove, final Integer fromFrame, final Integer toFrame )
 	{
-		final boolean ok = spots.remove( spotToMove, fromFrame );
+		final boolean ok = BCellobjects.remove( BCellobjectToMove, fromFrame );
 		if ( !ok )
 		{
 			if ( DEBUG )
 			{
-				System.err.println( "[TrackMateModel] Could not find spot " + spotToMove + " in frame " + fromFrame );
+				System.err.println( "[TrackMateModel] Could not find BCellobject " + BCellobjectToMove + " in frame " + fromFrame );
 			}
 			return null;
 		}
-		spots.add( spotToMove, toFrame );
+		BCellobjects.add( BCellobjectToMove, toFrame );
 		if ( DEBUG )
 		{
-			System.out.println( "[TrackMateModel] Moving " + spotToMove + " from frame " + fromFrame + " to frame " + toFrame );
+			System.out.println( "[TrackMateModel] Moving " + BCellobjectToMove + " from frame " + fromFrame + " to frame " + toFrame );
 		}
 
-		// Mark for update spot and edges
-		trackModel.edgesModified.addAll( trackModel.edgesOf( spotToMove ) );
-		spotsMoved.add( spotToMove );
-		return spotToMove;
+		// Mark for update BCellobject and edges
+		trackModel.edgesModified.addAll( trackModel.edgesOf( BCellobjectToMove ) );
+		BCellobjectsMoved.add( BCellobjectToMove );
+		return BCellobjectToMove;
 	}
 
 	/**
-	 * Adds a single spot to the collections managed by this model, mark it as
+	 * Adds a single BCellobject to the collections managed by this model, mark it as
 	 * visible, then update its features.
 	 * <p>
 	 * For the model update to happen correctly and listeners to be notified
@@ -510,28 +511,28 @@ public class Model
 	 * }
 	 * </pre>
 	 * 
-	 * @param spotToAdd
-	 *            the spot to add.
+	 * @param BCellobjectToAdd
+	 *            the BCellobject to add.
 	 * @param toFrame
 	 *            the frame to add it to.
 	 *
-	 * @return the spot just added.
+	 * @return the BCellobject just added.
 	 */
-	public synchronized Spot addSpotTo( final Spot spotToAdd, final Integer toFrame )
+	public synchronized BCellobject addBCellobjectTo( final BCellobject BCellobjectToAdd, final Integer toFrame )
 	{
-		spots.add( spotToAdd, toFrame );
-		spotsAdded.add( spotToAdd ); // TRANSACTION
+		BCellobjects.add( BCellobjectToAdd, toFrame );
+		BCellobjectsAdded.add( BCellobjectToAdd ); // TRANSACTION
 		if ( DEBUG )
 		{
-			System.out.println( "[TrackMateModel] Adding spot " + spotToAdd + " to frame " + toFrame );
+			System.out.println( "[TrackMateModel] Adding BCellobject " + BCellobjectToAdd + " to frame " + toFrame );
 		}
-		trackModel.addSpot( spotToAdd );
-		return spotToAdd;
+		trackModel.addBCellobject( BCellobjectToAdd );
+		return BCellobjectToAdd;
 	}
 
 	/**
-	 * Removes a single spot from the collections managed by this model. If the
-	 * spot cannot be found, nothing is done and <code>null</code> is returned.
+	 * Removes a single BCellobject from the collections managed by this model. If the
+	 * BCellobject cannot be found, nothing is done and <code>null</code> is returned.
 	 * <p>
 	 * For the model update to happen correctly and listeners to be notified
 	 * properly, a call to this method must happen within a transaction, as in:
@@ -545,31 +546,31 @@ public class Model
 	 * }
 	 * </pre>
 	 *
-	 * @param spotToRemove
-	 *            the spot to remove.
-	 * @return the spot removed, or <code>null</code> if it could not be found.
+	 * @param BCellobjectToRemove
+	 *            the BCellobject to remove.
+	 * @return the BCellobject removed, or <code>null</code> if it could not be found.
 	 */
-	public synchronized Spot removeSpot( final Spot spotToRemove )
+	public synchronized BCellobject removeBCellobject( final BCellobject BCellobjectToRemove )
 	{
-		final int fromFrame = spotToRemove.getFeature( Spot.FRAME ).intValue();
-		if ( spots.remove( spotToRemove, fromFrame ) )
+		final int fromFrame = BCellobjectToRemove.getFeature( BCellobject.POSITION_T ).intValue();
+		if ( BCellobjects.remove( BCellobjectToRemove, fromFrame ) )
 		{
-			spotsRemoved.add( spotToRemove ); // TRANSACTION
+			BCellobjectsRemoved.add( BCellobjectToRemove ); // TRANSACTION
 			if ( DEBUG )
-				System.out.println( "[TrackMateModel] Removing spot " + spotToRemove + " from frame " + fromFrame );
+				System.out.println( "[TrackMateModel] Removing BCellobject " + BCellobjectToRemove + " from frame " + fromFrame );
 
-			trackModel.removeSpot( spotToRemove ); 
+			trackModel.removeBCellobject( BCellobjectToRemove ); 
 			// changes to edges will be caught automatically by the TrackGraphModel
-			return spotToRemove;
+			return BCellobjectToRemove;
 		}
 		if ( DEBUG )
-			System.err.println( "[TrackMateModel] The spot " + spotToRemove + " cannot be found in frame " + fromFrame );
+			System.err.println( "[TrackMateModel] The BCellobject " + BCellobjectToRemove + " cannot be found in frame " + fromFrame );
 
 		return null;
 	}
 
 	/**
-	 * Mark the specified spot for update. At the end of the model transaction,
+	 * Mark the specified BCellobject for update. At the end of the model transaction,
 	 * its features will be recomputed, and other edge and track features that
 	 * depends on it will be as well.
 	 * <p>
@@ -585,14 +586,14 @@ public class Model
 	 * }
 	 * </pre>
 	 *
-	 * @param spotToUpdate
-	 *            the spot to mark for update
+	 * @param BCellobjectToUpdate
+	 *            the BCellobject to mark for update
 	 */
-	public synchronized void updateFeatures( final Spot spotToUpdate )
+	public synchronized void updateFeatures( final BCellobject BCellobjectToUpdate )
 	{
-		spotsUpdated.add( spotToUpdate ); // Enlist for feature update when
+		BCellobjectsUpdated.add( BCellobjectToUpdate ); // Enlist for feature update when
 											// transaction is marked as finished
-		final Set< DefaultWeightedEdge > touchingEdges = trackModel.edgesOf( spotToUpdate );
+		final Set< DefaultWeightedEdge > touchingEdges = trackModel.edgesOf( BCellobjectToUpdate );
 		if ( null != touchingEdges )
 		{
 			trackModel.edgesModified.addAll( touchingEdges );
@@ -600,7 +601,7 @@ public class Model
 	}
 
 	/**
-	 * Creates a new edge between two spots, with the specified weight.
+	 * Creates a new edge between two BCellobjects, with the specified weight.
 	 * <p>
 	 * For the model update to happen correctly and listeners to be notified
 	 * properly, a call to this method must happen within a transaction, as in:
@@ -615,29 +616,29 @@ public class Model
 	 * </pre>
 	 *
 	 * @param source
-	 *            the source spot.
+	 *            the source BCellobject.
 	 * @param target
-	 *            the target spot.
+	 *            the target BCellobject.
 	 * @param weight
 	 *            the weight of the edge.
 	 * @return the edge created.
 	 */
-	public synchronized DefaultWeightedEdge addEdge( final Spot source, final Spot target, final double weight )
+	public synchronized DefaultWeightedEdge addEdge( final BCellobject source, final BCellobject target, final double weight )
 	{
 		return trackModel.addEdge( source, target, weight );
 	}
 
 	/**
-	 * Removes an edge between two spots and returns it. Returns
+	 * Removes an edge between two BCellobjects and returns it. Returns
 	 * <code>null</code> and do nothing to the tracks if the edge did not exist.
 	 *
 	 * @param source
-	 *            the source spot.
+	 *            the source BCellobject.
 	 * @param target
-	 *            the target spot.
-	 * @return the edge between the two spots, if it existed.
+	 *            the target BCellobject.
+	 * @return the edge between the two BCellobjects, if it existed.
 	 */
-	public synchronized DefaultWeightedEdge removeEdge( final Spot source, final Spot target )
+	public synchronized DefaultWeightedEdge removeEdge( final BCellobject source, final BCellobject target )
 	{
 		return trackModel.removeEdge( source, target );
 	}
@@ -744,9 +745,9 @@ public class Model
 
 		/*
 		 * We recompute tracks only if some edges have been added or removed,
-		 * (if some spots have been removed that causes edges to be removes, we
-		 * already know about it). We do NOT recompute tracks if spots have been
-		 * added: they will not result in new tracks made of single spots.
+		 * (if some BCellobjects have been removed that causes edges to be removes, we
+		 * already know about it). We do NOT recompute tracks if BCellobjects have been
+		 * added: they will not result in new tracks made of single BCellobjects.
 		 */
 		final int nEdgesToSignal = trackModel.edgesAdded.size() + trackModel.edgesRemoved.size() + trackModel.edgesModified.size();
 
@@ -759,43 +760,43 @@ public class Model
 			tracksToUpdate.add( trackModel.trackIDOf( modifiedEdge ) );
 		}
 
-		// Deal with new or moved spots: we need to update their features.
-		final int nSpotsToUpdate = spotsAdded.size() + spotsMoved.size() + spotsUpdated.size();
-		if ( nSpotsToUpdate > 0 )
+		// Deal with new or moved BCellobjects: we need to update their features.
+		final int nBCellobjectsToUpdate = BCellobjectsAdded.size() + BCellobjectsMoved.size() + BCellobjectsUpdated.size();
+		if ( nBCellobjectsToUpdate > 0 )
 		{
-			final HashSet< Spot > spotsToUpdate = new HashSet< >( nSpotsToUpdate );
-			spotsToUpdate.addAll( spotsAdded );
-			spotsToUpdate.addAll( spotsMoved );
-			spotsToUpdate.addAll( spotsUpdated );
+			final HashSet< BCellobject > BCellobjectsToUpdate = new HashSet< >( nBCellobjectsToUpdate );
+			BCellobjectsToUpdate.addAll( BCellobjectsAdded );
+			BCellobjectsToUpdate.addAll( BCellobjectsMoved );
+			BCellobjectsToUpdate.addAll( BCellobjectsUpdated );
 		}
 
 		// Initialize event
 		final ModelChangeEvent event = new ModelChangeEvent( this, ModelChangeEvent.MODEL_MODIFIED );
 
-		// Configure it with spots to signal.
-		final int nSpotsToSignal = nSpotsToUpdate + spotsRemoved.size();
-		if ( nSpotsToSignal > 0 )
+		// Configure it with BCellobjects to signal.
+		final int nBCellobjectsToSignal = nBCellobjectsToUpdate + BCellobjectsRemoved.size();
+		if ( nBCellobjectsToSignal > 0 )
 		{
-			event.addAllSpots( spotsAdded );
-			event.addAllSpots( spotsRemoved );
-			event.addAllSpots( spotsMoved );
-			event.addAllSpots( spotsUpdated );
+			event.addAllBCellobject( BCellobjectsAdded );
+			event.addAllBCellobject( BCellobjectsRemoved );
+			event.addAllBCellobject( BCellobjectsMoved );
+			event.addAllBCellobject( BCellobjectsUpdated );
 
-			for ( final Spot spot : spotsAdded )
+			for ( final BCellobject BCellobject : BCellobjectsAdded )
 			{
-				event.putSpotFlag( spot, ModelChangeEvent.FLAG_SPOT_ADDED );
+				event.putBCellobjectFlag( BCellobject, ModelChangeEvent.FLAG_BCellobject_ADDED );
 			}
-			for ( final Spot spot : spotsRemoved )
+			for ( final BCellobject BCellobject : BCellobjectsRemoved )
 			{
-				event.putSpotFlag( spot, ModelChangeEvent.FLAG_SPOT_REMOVED );
+				event.putBCellobjectFlag( BCellobject, ModelChangeEvent.FLAG_BCellobject_REMOVED );
 			}
-			for ( final Spot spot : spotsMoved )
+			for ( final BCellobject BCellobject : BCellobjectsMoved )
 			{
-				event.putSpotFlag( spot, ModelChangeEvent.FLAG_SPOT_FRAME_CHANGED );
+				event.putBCellobjectFlag( BCellobject, ModelChangeEvent.FLAG_BCellobject_FRAME_CHANGED );
 			}
-			for ( final Spot spot : spotsUpdated )
+			for ( final BCellobject BCellobject : BCellobjectsUpdated )
 			{
-				event.putSpotFlag( spot, ModelChangeEvent.FLAG_SPOT_MODIFIED );
+				event.putBCellobjectFlag( BCellobject, ModelChangeEvent.FLAG_BCellobject_MODIFIED );
 			}
 		}
 
@@ -825,7 +826,7 @@ public class Model
 
 		try
 		{
-			if ( nEdgesToSignal + nSpotsToSignal > 0 )
+			if ( nEdgesToSignal + nBCellobjectsToSignal > 0 )
 			{
 				if ( DEBUG )
 				{
@@ -856,10 +857,10 @@ public class Model
 		}
 		finally
 		{
-			spotsAdded.clear();
-			spotsRemoved.clear();
-			spotsMoved.clear();
-			spotsUpdated.clear();
+			BCellobjectsAdded.clear();
+			BCellobjectsRemoved.clear();
+			BCellobjectsMoved.clear();
+			BCellobjectsUpdated.clear();
 			trackModel.edgesAdded.clear();
 			trackModel.edgesRemoved.clear();
 			trackModel.edgesModified.clear();

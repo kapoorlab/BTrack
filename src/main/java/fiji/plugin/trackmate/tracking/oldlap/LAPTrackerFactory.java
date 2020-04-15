@@ -27,12 +27,12 @@ import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANC
 import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.panels.tracker.LAPTrackerSettingsPanel;
 import fiji.plugin.trackmate.tracking.LAPUtils;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,8 +43,8 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = SpotTrackerFactory.class, visible = false )
-public class LAPTrackerFactory implements SpotTrackerFactory
+@Plugin( type = BCellobjectTrackerFactory.class, visible = false )
+public class LAPTrackerFactory implements BCellobjectTrackerFactory
 {
 
 	public static final String TRACKER_KEY = "LAP_TRACKER";
@@ -80,17 +80,17 @@ public class LAPTrackerFactory implements SpotTrackerFactory
 	}
 
 	@Override
-	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings )
+	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
-		return new LAPTracker( spots, settings );
+		return new LAPTracker( BCellobjects, settings );
 	}
 
 	@Override
 	public ConfigurationPanel getTrackerConfigurationPanel( final Model model )
 	{
 		final String spaceUnits = model.getSpaceUnits();
-		final Collection< String > features = model.getFeatureModel().getSpotFeatures();
-		final Map< String, String > featureNames = model.getFeatureModel().getSpotFeatureNames();
+		final Collection< String > features = model.getFeatureModel().getBCellobjectFeatures();
+		final Map< String, String > featureNames = model.getFeatureModel().getBCellobjectFeatureNames();
 		return new LAPTrackerSettingsPanel( getName(), spaceUnits, features, featureNames );
 	}
 

@@ -196,7 +196,6 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 			for ( final CVMKalmanFilter kf : kalmanFiltersMap.keySet() )
 			{
 				final double[] X = kf.predict();
-				final ComparableRealPoint point = new ComparableRealPoint( X );
 				predictionMap.put( new ComparableRealPoint( X ), kf );
 
 				
@@ -397,8 +396,7 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 	{
 		final double[] d = new double[] {
 				BCellobject.getDoublePosition( 0 ),
-				BCellobject.getDoublePosition( 1 ),
-				BCellobject.getDoublePosition( 2 )
+				BCellobject.getDoublePosition( 1 )
 		};
 		return d;
 	}
@@ -410,7 +408,6 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 		final double[] xp = new double[] {
 				second.getDoublePosition( 0 ),
 				second.getDoublePosition( 1 ),
-				second.getDoublePosition( 2 ),
 				second.diffTo( first, BCellobject.POSITION_X ),
 				second.diffTo( first, BCellobject.POSITION_Y ),
 		};
@@ -462,8 +459,7 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 		{
 			final double dx = state.getDoublePosition( 0 ) - BCellobject.getDoublePosition( 0 );
 			final double dy = state.getDoublePosition( 1 ) - BCellobject.getDoublePosition( 1 );
-			final double dz = state.getDoublePosition( 2 ) - BCellobject.getDoublePosition( 2 );
-			return dx * dx + dy * dy + dz * dz + Double.MIN_NORMAL;
+			return dx * dx + dy * dy + Double.MIN_NORMAL;
 			// So that it's never 0
 		}
 	};

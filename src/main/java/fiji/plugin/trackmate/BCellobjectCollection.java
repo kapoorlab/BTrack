@@ -30,7 +30,7 @@ import net.imglib2.algorithm.MultiThreaded;
  * benefit from multithreaded computation ({@link #filter(Collection)},
  * {@link #filter(FeatureFilter)}
  *
- * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; - Feb 2011 -
+ * @author VK, Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; - Feb 2011 -
  *         2013
  *
  */
@@ -159,7 +159,71 @@ public class BCellobjectCollection implements MultiThreaded
 
 
 
-	
+	/**
+	 * Filters out the content of this collection using the specified
+	 * {@link FeatureFilter} collection. BCellobjects that are filtered out are marked
+	 * as invisible, and visible otherwise. To be marked as visible, a BCellobject must
+	 * pass <b>all</b> of the specified filters (AND chaining).
+	 *
+	 * @param filters
+	 *            the filter collection to use.
+	 */
+	public final void filter( final Collection< FeatureFilter > filters )
+	{
+
+		final Collection< Integer > frames = content.keySet();
+		final ExecutorService executors = Executors.newFixedThreadPool( numThreads );
+
+		for ( final Integer frame : frames )
+		{
+			final Runnable command = new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					final Set< BCellobject > BCellobjects = content.get( frame );
+
+					Double val, tval;
+					boolean isAbove;
+					for ( final BCellobject BCellobject : BCellobjects )
+					{
+
+						for ( final FeatureFilter featureFilter : filters )
+						{
+
+							val = BCellobject.getFeature( featureFilter.feature );
+							tval = featureFilter.value;
+							isAbove = featureFilter.isAbove;
+
+							if ( isAbove && val.compareTo( tval ) < 0 || !isAbove && val.compareTo( tval ) > 0 )
+							{
+								break;
+							}
+						} // loop over filters
+
+					
+					} // loop over BCellobjects
+
+				}
+
+			};
+			executors.execute( command );
+		}
+
+		executors.shutdown();
+		try
+		{
+			final boolean ok = executors.awaitTermination( TIME_OUT_DELAY, TIME_OUT_UNITS );
+			if ( !ok )
+			{
+				System.err.println( "[BCellobjectCollection.filter()] Timeout of " + TIME_OUT_DELAY + " " + TIME_OUT_UNITS + " reached while filtering." );
+			}
+		}
+		catch ( final InterruptedException e )
+		{
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Returns the closest {@link BCellobject} to the given location (encoded as a
@@ -187,7 +251,11 @@ public class BCellobjectCollection implements MultiThreaded
 		for ( final BCellobject s : BCellobjects )
 		{
 
-		
+			if ( visibleBCellobjectsOnly && ( s.getFeature( VISIBLITY ).compareTo( ZERO ) <= 0 ) )
+			{
+				continue;
+			}
+
 			d2 = s.squareDistanceTo( location );
 			if ( d2 < minDist )
 			{
@@ -225,9 +293,11 @@ public class BCellobjectCollection implements MultiThreaded
 		double d2;
 		for ( final BCellobject s : BCellobjects )
 		{
-			
+			if ( visibleBCellobjectsOnly && ( s.getFeature( VISIBLITY ).compareTo( ZERO ) <= 0 ) )
+				continue;
 
 			d2 = s.squareDistanceTo( location );
+			if ( d2 < s.getFeature( BCellobject.RADIUS ) * s.getFeature( BCellobject.RADIUS ) )
 				distanceToBCellobject.put( d2, s );
 		}
 		if ( distanceToBCellobject.isEmpty() )
@@ -264,7 +334,10 @@ public class BCellobjectCollection implements MultiThreaded
 		for ( final BCellobject s : BCellobjects )
 		{
 
-			
+			if ( visibleBCellobjectsOnly && ( s.getFeature( VISIBLITY ).compareTo( ZERO ) <= 0 ) )
+			{
+				continue;
+			}
 
 			d2 = s.squareDistanceTo( location );
 			distanceToBCellobject.put( d2, s );
@@ -531,6 +604,7 @@ public class BCellobjectCollection implements MultiThreaded
 		for ( final BCellobject BCellobject : value )
 		{
 			BCellobject.putFeature( BCellobject.POSITION_T, Double.valueOf( frame ) );
+			BCellobject.putFeature( VISIBLITY, ZERO );
 		}
 		content.put( frame, value );
 	}

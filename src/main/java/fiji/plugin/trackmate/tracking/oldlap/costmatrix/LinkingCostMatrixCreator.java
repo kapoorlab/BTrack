@@ -7,7 +7,7 @@ import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PEN
 import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
 import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
 import Jama.Matrix;
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.tracking.oldlap.costfunction.LinkingCostFunction;
 
 import java.util.List;
@@ -29,24 +29,24 @@ import java.util.Map;
  */
 public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 
-	/** The Spots belonging to time frame t. */
-	protected final List<Spot> t0;
-	/** The Spots belonging to time frame t+1. */
-	protected final List<Spot> t1;
-	/** The total number of Spots in time frames t and t+1. */
-	protected int numSpots;
+	/** The BCellobjects belonging to time frame t. */
+	protected final List<BCellobject> t0;
+	/** The BCellobjects belonging to time frame t+1. */
+	protected final List<BCellobject> t1;
+	/** The total number of BCellobjects in time frames t and t+1. */
+	protected int numBCellobjects;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
 
-	public LinkingCostMatrixCreator(final List<Spot> t0, final List<Spot> t1, final Map<String, Object> settings) {
+	public LinkingCostMatrixCreator(final List<BCellobject> t02, final List<BCellobject> t12, final Map<String, Object> settings) {
 		super(settings);
-		this.t0 = t0;
-		this.t1 = t1;
-		this.numSpots = t0.size() + t1.size();
-		this.costs = new Matrix(numSpots, numSpots);
+		this.t0 = t02;
+		this.t1 = t12;
+		this.numBCellobjects = t02.size() + t12.size();
+		this.costs = new Matrix(numBCellobjects, numBCellobjects);
 	}
 
 	/*
@@ -76,8 +76,8 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 
 		// Deal with special cases:
 
-		if (numSpots == 0) {
-			// 0.0 - No spots -> nothing to do
+		if (numBCellobjects == 0) {
+			// 0.0 - No BCellobjects -> nothing to do
 			costs = new Matrix(0, 0);
 			return true;
 		}
@@ -85,7 +85,7 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 
 		if (t1.size() == 0) {
-			// 0.1 - No spots in late frame -> termination only.
+			// 0.1 - No BCellobjects in late frame -> termination only.
 			costs = new Matrix(t0.size(), t0.size(), blockingValue);
 			for (int i = 0; i < t0.size(); i++) {
 				costs.set(i, i, 0);
@@ -94,7 +94,7 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 		}
 
 		if (t0.size() == 0) {
-			// 0.1 - No spots in early frame -> initiation only.
+			// 0.1 - No BCellobjects in early frame -> initiation only.
 			costs = new Matrix(t1.size(), t1.size(), blockingValue);
 			for (int i = 0; i < t1.size(); i++) {
 				costs.set(i, i, 0);

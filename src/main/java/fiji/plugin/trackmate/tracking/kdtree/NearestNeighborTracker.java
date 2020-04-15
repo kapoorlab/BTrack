@@ -19,34 +19,34 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.BCellobjectCollection;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.util.TMUtils;
 
 @SuppressWarnings( "deprecation" )
-public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm	implements SpotTracker {
+public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm	implements BCellobjectTracker {
 
 	/*
 	 * FIELDS
 	 */
 
-	protected final SpotCollection spots;
+	protected final BCellobjectCollection BCellobjects;
 
 	protected final Map< String, Object > settings;
 
 	protected Logger logger = Logger.VOID_LOGGER;
 
-	protected SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
+	protected SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public NearestNeighborTracker( final SpotCollection spots, final Map< String, Object > settings )
+	public NearestNeighborTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
-		this.spots = spots;
+		this.BCellobjects = BCellobjects;
 		this.settings = settings;
 	}
 
@@ -73,7 +73,7 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm	impl
 		final double maxLinkingDistance = (Double) settings.get(KEY_LINKING_MAX_DISTANCE);
 		final double maxDistSquare = maxLinkingDistance  * maxLinkingDistance;
 
-		final TreeSet<Integer> frames = new TreeSet<>(spots.keySet());
+		final TreeSet<Integer> frames = new TreeSet<>(BCellobjects.keySet());
 		final Thread[] threads = new Thread[numThreads];
 
 		// Prepare the thread array
@@ -92,40 +92,40 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm	impl
 						final int sourceFrame = i;
 						final int targetFrame = frames.higher(i);
 
-						final int nTargetSpots = spots.getNSpots(targetFrame, true);
-						if (nTargetSpots < 1) {
+						final int nTargetBCellobjects = BCellobjects.getNBCellobjects(targetFrame, true);
+						if (nTargetBCellobjects < 1) {
 							continue;
 						}
 
-						final List<RealPoint> targetCoords = new ArrayList<>(nTargetSpots);
-						final List<FlagNode<Spot>> targetNodes = new ArrayList<>(nTargetSpots);
-						final Iterator<Spot> targetIt = spots.iterator(targetFrame, true);
+						final List<RealPoint> targetCoords = new ArrayList<>(nTargetBCellobjects);
+						final List<FlagNode<BCellobject>> targetNodes = new ArrayList<>(nTargetBCellobjects);
+						final Iterator<BCellobject> targetIt = BCellobjects.iterator(targetFrame, true);
 						while (targetIt.hasNext()) {
 							final double[] coords = new double[3];
-							final Spot spot = targetIt.next();
-							TMUtils.localize(spot, coords);
+							final BCellobject BCellobject = targetIt.next();
+							TMUtils.localize(BCellobject, coords);
 							targetCoords.add(new RealPoint(coords));
-							targetNodes.add(new FlagNode<>(spot));
+							targetNodes.add(new FlagNode<>(BCellobject));
 						}
 
 
-						final KDTree<FlagNode<Spot>> tree = new KDTree<>(targetNodes, targetCoords);
-						final NearestNeighborFlagSearchOnKDTree<Spot> search = new NearestNeighborFlagSearchOnKDTree<>(tree);
+						final KDTree<FlagNode<BCellobject>> tree = new KDTree<>(targetNodes, targetCoords);
+						final NearestNeighborFlagSearchOnKDTree<BCellobject> search = new NearestNeighborFlagSearchOnKDTree<>(tree);
 
-						// For each spot in the source frame, find its nearest neighbor in the target frame
-						final Iterator<Spot> sourceIt = spots.iterator(sourceFrame, true);
+						// For each BCellobject in the source frame, find its nearest neighbor in the target frame
+						final Iterator<BCellobject> sourceIt = BCellobjects.iterator(sourceFrame, true);
 						while (sourceIt.hasNext()) {
-							final Spot source = sourceIt.next();
+							final BCellobject source = sourceIt.next();
 							final double[] coords = new double[3];
 							TMUtils.localize(source, coords);
 							final RealPoint sourceCoords = new RealPoint(coords);
 							search.search(sourceCoords);
 
 							final double squareDist = search.getSquareDistance();
-							final FlagNode<Spot> targetNode = search.getSampler().get();
+							final FlagNode<BCellobject> targetNode = search.getSampler().get();
 
 							if (squareDist > maxDistSquare) {
-								// The closest we could find is too far. We skip this source spot and do not create a link
+								// The closest we could find is too far. We skip this source BCellobject and do not create a link
 								continue;
 							}
 
@@ -162,13 +162,13 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm	impl
 	}
 
 	@Override
-	public SimpleWeightedGraph<Spot, DefaultWeightedEdge> getResult() {
+	public SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> getResult() {
 		return graph;
 	}
 
 	public void reset() {
 		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		final Iterator<Spot> it = spots.iterator(true);
+		final Iterator<BCellobject> it = BCellobjects.iterator(true);
 		while (it.hasNext()) {
 			graph.addVertex(it.next());
 		}

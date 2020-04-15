@@ -23,34 +23,30 @@ import net.imglib2.type.numeric.RealType;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.gui.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.panels.detector.BasicDetectorConfigurationPanel;
+import budDetector.BCellobject;
 
-@Plugin( type = SpotDetectorFactory.class )
-public class ManualDetectorFactory< T extends RealType< T > & NativeType< T >> implements SpotDetectorFactory< T >
+@Plugin( type = BCellobjectDetectorFactory.class )
+public class ManualDetectorFactory< T extends RealType< T > & NativeType< T >> implements BCellobjectDetectorFactory< T >
 {
 
 	public static final String DETECTOR_KEY = "MANUAL_DETECTOR";
 
 	public static final String NAME = "Manual annotation";
 
-	public static final String INFO_TEXT = "<html>" + "Selecting this will skip the automatic detection phase, and jump directly <br>" + "to manual segmentation. A default spot size will be asked for. " + "</html>";
+	public static final String INFO_TEXT = "<html>" + "Selecting this will skip the automatic detection phase, and jump directly <br>" + "to manual segmentation. A default BCellobject size will be asked for. " + "</html>";
 
 	protected String errorMessage;
 
 	protected Map< String, Object > settings;
 
 	@Override
-	public SpotDetector< T > getDetector( final Interval interval, final int frame )
+	public BCellobjectDetector< T > getDetector( final Interval interval, final int frame )
 	{
-		return new SpotDetector< T >()
+		return new BCellobjectDetector< T >()
 		{
 
 			@Override
-			public List< Spot > getResult()
+			public List< BCellobject > getResult()
 			{
 				return Collections.emptyList();
 			}
@@ -148,11 +144,6 @@ public class ManualDetectorFactory< T extends RealType< T > & NativeType< T >> i
 		return checkSettings( lSettings );
 	}
 
-	@Override
-	public ConfigurationPanel getDetectorConfigurationPanel( final Settings lSettings, final Model model )
-	{
-		return new BasicDetectorConfigurationPanel( lSettings, model, INFO_TEXT, NAME );
-	}
 
 	@Override
 	public String getInfoText()
@@ -175,8 +166,9 @@ public class ManualDetectorFactory< T extends RealType< T > & NativeType< T >> i
 	}
 
 	@Override
-	public ImageIcon getIcon()
-	{
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

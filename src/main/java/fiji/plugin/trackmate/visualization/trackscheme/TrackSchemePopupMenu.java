@@ -6,7 +6,7 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
 
 import java.awt.Color;
@@ -68,9 +68,9 @@ public class TrackSchemePopupMenu extends JPopupMenu
 	{
 		for ( final mxCell mxCell : vertices )
 		{
-			final Spot spot = trackScheme.getGraph().getSpotFor( mxCell );
+			final BCellobject BCellobject = trackScheme.getGraph().getBCellobjectFor( mxCell );
 			final Double value = Double.valueOf( previousColor.getRGB() );
-			spot.putFeature( ManualEdgeColorAnalyzer.FEATURE, value );
+			BCellobject.putFeature( ManualEdgeColorAnalyzer.FEATURE, value );
 		}
 	}
 
@@ -90,7 +90,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		trackScheme.selectTrack( vertices, edges, 1 );
 	}
 
-	private void editSpotName()
+	private void editBCellobjectName()
 	{
 		trackScheme.getGUI().graphComponent.startEditingAtCell( cell );
 	}
@@ -110,7 +110,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		trackScheme.getGraph().foldCells( !trackScheme.getGraph().isCellCollapsed( parent ), false, new Object[] { parent } );
 	}
 
-	private void multiEditSpotName( final ArrayList< mxCell > vertices, final EventObject triggerEvent )
+	private void multiEditBCellobjectName( final ArrayList< mxCell > vertices, final EventObject triggerEvent )
 	{
 		/*
 		 * We want to display the editing window in the cell that is the closer
@@ -133,7 +133,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 				for ( final mxCell lCell : vertices )
 				{
 					lCell.setValue( tc.getValue() );
-					trackScheme.getGraph().getSpotFor( lCell ).setName( tc.getValue().toString() );
+					trackScheme.getGraph().getBCellobjectFor( lCell ).setName( tc.getValue().toString() );
 				}
 				graphComponent.refresh();
 				graphComponent.removeListener( this );
@@ -162,9 +162,9 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		return target_cell;
 	}
 
-	private void linkSpots()
+	private void linkBCellobjects()
 	{
-		trackScheme.linkSpots();
+		trackScheme.linkBCellobjects();
 	}
 
 	private void remove()
@@ -228,12 +228,12 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		if ( cell != null )
 		{
 			// Edit
-			add( new AbstractAction( "Edit spot name" )
+			add( new AbstractAction( "Edit BCellobject name" )
 			{
 				@Override
 				public void actionPerformed( final ActionEvent e )
 				{
-					editSpotName();
+					editBCellobjectName();
 				}
 			} );
 
@@ -245,33 +245,33 @@ public class TrackSchemePopupMenu extends JPopupMenu
 			{
 
 				// Multi edit
-				add( new AbstractAction( "Edit " + vertices.size() + " spot names" )
+				add( new AbstractAction( "Edit " + vertices.size() + " BCellobject names" )
 				{
 					@Override
 					public void actionPerformed( final ActionEvent e )
 					{
-						multiEditSpotName( vertices, e );
+						multiEditBCellobjectName( vertices, e );
 					}
 				} );
 			}
 
 			// Link
-			final Action linkAction = new AbstractAction( "Link " + trackScheme.getSelectionModel().getSpotSelection().size() + " spots" )
+			final Action linkAction = new AbstractAction( "Link " + trackScheme.getSelectionModel().getBCellobjectSelection().size() + " BCellobjects" )
 			{
 				@Override
 				public void actionPerformed( final ActionEvent e )
 				{
-					linkSpots();
+					linkBCellobjects();
 				}
 			};
-			if ( trackScheme.getSelectionModel().getSpotSelection().size() > 1 )
+			if ( trackScheme.getSelectionModel().getBCellobjectSelection().size() > 1 )
 			{
 				add( linkAction );
 			}
 		}
 
 		/*
-		 * Edges and spot manual coloring
+		 * Edges and BCellobject manual coloring
 		 */
 
 		if ( edges.size() > 0 || vertices.size() > 0 )
@@ -281,7 +281,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 
 		if ( vertices.size() > 0 )
 		{
-			final String str = "Manual color for " + ( vertices.size() == 1 ? " one spot" : vertices.size() + " spots" );
+			final String str = "Manual color for " + ( vertices.size() == 1 ? " one BCellobject" : vertices.size() + " BCellobjects" );
 			add( new AbstractAction( str )
 			{
 				@Override
@@ -326,7 +326,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 
 		if ( edges.size() > 0 && vertices.size() > 0 )
 		{
-			final String str = "Manual color for " + ( vertices.size() == 1 ? " one spot and " : vertices.size() + " spots and " ) + ( edges.size() == 1 ? " one edge" : edges.size() + " edges" );
+			final String str = "Manual color for " + ( vertices.size() == 1 ? " one BCellobject and " : vertices.size() + " BCellobjects and " ) + ( edges.size() == 1 ? " one edge" : edges.size() + " edges" );
 			add( new AbstractAction( str )
 			{
 				@Override
@@ -352,7 +352,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		if ( selection.length > 0 )
 		{
 			addSeparator();
-			final Action removeAction = new AbstractAction( "Remove spots and links" )
+			final Action removeAction = new AbstractAction( "Remove BCellobjects and links" )
 			{
 				@Override
 				public void actionPerformed( final ActionEvent e )

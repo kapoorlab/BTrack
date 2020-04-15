@@ -14,10 +14,10 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 
 @SuppressWarnings( "deprecation" )
 @Plugin( type = EdgeAnalyzer.class )
@@ -29,9 +29,9 @@ public class EdgeTargetAnalyzer implements EdgeAnalyzer
 	/*
 	 * FEATURE NAMES
 	 */
-	public static final String SPOT_SOURCE_ID = "SPOT_SOURCE_ID";
+	public static final String BCellobject_SOURCE_ID = "BCellobject_SOURCE_ID";
 
-	public static final String SPOT_TARGET_ID = "SPOT_TARGET_ID";
+	public static final String BCellobject_TARGET_ID = "BCellobject_TARGET_ID";
 
 	public static final String EDGE_COST = "LINK_COST";
 
@@ -47,24 +47,24 @@ public class EdgeTargetAnalyzer implements EdgeAnalyzer
 
 	static
 	{
-		FEATURES.add( SPOT_SOURCE_ID );
-		FEATURES.add( SPOT_TARGET_ID );
+		FEATURES.add( BCellobject_SOURCE_ID );
+		FEATURES.add( BCellobject_TARGET_ID );
 		FEATURES.add( EDGE_COST );
 
-		FEATURE_NAMES.put( SPOT_SOURCE_ID, "Source spot ID" );
-		FEATURE_NAMES.put( SPOT_TARGET_ID, "Target spot ID" );
+		FEATURE_NAMES.put( BCellobject_SOURCE_ID, "Source BCellobject ID" );
+		FEATURE_NAMES.put( BCellobject_TARGET_ID, "Target BCellobject ID" );
 		FEATURE_NAMES.put( EDGE_COST, "Link cost" );
 
-		FEATURE_SHORT_NAMES.put( SPOT_SOURCE_ID, "Source ID" );
-		FEATURE_SHORT_NAMES.put( SPOT_TARGET_ID, "Target ID" );
+		FEATURE_SHORT_NAMES.put( BCellobject_SOURCE_ID, "Source ID" );
+		FEATURE_SHORT_NAMES.put( BCellobject_TARGET_ID, "Target ID" );
 		FEATURE_SHORT_NAMES.put( EDGE_COST, "Cost" );
 
-		FEATURE_DIMENSIONS.put( SPOT_SOURCE_ID, Dimension.NONE );
-		FEATURE_DIMENSIONS.put( SPOT_TARGET_ID, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( BCellobject_SOURCE_ID, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( BCellobject_TARGET_ID, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( EDGE_COST, Dimension.NONE );
 
-		IS_INT.put( SPOT_SOURCE_ID, Boolean.TRUE );
-		IS_INT.put( SPOT_TARGET_ID, Boolean.TRUE );
+		IS_INT.put( BCellobject_SOURCE_ID, Boolean.TRUE );
+		IS_INT.put( BCellobject_TARGET_ID, Boolean.TRUE );
 		IS_INT.put( EDGE_COST, Boolean.FALSE );
 
 	}
@@ -112,10 +112,10 @@ public class EdgeTargetAnalyzer implements EdgeAnalyzer
 						// Edge weight
 						featureModel.putEdgeFeature( edge, EDGE_COST, model.getTrackModel().getEdgeWeight( edge ) );
 						// Source & target name & ID
-						final Spot source = model.getTrackModel().getEdgeSource( edge );
-						featureModel.putEdgeFeature( edge, SPOT_SOURCE_ID, Double.valueOf( source.ID() ) );
-						final Spot target = model.getTrackModel().getEdgeTarget( edge );
-						featureModel.putEdgeFeature( edge, SPOT_TARGET_ID, Double.valueOf( target.ID() ) );
+						final BCellobject source = model.getTrackModel().getEdgeSource( edge );
+						featureModel.putEdgeFeature( edge, BCellobject_SOURCE_ID, Double.valueOf( source.ID() ) );
+						final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
+						featureModel.putEdgeFeature( edge, BCellobject_TARGET_ID, Double.valueOf( target.ID() ) );
 					}
 
 				}
@@ -189,11 +189,7 @@ public class EdgeTargetAnalyzer implements EdgeAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -211,5 +207,11 @@ public class EdgeTargetAnalyzer implements EdgeAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -14,6 +14,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
@@ -101,14 +102,13 @@ public class EdgeVelocityAnalyzer implements EdgeAnalyzer
 					DefaultWeightedEdge edge;
 					while ( ( edge = queue.poll() ) != null )
 					{
-						final Spot source = model.getTrackModel().getEdgeSource( edge );
-						final Spot target = model.getTrackModel().getEdgeTarget( edge );
+						final BCellobject source = model.getTrackModel().getEdgeSource( edge );
+						final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
 
-						final double dx = target.diffTo( source, Spot.POSITION_X );
-						final double dy = target.diffTo( source, Spot.POSITION_Y );
-						final double dz = target.diffTo( source, Spot.POSITION_Z );
-						final double dt = target.diffTo( source, Spot.POSITION_T );
-						final double D = Math.sqrt( dx * dx + dy * dy + dz * dz );
+						final double dx = target.diffTo( source, BCellobject.POSITION_X );
+						final double dy = target.diffTo( source, BCellobject.POSITION_Y );
+						final double dt = target.diffTo( source, BCellobject.POSITION_T );
+						final double D = Math.sqrt( dx * dx + dy * dy );
 						final double V = D / Math.abs( dt );
 
 						featureModel.putEdgeFeature( edge, VELOCITY, V );
@@ -186,11 +186,7 @@ public class EdgeVelocityAnalyzer implements EdgeAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -208,5 +204,11 @@ public class EdgeVelocityAnalyzer implements EdgeAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

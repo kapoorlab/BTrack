@@ -216,17 +216,18 @@ public class CaptureOverlayAction extends AbstractTMAction
 			return new CaptureOverlayAction( controller.getGUI() );
 		}
 
-		@Override
-		public ImageIcon getIcon()
-		{
-			return null;
-			//return ICON;
-		}
+		
 
 		@Override
 		public String getName()
 		{
 			return NAME;
+		}
+
+		@Override
+		public ImageIcon getIcon() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.ModelChangeEvent;
 import fiji.plugin.trackmate.ModelChangeListener;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import net.imglib2.algorithm.MultiThreaded;
 
 /**
  * A utility class that listens to the change occurring in a model, and updates
- * its spot, edge and track features accordingly. Useful to keep the model in 
+ * its BCellobject, edge and track features accordingly. Useful to keep the model in 
  * sync with manual editing.
  *    
  * @author Jean-Yves Tinevez - 2013
@@ -22,7 +22,7 @@ import net.imglib2.algorithm.MultiThreaded;
 public class ModelFeatureUpdater implements ModelChangeListener, MultiThreaded
 {
 
-	private final SpotFeatureCalculator spotFeatureCalculator;
+	private final BCellobjectFeatureCalculator BCellobjectFeatureCalculator;
 	private final EdgeFeatureCalculator edgeFeatureCalculator;
 	private final TrackFeatureCalculator trackFeatureCalculator;
 	private final Model model;
@@ -38,7 +38,7 @@ public class ModelFeatureUpdater implements ModelChangeListener, MultiThreaded
 	 */
 	public ModelFeatureUpdater(Model model, Settings settings) {
 		this.model = model;
-		this.spotFeatureCalculator = new SpotFeatureCalculator(model, settings);
+		this.BCellobjectFeatureCalculator = new BCellobjectFeatureCalculator(model, settings);
 		this.edgeFeatureCalculator = new EdgeFeatureCalculator(model, settings);
 		this.trackFeatureCalculator = new TrackFeatureCalculator(model, settings);
 		model.addModelChangeListener(this);
@@ -56,14 +56,14 @@ public class ModelFeatureUpdater implements ModelChangeListener, MultiThreaded
 			return;
 		}
 
-		// Build spot list
-		ArrayList<Spot> spots = new ArrayList<>(event.getSpots().size());
-		for (Spot spot : event.getSpots()) {
-			if (event.getSpotFlag(spot) != ModelChangeEvent.FLAG_SPOT_REMOVED) {
-				spots.add(spot);
+		// Build BCellobject list
+		ArrayList<BCellobject> BCellobjects = new ArrayList<>(event.getBCellobject().size());
+		for (BCellobject BCellobject : event.getBCellobject()) {
+			if (event.getBCellobjectFlag(BCellobject) != ModelChangeEvent.FLAG_BCellobject_REMOVED) {
+				BCellobjects.add(BCellobject);
 			}
 		}
-		SpotCollection sc = SpotCollection.fromCollection(spots);
+		BCellobjectCollection sc = BCellobjectCollection.fromCollection(BCellobjects);
 		
 		// Build edge list
 		ArrayList<DefaultWeightedEdge> edges = new ArrayList<>(event.getEdges().size());
@@ -73,8 +73,8 @@ public class ModelFeatureUpdater implements ModelChangeListener, MultiThreaded
 			}
 		}
 
-		// Update spot features
-		spotFeatureCalculator.computeSpotFeatures(sc, false);
+		// Update BCellobject features
+		BCellobjectFeatureCalculator.computeBCellobjectFeatures(sc, false);
 		
 		// Update edge features
 		edgeFeatureCalculator.computeEdgesFeatures(edges, false);
@@ -107,7 +107,7 @@ public class ModelFeatureUpdater implements ModelChangeListener, MultiThreaded
 	public void setNumThreads( int numThreads )
 	{
 		this.numThreads = numThreads;
-		spotFeatureCalculator.setNumThreads( numThreads );
+		BCellobjectFeatureCalculator.setNumThreads( numThreads );
 		edgeFeatureCalculator.setNumThreads( numThreads );
 		trackFeatureCalculator.setNumThreads( numThreads );
 	}

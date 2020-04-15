@@ -5,10 +5,12 @@ import java.util.Map;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
+
 
 /**
  * An event that characterizes a change in the current selection. 
- * {@link Spot} selection and {@link DefaultWeightedEdge} selection are dealt with separately, 
+ * {@link BCellobject} selection and {@link DefaultWeightedEdge} selection are dealt with separately, 
  * to keep the use of this class general.
  */
 public class SelectionChangeEvent extends EventObject {
@@ -18,8 +20,8 @@ public class SelectionChangeEvent extends EventObject {
 	/** Changes in {@link DefaultWeightedEdge} selection this event represents. */
 	private final Map<DefaultWeightedEdge, Boolean> edges;
 
-	/** Changes in {@link Spot} selection this event represents. */
-	protected Map<Spot, Boolean> spots;
+	/** Changes in {@link BCellobject} selection this event represents. */
+	protected Map<BCellobject, Boolean> BCellobjects;
 
 	/*
 	 * CONSTRUCTORS 
@@ -28,25 +30,25 @@ public class SelectionChangeEvent extends EventObject {
 	/**
 	 * Represents a change in the selection of a displayed TM model.
 	 * <p>
-	 * Two maps are given. The first one represent changes in the spot
-	 * selection. The {@link Boolean} mapped to a {@link Spot} key specifies if
-	 * the spot was added to the selection (<code>true</code>) or removed from
+	 * Two maps are given. The first one represent changes in the BCellobject
+	 * selection. The {@link Boolean} mapped to a {@link BCellobject} key specifies if
+	 * the BCellobject was added to the selection (<code>true</code>) or removed from
 	 * it (<code>false</code>). The same goes for the
 	 * {@link DefaultWeightedEdge} map. <code>null</code>s are accepted for the
 	 * two maps, to specify that no changes happened for the corresponding type.
 	 * 
 	 * @param source
 	 *            the source object that fires this event.
-	 * @param spots
-	 *            the spots that are added or removed from the selection by this
+	 * @param bCellobjectMap
+	 *            the BCellobjects that are added or removed from the selection by this
 	 *            event.
 	 * @param edges
 	 *            the edges that are added or removed from the selection by this
 	 *            event.
 	 */
-	public SelectionChangeEvent(final Object source, final Map<Spot, Boolean> spots, final Map<DefaultWeightedEdge, Boolean> edges) {
+	public SelectionChangeEvent(final Object source, final Map<BCellobject, Boolean> bCellobjectMap, final Map<DefaultWeightedEdge, Boolean> edges) {
 		super(source);
-		this.spots = spots;
+		this.BCellobjects = bCellobjectMap;
 		this.edges = edges;
 	}
 	
@@ -55,14 +57,14 @@ public class SelectionChangeEvent extends EventObject {
 	 */
 	
 	/**
-	 * Returns the spots that have been added or removed from the selection.
+	 * Returns the BCellobjects that have been added or removed from the selection.
 	 * The {@link Boolean} 
-	 * mapped to a {@link Spot} key specifies if the spot was added to the selection (<code>true</code>)
+	 * mapped to a {@link BCellobject} key specifies if the BCellobject was added to the selection (<code>true</code>)
 	 * or removed from it (<code>false</code>).
-	 * @return added or removed spots, can be <code>null</code> if no changes on spot selection happened.
+	 * @return added or removed BCellobjects, can be <code>null</code> if no changes on BCellobject selection happened.
 	 */
-	public Map<Spot, Boolean> getSpots() {
-		return spots;
+	public Map<BCellobject, Boolean> getBCellobjects() {
+		return BCellobjects;
 	}
 	
 	/**

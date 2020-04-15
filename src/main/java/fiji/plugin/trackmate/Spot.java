@@ -1,6 +1,5 @@
 package fiji.plugin.trackmate;
 
-import static fiji.plugin.trackmate.SpotCollection.VISIBLITY;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -464,7 +463,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		FEATURES.add( POSITION_T );
 		FEATURES.add( FRAME );
 		FEATURES.add( RADIUS );
-		FEATURES.add( SpotCollection.VISIBLITY );
 
 		FEATURE_NAMES.put( POSITION_X, "X" );
 		FEATURE_NAMES.put( POSITION_Y, "Y" );
@@ -473,7 +471,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		FEATURE_NAMES.put( FRAME, "Frame" );
 		FEATURE_NAMES.put( RADIUS, "Radius" );
 		FEATURE_NAMES.put( QUALITY, "Quality" );
-		FEATURE_NAMES.put( VISIBLITY, "Visibility" );
 
 		FEATURE_SHORT_NAMES.put( POSITION_X, "X" );
 		FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
@@ -482,7 +479,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		FEATURE_SHORT_NAMES.put( FRAME, "Frame" );
 		FEATURE_SHORT_NAMES.put( RADIUS, "R" );
 		FEATURE_SHORT_NAMES.put( QUALITY, "Quality" );
-		FEATURE_SHORT_NAMES.put( VISIBLITY, "Visibility" );
 
 		FEATURE_DIMENSIONS.put( POSITION_X, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_Y, Dimension.POSITION );
@@ -491,7 +487,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		FEATURE_DIMENSIONS.put( FRAME, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( RADIUS, Dimension.LENGTH );
 		FEATURE_DIMENSIONS.put( QUALITY, Dimension.QUALITY );
-		FEATURE_DIMENSIONS.put( VISIBLITY, Dimension.NONE );
 
 		IS_INT.put( POSITION_X, Boolean.FALSE );
 		IS_INT.put( POSITION_Y, Boolean.FALSE );
@@ -500,7 +495,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		IS_INT.put( FRAME, Boolean.TRUE );
 		IS_INT.put( RADIUS, Boolean.FALSE );
 		IS_INT.put( QUALITY, Boolean.FALSE );
-		IS_INT.put( VISIBLITY, Boolean.TRUE );
 	}
 
 	@Override

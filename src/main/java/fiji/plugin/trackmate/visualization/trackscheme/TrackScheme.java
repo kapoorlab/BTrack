@@ -36,11 +36,11 @@ import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxStyleUtils;
 import com.mxgraph.view.mxGraphSelectionModel;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.ModelChangeEvent;
 import fiji.plugin.trackmate.SelectionChangeEvent;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMateOptionUtils;
 import fiji.plugin.trackmate.visualization.AbstractTrackMateModelView;
 import fiji.plugin.trackmate.visualization.TrackColorGenerator;
@@ -58,7 +58,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 	public static final String INFO_TEXT = "<html>"
 			+ "TrackScheme displays the tracking results as track lanes, <br>"
-			+ "ignoring the spot actual position. "
+			+ "ignoring the BCellobject actual position. "
 			+ "<p>" + "Tracks can be edited through link creation and removal."
 			+ "</html>";
 
@@ -141,13 +141,13 @@ public class TrackScheme extends AbstractTrackMateModelView
 	 * Stores the column index that is the first one after all the track
 	 * columns.
 	 */
-	private int unlaidSpotColumn = 2;
+	private int unlaidBCellobjectColumn = 2;
 
 	/**
 	 * The instance in charge of generating the string image representation of
-	 * spots imported in this view. If <code>null</code>, nothing is done.
+	 * BCellobjects imported in this view. If <code>null</code>, nothing is done.
 	 */
-	private SpotImageUpdater spotImageUpdater;
+	private BCellobjectImageUpdater BCellobjectImageUpdater;
 
 	TrackSchemeStylist stylist;
 
@@ -172,9 +172,9 @@ public class TrackScheme extends AbstractTrackMateModelView
 	 * METHODS
 	 */
 
-	public void setSpotImageUpdater( final SpotImageUpdater spotImageUpdater )
+	public void setBCellobjectImageUpdater( final BCellobjectImageUpdater BCellobjectImageUpdater )
 	{
-		this.spotImageUpdater = spotImageUpdater;
+		this.BCellobjectImageUpdater = BCellobjectImageUpdater;
 	}
 
 	public SelectionModel getSelectionModel()
@@ -186,9 +186,9 @@ public class TrackScheme extends AbstractTrackMateModelView
 	 * @return the column index that is the first one after all the track
 	 *         columns.
 	 */
-	public int getUnlaidSpotColumn()
+	public int getUnlaidBCellobjectColumn()
 	{
-		return unlaidSpotColumn;
+		return unlaidBCellobjectColumn;
 	}
 
 	/**
@@ -263,43 +263,43 @@ public class TrackScheme extends AbstractTrackMateModelView
 	}
 
 	/**
-	 * Updates or creates a cell for the target spot. Is called after the user
-	 * modified a spot (location, radius, ...) somewhere else.
+	 * Updates or creates a cell for the target BCellobject. Is called after the user
+	 * modified a BCellobject (location, radius, ...) somewhere else.
 	 *
-	 * @param spot
-	 *            the spot that was modified.
+	 * @param BCellobject
+	 *            the BCellobject that was modified.
 	 */
-	private mxICell updateCellOf( final Spot spot )
+	private mxICell updateCellOf( final BCellobject BCellobject )
 	{
 
-		mxICell cell = graph.getCellFor( spot );
+		mxICell cell = graph.getCellFor( BCellobject );
 		graph.getModel().beginUpdate();
 		try
 		{
 			if ( DEBUG )
 			{
-				System.out.println( "[TrackScheme] modelChanged: updating cell for spot " + spot );
+				System.out.println( "[TrackScheme] modelChanged: updating cell for BCellobject " + BCellobject );
 			}
 			if ( null == cell )
 			{
 				/*
 				 * mxCell not present in graph. Most likely because the
-				 * corresponding spot belonged to an invisible track, and a cell
+				 * corresponding BCellobject belonged to an invisible track, and a cell
 				 * was not created for it when TrackScheme was launched. So we
 				 * create one on the fly now.
 				 */
-				final int row = getUnlaidSpotColumn();
-				cell = insertSpotInGraph( spot, row );
-				final int frame = spot.getFeature( Spot.FRAME ).intValue();
+				final int row = getUnlaidBCellobjectColumn();
+				cell = insertBCellobjectInGraph( BCellobject, row );
+				final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 				rowLengths.put( frame, row + 1 );
 			}
 
 			// Update cell look
-			if ( spotImageUpdater != null && doThumbnailCapture )
+			if ( BCellobjectImageUpdater != null && doThumbnailCapture )
 			{
 				String style = cell.getStyle();
-				final double radiusFactor = ( Double ) displaySettings.get( KEY_SPOT_RADIUS_RATIO );
-				final String imageStr = spotImageUpdater.getImageString( spot, radiusFactor );
+				final double radiusFactor = ( Double ) displaySettings.get( KEY_BCellobject_RADIUS_RATIO );
+				final String imageStr = BCellobjectImageUpdater.getImageString( BCellobject, radiusFactor );
 				style = mxStyleUtils.setStyle( style, mxConstants.STYLE_IMAGE, "data:image/base64," + imageStr );
 				graph.getModel().setStyle( cell, style );
 			}
@@ -312,31 +312,31 @@ public class TrackScheme extends AbstractTrackMateModelView
 	}
 
 	/**
-	 * Insert a spot in the {@link TrackSchemeFrame}, by creating a
+	 * Insert a BCellobject in the {@link TrackSchemeFrame}, by creating a
 	 * {@link mxCell} in the graph model of this frame and position it according
 	 * to its feature.
 	 */
-	private mxICell insertSpotInGraph( final Spot spot, final int targetColumn )
+	private mxICell insertBCellobjectInGraph( final BCellobject BCellobject, final int targetColumn )
 	{
-		mxICell cellAdded = graph.getCellFor( spot );
+		mxICell cellAdded = graph.getCellFor( BCellobject );
 		if ( cellAdded != null )
 		{
-			// cell for spot already exist, do nothing and return original spot
+			// cell for BCellobject already exist, do nothing and return original BCellobject
 			return cellAdded;
 		}
 		// Instantiate JGraphX cell
-		cellAdded = graph.addJGraphTVertex( spot );
+		cellAdded = graph.addJGraphTVertex( BCellobject );
 		// Position it
-		final int row = spot.getFeature( Spot.FRAME ).intValue();
+		final int row = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 		final double x = ( targetColumn - 1 ) * X_COLUMN_SIZE - DEFAULT_CELL_WIDTH / 2;
 		final double y = ( 0.5 + row ) * Y_COLUMN_SIZE - DEFAULT_CELL_HEIGHT / 2;
 		final mxGeometry geometry = new mxGeometry( x, y, DEFAULT_CELL_WIDTH, DEFAULT_CELL_HEIGHT );
 		cellAdded.setGeometry( geometry );
 		// Set its style
-		final double radiusFactor = ( Double ) displaySettings.get( KEY_SPOT_RADIUS_RATIO );
-		if ( null != spotImageUpdater && doThumbnailCapture )
+		final double radiusFactor = ( Double ) displaySettings.get( KEY_BCellobject_RADIUS_RATIO );
+		if ( null != BCellobjectImageUpdater && doThumbnailCapture )
 		{
-			final String imageStr = spotImageUpdater.getImageString( spot, radiusFactor );
+			final String imageStr = BCellobjectImageUpdater.getImageString( BCellobject, radiusFactor );
 			graph.getModel().setStyle( cellAdded, mxConstants.STYLE_IMAGE + "=" + "data:image/base64," + imageStr );
 		}
 		return cellAdded;
@@ -357,14 +357,14 @@ public class TrackScheme extends AbstractTrackMateModelView
 			// Flag original track as visible
 			model.setTrackVisibility( trackIndex, true );
 			// Find adequate column
-			final int targetColumn = getUnlaidSpotColumn();
+			final int targetColumn = getUnlaidBCellobjectColumn();
 			// Create cells for track
-			final Set< Spot > trackSpots = model.getTrackModel().trackSpots( trackIndex );
-			for ( final Spot trackSpot : trackSpots )
+			final Set< BCellobject > trackBCellobjects = model.getTrackModel().trackBCellobjects( trackIndex );
+			for ( final BCellobject trackBCellobject : trackBCellobjects )
 			{
-				final int frame = trackSpot.getFeature( Spot.FRAME ).intValue();
+				final int frame = trackBCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 				final int column = Math.max( targetColumn, getNextFreeColumn( frame ) );
-				insertSpotInGraph( trackSpot, column );
+				insertBCellobjectInGraph( trackBCellobject, column );
 				rowLengths.put( frame, column );
 			}
 			final Set< DefaultWeightedEdge > trackEdges = model.getTrackModel().trackEdges( trackIndex );
@@ -382,7 +382,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 	/**
 	 * This method is called when the user has created manually an edge in the
-	 * graph, by dragging a link between two spot cells. It checks whether the
+	 * graph, by dragging a link between two BCellobject cells. It checks whether the
 	 * matching edge in the model exists, and tune what should be done
 	 * accordingly.
 	 *
@@ -400,23 +400,23 @@ public class TrackScheme extends AbstractTrackMateModelView
 			try
 			{
 
-				Spot source = graph.getSpotFor( cell.getSource() );
-				Spot target = graph.getSpotFor( cell.getTarget() );
+				BCellobject source = graph.getBCellobjectFor( cell.getSource() );
+				BCellobject target = graph.getBCellobjectFor( cell.getTarget() );
 
 				if ( DEBUG )
 				{
-					System.out.println( "[TrackScheme] #addEdgeManually: edge is between 2 spots belonging to the same frame. Removing it." );
-					System.out.println( "[TrackScheme] #addEdgeManually: adding edge between source " + source + " at frame " + source.getFeature( Spot.FRAME ).intValue() + " and target " + target + " at frame " + target.getFeature( Spot.FRAME ).intValue() );
+					System.out.println( "[TrackScheme] #addEdgeManually: edge is between 2 BCellobjects belonging to the same frame. Removing it." );
+					System.out.println( "[TrackScheme] #addEdgeManually: adding edge between source " + source + " at frame " + source.getFeature( BCellobject.POSITION_T ).intValue() + " and target " + target + " at frame " + target.getFeature( BCellobject.POSITION_T ).intValue() );
 				}
 
-				if ( Spot.frameComparator.compare( source, target ) == 0 )
+				if ( BCellobject.frameComparator.compare( source, target ) == 0 )
 				{
-					// Prevent adding edges between spots that belong to the
+					// Prevent adding edges between BCellobjects that belong to the
 					// same frame
 
 					if ( DEBUG )
 					{
-						System.out.println( "[TrackScheme] addEdgeManually: edge is between 2 spots belonging to the same frame. Removing it." );
+						System.out.println( "[TrackScheme] addEdgeManually: edge is between 2 BCellobjects belonging to the same frame. Removing it." );
 					}
 					graph.removeCells( new Object[] { cell } );
 
@@ -426,8 +426,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 					// We can add it to the model
 
 					// Put them right in order: since we use a oriented graph,
-					// we want the source spot to precede in time.
-					if ( Spot.frameComparator.compare( source, target ) > 0 )
+					// we want the source BCellobject to precede in time.
+					if ( BCellobject.frameComparator.compare( source, target ) > 0 )
 					{
 
 						if ( DEBUG )
@@ -435,7 +435,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 							System.out.println( "[TrackScheme] #addEdgeManually: Source " + source + " succeed target " + target + ". Inverting edge direction." );
 						}
 
-						final Spot tmp = source;
+						final BCellobject tmp = source;
 						source = target;
 						target = tmp;
 					}
@@ -516,7 +516,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 		doFireSelectionChangeEvent = false;
 
 		{
-			final ArrayList< Object > newSelection = new ArrayList<>( selectionModel.getSpotSelection().size() + selectionModel.getEdgeSelection().size() );
+			final ArrayList< Object > newSelection = new ArrayList<>( selectionModel.getBCellobjectSelection().size() + selectionModel.getEdgeSelection().size() );
 			final Iterator< DefaultWeightedEdge > edgeIt = selectionModel.getEdgeSelection().iterator();
 			while ( edgeIt.hasNext() )
 			{
@@ -526,10 +526,10 @@ public class TrackScheme extends AbstractTrackMateModelView
 					newSelection.add( cell );
 				}
 			}
-			final Iterator< Spot > spotIt = selectionModel.getSpotSelection().iterator();
-			while ( spotIt.hasNext() )
+			final Iterator< BCellobject > BCellobjectIt = selectionModel.getBCellobjectSelection().iterator();
+			while ( BCellobjectIt.hasNext() )
 			{
-				final mxICell cell = graph.getCellFor( spotIt.next() );
+				final mxICell cell = graph.getCellFor( BCellobjectIt.next() );
 				if ( null != cell )
 				{
 					newSelection.add( cell );
@@ -539,28 +539,28 @@ public class TrackScheme extends AbstractTrackMateModelView
 			mGSmodel.setCells( newSelection.toArray() );
 		}
 
-		// Center on selection if we added one spot exactly
-		final Map< Spot, Boolean > spotsAdded = event.getSpots();
-		if ( spotsAdded != null && spotsAdded.size() == 1 )
+		// Center on selection if we added one BCellobject exactly
+		final Map< BCellobject, Boolean > BCellobjectsAdded = event.getBCellobjects();
+		if ( BCellobjectsAdded != null && BCellobjectsAdded.size() == 1 )
 		{
-			final boolean added = spotsAdded.values().iterator().next();
+			final boolean added = BCellobjectsAdded.values().iterator().next();
 			if ( added )
 			{
-				final Spot spot = spotsAdded.keySet().iterator().next();
-				centerViewOn( spot );
+				final BCellobject BCellobject = BCellobjectsAdded.keySet().iterator().next();
+				centerViewOn( BCellobject );
 			}
 		}
 		doFireSelectionChangeEvent = true;
 	}
 
 	@Override
-	public void centerViewOn( final Spot spot )
+	public void centerViewOn( final BCellobject BCellobject )
 	{
-		gui.centerViewOn( graph.getCellFor( spot ) );
+		gui.centerViewOn( graph.getCellFor( BCellobject ) );
 	}
 
 	/**
-	 * Used to catch spot creation events that occurred elsewhere, for instance
+	 * Used to catch BCellobject creation events that occurred elsewhere, for instance
 	 * by manual editing in the {@link AbstractTrackMateModelView}.
 	 * <p>
 	 * We have to deal with the graph modification ourselves here, because the
@@ -579,46 +579,46 @@ public class TrackScheme extends AbstractTrackMateModelView
 		{
 			final ArrayList< mxICell > cellsToRemove = new ArrayList<>();
 
-			final int targetColumn = getUnlaidSpotColumn();
+			final int targetColumn = getUnlaidBCellobjectColumn();
 
-			// Deal with spots
-			if ( !event.getSpots().isEmpty() )
+			// Deal with BCellobjects
+			if ( !event.getBCellobject().isEmpty() )
 			{
 
-				final Collection< mxCell > spotsWithStyleToUpdate = new HashSet<>();
+				final Collection< mxCell > BCellobjectsWithStyleToUpdate = new HashSet<>();
 
-				for ( final Spot spot : event.getSpots() )
+				for ( final BCellobject BCellobject : event.getBCellobject() )
 				{
 
-					if ( event.getSpotFlag( spot ) == ModelChangeEvent.FLAG_SPOT_ADDED )
+					if ( event.getBCellobjectFlag( BCellobject ) == ModelChangeEvent.FLAG_BCellobject_ADDED )
 					{
 
-						final int frame = spot.getFeature( Spot.FRAME ).intValue();
+						final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 						// Put in the graph
 						final int column = Math.max( targetColumn, getNextFreeColumn( frame ) );
-						final mxICell newCell = insertSpotInGraph( spot, column );
+						final mxICell newCell = insertBCellobjectInGraph( BCellobject, column );
 						rowLengths.put( frame, column );
-						spotsWithStyleToUpdate.add( ( mxCell ) newCell );
+						BCellobjectsWithStyleToUpdate.add( ( mxCell ) newCell );
 
 					}
-					else if ( event.getSpotFlag( spot ) == ModelChangeEvent.FLAG_SPOT_MODIFIED )
+					else if ( event.getBCellobjectFlag( BCellobject ) == ModelChangeEvent.FLAG_BCellobject_MODIFIED )
 					{
 
 						// Change the look of the cell
-						final mxICell cell = updateCellOf( spot );
-						spotsWithStyleToUpdate.add( ( mxCell ) cell );
+						final mxICell cell = updateCellOf( BCellobject );
+						BCellobjectsWithStyleToUpdate.add( ( mxCell ) cell );
 
 					}
-					else if ( event.getSpotFlag( spot ) == ModelChangeEvent.FLAG_SPOT_REMOVED )
+					else if ( event.getBCellobjectFlag( BCellobject ) == ModelChangeEvent.FLAG_BCellobject_REMOVED )
 					{
 
-						final mxICell cell = graph.getCellFor( spot );
+						final mxICell cell = graph.getCellFor( BCellobject );
 						cellsToRemove.add( cell );
 
 					}
 				}
 				graph.removeCells( cellsToRemove.toArray(), true );
-				stylist.updateVertexStyle( spotsWithStyleToUpdate );
+				stylist.updateVertexStyle( BCellobjectsWithStyleToUpdate );
 			}
 
 		}
@@ -639,11 +639,11 @@ public class TrackScheme extends AbstractTrackMateModelView
 				{
 
 					/*
-					 * Here we keep track of the spot and edge cells which style
+					 * Here we keep track of the BCellobject and edge cells which style
 					 * we need to update.
 					 */
 					final Map< Integer, Set< mxCell > > edgesToUpdate = new HashMap<>();
-					final Collection< mxCell > spotsWithStyleToUpdate = new HashSet<>();
+					final Collection< mxCell > BCellobjectsWithStyleToUpdate = new HashSet<>();
 
 					for ( final DefaultWeightedEdge edge : event.getEdges() )
 					{
@@ -656,9 +656,9 @@ public class TrackScheme extends AbstractTrackMateModelView
 							{
 
 								// Make sure target & source cells exist
-								final Spot source = model.getTrackModel().getEdgeSource( edge );
+								final BCellobject source = model.getTrackModel().getEdgeSource( edge );
 								final mxCell sourceCell = graph.getCellFor( source );
-								final Spot target = model.getTrackModel().getEdgeTarget( edge );
+								final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
 								final mxCell targetCell = graph.getCellFor( target );
 
 								if ( sourceCell == null || targetCell == null )
@@ -666,23 +666,23 @@ public class TrackScheme extends AbstractTrackMateModelView
 									/*
 									 * Is this missing cell missing because it
 									 * belongs to an invisible track? We then
-									 * have to import all the spot and edges.
+									 * have to import all the BCellobject and edges.
 									 */
 									final Integer trackID = model.getTrackModel().trackIDOf( edge );
-									final Set< Spot > trackSpots = model.getTrackModel().trackSpots( trackID );
-									for ( final Spot trackSpot : trackSpots )
+									final Set< BCellobject > trackBCellobjects = model.getTrackModel().trackBCellobjects( trackID );
+									for ( final BCellobject trackBCellobject : trackBCellobjects )
 									{
-										final mxCell spotCell = graph.getCellFor( trackSpot );
-										if ( spotCell == null )
+										final mxCell BCellobjectCell = graph.getCellFor( trackBCellobject );
+										if ( BCellobjectCell == null )
 										{
-											final int frame = trackSpot.getFeature( Spot.FRAME ).intValue();
+											final int frame = trackBCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 											// Put in the graph
-											final int targetColumn = getUnlaidSpotColumn();
+											final int targetColumn = getUnlaidBCellobjectColumn();
 											final int column = Math.max( targetColumn, getNextFreeColumn( frame ) );
 											// move in right+1 free column
-											final mxCell spotCellAdded = ( mxCell ) insertSpotInGraph( trackSpot, column );
+											final mxCell BCellobjectCellAdded = ( mxCell ) insertBCellobjectInGraph( trackBCellobject, column );
 											rowLengths.put( frame, column );
-											spotsWithStyleToUpdate.add( spotCellAdded );
+											BCellobjectsWithStyleToUpdate.add( BCellobjectCellAdded );
 										}
 									}
 
@@ -750,7 +750,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 					}
 
 					stylist.execute( edgesToUpdate );
-					stylist.updateVertexStyle( spotsWithStyleToUpdate );
+					stylist.updateVertexStyle( BCellobjectsWithStyleToUpdate );
 					SwingUtilities.invokeLater( new Runnable()
 					{
 						@Override
@@ -783,8 +783,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 		{
 			if ( null != stylist )
 			{
-				// pass the new one to the track overlay - we ignore its spot
-				// coloring and keep the spot coloring
+				// pass the new one to the track overlay - we ignore its BCellobject
+				// coloring and keep the BCellobject coloring
 				final TrackColorGenerator colorGenerator = ( TrackColorGenerator ) value;
 				stylist.setColorGenerator( colorGenerator );
 				doTrackStyle();
@@ -873,14 +873,14 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 	protected void initDisplaySettings()
 	{
-		displaySettings.put( KEY_SPOTS_VISIBLE, true );
-		displaySettings.put( KEY_DISPLAY_SPOT_NAMES, false );
-		// displaySettings.put(KEY_SPOT_COLORING, new
-		// SpotColorGenerator(model));
+		displaySettings.put( KEY_BCellobjectS_VISIBLE, true );
+		displaySettings.put( KEY_DISPLAY_BCellobject_NAMES, false );
+		// displaySettings.put(KEY_BCellobject_COLORING, new
+		// BCellobjectColorGenerator(model));
 		// displaySettings.put(KEY_TRACK_COLORING, new
 		// PerTrackFeatureColorGenerator(model,
 		// TrackIndexAnalyzer.TRACK_INDEX));
-		displaySettings.put( KEY_SPOT_RADIUS_RATIO, 1.0d );
+		displaySettings.put( KEY_BCellobject_RADIUS_RATIO, 1.0d );
 		displaySettings.put( KEY_TRACKS_VISIBLE, true );
 		displaySettings.put( KEY_TRACK_DISPLAY_MODE, DEFAULT_TRACK_DISPLAY_MODE );
 		displaySettings.put( KEY_TRACK_DISPLAY_DEPTH, DEFAULT_TRACK_DISPLAY_DEPTH );
@@ -905,8 +905,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 	{ // Seems to be inverted
 		if ( !doFireSelectionChangeEvent )
 		{ return; }
-		final Collection< Spot > spotsToAdd = new ArrayList<>();
-		final Collection< Spot > spotsToRemove = new ArrayList<>();
+		final Collection< BCellobject > BCellobjectsToAdd = new ArrayList<>();
+		final Collection< BCellobject > BCellobjectsToRemove = new ArrayList<>();
 		final Collection< DefaultWeightedEdge > edgesToAdd = new ArrayList<>();
 		final Collection< DefaultWeightedEdge > edgesToRemove = new ArrayList<>();
 
@@ -924,8 +924,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 						final mxICell child = cell.getChildAt( i );
 						if ( child.isVertex() )
 						{
-							final Spot spot = graph.getSpotFor( child );
-							spotsToRemove.add( spot );
+							final BCellobject BCellobject = graph.getBCellobjectFor( child );
+							BCellobjectsToRemove.add( BCellobject );
 						}
 						else
 						{
@@ -940,8 +940,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 					if ( cell.isVertex() )
 					{
-						final Spot spot = graph.getSpotFor( cell );
-						spotsToRemove.add( spot );
+						final BCellobject BCellobject = graph.getBCellobjectFor( cell );
+						BCellobjectsToRemove.add( BCellobject );
 					}
 					else
 					{
@@ -966,8 +966,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 						final mxICell child = cell.getChildAt( i );
 						if ( child.isVertex() )
 						{
-							final Spot spot = graph.getSpotFor( child );
-							spotsToAdd.add( spot );
+							final BCellobject BCellobject = graph.getBCellobjectFor( child );
+							BCellobjectsToAdd.add( BCellobject );
 						}
 						else
 						{
@@ -982,8 +982,8 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 					if ( cell.isVertex() )
 					{
-						final Spot spot = graph.getSpotFor( cell );
-						spotsToAdd.add( spot );
+						final BCellobject BCellobject = graph.getBCellobjectFor( cell );
+						BCellobjectsToAdd.add( BCellobject );
 					}
 					else
 					{
@@ -1002,17 +1002,17 @@ public class TrackScheme extends AbstractTrackMateModelView
 		{
 			selectionModel.addEdgeToSelection( edgesToAdd );
 		}
-		if ( !spotsToAdd.isEmpty() )
+		if ( !BCellobjectsToAdd.isEmpty() )
 		{
-			selectionModel.addSpotToSelection( spotsToAdd );
+			selectionModel.addBCellobjectToSelection( BCellobjectsToAdd );
 		}
 		if ( !edgesToRemove.isEmpty() )
 		{
 			selectionModel.removeEdgeFromSelection( edgesToRemove );
 		}
-		if ( !spotsToRemove.isEmpty() )
+		if ( !BCellobjectsToRemove.isEmpty() )
 		{
-			selectionModel.removeSpotFromSelection( spotsToRemove );
+			selectionModel.removeBCellobjectFromSelection( BCellobjectsToRemove );
 		}
 		doFireSelectionChangeEvent = true;
 	}
@@ -1054,9 +1054,9 @@ public class TrackScheme extends AbstractTrackMateModelView
 			if ( !doFireModelChangeEvent )
 			{ return; }
 
-			// Separate spots from edges
+			// Separate BCellobjects from edges
 			final Object[] objects = ( Object[] ) evt.getProperty( "cells" );
-			final HashSet< Spot > spotsToRemove = new HashSet<>();
+			final HashSet< BCellobject > BCellobjectsToRemove = new HashSet<>();
 			final ArrayList< DefaultWeightedEdge > edgesToRemove = new ArrayList<>();
 			for ( final Object obj : objects )
 			{
@@ -1065,11 +1065,11 @@ public class TrackScheme extends AbstractTrackMateModelView
 				{
 					if ( cell.isVertex() )
 					{
-						// Build list of removed spots
-						final Spot spot = graph.getSpotFor( cell );
-						spotsToRemove.add( spot );
+						// Build list of removed BCellobjects
+						final BCellobject BCellobject = graph.getBCellobjectFor( cell );
+						BCellobjectsToRemove.add( BCellobject );
 						// Clean maps
-						graph.removeMapping( spot );
+						graph.removeMapping( BCellobject );
 					}
 					else if ( cell.isEdge() )
 					{
@@ -1102,9 +1102,9 @@ public class TrackScheme extends AbstractTrackMateModelView
 				{
 					model.removeEdge( edge );
 				}
-				for ( final Spot spot : spotsToRemove )
+				for ( final BCellobject BCellobject : BCellobjectsToRemove )
 				{
-					model.removeSpot( spot );
+					model.removeBCellobject( BCellobject );
 				}
 
 			}
@@ -1223,31 +1223,31 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 	/**
 	 * Captures and stores the thumbnail image that will be displayed in each
-	 * spot cell, when using styles that can display images.
+	 * BCellobject cell, when using styles that can display images.
 	 */
 	private void createThumbnails()
 	{
-		// Group spots per frame
-		final Set< Integer > frames = model.getSpots().keySet();
-		final HashMap< Integer, HashSet< Spot > > spotPerFrame = new HashMap<>( frames.size() );
+		// Group BCellobjects per frame
+		final Set< Integer > frames = model.getBCellobjects().keySet();
+		final HashMap< Integer, HashSet< BCellobject > > BCellobjectPerFrame = new HashMap<>( frames.size() );
 		for ( final Integer frame : frames )
 		{
-			spotPerFrame.put( frame, new HashSet< Spot >( model.getSpots().getNSpots( frame, true ) ) ); // max
+			BCellobjectPerFrame.put( frame, new HashSet< BCellobject >( model.getBCellobjects().getNBCellobjects( frame, true ) ) ); // max
 			// size
 		}
 		for ( final Integer trackID : model.getTrackModel().trackIDs( true ) )
 		{
-			for ( final Spot spot : model.getTrackModel().trackSpots( trackID ) )
+			for ( final BCellobject BCellobject : model.getTrackModel().trackBCellobjects( trackID ) )
 			{
-				final int frame = spot.getFeature( Spot.FRAME ).intValue();
-				spotPerFrame.get( frame ).add( spot );
+				final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+				BCellobjectPerFrame.get( frame ).add( BCellobject );
 			}
 		}
-		// Set spot image to cell style
-		if ( null != spotImageUpdater )
+		// Set BCellobject image to cell style
+		if ( null != BCellobjectImageUpdater )
 		{
-			gui.logger.setStatus( "Collecting spot thumbnails." );
-			final double radiusFactor = ( Double ) displaySettings.get( KEY_SPOT_RADIUS_RATIO );
+			gui.logger.setStatus( "Collecting BCellobject thumbnails." );
+			final double radiusFactor = ( Double ) displaySettings.get( KEY_BCellobject_RADIUS_RATIO );
 			int index = 0;
 			try
 			{
@@ -1256,10 +1256,10 @@ public class TrackScheme extends AbstractTrackMateModelView
 				// Iterate per frame
 				for ( final Integer frame : frames )
 				{
-					for ( final Spot spot : spotPerFrame.get( frame ) )
+					for ( final BCellobject BCellobject : BCellobjectPerFrame.get( frame ) )
 					{
-						final mxICell cell = graph.getCellFor( spot );
-						final String imageStr = spotImageUpdater.getImageString( spot, radiusFactor );
+						final mxICell cell = graph.getCellFor( BCellobject );
+						final String imageStr = BCellobjectImageUpdater.getImageString( BCellobject, radiusFactor );
 						String style = cell.getStyle();
 						style = mxStyleUtils.setStyle( style, mxConstants.STYLE_IMAGE, "data:image/base64," + imageStr );
 						graph.getModel().setStyle( cell, style );
@@ -1290,7 +1290,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 				maxLength = rowLength;
 			}
 		}
-		unlaidSpotColumn = maxLength;
+		unlaidBCellobjectColumn = maxLength;
 		gui.graphComponent.refresh();
 	}
 
@@ -1324,33 +1324,33 @@ public class TrackScheme extends AbstractTrackMateModelView
 	}
 
 	/**
-	 * Create links between all the spots currently in the {@link Model}
+	 * Create links between all the BCellobjects currently in the {@link Model}
 	 * selection. We update simultaneously the {@link Model} and the
 	 * {@link JGraphXAdapter}.
 	 */
-	public void linkSpots()
+	public void linkBCellobjects()
 	{
 
-		// Sort spots by time
-		final TreeMap< Integer, Spot > spotsInTime = new TreeMap<>();
-		for ( final Spot spot : selectionModel.getSpotSelection() )
+		// Sort BCellobjects by time
+		final TreeMap< Integer, BCellobject > BCellobjectsInTime = new TreeMap<>();
+		for ( final BCellobject BCellobject : selectionModel.getBCellobjectSelection() )
 		{
-			spotsInTime.put( spot.getFeature( Spot.FRAME ).intValue(), spot );
+			BCellobjectsInTime.put( BCellobject.getFeature( BCellobject.POSITION_T ).intValue(), BCellobject );
 		}
 
 		// Find adequate column
-		final int targetColumn = getUnlaidSpotColumn();
+		final int targetColumn = getUnlaidBCellobjectColumn();
 
 		// Then link them in this order
 		model.beginUpdate();
 		graph.getModel().beginUpdate();
 		try
 		{
-			final Iterator< Integer > it = spotsInTime.keySet().iterator();
+			final Iterator< Integer > it = BCellobjectsInTime.keySet().iterator();
 			final Integer previousTime = it.next();
-			Spot previousSpot = spotsInTime.get( previousTime );
-			// If this spot belong to an invisible track, we make it visible
-			Integer ID = model.getTrackModel().trackIDOf( previousSpot );
+			BCellobject previousBCellobject = BCellobjectsInTime.get( previousTime );
+			// If this BCellobject belong to an invisible track, we make it visible
+			Integer ID = model.getTrackModel().trackIDOf( previousBCellobject );
 			if ( ID != null && !model.getTrackModel().isVisible( ID ) )
 			{
 				importTrack( ID );
@@ -1359,46 +1359,46 @@ public class TrackScheme extends AbstractTrackMateModelView
 			while ( it.hasNext() )
 			{
 				final Integer currentTime = it.next();
-				final Spot currentSpot = spotsInTime.get( currentTime );
-				// If this spot belong to an invisible track, we make it visible
-				ID = model.getTrackModel().trackIDOf( currentSpot );
+				final BCellobject currentBCellobject = BCellobjectsInTime.get( currentTime );
+				// If this BCellobject belong to an invisible track, we make it visible
+				ID = model.getTrackModel().trackIDOf( currentBCellobject );
 				if ( ID != null && !model.getTrackModel().isVisible( ID ) )
 				{
 					importTrack( ID );
 				}
-				// Check that the cells matching the 2 spots exist in the graph
-				mxICell currentCell = graph.getCellFor( currentSpot );
+				// Check that the cells matching the 2 BCellobjects exist in the graph
+				mxICell currentCell = graph.getCellFor( currentBCellobject );
 				if ( null == currentCell )
 				{
-					currentCell = insertSpotInGraph( currentSpot, targetColumn );
+					currentCell = insertBCellobjectInGraph( currentBCellobject, targetColumn );
 					if ( DEBUG )
 					{
-						System.out.println( "[TrackScheme] linkSpots: creating cell " + currentCell + " for spot " + currentSpot );
+						System.out.println( "[TrackScheme] linkBCellobjects: creating cell " + currentCell + " for BCellobject " + currentBCellobject );
 					}
 				}
-				mxICell previousCell = graph.getCellFor( previousSpot );
+				mxICell previousCell = graph.getCellFor( previousBCellobject );
 				if ( null == previousCell )
 				{
-					final int frame = previousSpot.getFeature( Spot.FRAME ).intValue();
+					final int frame = previousBCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 					final int column = Math.max( targetColumn, getNextFreeColumn( frame ) );
 					rowLengths.put( frame, column );
-					previousCell = insertSpotInGraph( previousSpot, column );
+					previousCell = insertBCellobjectInGraph( previousBCellobject, column );
 					if ( DEBUG )
 					{
-						System.out.println( "[TrackScheme] linkSpots: creating cell " + previousCell + " for spot " + previousSpot );
+						System.out.println( "[TrackScheme] linkBCellobjects: creating cell " + previousCell + " for BCellobject " + previousBCellobject );
 					}
 				}
 				// Check if the model does not have already a edge for these 2
-				// spots (that is
-				// the case if the 2 spot are in an invisible track, which track
+				// BCellobjects (that is
+				// the case if the 2 BCellobject are in an invisible track, which track
 				// scheme does not
 				// know of).
-				DefaultWeightedEdge edge = model.getTrackModel().getEdge( previousSpot, currentSpot );
+				DefaultWeightedEdge edge = model.getTrackModel().getEdge( previousBCellobject, currentBCellobject );
 				if ( null == edge )
 				{
-					// We create a new edge between 2 spots, and pair it with a
+					// We create a new edge between 2 BCellobjects, and pair it with a
 					// new cell edge.
-					edge = model.addEdge( previousSpot, currentSpot, -1 );
+					edge = model.addEdge( previousBCellobject, currentBCellobject, -1 );
 					final mxCell cell = graph.addJGraphTEdge( edge );
 					cell.setValue( "New" );
 				}
@@ -1415,7 +1415,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 						importTrack( ID );
 					}
 				}
-				previousSpot = currentSpot;
+				previousBCellobject = currentBCellobject;
 			}
 		}
 		finally
@@ -1445,20 +1445,20 @@ public class TrackScheme extends AbstractTrackMateModelView
 	public void selectTrack( final Collection< mxCell > vertices, final Collection< mxCell > edges, final int direction )
 	{
 
-		// Look for spot and edges matching given mxCells
-		final HashSet< Spot > inspectionSpots = new HashSet<>( vertices.size() );
+		// Look for BCellobject and edges matching given mxCells
+		final HashSet< BCellobject > inspectionBCellobjects = new HashSet<>( vertices.size() );
 		for ( final mxCell cell : vertices )
 		{
-			final Spot spot = graph.getSpotFor( cell );
-			if ( null == spot )
+			final BCellobject BCellobject = graph.getBCellobjectFor( cell );
+			if ( null == BCellobject )
 			{
 				if ( DEBUG )
 				{
-					System.out.println( "[TrackScheme] selectWholeTrack: tried to retrieve cell " + cell + ", unknown to spot map." );
+					System.out.println( "[TrackScheme] selectWholeTrack: tried to retrieve cell " + cell + ", unknown to BCellobject map." );
 				}
 				continue;
 			}
-			inspectionSpots.add( spot );
+			inspectionBCellobjects.add( BCellobject );
 		}
 		final HashSet< DefaultWeightedEdge > inspectionEdges = new HashSet<>( edges.size() );
 		for ( final mxCell cell : edges )
@@ -1475,7 +1475,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 			inspectionEdges.add( dwe );
 		}
 		// Forward to selection model
-		selectionModel.selectTrack( inspectionSpots, inspectionEdges, direction );
+		selectionModel.selectTrack( inspectionBCellobjects, inspectionEdges, direction );
 	}
 
 	@Override

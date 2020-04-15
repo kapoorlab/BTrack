@@ -3,7 +3,6 @@
  */
 package fiji.plugin.trackmate.graph;
 
-import fiji.plugin.trackmate.Spot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,25 +16,27 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class TimeDirectedSortedDepthFirstIterator extends SortedDepthFirstIterator<Spot, DefaultWeightedEdge> {
+import budDetector.BCellobject;
 
-	public TimeDirectedSortedDepthFirstIterator(final Graph<Spot, DefaultWeightedEdge> g, final Spot startVertex, final Comparator<Spot> comparator) {
+public class TimeDirectedSortedDepthFirstIterator extends SortedDepthFirstIterator<BCellobject, DefaultWeightedEdge> {
+
+	public TimeDirectedSortedDepthFirstIterator(final Graph<BCellobject, DefaultWeightedEdge> g, final BCellobject startVertex, final Comparator<BCellobject> comparator) {
 		super(g, startVertex, comparator);
 	}
 
     @Override
-	protected void addUnseenChildrenOf(final Spot vertex) {
+	protected void addUnseenChildrenOf(final BCellobject vertex) {
 
 		// Retrieve target vertices, and sort them in a list
-		final List< Spot > sortedChildren = new ArrayList< >();
+		final List< BCellobject > sortedChildren = new ArrayList< >();
     	// Keep a map of matching edges so that we can retrieve them in the same order
-    	final Map<Spot, DefaultWeightedEdge> localEdges = new HashMap<>();
+    	final Map<BCellobject, DefaultWeightedEdge> localEdges = new HashMap<>();
 
-    	final int ts = vertex.getFeature(Spot.FRAME).intValue();
+    	final int ts = vertex.getFeature(BCellobject.POSITION_T).intValue();
         for (final DefaultWeightedEdge edge : specifics.edgesOf(vertex)) {
 
-        	final Spot oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
-        	final int tt = oppositeV.getFeature(Spot.FRAME).intValue();
+        	final BCellobject oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
+        	final int tt = oppositeV.getFeature(BCellobject.POSITION_T).intValue();
         	if (tt <= ts) {
         		continue;
         	}
@@ -47,9 +48,9 @@ public class TimeDirectedSortedDepthFirstIterator extends SortedDepthFirstIterat
         }
 
 		Collections.sort( sortedChildren, Collections.reverseOrder( comparator ) );
-		final Iterator< Spot > it = sortedChildren.iterator();
+		final Iterator< BCellobject > it = sortedChildren.iterator();
         while (it.hasNext()) {
-			final Spot child = it.next();
+			final BCellobject child = it.next();
 
             if (nListeners != 0) {
                 fireEdgeTraversed(createEdgeTraversalEvent(localEdges.get(child)));

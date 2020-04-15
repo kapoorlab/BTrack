@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
+import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureAnalyzer;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.io.FileInfo;
@@ -34,14 +34,14 @@ public class Settings
 
 	/**
 	 * The polygon of interest. This will be used to crop the image and to
-	 * discard found spots out of the polygon. If <code>null</code>, the whole
+	 * discard found BCellobjects out of the polygon. If <code>null</code>, the whole
 	 * image is considered.
 	 */
 	public Polygon polygon;
 
 	/**
 	 * The region of interest (ROI). This will be used to crop the image and to
-	 * discard found spots outside the ROI. If <code>null</code>, the whole
+	 * discard found BCellobjects outside the ROI. If <code>null</code>, the whole
 	 * image is considered.
 	 */
 	public Roi roi;
@@ -112,23 +112,23 @@ public class Settings
 
 	/**
 	 * The name of the detector factory to use. It will be used to generate
-	 * {@link fiji.plugin.trackmate.detection.SpotDetector} for each target
+	 * {@link fiji.plugin.trackmate.detection.BCellobjectDetector} for each target
 	 * frame.
 	 */
-	public SpotDetectorFactory< ? > detectorFactory;
+	public BCellobjectDetectorFactory< ? > detectorFactory;
 
 	/** The the tracker to use. */
-	public SpotTrackerFactory trackerFactory;
+	public BCellobjectTrackerFactory trackerFactory;
 
 	/**
-	 * Settings map for {@link fiji.plugin.trackmate.detection.SpotDetector}.
+	 * Settings map for {@link fiji.plugin.trackmate.detection.BCellobjectDetector}.
 	 * 
 	 * @see fiji.plugin.trackmate.detection.DetectorKeys
 	 */
 	public Map< String, Object > detectorSettings = new HashMap< >();
 
 	/**
-	 * Settings map for {@link fiji.plugin.trackmate.tracking.SpotTracker}.
+	 * Settings map for {@link fiji.plugin.trackmate.tracking.BCellobjectTracker}.
 	 * 
 	 * @see fiji.plugin.trackmate.tracking.TrackerKeys
 	 */
@@ -139,27 +139,27 @@ public class Settings
 	/**
 	 * The feature filter list.
 	 */
-	protected List< FeatureFilter > spotFilters = new ArrayList< >();
+	protected List< FeatureFilter > BCellobjectFilters = new ArrayList< >();
 
 	/**
-	 * The initial quality filter value that is used to clip spots of low
-	 * quality from spots.
+	 * The initial quality filter value that is used to clip BCellobjects of low
+	 * quality from BCellobjects.
 	 */
-	public Double initialSpotFilterValue = Double.valueOf( 0 );
+	public Double initialBCellobjectFilterValue = Double.valueOf( 0 );
 
-	/** The track filter list that is used to prune track and spots. */
+	/** The track filter list that is used to prune track and BCellobjects. */
 	protected List< FeatureFilter > trackFilters = new ArrayList< >();
 
 	protected String errorMessage;
 
-	// Spot features
+	// BCellobject features
 
 	/**
-	 * The {@link SpotAnalyzerFactory}s that will be used to compute spot
+	 * The {@link BCellobjectAnalyzerFactory}s that will be used to compute BCellobject
 	 * features. They are ordered in a {@link List} in case some analyzers
 	 * requires the results of another analyzer to proceed.
 	 */
-	protected List< SpotAnalyzerFactory< ? > > spotAnalyzerFactories = new ArrayList< >();
+	protected List< BCellobjectAnalyzerFactory< ? > > BCellobjectAnalyzerFactories = new ArrayList< >();
 
 	// Edge features
 
@@ -288,7 +288,6 @@ public class Settings
 		str.append( "Geometry:\n" );
 		str.append( String.format( "  X = %4d - %4d, dx = %g\n", xstart, xend, dx ) );
 		str.append( String.format( "  Y = %4d - %4d, dy = %g\n", ystart, yend, dy ) );
-		str.append( String.format( "  Z = %4d - %4d, dz = %g\n", zstart, zend, dz ) );
 		str.append( String.format( "  T = %4d - %4d, dt = %g\n", tstart, tend, dt ) );
 
 		return str.toString();
@@ -298,14 +297,14 @@ public class Settings
 	{
 		final StringBuilder str = new StringBuilder();
 
-		if ( spotAnalyzerFactories.isEmpty() )
+		if ( BCellobjectAnalyzerFactories.isEmpty() )
 		{
-			str.append( "No spot feature analyzers.\n" );
+			str.append( "No BCellobject feature analyzers.\n" );
 		}
 		else
 		{
-			str.append( "Spot feature analyzers:\n" );
-			prettyPrintFeatureAnalyzer( spotAnalyzerFactories, str );
+			str.append( "BCellobject feature analyzers:\n" );
+			prettyPrintFeatureAnalyzer( BCellobjectAnalyzerFactories, str );
 		}
 
 		if ( edgeAnalyzers.isEmpty() )
@@ -339,7 +338,7 @@ public class Settings
 		str.append( toStringImageInfo() );
 
 		str.append( '\n' );
-		str.append( "Spot detection:\n" );
+		str.append( "BCellobject detection:\n" );
 		if ( null == detectorFactory )
 		{
 			str.append( "No detector factory set.\n" );
@@ -363,26 +362,26 @@ public class Settings
 		str.append( toStringFeatureAnalyzersInfo() );
 
 		str.append( '\n' );
-		str.append( "Initial spot filter:\n" );
-		if ( null == initialSpotFilterValue )
+		str.append( "Initial BCellobject filter:\n" );
+		if ( null == initialBCellobjectFilterValue )
 		{
 			str.append( "No initial quality filter.\n" );
 		}
 		else
 		{
-			str.append( "Initial quality filter value: " + initialSpotFilterValue + ".\n" );
+			str.append( "Initial quality filter value: " + initialBCellobjectFilterValue + ".\n" );
 		}
 
 		str.append( '\n' );
-		str.append( "Spot feature filters:\n" );
-		if ( spotFilters == null || spotFilters.size() == 0 )
+		str.append( "BCellobject feature filters:\n" );
+		if ( BCellobjectFilters == null || BCellobjectFilters.size() == 0 )
 		{
-			str.append( "No spot feature filters.\n" );
+			str.append( "No BCellobject feature filters.\n" );
 		}
 		else
 		{
-			str.append( "Set with " + spotFilters.size() + " spot feature filters:\n" );
-			for ( final FeatureFilter featureFilter : spotFilters )
+			str.append( "Set with " + BCellobjectFilters.size() + " BCellobject feature filters:\n" );
+			for ( final FeatureFilter featureFilter : BCellobjectFilters )
 			{
 				str.append( " - " + featureFilter + "\n" );
 			}
@@ -392,7 +391,7 @@ public class Settings
 		str.append( "Particle linking:\n" );
 		if ( null == trackerFactory )
 		{
-			str.append( "No spot tracker set.\n" );
+			str.append( "No BCellobject tracker set.\n" );
 		}
 		else
 		{
@@ -444,9 +443,9 @@ public class Settings
 			errorMessage = "The detector settings is null.\n";
 			return false;
 		}
-		if ( null == initialSpotFilterValue )
+		if ( null == initialBCellobjectFilterValue )
 		{
-			errorMessage = "Initial spot quality threshold is not set.\n";
+			errorMessage = "Initial BCellobject quality threshold is not set.\n";
 			return false;
 		}
 		if ( null == trackerFactory )
@@ -468,70 +467,70 @@ public class Settings
 	}
 
 	/*
-	 * SPOT FEATURES
+	 * BCellobject FEATURES
 	 */
 
 	/**
-	 * Remove any {@link SpotAnalyzerFactory} to this object.
+	 * Remove any {@link BCellobjectAnalyzerFactory} to this object.
 	 */
-	public void clearSpotAnalyzerFactories()
+	public void clearBCellobjectAnalyzerFactories()
 	{
-		spotAnalyzerFactories.clear();
+		BCellobjectAnalyzerFactories.clear();
 	}
 
 	/**
-	 * Returns a copy of the list of {@link SpotAnalyzerFactory}s configured in
+	 * Returns a copy of the list of {@link BCellobjectAnalyzerFactory}s configured in
 	 * this settings object. They are returned in an ordered list, to enforce
 	 * processing order in case some analyzers requires the results of another
 	 * analyzers to proceed.
 	 *
-	 * @return the list of {@link SpotAnalyzerFactory}s.
+	 * @return the list of {@link BCellobjectAnalyzerFactory}s.
 	 */
-	public List< SpotAnalyzerFactory< ? > > getSpotAnalyzerFactories()
+	public List< BCellobjectAnalyzerFactory< ? > > getBCellobjectAnalyzerFactories()
 	{
-		return new ArrayList< >( spotAnalyzerFactories );
+		return new ArrayList< >( BCellobjectAnalyzerFactories );
 	}
 
 	/**
-	 * Adds a {@link SpotAnalyzerFactory} to the {@link List} of spot analyzers
+	 * Adds a {@link BCellobjectAnalyzerFactory} to the {@link List} of BCellobject analyzers
 	 * configured.
 	 *
-	 * @param spotAnalyzer
-	 *            the {@link fiji.plugin.trackmate.features.spot.SpotAnalyzer}
+	 * @param BCellobjectAnalyzer
+	 *            the {@link fiji.plugin.trackmate.features.BCellobject.BCellobjectAnalyzer}
 	 *            to add, at the end of the list.
 	 */
-	public void addSpotAnalyzerFactory( final SpotAnalyzerFactory< ? > spotAnalyzer )
+	public void addBCellobjectAnalyzerFactory( final BCellobjectAnalyzerFactory< ? > BCellobjectAnalyzer )
 	{
-		spotAnalyzerFactories.add( spotAnalyzer );
+		BCellobjectAnalyzerFactories.add( BCellobjectAnalyzer );
 	}
 
 	/**
-	 * Adds a {@link SpotAnalyzerFactory} to the {@link List} of spot analyzers
+	 * Adds a {@link BCellobjectAnalyzerFactory} to the {@link List} of BCellobject analyzers
 	 * configured, at the specified index.
 	 *
 	 * @param index
 	 *            index at which the analyzer is to be inserted.
-	 * @param spotAnalyzer
-	 *            the {@link fiji.plugin.trackmate.features.spot.SpotAnalyzer}
+	 * @param BCellobjectAnalyzer
+	 *            the {@link fiji.plugin.trackmate.features.BCellobject.BCellobjectAnalyzer}
 	 *            to add, at the specified index in the list.
 	 */
-	public void addSpotAnalyzerFactory( final int index, final SpotAnalyzerFactory< ? > spotAnalyzer )
+	public void addBCellobjectAnalyzerFactory( final int index, final BCellobjectAnalyzerFactory< ? > BCellobjectAnalyzer )
 	{
-		spotAnalyzerFactories.add( index, spotAnalyzer );
+		BCellobjectAnalyzerFactories.add( index, BCellobjectAnalyzer );
 	}
 
 	/**
-	 * Removes the specified {@link SpotAnalyzerFactory} from the analyzers
+	 * Removes the specified {@link BCellobjectAnalyzerFactory} from the analyzers
 	 * configured.
 	 *
-	 * @param spotAnalyzer
-	 *            the {@link SpotAnalyzerFactory} to remove.
-	 * @return true if the specified {@link SpotAnalyzerFactory} was in the list
+	 * @param BCellobjectAnalyzer
+	 *            the {@link BCellobjectAnalyzerFactory} to remove.
+	 * @return true if the specified {@link BCellobjectAnalyzerFactory} was in the list
 	 *         and was removed.
 	 */
-	public boolean removeSpotAnalyzerFactory( final SpotAnalyzerFactory< ? > spotAnalyzer )
+	public boolean removeBCellobjectAnalyzerFactory( final BCellobjectAnalyzerFactory< ? > BCellobjectAnalyzer )
 	{
-		return spotAnalyzerFactories.remove( spotAnalyzer );
+		return BCellobjectAnalyzerFactories.remove( BCellobjectAnalyzer );
 	}
 
 	/*
@@ -672,35 +671,35 @@ public class Settings
 	 */
 
 	/**
-	 * Add a filter to the list of spot filters.
+	 * Add a filter to the list of BCellobject filters.
 	 * 
 	 * @param filter
 	 *            the filter to add.
 	 */
-	public void addSpotFilter( final FeatureFilter filter )
+	public void addBCellobjectFilter( final FeatureFilter filter )
 	{
-		spotFilters.add( filter );
+		BCellobjectFilters.add( filter );
 	}
 
-	public void removeSpotFilter( final FeatureFilter filter )
+	public void removeBCellobjectFilter( final FeatureFilter filter )
 	{
-		spotFilters.remove( filter );
+		BCellobjectFilters.remove( filter );
 	}
 
-	/** Remove all spot filters stored in this model. */
-	public void clearSpotFilters()
+	/** Remove all BCellobject filters stored in this model. */
+	public void clearBCellobjectFilters()
 	{
-		spotFilters.clear();
+		BCellobjectFilters.clear();
 	}
 
-	public List< FeatureFilter > getSpotFilters()
+	public List< FeatureFilter > getBCellobjectFilters()
 	{
-		return spotFilters;
+		return BCellobjectFilters;
 	}
 
-	public void setSpotFilters( final List< FeatureFilter > spotFilters )
+	public void setBCellobjectFilters( final List< FeatureFilter > BCellobjectFilters )
 	{
-		this.spotFilters = spotFilters;
+		this.BCellobjectFilters = BCellobjectFilters;
 	}
 
 	/**

@@ -18,11 +18,11 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.tracking.LAPUtils;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.oldlap.costmatrix.LinkingCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.oldlap.costmatrix.TrackSegmentCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.oldlap.hungarian.AssignmentAlgorithm;
@@ -112,7 +112,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
  * @author Nicholas Perry
  */
 @SuppressWarnings( "deprecation" )
-public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotTracker {
+public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker {
 
 	private final static String BASE_ERROR_MESSAGE = "LAPTracker: ";
 	private static final boolean DEBUG = false;
@@ -122,7 +122,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 
 	/** The cost matrix for linking individual track segments (step 2). */
 	protected double[][] segmentCosts = null;
-	/** Stores the objects to track as a list of Spots per frame. */
+	/** Stores the objects to track as a list of BCellobjects per frame. */
 
 	/**
 	 * Stores whether the default cost matrices from the paper should be used,
@@ -132,39 +132,39 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	/**
 	 * Store the track segments computed during step (1) of the algorithm.
 	 * <p>
-	 * In individual segments, spots are put in a {@link SortedSet} so that they
+	 * In individual segments, BCellobjects are put in a {@link SortedSet} so that they
 	 * are retrieved by frame order when iterated over.
 	 * <p>
 	 * The segments are put in a list, for we need to have them indexed to build
 	 * a cost matrix for segments in the step (2) of the algorithm.
 	 */
-	protected List<SortedSet<Spot>> trackSegments = null;
-	/** Holds references to the middle spots in the track segments. */
-	protected List<Spot> middlePoints;
+	protected List<SortedSet<BCellobject>> trackSegments = null;
+	/** Holds references to the middle BCellobjects in the track segments. */
+	protected List<BCellobject> middlePoints;
 	/**
-	 * Holds references to the middle spots considered for merging in the track
+	 * Holds references to the middle BCellobjects considered for merging in the track
 	 * segments.
 	 */
-	protected List<Spot> mergingMiddlePoints;
+	protected List<BCellobject> mergingMiddlePoints;
 	/**
-	 * Holds references to the middle spots considered for splitting in the
+	 * Holds references to the middle BCellobjects considered for splitting in the
 	 * track segments.
 	 */
-	protected List<Spot> splittingMiddlePoints;
+	protected List<BCellobject> splittingMiddlePoints;
 	/**
-	 * Each index corresponds to a Spot in middleMergingPoints, and holds the
+	 * Each index corresponds to a BCellobject in middleMergingPoints, and holds the
 	 * track segment index that the middle point belongs to.
 	 */
 	protected int[] mergingMiddlePointsSegmentIndices;
 	/**
-	 * Each index corresponds to a Spot in middleSplittingPoints, and holds the
+	 * Each index corresponds to a BCellobject in middleSplittingPoints, and holds the
 	 * track segment index that the middle point belongs to.
 	 */
 	protected int[] splittingMiddlePointsSegmentIndices;
-	/** The graph this tracker will use to link spots. */
-	protected SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph;
-	/** The Spot collection that will be linked in the graph. */
-	protected final SpotCollection spots;
+	/** The graph this tracker will use to link BCellobjects. */
+	protected SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> graph;
+	/** The BCellobject collection that will be linked in the graph. */
+	protected final BCellobjectCollection BCellobjects;
 	/** The settings map that configures this tracker. */
 	protected final Map< String, Object > settings;
 
@@ -172,9 +172,9 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	 * CONSTRUCTOR
 	 */
 
-	public LAPTracker( final SpotCollection spots, final Map< String, Object > settings )
+	public LAPTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
 	{
-		this.spots = spots;
+		this.BCellobjects = BCellobjects;
 		this.settings = settings;
 	}
 
@@ -199,18 +199,18 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 
 	/**
 	 * Reset any link created in the graph result in this tracker, effectively
-	 * creating a new graph, containing the spots but no edge.
+	 * creating a new graph, containing the BCellobjects but no edge.
 	 */
 	public void reset() {
 		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		final Iterator<Spot> it = spots.iterator(true);
+		final Iterator<BCellobject> it = BCellobjects.iterator(true);
 		while (it.hasNext()) {
 			graph.addVertex(it.next());
 		}
 	}
 
 	@Override
-	public SimpleWeightedGraph<Spot, DefaultWeightedEdge> getResult() {
+	public SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> getResult() {
 		return graph;
 	}
 
@@ -241,7 +241,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	 *
 	 * @return the track segments.
 	 */
-	public List<SortedSet<Spot>> getTrackSegments() {
+	public List<SortedSet<BCellobject>> getTrackSegments() {
 		return trackSegments;
 	}
 
@@ -262,27 +262,27 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	@Override
 	public boolean process() {
 		// Check that the objects list itself isn't null
-		if (null == spots) {
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is null.";
+		if (null == BCellobjects) {
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is null.";
 			return false;
 		}
 
 		// Check that the objects list contains inner collections.
-		if (spots.keySet().isEmpty()) {
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+		if (BCellobjects.keySet().isEmpty()) {
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
-		for (final int frame : spots.keySet()) {
-			if (spots.getNSpots(frame, true) > 0) {
+		for (final int frame : BCellobjects.keySet()) {
+			if (BCellobjects.getNBCellobjects(frame, true) > 0) {
 				empty = false;
 				break;
 			}
 		}
 		if (empty) {
-			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 		// Check parameters
@@ -430,7 +430,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	/**
 	 * Perform the frame to frame linking.
 	 * <p>
-	 * For each frame, compute the cost matrix to link each spot to another spot
+	 * For each frame, compute the cost matrix to link each BCellobject to another BCellobject
 	 * in the next frame. Then compute the optimal track segments using this
 	 * cost matrix. Finally, update the graph with found links.
 	 */
@@ -438,8 +438,8 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 
 		// Prepare frame pairs in order, not necessarily separated by 1.
-		final ArrayList<int[]> framePairs = new ArrayList<>(spots.keySet().size() - 1);
-		final Iterator<Integer> frameIterator = spots.keySet().iterator();
+		final ArrayList<int[]> framePairs = new ArrayList<>(BCellobjects.keySet().size() - 1);
+		final Iterator<Integer> frameIterator = BCellobjects.keySet().iterator();
 		int frame0 = frameIterator.next();
 		int frame1;
 		while (frameIterator.hasNext()) { // ascending order
@@ -467,14 +467,14 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 						final int lFrame0 = framePairs.get(i)[0];
 						final int lFrame1 = framePairs.get(i)[1];
 
-						// Get spots - we have to create a list from each content
-						final List<Spot> t0 = new ArrayList<>(spots.getNSpots(lFrame0, true));
-						for (final Iterator<Spot> iterator = spots.iterator(lFrame0, true); iterator.hasNext();) {
+						// Get BCellobjects - we have to create a list from each content
+						final List<BCellobject> t0 = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame0, true));
+						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame0, true); iterator.hasNext();) {
 							t0.add(iterator.next());
 
 						}
-						final List<Spot> t1 = new ArrayList<>(spots.getNSpots(lFrame1, true));
-						for (final Iterator<Spot> iterator = spots.iterator(lFrame1, true); iterator.hasNext();) {
+						final List<BCellobject> t1 = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame1, true));
+						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame1, true); iterator.hasNext();) {
 							t1.add(iterator.next());
 						}
 
@@ -509,9 +509,9 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 								final int i1 = solutions[j][1];
 
 								if (i0 < t0.size() && i1 < t1.size()) {
-									// Solution belong to the upper-left quadrant: we can connect the spots
-									final Spot s0 = t0.get(i0);
-									final Spot s1 = t1.get(i1);
+									// Solution belong to the upper-left quadrant: we can connect the BCellobjects
+									final BCellobject s0 = t0.get(i0);
+									final BCellobject s1 = t1.get(i1);
 									// We set the edge weight to be the linking cost, for future reference.
 									// This is NOT used in further tracking steps
 									final double weight = costMatrix[i0][i1];
@@ -543,15 +543,15 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	 * Create the cost matrix required in the frame to frame linking.
 	 *
 	 * @param t0
-	 *            the list of spots in the first frame
+	 *            the list of BCellobjects in the first frame
 	 * @param t1
-	 *            the list of spots in the second frame
+	 *            the list of BCellobjects in the second frame
 	 * @param lSettings
 	 *            the tracker settings that specifies how this cost should be
 	 *            created
 	 * @return the cost matrix as an array of array of double
 	 */
-	protected double[][] createFrameToFrameLinkingCostMatrix(final List<Spot> t0, final List<Spot> t1, final Map<String, Object> lSettings) {
+	protected double[][] createFrameToFrameLinkingCostMatrix(final List<BCellobject> t0, final List<BCellobject> t1, final Map<String, Object> lSettings) {
 		// Create cost matrix
 		final LinkingCostMatrixCreator objCosts = new LinkingCostMatrixCreator(t0, t1, lSettings);
 		if (!objCosts.checkInput() || !objCosts.process()) {
@@ -582,14 +582,14 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	 * result of step 1
 	 * <p>
 	 * We have recorded the tracks as edges in the track graph, we now turn them
-	 * into multiple explicit sets of Spots, sorted by their {@link Spot#FRAME}.
+	 * into multiple explicit sets of BCellobjects, sorted by their {@link BCellobject#FRAME}.
 	 */
 	private void compileTrackSegments() {
-		final ConnectivityInspector<Spot, DefaultWeightedEdge> inspector = new ConnectivityInspector<>(graph);
-		final List<Set<Spot>> unsortedSegments = inspector.connectedSets();
+		final ConnectivityInspector<BCellobject, DefaultWeightedEdge> inspector = new ConnectivityInspector<>(graph);
+		final List<Set<BCellobject>> unsortedSegments = inspector.connectedSets();
 		trackSegments = new ArrayList<>(unsortedSegments.size());
-		for (final Set<Spot> set : unsortedSegments) {
-			final SortedSet<Spot> sortedSet = new TreeSet<>(Spot.frameComparator);
+		for (final Set<BCellobject> set : unsortedSegments) {
+			final SortedSet<BCellobject> sortedSet = new TreeSet<>(BCellobject.frameComparator);
 			sortedSet.addAll(set);
 			trackSegments.add(sortedSet);
 		}
@@ -598,7 +598,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	/**
 	 * Takes the solutions from the Hungarian algorithm, which are an int[][],
 	 * and appropriately links the track segments. Before this method is called,
-	 * the Spots in the track segments are connected within themselves, but not
+	 * the BCellobjects in the track segments are connected within themselves, but not
 	 * between track segments.
 	 *
 	 * Thus, we only care here if the result was a 'gap closing,' 'merging,' or
@@ -607,7 +607,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 	 *
 	 * Method: for each solution of the LAP, determine if it's a gap closing,
 	 * merging, or splitting event. If so, appropriately link the track segment
-	 * Spots.
+	 * BCellobjects.
 	 */
 	private void compileFinalTracks(final int[][] finalTrackSolutions) {
 		final int numTrackSegments = trackSegments.size();
@@ -617,7 +617,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 
 		if (DEBUG) {
 			System.out.println("-- DEBUG information from LAPTracker --");
-			System.out.println("Compiling final tracks with " + numTrackSegments + " segments, " + numMergingMiddlePoints + " merging spot candidates, " + numSplittingMiddlePoints + " splitting spot condidates.");
+			System.out.println("Compiling final tracks with " + numTrackSegments + " segments, " + numMergingMiddlePoints + " merging BCellobject candidates, " + numSplittingMiddlePoints + " splitting BCellobject condidates.");
 		}
 
 		for (final int[] solution : finalTrackSolutions) {
@@ -628,10 +628,10 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 
 				// Case 1: Gap closing
 				if (j < numTrackSegments) {
-					final SortedSet<Spot> segmentEnd = trackSegments.get(i);
-					final SortedSet<Spot> segmentStart = trackSegments.get(j);
-					final Spot end = segmentEnd.last();
-					final Spot start = segmentStart.first();
+					final SortedSet<BCellobject> segmentEnd = trackSegments.get(i);
+					final SortedSet<BCellobject> segmentStart = trackSegments.get(j);
+					final BCellobject end = segmentEnd.last();
+					final BCellobject start = segmentStart.first();
 					weight = segmentCosts[i][j];
 					final DefaultWeightedEdge edge = graph.addEdge(end, start);
 					graph.setEdgeWeight(edge, weight);
@@ -642,31 +642,31 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 				} else if (j < (numTrackSegments + numMergingMiddlePoints)) {
 
 					// Case 2: Merging
-					final SortedSet<Spot> segmentEnd = trackSegments.get(i);
-					final Spot end = segmentEnd.last();
-					final Spot middle = mergingMiddlePoints.get(j - numTrackSegments);
+					final SortedSet<BCellobject> segmentEnd = trackSegments.get(i);
+					final BCellobject end = segmentEnd.last();
+					final BCellobject middle = mergingMiddlePoints.get(j - numTrackSegments);
 					weight = segmentCosts[i][j];
 					final DefaultWeightedEdge edge = graph.addEdge(end, middle);
 					graph.setEdgeWeight(edge, weight);
 
 					if (DEBUG) {
-						SortedSet<Spot> track = null;
+						SortedSet<BCellobject> track = null;
 						int indexTrack = 0;
-						int indexSpot = 0;
-						for (final SortedSet<Spot> t : trackSegments)
+						int indexBCellobject = 0;
+						for (final SortedSet<BCellobject> t : trackSegments)
 						{
 							if (t.contains(middle)) {
 								track = t;
-								for (final Spot spot : track) {
-									if (spot == middle)
+								for (final BCellobject BCellobject : track) {
+									if (BCellobject == middle)
 										break;
-									indexSpot++;
+									indexBCellobject++;
 								}
 								break;
 							}
 							indexTrack++;
 						}
-						System.out.println("Merging from segment " + i + " end to spot " + indexSpot + " in segment " + indexTrack + ".");
+						System.out.println("Merging from segment " + i + " end to BCellobject " + indexBCellobject + " in segment " + indexTrack + ".");
 					}
 
 				}
@@ -674,31 +674,31 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotT
 
 				// Case 3: Splitting
 				if (j < numTrackSegments) {
-					final SortedSet<Spot> segmentStart = trackSegments.get(j);
-					final Spot start = segmentStart.first();
-					final Spot mother = splittingMiddlePoints.get(i - numTrackSegments);
+					final SortedSet<BCellobject> segmentStart = trackSegments.get(j);
+					final BCellobject start = segmentStart.first();
+					final BCellobject mother = splittingMiddlePoints.get(i - numTrackSegments);
 					weight = segmentCosts[i][j];
 					final DefaultWeightedEdge edge = graph.addEdge(mother, start);
 					graph.setEdgeWeight(edge, weight);
 
 					if (DEBUG) {
-						SortedSet<Spot> track = null;
+						SortedSet<BCellobject> track = null;
 						int indexTrack = 0;
-						int indexSpot = 0;
-						for (final SortedSet<Spot> t : trackSegments)
+						int indexBCellobject = 0;
+						for (final SortedSet<BCellobject> t : trackSegments)
 						{
 							if (t.contains(mother)) {
 								track = t;
-								for (final Spot spot : track) {
-									if (spot == mother)
+								for (final BCellobject BCellobject : track) {
+									if (BCellobject == mother)
 										break;
-									indexSpot++;
+									indexBCellobject++;
 								}
 								break;
 							}
 							indexTrack++;
 						}
-						System.out.println("Splitting from spot " + indexSpot + " in segment " + indexTrack + " to segment" + j + ".");
+						System.out.println("Splitting from BCellobject " + indexBCellobject + " in segment " + indexTrack + " to segment" + j + ".");
 					}
 				}
 			}

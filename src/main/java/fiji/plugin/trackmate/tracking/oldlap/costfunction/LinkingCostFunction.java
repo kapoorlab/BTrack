@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import Jama.Matrix;
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 
 /**
@@ -22,7 +22,7 @@ import fiji.plugin.trackmate.tracking.LAPUtils;
  * <p>
  * It slightly differs from the Jaqaman article, see equation (3) in the paper.
  * 
- * @see LAPUtils#computeLinkingCostFor(Spot, Spot, double, double,
+ * @see LAPUtils#computeLinkingCostFor(BCellobject, BCellobject, double, double,
  *      java.util.Map)
  * 
  * @author Nicholas Perry
@@ -47,10 +47,10 @@ public class LinkingCostFunction implements CostFunctions
 	}
 
 	@Override
-	public Matrix getCostFunction( final List< Spot > t0, final List< Spot > t1 )
+	public Matrix getCostFunction( final List<BCellobject> t0, final List<BCellobject> t1 )
 	{
-		Spot s0 = null; // Spot in t0
-		Spot s1 = null; // Spot in t1
+		BCellobject s0 = null; // BCellobject in t0
+		BCellobject s1 = null; // BCellobject in t1
 		final Matrix m = new Matrix( t0.size(), t1.size() );
 
 		for ( int i = 0; i < t0.size(); i++ )

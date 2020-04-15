@@ -26,8 +26,8 @@ import org.scijava.vecmath.Color4f;
 import org.scijava.vecmath.Point3d;
 import org.scijava.vecmath.Tuple3d;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.util.TMUtils;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import ij3d.ContentNode;
@@ -39,7 +39,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 	/** The model, needed to retrieve connectivity. */
 	private final Model model;
 
-	/** Hold the color and transparency of all spots for a given track. */
+	/** Hold the color and transparency of all BCellobjects for a given track. */
 	private final HashMap< Integer, Color > colors = new HashMap< >();
 
 	private int displayDepth = TrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
@@ -193,7 +193,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 				if ( null == line )
 					continue;
 
-				final int frame = model.getTrackModel().getEdgeSource( edge ).getFeature( Spot.FRAME ).intValue();
+				final int frame = model.getTrackModel().getEdgeSource( edge ).getFeature( BCellobject.POSITION_T ).intValue();
 				final int frameDist = Math.abs( frame  - currentTimePoint );
 				float tp;
 				if ( frameDist > displayDepth )
@@ -474,9 +474,9 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 		final int ntracks = model.getTrackModel().nTracks( false );
 
 		// Instantiate refs fields
-		final int nframes = model.getSpots().keySet().size();
+		final int nframes = model.getBCellobjects().keySet().size();
 		frameIndices = new HashMap< >( nframes, 1 ); // optimum
-		for ( final int frameIndex : model.getSpots().keySet() )
+		for ( final int frameIndex : model.getBCellobjects().keySet() )
 		{
 			frameIndices.put( frameIndex, new HashMap< Integer, ArrayList< Integer > >( ntracks ) );
 			for ( final Integer trackID : model.getTrackModel().trackIDs( true ) )
@@ -524,7 +524,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 			Color trackColor = colors.get( trackID );
 			if ( null == trackColor )
 			{
-				trackColor = TrackMateModelView.DEFAULT_SPOT_COLOR;
+				trackColor = TrackMateModelView.DEFAULT_BCellobject_COLOR;
 			}
 			final Color4f color = new Color4f( trackColor );
 			color.w = 1f; // opaque edge for now
@@ -534,8 +534,8 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 			for ( final DefaultWeightedEdge edge : track )
 			{
 				// Find source and target
-				final Spot target = model.getTrackModel().getEdgeTarget( edge );
-				final Spot source = model.getTrackModel().getEdgeSource( edge );
+				final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
+				final BCellobject source = model.getTrackModel().getEdgeSource( edge );
 
 				// Add coords and colors of each vertex
 				coordinates = new double[ 3 ];
@@ -551,7 +551,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 
 				// Keep refs
 				edgeIndices.get( trackID ).put( edge, edgeIndex - 2 );
-				final int frame = source.getFeature( Spot.FRAME ).intValue();
+				final int frame = source.getFeature( BCellobject.POSITION_T ).intValue();
 				frameIndices.get( frame ).get( trackID ).add( edgeIndex - 2 );
 
 			} // Finished building this track's line
@@ -601,17 +601,16 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 	public void getCenter( final Tuple3d center )
 	{
 		double x = 0, y = 0, z = 0;
-		for ( final Iterator< Spot > it = model.getSpots().iterator( true ); it.hasNext(); )
+		for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( true ); it.hasNext(); )
 		{
-			final Spot spot = it.next();
-			x += spot.getFeature( Spot.POSITION_X );
-			y += spot.getFeature( Spot.POSITION_Y );
-			z += spot.getFeature( Spot.POSITION_Z );
+			final BCellobject BCellobject = it.next();
+			x += BCellobject.getFeature( BCellobject.POSITION_X );
+			y += BCellobject.getFeature( BCellobject.POSITION_Y );
 		}
-		final int nspot = model.getSpots().getNSpots( true );
-		x /= nspot;
-		y /= nspot;
-		z /= nspot;
+		final int nBCellobject = model.getBCellobjects().getNBCellobjects( true );
+		x /= nBCellobject;
+		y /= nBCellobject;
+		z /= nBCellobject;
 		center.x = x;
 		center.y = y;
 		center.z = z;
@@ -624,16 +623,14 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 		double ymax = Double.NEGATIVE_INFINITY;
 		double zmax = Double.NEGATIVE_INFINITY;
 		double radius;
-		for ( final Iterator< Spot > it = model.getSpots().iterator( true ); it.hasNext(); )
+		for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( true ); it.hasNext(); )
 		{
-			final Spot spot = it.next();
-			radius = spot.getFeature( Spot.RADIUS );
-			if ( xmax < spot.getFeature( Spot.POSITION_X ) + radius )
-				xmax = spot.getFeature( Spot.POSITION_X ) + radius;
-			if ( ymax < spot.getFeature( Spot.POSITION_Y ) + radius )
-				ymax = spot.getFeature( Spot.POSITION_Y ) + radius;
-			if ( zmax < spot.getFeature( Spot.POSITION_Z ) + radius )
-				zmax = spot.getFeature( Spot.POSITION_Z ) + radius;
+			final BCellobject BCellobject = it.next();
+			radius = BCellobject.getFeature( BCellobject.RADIUS );
+			if ( xmax < BCellobject.getFeature( BCellobject.POSITION_X ) + radius )
+				xmax = BCellobject.getFeature( BCellobject.POSITION_X ) + radius;
+			if ( ymax < BCellobject.getFeature( BCellobject.POSITION_Y ) + radius )
+				ymax = BCellobject.getFeature( BCellobject.POSITION_Y ) + radius;
 		}
 		max.x = xmax;
 		max.y = ymax;
@@ -648,16 +645,14 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 		double ymin = Double.POSITIVE_INFINITY;
 		double zmin = Double.POSITIVE_INFINITY;
 		double radius;
-		for ( final Iterator< Spot > it = model.getSpots().iterator( true ); it.hasNext(); )
+		for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( true ); it.hasNext(); )
 		{
-			final Spot spot = it.next();
-			radius = spot.getFeature( Spot.RADIUS );
-			if ( xmin > spot.getFeature( Spot.POSITION_X ) - radius )
-				xmin = spot.getFeature( Spot.POSITION_X ) - radius;
-			if ( ymin > spot.getFeature( Spot.POSITION_Y ) - radius )
-				ymin = spot.getFeature( Spot.POSITION_Y ) - radius;
-			if ( zmin > spot.getFeature( Spot.POSITION_Z ) - radius )
-				zmin = spot.getFeature( Spot.POSITION_Z ) - radius;
+			final BCellobject BCellobject = it.next();
+			radius = BCellobject.getFeature( BCellobject.RADIUS );
+			if ( xmin > BCellobject.getFeature( BCellobject.POSITION_X ) - radius )
+				xmin = BCellobject.getFeature( BCellobject.POSITION_X ) - radius;
+			if ( ymin > BCellobject.getFeature( BCellobject.POSITION_Y ) - radius )
+				ymin = BCellobject.getFeature( BCellobject.POSITION_Y ) - radius;
 		}
 		min.x = xmin;
 		min.y = ymin;

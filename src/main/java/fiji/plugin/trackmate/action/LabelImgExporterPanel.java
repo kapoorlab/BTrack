@@ -12,7 +12,7 @@ public class LabelImgExporterPanel extends JPanel
 
 	private static final long serialVersionUID = 1L;
 
-	private final JCheckBox exportSpotsAsDots;
+	private final JCheckBox exportBCellobjectsAsDots;
 
 	private final JCheckBox exportTracksOnly;
 
@@ -27,18 +27,18 @@ public class LabelImgExporterPanel extends JPanel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 
-		exportSpotsAsDots = new JCheckBox( "Export spots as single pixels", false );
-		add( exportSpotsAsDots, gbc );
+		exportBCellobjectsAsDots = new JCheckBox( "Export BCellobjects as single pixels", false );
+		add( exportBCellobjectsAsDots, gbc );
 
-		exportTracksOnly = new JCheckBox( "Export only spots in tracks", false );
+		exportTracksOnly = new JCheckBox( "Export only BCellobjects in tracks", false );
 		gbc.gridy++;
 		add( exportTracksOnly, gbc );
 
 	}
 
-	public boolean isExportSpotsAsDots()
+	public boolean isExportBCellobjectsAsDots()
 	{
-		return exportSpotsAsDots.isSelected();
+		return exportBCellobjectsAsDots.isSelected();
 	}
 
 	public boolean isExportTracksOnly()

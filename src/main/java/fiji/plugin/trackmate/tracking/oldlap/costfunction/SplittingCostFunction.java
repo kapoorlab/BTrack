@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Jama.Matrix;
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.algorithm.OutputAlgorithm;
@@ -35,7 +35,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
  * <li>Must be within a certain distance.</li>
  * </ul>
  * 
- * @see LAPUtils#computeLinkingCostFor(Spot, Spot, double, double, Map)
+ * @see LAPUtils#computeLinkingCostFor(BCellobject, BCellobject, double, double, Map)
  * @author Nicholas Perry
  * @author Jean-Yves Tinevez
  *
@@ -57,9 +57,9 @@ public class SplittingCostFunction extends MultiThreadedBenchmarkAlgorithm imple
 
 	private final boolean allowSplitting;
 
-	protected final List< SortedSet< Spot > > trackSegments;
+	protected final List< SortedSet< BCellobject > > trackSegments;
 
-	protected final List< Spot > middlePoints;
+	protected final List< BCellobject > middlePoints;
 
 	protected Matrix m;
 
@@ -68,7 +68,7 @@ public class SplittingCostFunction extends MultiThreadedBenchmarkAlgorithm imple
 	 */
 
 	@SuppressWarnings( "unchecked" )
-	public SplittingCostFunction( final Map< String, Object > settings, final List< SortedSet< Spot > > trackSegments, final List< Spot > middlePoints )
+	public SplittingCostFunction( final Map< String, Object > settings, final List< SortedSet< BCellobject > > trackSegments, final List< BCellobject > middlePoints )
 	{
 		this.maxDist = ( Double ) settings.get( KEY_SPLITTING_MAX_DISTANCE );
 		this.blockingValue = ( Double ) settings.get( KEY_BLOCKING_VALUE );
@@ -118,13 +118,13 @@ public class SplittingCostFunction extends MultiThreadedBenchmarkAlgorithm imple
 						for ( int i = ai.getAndIncrement(); i < middlePoints.size(); i = ai.getAndIncrement() )
 						{
 
-							final Spot middle = middlePoints.get( i );
+							final BCellobject middle = middlePoints.get( i );
 
 							for ( int j = 0; j < trackSegments.size(); j++ )
 							{
 
-								final SortedSet< Spot > track = trackSegments.get( j );
-								final Spot lStart = track.first();
+								final SortedSet< BCellobject > track = trackSegments.get( j );
+								final BCellobject lStart = track.first();
 
 								if ( DEBUG )
 									System.out.println( "Segment " + j );
@@ -134,10 +134,10 @@ public class SplittingCostFunction extends MultiThreadedBenchmarkAlgorithm imple
 									continue;
 								}
 
-								// Frame threshold - middle Spot must be one
-								// frame behind of the start Spot
-								final int startFrame = lStart.getFeature( Spot.FRAME ).intValue();
-								final int middleFrame = middle.getFeature( Spot.FRAME ).intValue();
+								// Frame threshold - middle BCellobject must be one
+								// frame behind of the start BCellobject
+								final int startFrame = lStart.getFeature( BCellobject.POSITION_T ).intValue();
+								final int middleFrame = middle.getFeature( BCellobject.POSITION_T ).intValue();
 								if ( startFrame - middleFrame != 1 )
 								{
 									m.set( i, j, blockingValue );

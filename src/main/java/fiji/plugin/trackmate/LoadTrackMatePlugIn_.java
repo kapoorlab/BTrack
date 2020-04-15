@@ -26,9 +26,9 @@ import fiji.plugin.trackmate.io.IOUtils;
 import fiji.plugin.trackmate.io.TmXmlReader;
 import fiji.plugin.trackmate.io.TmXmlReader_v12;
 import fiji.plugin.trackmate.io.TmXmlReader_v20;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.providers.ViewProvider;
@@ -128,14 +128,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 			}
 		}
 
-		// Check if we have an ICY track XML file.
-		if ( checkIsICY( file ) )
-		{
-			logger.log( "Detecting an ICY track XML file. Loading...\n" );
-			final LoadICYTrackPlugIn_ loadICY = new LoadICYTrackPlugIn_();
-			loadICY.run( file.getAbsolutePath() );
-			return;
-		}
+
 
 		// Read the file content
 		TmXmlReader reader = createReader( file );
@@ -200,7 +193,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 		// controller.
 		final DetectorProvider detectorProvider = controller.getDetectorProvider();
 		final TrackerProvider trackerProvider = controller.getTrackerProvider();
-		final SpotAnalyzerProvider spotAnalyzerProvider = controller.getSpotAnalyzerProvider();
+		final BCellobjectAnalyzerProvider spotAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
 		final EdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
 		final TrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
 		reader.readSettings( settings, detectorProvider, trackerProvider, spotAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider );

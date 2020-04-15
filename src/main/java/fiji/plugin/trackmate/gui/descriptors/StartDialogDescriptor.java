@@ -12,12 +12,12 @@ import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.Settings;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.panels.StartDialogPanel;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.ImagePlus;
@@ -117,17 +117,17 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 		trackmate.getModel().getLogger().log( settings.toStringImageInfo() );
 
 		/*
-		 * Configure settings object with spot, edge and track analyzers as
+		 * Configure settings object with BCellobject, edge and track analyzers as
 		 * specified in the providers.
 		 */
 
-		settings.clearSpotAnalyzerFactories();
-		final SpotAnalyzerProvider spotAnalyzerProvider = controller.getSpotAnalyzerProvider();
-		final List< String > spotAnalyzerKeys = spotAnalyzerProvider.getKeys();
-		for ( final String key : spotAnalyzerKeys )
+		settings.clearBCellobjectAnalyzerFactories();
+		final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
+		final List< String > BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
+		for ( final String key : BCellobjectAnalyzerKeys )
 		{
-			final SpotAnalyzerFactory< ? > spotFeatureAnalyzer = spotAnalyzerProvider.getFactory( key );
-			settings.addSpotAnalyzerFactory( spotFeatureAnalyzer );
+			final BCellobjectAnalyzerFactory< ? > BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+			settings.addBCellobjectAnalyzerFactory( BCellobjectFeatureAnalyzer );
 		}
 
 		settings.clearEdgeAnalyzers();
@@ -149,7 +149,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 		}
 
 		trackmate.getModel().getLogger().log( settings.toStringFeatureAnalyzersInfo() );
-		trackmate.computeSpotFeatures( true );
+		trackmate.computeBCellobjectFeatures( true );
 		trackmate.computeEdgeFeatures( true );
 		trackmate.computeTrackFeatures( true );
 

@@ -20,7 +20,8 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
+
 
 public class TrackSchemeActions
 {
@@ -260,7 +261,7 @@ public class TrackSchemeActions
 				int minFrame = Integer.MAX_VALUE;
 				for ( final mxCell mxCell : vertices )
 				{
-					final int frame = graph.getSpotFor( mxCell ).getFeature( Spot.FRAME ).intValue();
+					final int frame = graph.getBCellobjectFor( mxCell ).getFeature( BCellobject.POSITION_T ).intValue();
 					if ( frame < minFrame )
 					{
 						minFrame = frame;
@@ -277,7 +278,7 @@ public class TrackSchemeActions
 					for ( final mxCell mxCell : edges )
 					{
 						final mxICell target = mxCell.getTarget();
-						final int frame = graph.getSpotFor( target ).getFeature( Spot.FRAME ).intValue();
+						final int frame = graph.getBCellobjectFor( target ).getFeature( BCellobject.POSITION_T ).intValue();
 						if ( frame < minFrame )
 						{
 							minFrame = frame;
@@ -326,7 +327,7 @@ public class TrackSchemeActions
 					int maxFrame = Integer.MIN_VALUE;
 					for ( final mxCell mxCell : vertices )
 					{
-						final int frame = graph.getSpotFor( mxCell ).getFeature( Spot.FRAME ).intValue();
+						final int frame = graph.getBCellobjectFor( mxCell ).getFeature( BCellobject.POSITION_T ).intValue();
 						if ( frame > maxFrame )
 						{
 							maxFrame = frame;
@@ -343,7 +344,7 @@ public class TrackSchemeActions
 						for ( final mxCell mxCell : edges )
 						{
 							final mxICell target = mxCell.getTarget();
-							final int frame = graph.getSpotFor( target ).getFeature( Spot.FRAME ).intValue();
+							final int frame = graph.getBCellobjectFor( target ).getFeature( BCellobject.POSITION_T ).intValue();
 							if ( frame > maxFrame )
 							{
 								maxFrame = frame;
@@ -377,10 +378,10 @@ public class TrackSchemeActions
 		@Override
 		public void actionPerformed( final ActionEvent e )
 		{
-				multiEditSpotName( graphComponent, e );
+				multiEditBCellobjectName( graphComponent, e );
 		}
 
-		private void multiEditSpotName( final TrackSchemeGraphComponent lGraphComponent, final ActionEvent triggerEvent )
+		private void multiEditBCellobjectName( final TrackSchemeGraphComponent lGraphComponent, final ActionEvent triggerEvent )
 		{
 			/*
 			 * We want to display the editing window in the cell is the closer
@@ -412,7 +413,7 @@ public class TrackSchemeActions
 					for ( final mxCell cell : vertices )
 					{
 						cell.setValue( tc.getValue() );
-						graph.getSpotFor( cell ).setName( tc.getValue().toString() );
+						graph.getBCellobjectFor( cell ).setName( tc.getValue().toString() );
 					}
 					lGraphComponent.refresh();
 					lGraphComponent.removeListener( this );

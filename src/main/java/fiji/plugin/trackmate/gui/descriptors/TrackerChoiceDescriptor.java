@@ -5,8 +5,8 @@ import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.panels.ListChooserPanel;
 import fiji.plugin.trackmate.providers.TrackerProvider;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 
 import java.awt.Component;
@@ -72,7 +72,7 @@ public class TrackerChoiceDescriptor implements WizardPanelDescriptor
 		// Configure the detector provider with choice made in panel
 		final int index = component.getChoice();
 		final String key = trackerProvider.getVisibleKeys().get( index );
-		final SpotTrackerFactory trackerFactory = trackerProvider.getFactory( key );
+		final BCellobjectTrackerFactory trackerFactory = trackerProvider.getFactory( key );
 
 		// Check
 		if ( trackerFactory == null )

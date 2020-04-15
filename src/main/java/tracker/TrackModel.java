@@ -738,7 +738,7 @@ public class TrackModel {
 	public GraphIterator<Budpointobject, DefaultWeightedEdge> getDepthFirstIterator(final Budpointobject start,
 			final boolean directed) {
 		if (directed) {
-			return new TimeDirectedDepthFirstIterator(graph, start);
+			return new MyBuddyTimeDirectedDepthFirstIterator(graph, start);
 		} else {
 			return new DepthFirstIterator<Budpointobject, DefaultWeightedEdge>(graph, start);
 		}
@@ -761,17 +761,17 @@ public class TrackModel {
 	 *            the comparator to use to pick children in order when branching.
 	 * @return a new depth-first iterator.
 	 */
-	public SortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
+	public MyBuddySortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
 			final Budpointobject start, final Comparator<Budpointobject> comparator, final boolean directed) {
 		if (directed) {
-			return new TimeDirectedSortedDepthFirstIterator(graph, start, comparator);
+			return new MyBuddyTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
 		} else {
-			return new SortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge>(graph, start, comparator);
+			return new MyBuddySortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge>(graph, start, comparator);
 		}
 	}
 
-	public TimeDirectedNeighborIndex getDirectedNeighborIndex() {
-		return new TimeDirectedNeighborIndex(graph);
+	public MyBuddyTimeDirectedNeighborIndex getDirectedNeighborIndex() {
+		return new MyBuddyTimeDirectedNeighborIndex(graph);
 	}
 
 	/**

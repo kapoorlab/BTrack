@@ -21,6 +21,7 @@ import javax.swing.ScrollPaneConstants;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMateOptionUtils;
@@ -147,16 +148,16 @@ public abstract class AbstractFeatureGrapher
 	 * @return the list of links that have their source and target in the given
 	 *         spot list.
 	 */
-	protected final List< DefaultWeightedEdge > getInsideEdges( final Collection< Spot > spots )
+	protected final List< DefaultWeightedEdge > getInsideEdges( final Collection<BCellobject> lBCellobjects )
 	{
-		final int nspots = spots.size();
+		final int nspots = lBCellobjects.size();
 		final ArrayList< DefaultWeightedEdge > edges = new ArrayList<>( nspots );
 		final TrackModel trackModel = model.getTrackModel();
 		for ( final DefaultWeightedEdge edge : trackModel.edgeSet() )
 		{
-			final Spot source = trackModel.getEdgeSource( edge );
-			final Spot target = trackModel.getEdgeTarget( edge );
-			if ( spots.contains( source ) && spots.contains( target ) )
+			final BCellobject source = trackModel.getEdgeSource( edge );
+			final BCellobject target = trackModel.getEdgeTarget( edge );
+			if ( lBCellobjects.contains( source ) && lBCellobjects.contains( target ) )
 				edges.add( edge );
 
 		}

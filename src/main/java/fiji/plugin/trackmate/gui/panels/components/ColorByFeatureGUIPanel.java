@@ -24,12 +24,11 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.TrackMateOptionUtils;
+import fiji.plugin.trackmate.features.manual.ManualBCellobjectColorAnalyzerFactory;
 import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
 import fiji.plugin.trackmate.gui.GuiUtils;
 import fiji.plugin.trackmate.gui.panels.ActionListenablePanel;
 import fiji.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
@@ -56,7 +55,7 @@ public class ColorByFeatureGUIPanel extends ActionListenablePanel implements Min
 
 	public static enum Category
 	{
-		SPOTS( "spots" ), EDGES( "edges" ), TRACKS( "tracks" ), DEFAULT( "Default" );
+		BCellobject( "BCellobject" ), EDGES( "edges" ), TRACKS( "tracks" ), DEFAULT( "Default" );
 
 		private String name;
 
@@ -181,7 +180,7 @@ public class ColorByFeatureGUIPanel extends ActionListenablePanel implements Min
 	{
 		if ( null == jComboBoxSetColorBy.getSelectedItem()
 				|| getColorGeneratorCategory().equals( Category.DEFAULT )
-				|| ( getColorGeneratorCategory().equals( Category.SPOTS ) && getColorFeature().equals( ManualSpotColorAnalyzerFactory.FEATURE ) )
+				|| ( getColorGeneratorCategory().equals( Category.BCellobject ) && getColorFeature().equals( ManualBCellobjectColorAnalyzerFactory.FEATURE ) )
 				|| ( getColorGeneratorCategory().equals( Category.EDGES ) && getColorFeature().equals( ManualEdgeColorAnalyzer.FEATURE ) ) )
 		{
 			g.clearRect( 0, 0, canvasColor.getWidth(), canvasColor.getHeight() );
@@ -257,8 +256,8 @@ public class ColorByFeatureGUIPanel extends ActionListenablePanel implements Min
 		case EDGES:
 			isInt = model.getFeatureModel().getEdgeFeatureIsInt().get( feature );
 			break;
-		case SPOTS:
-			isInt = model.getFeatureModel().getSpotFeatureIsInt().get( feature );
+		case BCellobject:
+			isInt = model.getFeatureModel().getBCellobjectFeatureIsInt().get( feature );
 			break;
 		default:
 			isInt = false;
@@ -435,14 +434,14 @@ public class ColorByFeatureGUIPanel extends ActionListenablePanel implements Min
 		{
 			switch ( category )
 			{
-			case SPOTS:
-				categoryNames.put( Category.SPOTS, "Spot features:" );
-				final Collection< String > spotFeatures = new ArrayList< >( model.getFeatureModel().getSpotFeatures() );
-				features.put( Category.SPOTS, spotFeatures );
+			case BCellobject:
+				categoryNames.put( Category.BCellobject, "BCellobject features:" );
+				final Collection< String > BCellobjectFeatures = new ArrayList< >( model.getFeatureModel().getBCellobjectFeatures() );
+				features.put( Category.BCellobject, BCellobjectFeatures );
 				// Deal with manual coloring separately.
-				spotFeatures.remove( ManualSpotColorAnalyzerFactory.FEATURE );
+				BCellobjectFeatures.remove( ManualBCellobjectColorAnalyzerFactory.FEATURE );
 
-				featureNames.putAll( model.getFeatureModel().getSpotFeatureNames() );
+				featureNames.putAll( model.getFeatureModel().getBCellobjectFeatureNames() );
 				break;
 
 			case EDGES:
@@ -501,9 +500,9 @@ public class ColorByFeatureGUIPanel extends ActionListenablePanel implements Min
 		case EDGES:
 			values = model.getFeatureModel().getEdgeFeatureValues( feature, true );
 			break;
-		case SPOTS:
-			final SpotCollection spots = model.getSpots();
-			values = spots.collectValues( feature, false );
+		case BCellobject:
+			final BCellobjectCollection BCellobject = model.getBCellobjects();
+			values = BCellobject.collectValues( feature, false );
 			break;
 		case DEFAULT:
 			throw new IllegalArgumentException( "Cannot return values for " + category );

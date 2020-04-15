@@ -14,10 +14,10 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 
 @SuppressWarnings( "deprecation" )
 @Plugin( type = TrackAnalyzer.class )
@@ -33,7 +33,6 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 
 	public static final String Y_LOCATION = "TRACK_Y_LOCATION";
 
-	public static final String Z_LOCATION = "TRACK_Z_LOCATION";
 
 	public static final List< String > FEATURES = new ArrayList< >( 3 );
 
@@ -49,23 +48,18 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 	{
 		FEATURES.add( X_LOCATION );
 		FEATURES.add( Y_LOCATION );
-		FEATURES.add( Z_LOCATION );
 
 		FEATURE_NAMES.put( X_LOCATION, "X Location (mean)" );
 		FEATURE_NAMES.put( Y_LOCATION, "Y Location (mean)" );
-		FEATURE_NAMES.put( Z_LOCATION, "Z Location (mean)" );
 
 		FEATURE_SHORT_NAMES.put( X_LOCATION, "X" );
 		FEATURE_SHORT_NAMES.put( Y_LOCATION, "Y" );
-		FEATURE_SHORT_NAMES.put( Z_LOCATION, "Z" );
 
 		FEATURE_DIMENSIONS.put( X_LOCATION, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( Y_LOCATION, Dimension.POSITION );
-		FEATURE_DIMENSIONS.put( Z_LOCATION, Dimension.POSITION );
 
 		IS_INT.put( X_LOCATION, Boolean.FALSE );
 		IS_INT.put( Y_LOCATION, Boolean.FALSE );
-		IS_INT.put( Z_LOCATION, Boolean.FALSE );
 	}
 
 	private int numThreads;
@@ -108,26 +102,22 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 					while ( ( trackID = queue.poll() ) != null )
 					{
 
-						final Set< Spot > track = model.getTrackModel().trackSpots( trackID );
+						final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 
 						double x = 0;
 						double y = 0;
-						double z = 0;
 
-						for ( final Spot spot : track )
+						for ( final BCellobject BCellobject : track )
 						{
-							x += spot.getFeature( Spot.POSITION_X );
-							y += spot.getFeature( Spot.POSITION_Y );
-							z += spot.getFeature( Spot.POSITION_Z );
+							x += BCellobject.getFeature( BCellobject.POSITION_X );
+							y += BCellobject.getFeature( BCellobject.POSITION_Y );
 						}
-						final int nspots = track.size();
-						x /= nspots;
-						y /= nspots;
-						z /= nspots;
+						final int nBCellobjects = track.size();
+						x /= nBCellobjects;
+						y /= nBCellobjects;
 
 						fm.putTrackFeature( trackID, X_LOCATION, x );
 						fm.putTrackFeature( trackID, Y_LOCATION, y );
-						fm.putTrackFeature( trackID, Z_LOCATION, z );
 
 					}
 
@@ -202,11 +192,7 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -224,5 +210,11 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

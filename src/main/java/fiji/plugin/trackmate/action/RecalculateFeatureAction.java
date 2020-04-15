@@ -11,12 +11,12 @@ import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.Settings;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 
 public class RecalculateFeatureAction extends AbstractTMAction
@@ -30,7 +30,7 @@ public class RecalculateFeatureAction extends AbstractTMAction
 
 	public static final String INFO_TEXT = "<html>" +
 			"Calling this action causes the model to recompute all the features <br>" +
-			"for all spots, edges and tracks. The feature analyzers currently declared "
+			"for all BCellobjects, edges and tracks. The feature analyzers currently declared "
 			+ "in TrackMate session are also calculated if not present in the data. " +
 			"</html>";
 
@@ -59,18 +59,18 @@ public class RecalculateFeatureAction extends AbstractTMAction
 			final Settings settings = trackmate.getSettings();
 
 			/*
-			 * Configure settings object with spot, edge and track analyzers as
+			 * Configure settings object with BCellobject, edge and track analyzers as
 			 * specified in the providers.
 			 */
 
-			logger.log( "Registering spot analyzers:\n" );
-			settings.clearSpotAnalyzerFactories();
-			final SpotAnalyzerProvider spotAnalyzerProvider = controller.getSpotAnalyzerProvider();
-			final List< String > spotAnalyzerKeys = spotAnalyzerProvider.getKeys();
-			for ( final String key : spotAnalyzerKeys )
+			logger.log( "Registering BCellobject analyzers:\n" );
+			settings.clearBCellobjectAnalyzerFactories();
+			final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
+			final List< String > BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
+			for ( final String key : BCellobjectAnalyzerKeys )
 			{
-				final SpotAnalyzerFactory< ? > spotFeatureAnalyzer = spotAnalyzerProvider.getFactory( key );
-				settings.addSpotAnalyzerFactory( spotFeatureAnalyzer );
+				final BCellobjectAnalyzerFactory< ? > BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+				settings.addBCellobjectAnalyzerFactory( BCellobjectFeatureAnalyzer );
 				logger.log( " - " + key + "\n" );
 			}
 
@@ -97,7 +97,7 @@ public class RecalculateFeatureAction extends AbstractTMAction
 			}
 		}
 
-		trackmate.computeSpotFeatures( true );
+		trackmate.computeBCellobjectFeatures( true );
 		trackmate.computeEdgeFeatures( true );
 		trackmate.computeTrackFeatures( true );
 
@@ -127,16 +127,18 @@ public class RecalculateFeatureAction extends AbstractTMAction
 			return KEY;
 		}
 
-		@Override
-		public ImageIcon getIcon()
-		{
-			return ICON;
-		}
+	
 
 		@Override
 		public TrackMateAction create( final TrackMateGUIController controller )
 		{
 			return new RecalculateFeatureAction( controller );
+		}
+
+		@Override
+		public ImageIcon getIcon() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

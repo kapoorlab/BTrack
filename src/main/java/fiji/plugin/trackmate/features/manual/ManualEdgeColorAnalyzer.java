@@ -115,11 +115,7 @@ public class ManualEdgeColorAnalyzer implements EdgeAnalyzer
 	}
 
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -152,5 +148,11 @@ public class ManualEdgeColorAnalyzer implements EdgeAnalyzer
 	public boolean isManualFeature()
 	{
 		return true;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

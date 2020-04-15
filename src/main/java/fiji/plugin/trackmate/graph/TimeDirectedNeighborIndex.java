@@ -14,30 +14,31 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.util.NeighborCache;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphVertexChangeEvent;
+import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.util.ModifiableInteger;
 
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 
-public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeightedEdge >
+public class TimeDirectedNeighborIndex extends NeighborCache< BCellobject, DefaultWeightedEdge >
 {
 
 	// ~ Instance fields
 	// --------------------------------------------------------
 
-	Map< Spot, Neighbors< Spot, DefaultWeightedEdge > > predecessorMap = new HashMap< >();
+	Map< BCellobject, Neighbors< BCellobject, DefaultWeightedEdge > > predecessorMap = new HashMap< >();
 
-	Map< Spot, Neighbors< Spot, DefaultWeightedEdge > > successorMap = new HashMap< >();
+	Map< BCellobject, Neighbors< BCellobject, DefaultWeightedEdge > > successorMap = new HashMap< >();
 
-	private final Graph< Spot, DefaultWeightedEdge > graph;
+	private final Graph< BCellobject, DefaultWeightedEdge > graph;
 
 	// ~ Constructors
 	// -----------------------------------------------------------
 
-	public TimeDirectedNeighborIndex( final Graph< Spot, DefaultWeightedEdge > g )
+	public TimeDirectedNeighborIndex( final DefaultListenableGraph<BCellobject, DefaultWeightedEdge> graph2 )
 	{
-		super( g );
-		this.graph = g;
+		super( graph2 );
+		this.graph = graph2;
 	}
 
 	// ~ Methods
@@ -55,7 +56,7 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * @return all unique predecessors of the specified vertex
 	 */
 	@Override
-	public Set< Spot > predecessorsOf( final Spot v )
+	public Set< BCellobject > predecessorsOf( final BCellobject v )
 	{
 		return getPredecessors( v ).getNeighbors();
 	}
@@ -66,14 +67,14 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * in the returned list. Because a list of predecessors can not be
 	 * efficiently maintained, it is reconstructed on every invocation by
 	 * duplicating entries in the neighbor set. It is thus more efficient to use
-	 * {@link #predecessorsOf(Spot)} unless duplicate neighbors are required.
+	 * {@link #predecessorsOf(BCellobject)} unless duplicate neighbors are required.
 	 *
 	 * @param v
 	 *            the vertex whose predecessors are desired
 	 *
 	 * @return all predecessors of the specified vertex
 	 */
-	public List< Spot > predecessorListOf( final Spot v )
+	public List< BCellobject > predecessorListOf( final BCellobject v )
 	{
 		return getPredecessors( v ).getNeighborList();
 	}
@@ -90,7 +91,7 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * @return all unique successors of the specified vertex
 	 */
 	@Override
-	public Set< Spot > successorsOf( final Spot v )
+	public Set< BCellobject > successorsOf( final BCellobject v )
 	{
 		return getSuccessors( v ).getNeighbors();
 	}
@@ -101,14 +102,14 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * in the returned list. Because a list of successors can not be efficiently
 	 * maintained, it is reconstructed on every invocation by duplicating
 	 * entries in the neighbor set. It is thus more efficient to use
-	 * {@link #successorsOf(Spot)} unless duplicate neighbors are required.
+	 * {@link #successorsOf(BCellobject)} unless duplicate neighbors are required.
 	 *
 	 * @param v
 	 *            the vertex whose successors are desired
 	 *
 	 * @return all successors of the specified vertex
 	 */
-	public List< Spot > successorListOf( final Spot v )
+	public List< BCellobject > successorListOf( final BCellobject v )
 	{
 		return getSuccessors( v ).getNeighborList();
 	}
@@ -117,11 +118,11 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * @see org.jgrapht.event.GraphListener#edgeAdded(GraphEdgeChangeEvent)
 	 */
 	@Override
-	public void edgeAdded( final GraphEdgeChangeEvent< Spot, DefaultWeightedEdge > e )
+	public void edgeAdded( final GraphEdgeChangeEvent< BCellobject, DefaultWeightedEdge > e )
 	{
 		final DefaultWeightedEdge edge = e.getEdge();
-		final Spot source = graph.getEdgeSource( edge );
-		final Spot target = graph.getEdgeTarget( edge );
+		final BCellobject source = graph.getEdgeSource( edge );
+		final BCellobject target = graph.getEdgeTarget( edge );
 
 		// if a map does not already contain an entry,
 		// then skip addNeighbor, since instantiating the map
@@ -150,11 +151,11 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * @see org.jgrapht.event.GraphListener#edgeRemoved(GraphEdgeChangeEvent)
 	 */
 	@Override
-	public void edgeRemoved( final GraphEdgeChangeEvent< Spot, DefaultWeightedEdge > e )
+	public void edgeRemoved( final GraphEdgeChangeEvent< BCellobject, DefaultWeightedEdge > e )
 	{
 		final DefaultWeightedEdge edge = e.getEdge();
-		final Spot source = graph.getEdgeSource( edge );
-		final Spot target = graph.getEdgeTarget( edge );
+		final BCellobject source = graph.getEdgeSource( edge );
+		final BCellobject target = graph.getEdgeTarget( edge );
 		if ( successorMap.containsKey( source ) )
 		{
 			successorMap.get( source ).removeNeighbor( target );
@@ -169,7 +170,7 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * @see org.jgrapht.event.VertexSetListener#vertexAdded(GraphVertexChangeEvent)
 	 */
 	@Override
-	public void vertexAdded( final GraphVertexChangeEvent< Spot > e )
+	public void vertexAdded( final GraphVertexChangeEvent< BCellobject > e )
 	{
 		// nothing to cache until there are edges
 	}
@@ -178,26 +179,26 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 	 * @see org.jgrapht.event.VertexSetListener#vertexRemoved(GraphVertexChangeEvent)
 	 */
 	@Override
-	public void vertexRemoved( final GraphVertexChangeEvent< Spot > e )
+	public void vertexRemoved( final GraphVertexChangeEvent< BCellobject > e )
 	{
 		predecessorMap.remove( e.getVertex() );
 		successorMap.remove( e.getVertex() );
 	}
 
-	private Neighbors< Spot, DefaultWeightedEdge > getPredecessors( final Spot v )
+	private Neighbors< BCellobject, DefaultWeightedEdge > getPredecessors( final BCellobject v )
 	{
-		Neighbors< Spot, DefaultWeightedEdge > neighbors = predecessorMap.get( v );
+		Neighbors< BCellobject, DefaultWeightedEdge > neighbors = predecessorMap.get( v );
 		if ( neighbors == null )
 		{
-			final List< Spot > nl = Graphs.neighborListOf( graph, v );
-			final List< Spot > bnl = new ArrayList< >();
-			final int ts = v.getFeature( Spot.FRAME ).intValue();
-			for ( final Spot spot : nl )
+			final List< BCellobject > nl = Graphs.neighborListOf( graph, v );
+			final List< BCellobject > bnl = new ArrayList< >();
+			final int ts = v.getFeature( BCellobject.POSITION_T ).intValue();
+			for ( final BCellobject BCellobject : nl )
 			{
-				final int tt = spot.getFeature( Spot.FRAME ).intValue();
+				final int tt = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 				if ( tt < ts )
 				{
-					bnl.add( spot );
+					bnl.add( BCellobject );
 				}
 			}
 			neighbors = new Neighbors< >( v, bnl );
@@ -206,20 +207,20 @@ public class TimeDirectedNeighborIndex extends NeighborCache< Spot, DefaultWeigh
 		return neighbors;
 	}
 
-	private Neighbors< Spot, DefaultWeightedEdge > getSuccessors( final Spot v )
+	private Neighbors< BCellobject, DefaultWeightedEdge > getSuccessors( final BCellobject v )
 	{
-		Neighbors< Spot, DefaultWeightedEdge > neighbors = successorMap.get( v );
+		Neighbors< BCellobject, DefaultWeightedEdge > neighbors = successorMap.get( v );
 		if ( neighbors == null )
 		{
-			final List< Spot > nl = Graphs.neighborListOf( graph, v );
-			final List< Spot > bnl = new ArrayList< >();
-			final int ts = v.getFeature( Spot.FRAME ).intValue();
-			for ( final Spot spot : nl )
+			final List< BCellobject > nl = Graphs.neighborListOf( graph, v );
+			final List< BCellobject > bnl = new ArrayList< >();
+			final int ts = v.getFeature( BCellobject.POSITION_T ).intValue();
+			for ( final BCellobject BCellobject : nl )
 			{
-				final int tt = spot.getFeature( Spot.FRAME ).intValue();
+				final int tt = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 				if ( tt > ts )
 				{
-					bnl.add( spot );
+					bnl.add( BCellobject );
 				}
 			}
 			neighbors = new Neighbors< >( v, bnl );

@@ -4,11 +4,11 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.ModelChangeEvent;
 import fiji.plugin.trackmate.SelectionChangeEvent;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.visualization.AbstractTrackMateModelView;
 import fiji.plugin.trackmate.visualization.TrackColorGenerator;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
@@ -24,11 +24,11 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 
 	protected final ImagePlus imp;
 
-	protected SpotOverlay spotOverlay;
+	protected BCellobjectOverlay BCellobjectOverlay;
 
 	protected TrackOverlay trackOverlay;
 
-	private SpotEditTool editTool;
+	private BCellobjectEditTool editTool;
 
 	private Roi initialROI;
 
@@ -49,7 +49,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 		{
 			this.imp = ViewUtils.makeEmpytImagePlus( model );
 		}
-		this.spotOverlay = createSpotOverlay();
+		this.BCellobjectOverlay = createBCellobjectOverlay();
 		this.trackOverlay = createTrackOverlay();
 	}
 
@@ -64,18 +64,18 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 
 	/**
 	 * Hook for subclassers. Instantiate here the overlay you want to use for
-	 * the spots.
+	 * the BCellobjects.
 	 *
-	 * @return the spot overlay
+	 * @return the BCellobject overlay
 	 */
-	protected SpotOverlay createSpotOverlay()
+	protected BCellobjectOverlay createBCellobjectOverlay()
 	{
-		return new SpotOverlay( model, imp, displaySettings );
+		return new BCellobjectOverlay( model, imp, displaySettings );
 	}
 
 	/**
 	 * Hook for subclassers. Instantiate here the overlay you want to use for
-	 * the spots.
+	 * the BCellobjects.
 	 *
 	 * @return the track overlay
 	 */
@@ -113,7 +113,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 
 		case ModelChangeEvent.MODEL_MODIFIED:
 			// Rebuild track overlay only if edges were added or removed, or if
-			// at least one spot was removed.
+			// at least one BCellobject was removed.
 			final Set< DefaultWeightedEdge > edges = event.getEdges();
 			if ( edges != null && edges.size() > 0 )
 			{
@@ -121,11 +121,11 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 			}
 			break;
 
-		case ModelChangeEvent.SPOTS_FILTERED:
+		case ModelChangeEvent.BCellobject_FILTERED:
 			redoOverlay = true;
 			break;
 
-		case ModelChangeEvent.SPOTS_COMPUTED:
+		case ModelChangeEvent.BCellobject_COMPUTED:
 			redoOverlay = true;
 			break;
 
@@ -144,20 +144,19 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	{
 		// Highlight selection
 		trackOverlay.setHighlight( selectionModel.getEdgeSelection() );
-		spotOverlay.setSpotSelection( selectionModel.getSpotSelection() );
-		// Center on last spot
+		BCellobjectOverlay.setBCellobjectSelection( selectionModel.getBCellobjectSelection() );
+		// Center on last BCellobject
 		super.selectionChanged( event );
 		// Redraw
 		imp.updateAndDraw();
 	}
 
 	@Override
-	public void centerViewOn( final Spot spot )
+	public void centerViewOn( final BCellobject BCellobject )
 	{
-		final int frame = spot.getFeature( Spot.FRAME ).intValue();
+		final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 		final double dz = imp.getCalibration().pixelDepth;
-		final long z = Math.round( spot.getFeature( Spot.POSITION_Z ) / dz ) + 1;
-		imp.setPosition( imp.getC(), ( int ) z, frame + 1 );
+		imp.setPosition( imp.getC(),0, frame + 1 );
 	}
 
 	@Override
@@ -176,7 +175,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 			imp.show();
 		}
 
-		addOverlay( spotOverlay );
+		addOverlay( BCellobjectOverlay );
 		addOverlay( trackOverlay );
 		imp.updateAndDraw();
 		registerEditTool();
@@ -224,8 +223,8 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 
 	private void registerEditTool()
 	{
-		editTool = SpotEditTool.getInstance();
-		if ( !SpotEditTool.isLaunched() )
+		editTool = BCellobjectEditTool.getInstance();
+		if ( !BCellobjectEditTool.isLaunched() )
 		{
 			editTool.run( "" );
 		}
@@ -237,15 +236,15 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	{
 		boolean dorefresh = false;
 
-		if ( key == TrackMateModelView.KEY_SPOT_COLORING || key == TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH || key == KEY_DRAWING_DEPTH )
+		if ( key == TrackMateModelView.KEY_BCellobject_COLORING || key == TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH || key == KEY_DRAWING_DEPTH )
 		{
 			dorefresh = true;
 
 		}
 		else if ( key == TrackMateModelView.KEY_TRACK_COLORING )
 		{
-			// pass the new one to the track overlay - we ignore its spot
-			// coloring and keep the spot coloring
+			// pass the new one to the track overlay - we ignore its BCellobject
+			// coloring and keep the BCellobject coloring
 			final TrackColorGenerator colorGenerator = ( TrackColorGenerator ) value;
 			trackOverlay.setTrackColorGenerator( colorGenerator );
 			dorefresh = true;
@@ -263,4 +262,6 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	{
 		return KEY;
 	}
+
+
 }

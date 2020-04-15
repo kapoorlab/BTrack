@@ -3,14 +3,13 @@ package fiji.plugin.trackmate;
 import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
 import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
 import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import fiji.plugin.trackmate.action.ISBIChallengeExporter;
 import fiji.plugin.trackmate.io.TmXmlReader;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 
 import java.io.File;
@@ -42,7 +41,7 @@ public class TrackMateBatch
 
 		final DetectorProvider detectorProvider = new DetectorProvider();
 		final TrackerProvider trackerProvider = new TrackerProvider();
-		final SpotAnalyzerProvider spotAnalyzerProvider = new SpotAnalyzerProvider();
+		final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider = new BCellobjectAnalyzerProvider();
 		final EdgeAnalyzerProvider edgeAnalyzerProvider = new EdgeAnalyzerProvider();
 		final TrackAnalyzerProvider trackAnalyzerProvider = new TrackAnalyzerProvider();
 
@@ -82,7 +81,7 @@ public class TrackMateBatch
 
 			// Read settings
 			final Settings settings = new Settings();
-			reader.readSettings( settings, detectorProvider, trackerProvider, spotAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider );
+			reader.readSettings( settings, detectorProvider, trackerProvider, BCellobjectAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider );
 			if ( !reader.isReadingOk() )
 			{
 				logger.flush();
@@ -91,7 +90,7 @@ public class TrackMateBatch
 			}
 
 			// Edit settings
-			final SpotTrackerFactory tf = new SimpleSparseLAPTrackerFactory();
+			final BCellobjectTrackerFactory tf = new SimpleSparseLAPTrackerFactory();
 			final Map< String, Object > ts = tf.getDefaultSettings();
 			ts.put( KEY_LINKING_MAX_DISTANCE, 10d );
 			ts.put( KEY_GAP_CLOSING_MAX_DISTANCE, 15d );
@@ -110,7 +109,6 @@ public class TrackMateBatch
 			}
 
 			// Then export to ISBI
-			ISBIChallengeExporter.exportToFile( model, settings, exportPath );
 			logger.flush();
 
 		}

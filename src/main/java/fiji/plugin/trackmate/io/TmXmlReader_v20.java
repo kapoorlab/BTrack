@@ -8,8 +8,8 @@ import static fiji.plugin.trackmate.io.TmXmlKeys.TRACK_COLLECTION_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TRACK_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.TRACK_NAME_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.DETECTOR_SETTINGS_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTERED_SPOT_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTERED_SPOT_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTERED_BCellobject_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTERED_BCellobject_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTER_ABOVE_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTER_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.FILTER_FEATURE_ATTRIBUTE_NAME;
@@ -28,7 +28,7 @@ import static fiji.plugin.trackmate.io.TmXmlKeys_v20.IMAGE_TIME_INTERVAL_ATTRIBU
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.IMAGE_TIME_UNITS_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.IMAGE_VOXEL_DEPTH_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.IMAGE_WIDTH_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.INITIAL_SPOT_FILTER_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.INITIAL_BCellobject_FILTER_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.LOG_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.PLUGIN_VERSION_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SETTINGS_ELEMENT_KEY;
@@ -40,14 +40,14 @@ import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SETTINGS_YEND_ATTRIBUTE_NAM
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SETTINGS_YSTART_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SETTINGS_ZEND_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SETTINGS_ZSTART_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_FILTER_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_FRAME_COLLECTION_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_ID_ATTRIBUTE_NAME;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_ID_ELEMENT_KEY;
-import static fiji.plugin.trackmate.io.TmXmlKeys_v20.SPOT_NAME_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_FILTER_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_FRAME_COLLECTION_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_ID_ATTRIBUTE_NAME;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_ID_ELEMENT_KEY;
+import static fiji.plugin.trackmate.io.TmXmlKeys_v20.BCellobject_NAME_ATTRIBUTE_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.TRACKER_SETTINGS_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys_v20.TRACK_FILTER_COLLECTION_ELEMENT_KEY;
 import static fiji.plugin.trackmate.tracking.TrackerKeys.XML_ATTRIBUTE_TRACKER_NAME;
@@ -64,23 +64,20 @@ import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
+import fiji.plugin.trackmate.BCellobjectCollection;
+import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTimeLocationAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
-import fiji.plugin.trackmate.features.spot.SpotContrastAndSNRAnalyzerFactory;
-import fiji.plugin.trackmate.features.spot.SpotIntensityAnalyzerFactory;
-import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
+import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackBranchingAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackDurationAnalyzer;
@@ -90,11 +87,11 @@ import fiji.plugin.trackmate.features.track.TrackSpeedStatisticsAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.providers.ViewProvider;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.IJ;
@@ -192,10 +189,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 		// Feature declaration - has to be manual declaration
 		final FeatureModel fm = model.getFeatureModel();
 
-		fm.declareEdgeFeatures( Spot.FEATURES, Spot.FEATURE_NAMES, Spot.FEATURE_SHORT_NAMES, Spot.FEATURE_DIMENSIONS, Spot.IS_INT );
-		fm.declareSpotFeatures( SpotIntensityAnalyzerFactory.FEATURES, SpotIntensityAnalyzerFactory.FEATURE_NAMES, SpotIntensityAnalyzerFactory.FEATURE_SHORT_NAMES, SpotIntensityAnalyzerFactory.FEATURE_DIMENSIONS, SpotIntensityAnalyzerFactory.IS_INT );
-		fm.declareSpotFeatures( SpotContrastAndSNRAnalyzerFactory.FEATURES, SpotContrastAndSNRAnalyzerFactory.FEATURE_NAMES, SpotContrastAndSNRAnalyzerFactory.FEATURE_SHORT_NAMES, SpotContrastAndSNRAnalyzerFactory.FEATURE_DIMENSIONS, SpotContrastAndSNRAnalyzerFactory.IS_INT );
-		fm.declareSpotFeatures( SpotRadiusEstimatorFactory.FEATURES, SpotRadiusEstimatorFactory.FEATURE_NAMES, SpotRadiusEstimatorFactory.FEATURE_SHORT_NAMES, SpotRadiusEstimatorFactory.FEATURE_DIMENSIONS, SpotRadiusEstimatorFactory.IS_INT );
+		fm.declareEdgeFeatures( BCellobject.FEATURES, BCellobject.FEATURE_NAMES, BCellobject.FEATURE_SHORT_NAMES, BCellobject.FEATURE_DIMENSIONS, BCellobject.IS_INT );
 
 		fm.declareEdgeFeatures( EdgeTargetAnalyzer.FEATURES, EdgeTargetAnalyzer.FEATURE_NAMES, EdgeTargetAnalyzer.FEATURE_SHORT_NAMES, EdgeTargetAnalyzer.FEATURE_DIMENSIONS, EdgeTargetAnalyzer.IS_INT );
 		fm.declareEdgeFeatures( EdgeVelocityAnalyzer.FEATURES, EdgeVelocityAnalyzer.FEATURE_NAMES, EdgeVelocityAnalyzer.FEATURE_SHORT_NAMES, EdgeVelocityAnalyzer.FEATURE_DIMENSIONS, EdgeVelocityAnalyzer.IS_INT );
@@ -207,10 +201,10 @@ public class TmXmlReader_v20 extends TmXmlReader
 		fm.declareTrackFeatures( TrackLocationAnalyzer.FEATURES, TrackLocationAnalyzer.FEATURE_NAMES, TrackLocationAnalyzer.FEATURE_SHORT_NAMES, TrackLocationAnalyzer.FEATURE_DIMENSIONS, TrackLocationAnalyzer.IS_INT );
 		fm.declareTrackFeatures( TrackSpeedStatisticsAnalyzer.FEATURES, TrackSpeedStatisticsAnalyzer.FEATURE_NAMES, TrackSpeedStatisticsAnalyzer.FEATURE_SHORT_NAMES, TrackSpeedStatisticsAnalyzer.FEATURE_DIMENSIONS, TrackSpeedStatisticsAnalyzer.IS_INT );
 
-		// Spots - we can find them under the root element
-		final SpotCollection spots = getAllSpots();
-		setSpotsVisibility();
-		model.setSpots( spots, false );
+		// BCellobjects - we can find them under the root element
+		final BCellobjectCollection BCellobjects = getAllBCellobjects();
+		setBCellobjectsVisibility();
+		model.setBCellobjects( BCellobjects, false );
 
 		// Tracks - we can find them under the root element
 		if ( !readTracks( root, model ) )
@@ -244,23 +238,23 @@ public class TmXmlReader_v20 extends TmXmlReader
 	}
 
 	@Override
-	public void readSettings( final Settings settings, final DetectorProvider detectorProvider, final TrackerProvider trackerProvider, final SpotAnalyzerProvider spotAnalyzerProvider, final EdgeAnalyzerProvider edgeAnalyzerProvider, final TrackAnalyzerProvider trackAnalyzerProvider )
+	public void readSettings( final Settings settings, final DetectorProvider detectorProvider, final TrackerProvider trackerProvider, final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider, final EdgeAnalyzerProvider edgeAnalyzerProvider, final TrackAnalyzerProvider trackAnalyzerProvider )
 	{
 		settings.imp = getImage();
 		getBaseSettings( settings );
 		getDetectorSettings( settings, detectorProvider );
 		getTrackerSettings( settings, trackerProvider );
-		settings.initialSpotFilterValue = getInitialFilter().value;
-		settings.setSpotFilters( getSpotFeatureFilters() );
+		settings.initialBCellobjectFilterValue = getInitialFilter().value;
+		settings.setBCellobjectFilters( getBCellobjectFeatureFilters() );
 		settings.setTrackFilters( getTrackFeatureFilters() );
 
 		// Analyzers - we add them all
-		settings.clearSpotAnalyzerFactories();
-		final List< String > spotAnalyzerKeys = spotAnalyzerProvider.getKeys();
-		for ( final String key : spotAnalyzerKeys )
+		settings.clearBCellobjectAnalyzerFactories();
+		final List< String > BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
+		for ( final String key : BCellobjectAnalyzerKeys )
 		{
-			final SpotAnalyzerFactory< ? > spotFeatureAnalyzer = spotAnalyzerProvider.getFactory( key );
-			settings.addSpotAnalyzerFactory( spotFeatureAnalyzer );
+			final BCellobjectAnalyzerFactory< ? > BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+			settings.addBCellobjectAnalyzerFactory( BCellobjectFeatureAnalyzer );
 		}
 
 		settings.clearEdgeAnalyzers();
@@ -337,11 +331,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 				{
 					attName = TrackLocationAnalyzer.Y_LOCATION;
 				}
-				else if ( attName.equals( "Z_LOCATION" ) )
-				{
-					attName = TrackLocationAnalyzer.Z_LOCATION;
-				}
-
+			
 				Double attVal = Double.NaN;
 				try
 				{
@@ -398,7 +388,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 	private FeatureFilter getInitialFilter()
 	{
 
-		final Element itEl = root.getChild( INITIAL_SPOT_FILTER_ELEMENT_KEY );
+		final Element itEl = root.getChild( INITIAL_BCellobject_FILTER_ELEMENT_KEY );
 		if ( null == itEl ) { return null; }
 		final String feature = itEl.getAttributeValue( FILTER_FEATURE_ATTRIBUTE_NAME );
 		final Double value = readDoubleAttribute( itEl, FILTER_VALUE_ATTRIBUTE_NAME, logger );
@@ -408,15 +398,15 @@ public class TmXmlReader_v20 extends TmXmlReader
 	}
 
 	/**
-	 * Return the list of {@link FeatureFilter} for spots stored in this file.
-	 * Return <code>null</code> if the spot feature filters data cannot be found
+	 * Return the list of {@link FeatureFilter} for BCellobjects stored in this file.
+	 * Return <code>null</code> if the BCellobject feature filters data cannot be found
 	 * in the file.
 	 */
-	private List< FeatureFilter > getSpotFeatureFilters()
+	private List< FeatureFilter > getBCellobjectFeatureFilters()
 	{
 
 		final List< FeatureFilter > featureThresholds = new ArrayList< >();
-		final Element ftCollectionEl = root.getChild( SPOT_FILTER_COLLECTION_ELEMENT_KEY );
+		final Element ftCollectionEl = root.getChild( BCellobject_FILTER_COLLECTION_ELEMENT_KEY );
 		if ( null == ftCollectionEl ) { return null; }
 		final List< Element > ftEls = ftCollectionEl.getChildren( FILTER_ELEMENT_KEY );
 		for ( final Element ftEl : ftEls )
@@ -488,7 +478,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 
 	/**
 	 * Update the given {@link Settings} object with the
-	 * {@link SpotDetectorFactory} and settings map fields named
+	 * {@link BCellobjectDetectorFactory} and settings map fields named
 	 * {@link Settings#detectorFactory} and {@link Settings#detectorSettings}
 	 * read within the XML file this reader is initialized with.
 	 * <p>
@@ -518,7 +508,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 			return;
 		}
 
-		final SpotDetectorFactory< ? > factory = provider.getFactory( detectorKey );
+		final BCellobjectDetectorFactory< ? > factory = provider.getFactory( detectorKey );
 		if ( null == factory )
 		{
 			logger.error( "The detector identified by the key " + detectorKey + " is unknown to TrackMate.\n" );
@@ -541,7 +531,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 	}
 
 	/**
-	 * Update the given {@link Settings} object with SpotTracker proper
+	 * Update the given {@link Settings} object with BCellobjectTracker proper
 	 * settings map fields named {@link Settings#trackerSettings} and
 	 * Settings#tracker read within the XML file this reader is
 	 * initialized with.
@@ -571,7 +561,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 			return;
 		}
 
-		final SpotTrackerFactory factory = provider.getFactory( trackerKey );
+		final BCellobjectTrackerFactory factory = provider.getFactory( trackerKey );
 		if ( null == factory )
 		{
 			logger.error( "The tracker identified by the key " + trackerKey + " is unknown to TrackMate.\n" );
@@ -595,7 +585,7 @@ public class TmXmlReader_v20 extends TmXmlReader
 	}
 
 	/**
-	 * Read the list of all spots stored in this file.
+	 * Read the list of all BCellobjects stored in this file.
 	 * <p>
 	 * Internally, this methods also builds the cache field, which will be
 	 * required by other methods.
@@ -604,117 +594,69 @@ public class TmXmlReader_v20 extends TmXmlReader
 	 * parsing the file. If not called, this method will be called
 	 * anyway by the other methods to build the cache.
 	 *
-	 * @return a {@link SpotCollection}. Return <code>null</code> if the spot
+	 * @return a {@link BCellobjectCollection}. Return <code>null</code> if the BCellobject
 	 *         section is not present in the file.
 	 */
-	private SpotCollection getAllSpots()
+	private BCellobjectCollection getAllBCellobjects()
 	{
 		// Root element for collection
-		final Element spotCollection = root.getChild( SPOT_COLLECTION_ELEMENT_KEY );
-		if ( null == spotCollection ) { return null; }
+		final Element BCellobjectCollection = root.getChild( BCellobject_COLLECTION_ELEMENT_KEY );
+		if ( null == BCellobjectCollection ) { return null; }
 
 		// Retrieve children elements for each frame
-		final List< Element > frameContent = spotCollection.getChildren( SPOT_FRAME_COLLECTION_ELEMENT_KEY );
+		final List< Element > frameContent = BCellobjectCollection.getChildren( BCellobject_FRAME_COLLECTION_ELEMENT_KEY );
 
-		// Determine total number of spots
-		int nspots = readIntAttribute( spotCollection, SPOT_COLLECTION_NSPOTS_ATTRIBUTE_NAME, Logger.VOID_LOGGER );
-		if ( nspots == 0 )
+		// Determine total number of BCellobjects
+		int nBCellobjects = readIntAttribute( BCellobjectCollection, BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, Logger.VOID_LOGGER );
+		if ( nBCellobjects == 0 )
 		{
 			// Could not find it or read it. Determine it by quick sweeping
 			// through children element
 			for ( final Element currentFrameContent : frameContent )
 			{
-				nspots += currentFrameContent.getChildren( SPOT_ELEMENT_KEY ).size();
+				nBCellobjects += currentFrameContent.getChildren( BCellobject_ELEMENT_KEY ).size();
 			}
 		}
 
 		// Instantiate cache
-		cache = new ConcurrentHashMap< >( nspots );
+		cache = new ConcurrentHashMap< >( nBCellobjects );
 
 		// Load collection and build cache
 		int currentFrame = 0;
-		ArrayList< Spot > spotList;
-		final SpotCollection allSpots = new SpotCollection();
+		ArrayList< BCellobject > BCellobjectList;
+		final BCellobjectCollection allBCellobjects = new BCellobjectCollection();
 
 		for ( final Element currentFrameContent : frameContent )
 		{
 
 			currentFrame = readIntAttribute( currentFrameContent, FRAME_ATTRIBUTE_NAME, logger );
-			final List< Element > spotContent = currentFrameContent.getChildren( SPOT_ELEMENT_KEY );
-			spotList = new ArrayList< >( spotContent.size() );
-			for ( final Element spotElement : spotContent )
-			{
-				final Spot spot = createSpotFrom( spotElement );
-				spotList.add( spot );
-				cache.put( spot.ID(), spot );
-			}
+			final List< Element > BCellobjectContent = currentFrameContent.getChildren( BCellobject_ELEMENT_KEY );
+			BCellobjectList = new ArrayList< >( BCellobjectContent.size() );
+	
 
-			allSpots.put( currentFrame, spotList );
+			allBCellobjects.put( currentFrame, BCellobjectList );
 		}
-		return allSpots;
+		return allBCellobjects;
 	}
 
 	/**
-	 * Sets the spot visibility as stored in this file.
+	 * Sets the BCellobject visibility as stored in this file.
 	 */
-	private void setSpotsVisibility()
+	private void setBCellobjectsVisibility()
 	{
-		final Element selectedSpotCollection = root.getChild( FILTERED_SPOT_ELEMENT_KEY );
-		if ( null == selectedSpotCollection ) { return; }
+		final Element selectedBCellobjectCollection = root.getChild( FILTERED_BCellobject_ELEMENT_KEY );
+		if ( null == selectedBCellobjectCollection ) { return; }
 
 		if ( null == cache )
 		{
-			getAllSpots(); // build it if it's not here
+			getAllBCellobjects(); // build it if it's not here
 		}
 
-		final List< Element > frameContent = selectedSpotCollection.getChildren( FILTERED_SPOT_COLLECTION_ELEMENT_KEY );
+		final List< Element > frameContent = selectedBCellobjectCollection.getChildren( FILTERED_BCellobject_COLLECTION_ELEMENT_KEY );
 
-		for ( final Element currentFrameContent : frameContent )
-		{
-			final List< Element > spotContent = currentFrameContent.getChildren( SPOT_ID_ELEMENT_KEY );
-			// Loop over all spot element
-			for ( final Element spotEl : spotContent )
-			{
-				// Find corresponding spot in cache
-				final int ID = readIntAttribute( spotEl, SPOT_ID_ATTRIBUTE_NAME, logger );
-				final Spot spot = cache.get( ID );
-				spot.putFeature( SpotCollection.VISIBLITY, SpotCollection.ONE );
-			}
-		}
+		
 	}
 
-	private Spot createSpotFrom( final Element spotEl )
-	{
-		final int ID = readIntAttribute( spotEl, SPOT_ID_ATTRIBUTE_NAME, logger );
-		final Spot spot = new Spot( ID );
-
-		final List< Attribute > atts = spotEl.getAttributes();
-		removeAttributeFromName( atts, SPOT_ID_ATTRIBUTE_NAME );
-
-		String name = spotEl.getAttributeValue( SPOT_NAME_ATTRIBUTE_NAME );
-		if ( null == name || name.equals( "" ) )
-		{
-			name = "ID" + ID;
-		}
-		spot.setName( name );
-		removeAttributeFromName( atts, SPOT_NAME_ATTRIBUTE_NAME );
-
-		for ( final Attribute att : atts )
-		{
-			if ( att.getName().equals( SPOT_NAME_ATTRIBUTE_NAME ) || att.getName().equals( SPOT_ID_ATTRIBUTE_NAME ) )
-			{
-				continue;
-			}
-			try
-			{
-				spot.putFeature( att.getName(), att.getDoubleValue() );
-			}
-			catch ( final DataConversionException e )
-			{
-				logger.error( "Cannot read the feature " + att.getName() + " value. Skipping.\n" );
-			}
-		}
-		return spot;
-	}
+	
 
 }

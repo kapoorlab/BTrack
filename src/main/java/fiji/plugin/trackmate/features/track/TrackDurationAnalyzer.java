@@ -14,10 +14,10 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
 
 @SuppressWarnings( "deprecation" )
 @Plugin( type = TrackAnalyzer.class )
@@ -109,33 +109,33 @@ public class TrackDurationAnalyzer implements TrackAnalyzer
 					{
 
 						// I love brute force.
-						final Set< Spot > track = model.getTrackModel().trackSpots( trackID );
+						final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 						double minT = Double.POSITIVE_INFINITY;
 						double maxT = Double.NEGATIVE_INFINITY;
 						Double t;
-						Spot startSpot = null;
-						Spot endSpot = null;
-						for ( final Spot spot : track )
+						BCellobject startBCellobject = null;
+						BCellobject endBCellobject = null;
+						for ( final BCellobject BCellobject : track )
 						{
-							t = spot.getFeature( Spot.POSITION_T );
+							t = BCellobject.getFeature( BCellobject.POSITION_T );
 							if ( t < minT )
 							{
 								minT = t;
-								startSpot = spot;
+								startBCellobject = BCellobject;
 							}
 							if ( t > maxT )
 							{
 								maxT = t;
-								endSpot = spot;
+								endBCellobject = BCellobject;
 							}
 						}
-						if (null == startSpot || null == endSpot)
+						if (null == startBCellobject || null == endBCellobject)
 							continue;
 						
 						fm.putTrackFeature( trackID, TRACK_DURATION, ( maxT - minT ) );
 						fm.putTrackFeature( trackID, TRACK_START, minT );
 						fm.putTrackFeature( trackID, TRACK_STOP, maxT );
-						fm.putTrackFeature( trackID, TRACK_DISPLACEMENT, Math.sqrt( startSpot.squareDistanceTo( endSpot ) ) );
+						fm.putTrackFeature( trackID, TRACK_DISPLACEMENT, Math.sqrt( startBCellobject.squareDistanceTo( endBCellobject ) ) );
 
 					}
 				}
@@ -209,11 +209,7 @@ public class TrackDurationAnalyzer implements TrackAnalyzer
 		return null;
 	}
 
-	@Override
-	public ImageIcon getIcon()
-	{
-		return null;
-	}
+
 
 	@Override
 	public String getName()
@@ -231,5 +227,11 @@ public class TrackDurationAnalyzer implements TrackAnalyzer
 	public boolean isManualFeature()
 	{
 		return false;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

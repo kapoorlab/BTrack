@@ -1,16 +1,16 @@
 package fiji.plugin.trackmate.gui;
 
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_SPOT_COLOR;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_BCellobject_COLOR;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_TRACK_DISPLAY_MODE;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_COLOR;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_COLORMAP;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_SPOT_NAMES;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_BCellobject_NAMES;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_HIGHLIGHT_COLOR;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOTS_VISIBLE;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOT_COLORING;
-import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_SPOT_RADIUS_RATIO;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobjectS_VISIBLE;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_COLORING;
+import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_RADIUS_RATIO;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACKS_VISIBLE;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_COLORING;
 import static fiji.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
@@ -32,14 +32,14 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.TrackMateOptionUtils;
 import fiji.plugin.trackmate.action.AbstractTMAction;
-import fiji.plugin.trackmate.action.ExportAllSpotsStatsAction;
+import fiji.plugin.trackmate.action.ExportAllBCellobjectsStatsAction;
 import fiji.plugin.trackmate.action.ExportStatsToIJAction;
 import fiji.plugin.trackmate.detection.ManualDetectorFactory;
 import fiji.plugin.trackmate.features.ModelFeatureUpdater;
@@ -48,15 +48,11 @@ import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.ActionChooserDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.DetectionDescriptor;
-import fiji.plugin.trackmate.gui.descriptors.DetectorChoiceDescriptor;
-import fiji.plugin.trackmate.gui.descriptors.DetectorConfigurationDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.GrapherDescriptor;
-import fiji.plugin.trackmate.gui.descriptors.InitFilterDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.LoadDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.LogPanelDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.SaveDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.SomeDialogDescriptor;
-import fiji.plugin.trackmate.gui.descriptors.SpotFilterDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.StartDialogDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.TrackFilterDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.TrackerChoiceDescriptor;
@@ -68,7 +64,7 @@ import fiji.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
 import fiji.plugin.trackmate.providers.ActionProvider;
 import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
+import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.providers.ViewProvider;
@@ -76,13 +72,13 @@ import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
 import fiji.plugin.trackmate.util.TMUtils;
 import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotColorGenerator;
+import fiji.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGeneratorPerTrackFeature;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGenerator;
+import fiji.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
-import fiji.plugin.trackmate.visualization.trackscheme.SpotImageUpdater;
+import fiji.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.IJ;
 import ij.Prefs;
@@ -106,7 +102,7 @@ public class TrackMateGUIController implements ActionListener
 
 	protected final TrackMateGUIModel guimodel;
 
-	protected SpotAnalyzerProvider spotAnalyzerProvider;
+	protected BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider;
 
 	protected EdgeAnalyzerProvider edgeAnalyzerProvider;
 
@@ -120,19 +116,14 @@ public class TrackMateGUIController implements ActionListener
 
 	protected ActionProvider actionProvider;
 
-	protected DetectorConfigurationDescriptor detectorConfigurationDescriptor;
-
-	protected DetectorChoiceDescriptor detectorChoiceDescriptor;
 
 	protected StartDialogDescriptor startDialoDescriptor;
 
 	protected DetectionDescriptor detectionDescriptor;
 
-	protected InitFilterDescriptor initFilterDescriptor;
 
 	protected ViewChoiceDescriptor viewChoiceDescriptor;
 
-	protected SpotFilterDescriptor spotFilterDescriptor;
 
 	protected TrackerChoiceDescriptor trackerChoiceDescriptor;
 
@@ -162,13 +153,13 @@ public class TrackMateGUIController implements ActionListener
 
 	protected PerEdgeFeatureColorGenerator edgeColorGenerator;
 
-	protected FeatureColorGenerator< Spot > spotColorGenerator;
+	protected FeatureColorGenerator< BCellobject > BCellobjectColorGenerator;
 
 	protected ManualEdgeColorGenerator manualEdgeColorGenerator;
 
-	protected ManualSpotColorGenerator manualSpotColorGenerator;
+	protected ManualBCellobjectColorGenerator manualBCellobjectColorGenerator;
 
-	protected FeatureColorGenerator< Spot > spotColorGeneratorPerTrackFeature;
+	protected FeatureColorGenerator< BCellobject > BCellobjectColorGeneratorPerTrackFeature;
 
 	/**
 	 * The listener in charge of listening to display settings changes and
@@ -224,12 +215,12 @@ public class TrackMateGUIController implements ActionListener
 		modelFeatureUpdater.setNumThreads( trackmate.getNumThreads() );
 
 		// Feature colorers
-		this.spotColorGenerator = createSpotColorGenerator();
+		this.BCellobjectColorGenerator = createBCellobjectColorGenerator();
 		this.edgeColorGenerator = createEdgeColorGenerator();
 		this.trackColorGenerator = createTrackColorGenerator();
 		this.manualEdgeColorGenerator = createManualEdgeColorGenerator();
-		this.manualSpotColorGenerator = createManualSpotColorGenerator();
-		this.spotColorGeneratorPerTrackFeature = createSpotColorGeneratorPerTrackFeature();
+		this.manualBCellobjectColorGenerator = createManualBCellobjectColorGenerator();
+		this.BCellobjectColorGeneratorPerTrackFeature = createBCellobjectColorGeneratorPerTrackFeature();
 
 		// 0.
 		this.guimodel = new TrackMateGUIModel();
@@ -342,14 +333,7 @@ public class TrackMateGUIController implements ActionListener
 			if ( stateKey.equals( descriptor.getKey() ) )
 			{
 
-				if ( descriptor.equals( spotFilterDescriptor ) )
-				{
-					/*
-					 * Special case: we need this otherwise the component of
-					 * this descriptor is not instantiated.
-					 */
-					spotFilterDescriptor.aboutToDisplayPanel();
-				}
+				
 
 				guimodel.currentDescriptor = descriptor;
 				gui.show( descriptor );
@@ -391,7 +375,7 @@ public class TrackMateGUIController implements ActionListener
 
 	/**
 	 * Returns the {@link DetectorProvider} instance, serving
-	 * {@link fiji.plugin.trackmate.detection.SpotDetectorFactory}s to this GUI
+	 * {@link fiji.plugin.trackmate.detection.BCellobjectDetectorFactory}s to this GUI
 	 *
 	 * @return the detector provider.
 	 */
@@ -401,15 +385,15 @@ public class TrackMateGUIController implements ActionListener
 	}
 
 	/**
-	 * Returns the {@link SpotAnalyzerProvider} instance, serving
-	 * {@link fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory}s to this
+	 * Returns the {@link BCellobjectAnalyzerProvider} instance, serving
+	 * {@link fiji.plugin.trackmate.features.BCellobject.BCellobjectAnalyzerFactory}s to this
 	 * GUI.
 	 *
-	 * @return the spot analyzer provider.
+	 * @return the BCellobject analyzer provider.
 	 */
-	public SpotAnalyzerProvider getSpotAnalyzerProvider()
+	public BCellobjectAnalyzerProvider getBCellobjectAnalyzerProvider()
 	{
-		return spotAnalyzerProvider;
+		return BCellobjectAnalyzerProvider;
 	}
 
 	/**
@@ -436,7 +420,7 @@ public class TrackMateGUIController implements ActionListener
 
 	/**
 	 * Returns the {@link TrackerProvider} instance, serving
-	 * {@link fiji.plugin.trackmate.tracking.SpotTracker}s to this GUI.
+	 * {@link fiji.plugin.trackmate.tracking.BCellobjectTracker}s to this GUI.
 	 *
 	 * @return the tracker provider.
 	 */
@@ -454,9 +438,9 @@ public class TrackMateGUIController implements ActionListener
 		selectionModel = new SelectionModel( trackmate.getModel() );
 	}
 
-	protected FeatureColorGenerator< Spot > createSpotColorGenerator()
+	protected FeatureColorGenerator< BCellobject > createBCellobjectColorGenerator()
 	{
-		return new SpotColorGenerator( trackmate.getModel() );
+		return new BCellobjectColorGenerator( trackmate.getModel() );
 	}
 
 	protected PerEdgeFeatureColorGenerator createEdgeColorGenerator()
@@ -470,9 +454,9 @@ public class TrackMateGUIController implements ActionListener
 		return generator;
 	}
 
-	protected ManualSpotColorGenerator createManualSpotColorGenerator()
+	protected ManualBCellobjectColorGenerator createManualBCellobjectColorGenerator()
 	{
-		return new ManualSpotColorGenerator();
+		return new ManualBCellobjectColorGenerator();
 	}
 
 	protected ManualEdgeColorGenerator createManualEdgeColorGenerator()
@@ -480,15 +464,15 @@ public class TrackMateGUIController implements ActionListener
 		return new ManualEdgeColorGenerator( trackmate.getModel() );
 	}
 
-	protected FeatureColorGenerator< Spot > createSpotColorGeneratorPerTrackFeature()
+	protected FeatureColorGenerator< BCellobject > createBCellobjectColorGeneratorPerTrackFeature()
 	{
-		final FeatureColorGenerator< Spot > generator = new SpotColorGeneratorPerTrackFeature( trackmate.getModel(), TrackIndexAnalyzer.TRACK_INDEX );
+		final FeatureColorGenerator< BCellobject > generator = new BCellobjectColorGeneratorPerTrackFeature( trackmate.getModel(), TrackIndexAnalyzer.TRACK_INDEX );
 		return generator;
 	}
 
 	protected void createProviders()
 	{
-		spotAnalyzerProvider = new SpotAnalyzerProvider();
+		BCellobjectAnalyzerProvider = new BCellobjectAnalyzerProvider();
 		edgeAnalyzerProvider = new EdgeAnalyzerProvider();
 		trackAnalyzerProvider = new TrackAnalyzerProvider();
 		detectorProvider = new DetectorProvider();
@@ -556,82 +540,19 @@ public class TrackMateGUIController implements ActionListener
 			}
 		} );
 
-		/*
-		 * Choose detector
-		 */
-		detectorChoiceDescriptor = new DetectorChoiceDescriptor( detectorProvider, trackmate, this );
-
-		/*
-		 * Configure chosen detector
-		 */
-		detectorConfigurationDescriptor = new DetectorConfigurationDescriptor( trackmate, this );
 
 		/*
 		 * Execute and report detection progress
 		 */
 		detectionDescriptor = new DetectionDescriptor( this );
 
-		/*
-		 * Initial spot filter: discard obvious spurious spot based on quality.
-		 */
-		initFilterDescriptor = new InitFilterDescriptor( trackmate, this );
+
 
 		/*
 		 * Select and render a view
 		 */
 		// We need the GUI model to register the created view there.
 		viewChoiceDescriptor = new ViewChoiceDescriptor( viewProvider, guimodel, this );
-
-		/*
-		 * Spot filtering
-		 */
-		spotFilterDescriptor = new SpotFilterDescriptor( trackmate, spotColorGenerator, this );
-		// display color changed
-		spotFilterDescriptor.addActionListener( new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed( final ActionEvent event )
-			{
-				if ( event == spotFilterDescriptor.getComponent().COLOR_FEATURE_CHANGED )
-				{
-
-					final FeatureColorGenerator< Spot > newValue;
-					@SuppressWarnings( "unchecked" )
-					final FeatureColorGenerator< Spot > oldValue = ( FeatureColorGenerator< Spot > ) guimodel.getDisplaySettings().get( KEY_SPOT_COLORING );
-					if ( null == spotFilterDescriptor.getComponent() ) { return; }
-					switch ( spotFilterDescriptor.getComponent().getColorCategory() )
-					{
-					case DEFAULT:
-						newValue = spotColorGenerator;
-						spotColorGenerator.setFeature( null );
-						break;
-					case TRACKS:
-						newValue = spotColorGeneratorPerTrackFeature;
-						spotColorGeneratorPerTrackFeature.setFeature( spotFilterDescriptor.getComponent().getColorFeature() );
-						break;
-					default:
-						newValue = spotColorGenerator;
-						spotColorGenerator.setFeature( spotFilterDescriptor.getComponent().getColorFeature() );
-						break;
-					}
-					final DisplaySettingsEvent dsEvent = new DisplaySettingsEvent( spotFilterDescriptor.getComponent(), KEY_SPOT_COLORING, newValue, oldValue );
-					displaySettingsListener.displaySettingsChanged( dsEvent );
-				}
-			}
-		} );
-		// Filtered
-		spotFilterDescriptor.addChangeListener( new ChangeListener()
-		{
-			@Override
-			public void stateChanged( final ChangeEvent event )
-			{
-				// We set the thresholds field of the model but do not touch its
-				// selected spot field yet.
-				trackmate.getSettings().setSpotFilters( spotFilterDescriptor.getComponent().getFeatureFilters() );
-				trackmate.execSpotFiltering( false );
-			}
-		} );
 
 		/*
 		 * Choose a tracker
@@ -678,7 +599,7 @@ public class TrackMateGUIController implements ActionListener
 			public void stateChanged( final ChangeEvent event )
 			{
 				// We set the thresholds field of the model but do not touch its
-				// selected spot field yet.
+				// selected BCellobject field yet.
 				trackmate.getSettings().setTrackFilters( trackFilterDescriptor.getComponent().getFeatureFilters() );
 				trackmate.execTrackFiltering( false );
 			}
@@ -687,7 +608,7 @@ public class TrackMateGUIController implements ActionListener
 		/*
 		 * Finished, let's change the display settings.
 		 */
-		configureViewsDescriptor = new ConfigureViewsDescriptor( trackmate, spotColorGenerator, edgeColorGenerator, trackColorGenerator, spotColorGeneratorPerTrackFeature, manualSpotColorGenerator, manualEdgeColorGenerator, this );
+		configureViewsDescriptor = new ConfigureViewsDescriptor( trackmate, BCellobjectColorGenerator, edgeColorGenerator, trackColorGenerator, BCellobjectColorGeneratorPerTrackFeature, manualBCellobjectColorGenerator, manualEdgeColorGenerator, this );
 		configureViewsDescriptor.getComponent().addActionListener( new ActionListener()
 		{
 			@Override
@@ -742,15 +663,11 @@ public class TrackMateGUIController implements ActionListener
 		final ArrayList< WizardPanelDescriptor > descriptors = new ArrayList< >( 16 );
 		descriptors.add( actionChooserDescriptor );
 		descriptors.add( configureViewsDescriptor );
-		descriptors.add( detectorChoiceDescriptor );
-		descriptors.add( detectorConfigurationDescriptor );
 		descriptors.add( detectionDescriptor );
 		descriptors.add( grapherDescriptor );
-		descriptors.add( initFilterDescriptor );
 		descriptors.add( loadDescriptor );
 		descriptors.add( logPanelDescriptor );
 		descriptors.add( saveDescriptor );
-		descriptors.add( spotFilterDescriptor );
 		descriptors.add( startDialoDescriptor );
 		descriptors.add( trackFilterDescriptor );
 		descriptors.add( trackerChoiceDescriptor );
@@ -768,45 +685,7 @@ public class TrackMateGUIController implements ActionListener
 	protected WizardPanelDescriptor nextDescriptor( final WizardPanelDescriptor currentDescriptor )
 	{
 
-		if ( currentDescriptor == startDialoDescriptor )
-		{
-			return detectorChoiceDescriptor;
-
-		}
-		else if ( currentDescriptor == detectorChoiceDescriptor )
-		{
-			return detectorConfigurationDescriptor;
-
-		}
-		else if ( currentDescriptor == detectorConfigurationDescriptor )
-		{
-			if ( trackmate.getSettings().detectorFactory.getKey().equals( ManualDetectorFactory.DETECTOR_KEY ) )
-				return viewChoiceDescriptor;
-
-			return detectionDescriptor;
-
-		}
-		else if ( currentDescriptor == detectionDescriptor )
-		{
-			return initFilterDescriptor;
-
-		}
-		else if ( currentDescriptor == initFilterDescriptor )
-		{
-			return viewChoiceDescriptor;
-
-		}
-		else if ( currentDescriptor == viewChoiceDescriptor )
-		{
-			return spotFilterDescriptor;
-
-		}
-		else if ( currentDescriptor == spotFilterDescriptor )
-		{
-			return trackerChoiceDescriptor;
-
-		}
-		else if ( currentDescriptor == trackerChoiceDescriptor )
+		if ( currentDescriptor == trackerChoiceDescriptor )
 		{
 			if ( null == trackmate.getSettings().trackerFactory || trackmate.getSettings().trackerFactory.getKey().equals( ManualTrackerFactory.TRACKER_KEY ) )
 				return trackFilterDescriptor;
@@ -853,47 +732,8 @@ public class TrackMateGUIController implements ActionListener
 	protected WizardPanelDescriptor previousDescriptor( final WizardPanelDescriptor currentDescriptor )
 	{
 
-		if ( currentDescriptor == startDialoDescriptor )
-		{
-			return null;
-
-		}
-		else if ( currentDescriptor == detectorChoiceDescriptor )
-		{
-			return startDialoDescriptor;
-
-		}
-		else if ( currentDescriptor == detectorConfigurationDescriptor )
-		{
-			return detectorChoiceDescriptor;
-
-		}
-		else if ( currentDescriptor == detectionDescriptor )
-		{
-			return detectorConfigurationDescriptor;
-
-		}
-		else if ( currentDescriptor == initFilterDescriptor )
-		{
-			return detectorConfigurationDescriptor;
-
-		}
-		else if ( currentDescriptor == viewChoiceDescriptor )
-		{
-			return detectorConfigurationDescriptor;
-
-		}
-		else if ( currentDescriptor == spotFilterDescriptor )
-		{
-			return viewChoiceDescriptor;
-
-		}
-		else if ( currentDescriptor == trackerChoiceDescriptor )
-		{
-			return spotFilterDescriptor;
-
-		}
-		else if ( currentDescriptor == trackerConfigurationDescriptor )
+		
+		if ( currentDescriptor == trackerConfigurationDescriptor )
 		{
 			return trackerChoiceDescriptor;
 
@@ -976,12 +816,12 @@ public class TrackMateGUIController implements ActionListener
 	protected Map< String, Object > createDisplaySettings( final Model model )
 	{
 		final Map< String, Object > displaySettings = new HashMap< >();
-		displaySettings.put( KEY_COLOR, DEFAULT_SPOT_COLOR );
+		displaySettings.put( KEY_COLOR, DEFAULT_BCellobject_COLOR );
 		displaySettings.put( KEY_HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR );
-		displaySettings.put( KEY_SPOTS_VISIBLE, true );
-		displaySettings.put( KEY_DISPLAY_SPOT_NAMES, false );
-		displaySettings.put( KEY_SPOT_COLORING, spotColorGenerator );
-		displaySettings.put( KEY_SPOT_RADIUS_RATIO, 1.0d );
+		displaySettings.put( KEY_BCellobjectS_VISIBLE, true );
+		displaySettings.put( KEY_DISPLAY_BCellobject_NAMES, false );
+		displaySettings.put( KEY_BCellobject_COLORING, BCellobjectColorGenerator );
+		displaySettings.put( KEY_BCellobject_RADIUS_RATIO, 1.0d );
 		displaySettings.put( KEY_TRACKS_VISIBLE, true );
 		displaySettings.put( KEY_TRACK_DISPLAY_MODE, DEFAULT_TRACK_DISPLAY_MODE );
 		displaySettings.put( KEY_TRACK_DISPLAY_DEPTH, DEFAULT_TRACK_DISPLAY_DEPTH );
@@ -1093,7 +933,7 @@ public class TrackMateGUIController implements ActionListener
 			{
 				disableButtonsAndStoreState();
 				guimodel.previousDescriptor = guimodel.currentDescriptor;
-				trackmate.computeSpotFeatures( true );
+				trackmate.computeBCellobjectFeatures( true );
 				trackmate.computeEdgeFeatures( true );
 				trackmate.computeTrackFeatures( true );
 				configureViewsDescriptor.getComponent().refreshGUI();
@@ -1182,7 +1022,7 @@ public class TrackMateGUIController implements ActionListener
 		 */
 
 		if (guimodel.currentDescriptor.equals( trackerConfigurationDescriptor )
-				|| guimodel.currentDescriptor.equals( detectorConfigurationDescriptor ))
+				)
 		{
 			// This will flush currently displayed settings to TrackMate.
 			guimodel.currentDescriptor.aboutToHidePanel();
@@ -1249,8 +1089,8 @@ public class TrackMateGUIController implements ActionListener
 			public void run()
 			{
 				final TrackScheme trackscheme = new TrackScheme( trackmate.getModel(), selectionModel );
-				final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( trackmate.getSettings() );
-				trackscheme.setSpotImageUpdater( thumbnailUpdater );
+				final BCellobjectImageUpdater thumbnailUpdater = new BCellobjectImageUpdater( trackmate.getSettings() );
+				trackscheme.setBCellobjectImageUpdater( thumbnailUpdater );
 				for ( final String settingKey : guimodel.getDisplaySettings().keySet() )
 				{
 					trackscheme.setDisplaySettings( settingKey, guimodel.getDisplaySettings().get( settingKey ) );
@@ -1272,7 +1112,7 @@ public class TrackMateGUIController implements ActionListener
 		}.start();
 	}
 
-	private void launchDoAnalysis( final boolean showAllSpotStats )
+	private void launchDoAnalysis( final boolean showAllBCellobjectStats )
 	{
 		final JButton button = configureViewsDescriptor.getComponent().getDoAnalysisButton();
 		button.setEnabled( false );
@@ -1287,8 +1127,8 @@ public class TrackMateGUIController implements ActionListener
 				try
 				{
 					AbstractTMAction action;
-					if ( showAllSpotStats )
-						action = new ExportAllSpotsStatsAction( selectionModel );
+					if ( showAllBCellobjectStats )
+						action = new ExportAllBCellobjectsStatsAction( selectionModel );
 					else
 						action = new ExportStatsToIJAction( selectionModel );
 

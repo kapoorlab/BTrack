@@ -12,7 +12,7 @@ import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Jama.Matrix;
-import fiji.plugin.trackmate.Spot;
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.algorithm.OutputAlgorithm;
@@ -35,7 +35,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
  * <li>Must be within a certain distance.</li>
  * </ul>
  * 
- * @see LAPUtils#computeLinkingCostFor(Spot, Spot, double, double, Map)
+ * @see LAPUtils#computeLinkingCostFor(BCellobject, BCellobject, double, double, Map)
  * @author Nicholas Perry
  * @author Jean-Yves Tinevez
  */
@@ -47,7 +47,7 @@ public class GapClosingCostFunction extends MultiThreadedBenchmarkAlgorithm impl
 	protected final boolean allowed;
 
 	/**
-	 * The distance cutoff: no gap is closed if the two spots are further than
+	 * The distance cutoff: no gap is closed if the two BCellobjects are further than
 	 * this distance.
 	 */
 	protected final double maxDist;
@@ -61,19 +61,19 @@ public class GapClosingCostFunction extends MultiThreadedBenchmarkAlgorithm impl
 	/** Feature penalties. */
 	protected final Map< String, Double > featurePenalties;
 
-	protected final List< SortedSet< Spot > > trackSegments;
+	protected final List< SortedSet< BCellobject > > trackSegments;
 
 	protected Matrix m;
 
 	@SuppressWarnings( "unchecked" )
-	public GapClosingCostFunction( final Map< String, Object > settings, final List< SortedSet< Spot > > trackSegments )
+	public GapClosingCostFunction( final Map< String, Object > settings, final List<SortedSet<BCellobject>> trackSegments2 )
 	{
 		this.frameCutoff = ( Integer ) settings.get( KEY_GAP_CLOSING_MAX_FRAME_GAP );
 		this.maxDist = ( Double ) settings.get( KEY_GAP_CLOSING_MAX_DISTANCE );
 		this.blockingValue = ( Double ) settings.get( KEY_BLOCKING_VALUE );
 		this.featurePenalties = ( Map< String, Double > ) settings.get( KEY_GAP_CLOSING_FEATURE_PENALTIES );
 		this.allowed = ( Boolean ) settings.get( KEY_ALLOW_GAP_CLOSING );
-		this.trackSegments = trackSegments;
+		this.trackSegments = trackSegments2;
 	}
 
 	@Override
@@ -112,10 +112,10 @@ public class GapClosingCostFunction extends MultiThreadedBenchmarkAlgorithm impl
 						for ( int i = ai.getAndIncrement(); i < n; i = ai.getAndIncrement() )
 						{
 
-							final SortedSet< Spot > seg1 = trackSegments.get( i );
-							final Spot end = seg1.last();
-							// get last Spot of seg1
-							final int endFrame = end.getFeature( Spot.FRAME ).intValue();
+							final SortedSet< BCellobject > seg1 = trackSegments.get( i );
+							final BCellobject end = seg1.last();
+							// get last BCellobject of seg1
+							final int endFrame = end.getFeature( BCellobject.POSITION_T ).intValue();
 							// we want at least tstart > tend
 
 							// Set the gap closing scores for each segment start
@@ -130,15 +130,15 @@ public class GapClosingCostFunction extends MultiThreadedBenchmarkAlgorithm impl
 									continue;
 								}
 
-								final SortedSet< Spot > seg2 = trackSegments.get( j );
-								final Spot lStart = seg2.first();
-								// get first Spot of seg2
-								final int startFrame = lStart.getFeature( Spot.FRAME ).intValue();
+								final SortedSet< BCellobject > seg2 = trackSegments.get( j );
+								final BCellobject lStart = seg2.first();
+								// get first BCellobject of seg2
+								final int startFrame = lStart.getFeature( BCellobject.POSITION_T ).intValue();
 
 								/*
 								 * Frame cutoff. A value of 1 means a gap of 1
-								 * frame. If the end spot is in frame 10, the
-								 * start spot in frame 12, and if the max gap is
+								 * frame. If the end BCellobject is in frame 10, the
+								 * start BCellobject in frame 12, and if the max gap is
 								 * 1 then we should sought to bridge this gap
 								 * (12 to 10 is a gap of 1 frame).
 								 */

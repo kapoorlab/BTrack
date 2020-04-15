@@ -31,7 +31,6 @@ import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.gui.panels.ActionListenablePanel;
-import fiji.plugin.trackmate.gui.panels.FilterPanel;
 import fiji.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel.Category;
 import fiji.plugin.trackmate.util.OnRequestUpdater;
 
@@ -70,7 +69,6 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 
 	private final OnRequestUpdater updater;
 
-	private final Stack< FilterPanel > thresholdPanels = new Stack< >();
 
 	private final Stack< Component > struts = new Stack< >();
 
@@ -109,10 +107,7 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 		{
 			switch ( category )
 			{
-			case SPOTS:
-				features.addAll( model.getFeatureModel().getSpotFeatures() );
-				featureNames.putAll( model.getFeatureModel().getSpotFeatureNames() );
-				break;
+			
 			case EDGES:
 				features.addAll( model.getFeatureModel().getEdgeFeatures() );
 				featureNames.putAll( model.getFeatureModel().getEdgeFeatureNames() );
@@ -161,9 +156,7 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 		{
 			switch ( category )
 			{
-			case SPOTS:
-				featureValues.putAll( model.getSpots().collectValues( model.getFeatureModel().getSpotFeatures(), false ) );
-				break;
+			
 			case TRACKS:
 				featureValues.putAll( model.getFeatureModel().getTrackFeatureValues() );
 				break;
@@ -177,37 +170,7 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 		}
 	}
 
-	/**
-	 * Set the feature filters to display and layout in this panel.
-	 *
-	 * @param filters
-	 *            the list of {@link FeatureFilter}s that should be already
-	 *            present in the GUI (for loading purpose). Can be
-	 *            <code>null</code> or empty.
-	 */
-	public void setFilters( final List< FeatureFilter > filters )
-	{
-		// Clean current panels
-		final int n_panels = thresholdPanels.size();
-		for ( int i = 0; i < n_panels; i++ )
-		{
-			removeThresholdPanel();
-		}
 
-		if ( null != filters )
-		{
-
-			for ( final FeatureFilter ft : filters )
-			{
-				addFilterPanel( ft );
-			}
-			if ( filters.isEmpty() )
-				newFeatureIndex = 0;
-			else
-				newFeatureIndex = this.features.indexOf( filters.get( filters.size() - 1 ).feature );
-
-		}
-	}
 
 	/**
 	 * Called when one of the {@link FilterPanel} is changed by the user.
@@ -293,17 +256,11 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 			return;
 
 		final int filterIndex = features.indexOf( filter.feature );
-		final FilterPanel tp = new FilterPanel( features, featureNames, featureValues, filterIndex );
-		tp.setThreshold( filter.value );
-		tp.setAboveThreshold( filter.isAbove );
-		tp.addChangeListener( this );
 		newFeatureIndex++;
 		if ( newFeatureIndex >= features.size() )
 			newFeatureIndex = 0;
 		final Component strut = Box.createVerticalStrut( 5 );
 		struts.push( strut );
-		thresholdPanels.push( tp );
-		jPanelAllThresholds.add( tp );
 		jPanelAllThresholds.add( strut );
 		jPanelAllThresholds.revalidate();
 		stateChanged( CHANGE_EVENT );
@@ -313,15 +270,11 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 	{
 		if ( null == featureValues )
 			return;
-		final FilterPanel tp = new FilterPanel( features, featureNames, featureValues, features.indexOf( feature ) );
-		tp.addChangeListener( this );
 		newFeatureIndex++;
 		if ( newFeatureIndex >= features.size() )
 			newFeatureIndex = 0;
 		final Component strut = Box.createVerticalStrut( 5 );
 		struts.push( strut );
-		thresholdPanels.push( tp );
-		jPanelAllThresholds.add( tp );
 		jPanelAllThresholds.add( strut );
 		jPanelAllThresholds.revalidate();
 		stateChanged( CHANGE_EVENT );
@@ -331,11 +284,8 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 	{
 		try
 		{
-			final FilterPanel tp = thresholdPanels.pop();
-			tp.removeChangeListener( this );
 			final Component strut = struts.pop();
 			jPanelAllThresholds.remove( strut );
-			jPanelAllThresholds.remove( tp );
 			jPanelAllThresholds.repaint();
 			stateChanged( CHANGE_EVENT );
 		}
@@ -349,11 +299,7 @@ public class FilterGuiPanel extends ActionListenablePanel implements ChangeListe
 		{
 			System.out.println( "[FilterGuiPanel] #refresh()" );
 		}
-		featureFilters = new ArrayList< >( thresholdPanels.size() );
-		for ( final FilterPanel tp : thresholdPanels )
-		{
-			featureFilters.add( new FeatureFilter( tp.getKey(), new Double( tp.getThreshold() ), tp.isAboveThreshold() ) );
-		}
+	
 		fireThresholdChanged( null );
 		updateInfoText();
 	}

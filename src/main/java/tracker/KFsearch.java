@@ -30,17 +30,17 @@ import net.imglib2.RealPoint;
 		public final JProgressBar jpb;
 		private final double maxsearchRadius;
 		private final double initialsearchRadius;
-		private final CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
+		private final BudCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
 		private final int maxframeGap;
 		private HashMap<String, Integer> Accountedframes;
 		private SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> graph;
 
-		protected Logger logger = Logger.DEFAULT_LOGGER;
+		protected BudLogger logger = BudLogger.DEFAULT_LOGGER;
 		protected String errorMessage;
 		ArrayList<ArrayList<Budpointobject>> Allblobscopy;
 
 		public KFsearch(final ArrayList<ArrayList<Budpointobject>> Allblobs,
-				final CostFunction<Budpointobject, Budpointobject> UserchosenCostFunction,
+				final BudCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction,
 				final double maxsearchRadius, final double initialsearchRadius, final int maxframeGap,
 				HashMap<String, Integer> Accountedframes, final JProgressBar jpb) {
 
@@ -102,7 +102,7 @@ import net.imglib2.RealPoint;
 
 			final double positionMeasurementStd = meanSpotRadius / 1d;
 
-			final Map<CVMKalmanFilter, Budpointobject> kalmanFiltersMap = new HashMap<CVMKalmanFilter, Budpointobject>(
+			final Map<BudCVMKalmanFilter, Budpointobject> kalmanFiltersMap = new HashMap<BudCVMKalmanFilter, Budpointobject>(
 					Secondorphan.size());
 			// Loop from the second frame to the last frame and build
 			// KalmanFilterMap
@@ -111,10 +111,10 @@ import net.imglib2.RealPoint;
 			
 				List<Budpointobject> measurements = Allblobs.get(i);
 				// Make the preditiction map
-				final Map<ComparableRealPoint, CVMKalmanFilter> predictionMap = new HashMap<ComparableRealPoint, CVMKalmanFilter>(
+				final Map<ComparableRealPoint, BudCVMKalmanFilter> predictionMap = new HashMap<ComparableRealPoint, BudCVMKalmanFilter>(
 						kalmanFiltersMap.size());
 
-				for (final CVMKalmanFilter kf : kalmanFiltersMap.keySet()) {
+				for (final BudCVMKalmanFilter kf : kalmanFiltersMap.keySet()) {
 					final double[] X = kf.predict();
 					final ComparableRealPoint point = new ComparableRealPoint(X);
 					predictionMap.put(point, kf);
@@ -122,7 +122,7 @@ import net.imglib2.RealPoint;
 				}
 				final List<ComparableRealPoint> predictions = new ArrayList<ComparableRealPoint>(predictionMap.keySet());
 				// Orphans are dealt with later
-				final Collection<CVMKalmanFilter> childlessKFs = new HashSet<CVMKalmanFilter>(kalmanFiltersMap.keySet());
+				final Collection<BudCVMKalmanFilter> childlessKFs = new HashSet<BudCVMKalmanFilter>(kalmanFiltersMap.keySet());
 
 				/*
 				 * Here we simply link based on minimizing the squared distances to get an
@@ -133,10 +133,10 @@ import net.imglib2.RealPoint;
 				if (!predictions.isEmpty() && !measurements.isEmpty()) {
 					// Only link measurements to predictions if we have predictions.
 
-					final JaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budpointobject> crm = new JaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budpointobject>(
+					final BudJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budpointobject> crm = new BudJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budpointobject>(
 							predictions, measurements, DistanceBasedcost, maxCost, ALTERNATIVE_COST_FACTOR, PERCENTILE);
 
-					final JaqamanLinker<ComparableRealPoint, Budpointobject> linker = new JaqamanLinker<ComparableRealPoint, Budpointobject>(
+					final BudJaqamanLinker<ComparableRealPoint, Budpointobject> linker = new BudJaqamanLinker<ComparableRealPoint, Budpointobject>(
 							crm);
 					if (!linker.checkInput() || !linker.process()) {
 						errorMessage = BASE_ERROR_MSG + "Error linking candidates in frame "  + ": "
@@ -149,7 +149,7 @@ import net.imglib2.RealPoint;
 					// Deal with found links.
 					Secondorphan = new HashSet<Budpointobject>(measurements);
 					for (final ComparableRealPoint cm : agnts.keySet()) {
-						final CVMKalmanFilter kf = predictionMap.get(cm);
+						final BudCVMKalmanFilter kf = predictionMap.get(cm);
 
 						// Create links for found match.
 						final Budpointobject source = kalmanFiltersMap.get(kf);
@@ -183,10 +183,10 @@ import net.imglib2.RealPoint;
 
 					// Trying to link orphans with unlinked candidates.
 
-					final JaqamanLinkingCostMatrixCreator<Budpointobject, Budpointobject> ic = new JaqamanLinkingCostMatrixCreator<Budpointobject, Budpointobject>(
+					final BudJaqamanLinkingCostMatrixCreator<Budpointobject, Budpointobject> ic = new BudJaqamanLinkingCostMatrixCreator<Budpointobject, Budpointobject>(
 							Firstorphan, Secondorphan, UserchosenCostFunction, maxInitialCost, ALTERNATIVE_COST_FACTOR,
 							PERCENTILE);
-					final JaqamanLinker<Budpointobject, Budpointobject> newLinker = new JaqamanLinker<Budpointobject, Budpointobject>(
+					final BudJaqamanLinker<Budpointobject, Budpointobject> newLinker = new BudJaqamanLinker<Budpointobject, Budpointobject>(
 							ic);
 
 					if (!newLinker.checkInput() || !newLinker.process()) {
@@ -206,7 +206,7 @@ import net.imglib2.RealPoint;
 
 						// Derive initial state and create Kalman filter.
 						final double[] XP = estimateInitialState(source, target);
-						final CVMKalmanFilter kt = new CVMKalmanFilter(XP, Double.MIN_NORMAL, positionProcessStd,
+						final BudCVMKalmanFilter kt = new BudCVMKalmanFilter(XP, Double.MIN_NORMAL, positionProcessStd,
 								velocityProcessStd, positionMeasurementStd);
 						// We trust the initial state a lot.
 
@@ -229,7 +229,7 @@ import net.imglib2.RealPoint;
 
 				Firstorphan = Secondorphan;
 				// Deal with childless KFs.
-				for (final CVMKalmanFilter kf : childlessKFs) {
+				for (final BudCVMKalmanFilter kf : childlessKFs) {
 					// Echo we missed a measurement
 					kf.update(null);
 
@@ -274,7 +274,7 @@ import net.imglib2.RealPoint;
 		 *
 		 * Cost function that returns the square distance between a KF state and a Blob.
 		 */
-		private static final CostFunction<ComparableRealPoint, Budpointobject> DistanceBasedcost = new CostFunction<ComparableRealPoint, Budpointobject>() {
+		private static final BudCostFunction<ComparableRealPoint, Budpointobject> DistanceBasedcost = new BudCostFunction<ComparableRealPoint, Budpointobject>() {
 
 			@Override
 			public double linkingCost(final ComparableRealPoint state, final Budpointobject Blob) {

@@ -12,16 +12,18 @@ import java.util.Stack;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.traverse.GraphIterator;
 
+import budDetector.BCellobject;
+
 /**
- * A component of {@link Model} that handles spot and edges selection.
+ * A component of {@link Model} that handles BCellobject and edges selection.
  * @author Jean-Yves Tinevez
  */
 public class SelectionModel {
 
 	private static final boolean DEBUG = false;
 
-	/** The spot current selection. */
-	private Set<Spot> spotSelection = new HashSet<>();
+	/** The BCellobject current selection. */
+	private Set<BCellobject> BCellobjectSelection = new HashSet<>();
 	/** The edge current selection. */
 	private Set<DefaultWeightedEdge> edgeSelection = new HashSet<>();
 	/** The list of listener listening to change in selection. */
@@ -61,31 +63,31 @@ public class SelectionModel {
 		if (DEBUG)
 			System.out.println("[SelectionModel] Clearing selection");
 		// Prepare event
-		Map<Spot, Boolean> spotMap = new HashMap<>(spotSelection.size());
-		for (Spot spot : spotSelection)
-			spotMap.put(spot, false);
+		Map<BCellobject, Boolean> BCellobjectMap = new HashMap<>(BCellobjectSelection.size());
+		for (BCellobject BCellobject : BCellobjectSelection)
+			BCellobjectMap.put(BCellobject, false);
 		Map<DefaultWeightedEdge, Boolean> edgeMap = new HashMap<>(edgeSelection.size());
 		for (DefaultWeightedEdge edge : edgeSelection)
 			edgeMap.put(edge, false);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, edgeMap);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, BCellobjectMap, edgeMap);
 		// Clear fields
-		clearSpotSelection();
+		clearBCellobjectSelection();
 		clearEdgeSelection();
 		// Fire event
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void clearSpotSelection() {
+	public void clearBCellobjectSelection() {
 		if (DEBUG)
-			System.out.println("[SelectionModel] Clearing spot selection");
+			System.out.println("[SelectionModel] Clearing BCellobject selection");
 		// Prepare event
-		Map<Spot, Boolean> spotMap = new HashMap<>(spotSelection.size());
-		for (Spot spot : spotSelection)
-			spotMap.put(spot, false);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
+		Map<BCellobject, Boolean> BCellobjectMap = new HashMap<>(BCellobjectSelection.size());
+		for (BCellobject BCellobject : BCellobjectSelection)
+			BCellobjectMap.put(BCellobject, false);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, BCellobjectMap, null);
 		// Clear field
-		spotSelection.clear();
+		BCellobjectSelection.clear();
 		// Fire event
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
@@ -106,58 +108,58 @@ public class SelectionModel {
 			listener.selectionChanged(event);
 	}
 
-	public void addSpotToSelection(final Spot spot) {
-		if (!spotSelection.add(spot))
+	public void addBCellobjectToSelection(final BCellobject BCellobject) {
+		if (!BCellobjectSelection.add(BCellobject))
 			return; // Do nothing if already present in selection
 		if (DEBUG)
-			System.out.println("[SelectionModel] Adding spot " + spot + " to selection");
-		Map<Spot, Boolean> spotMap = new HashMap<>(1);
-		spotMap.put(spot, true);
+			System.out.println("[SelectionModel] Adding BCellobject " + BCellobject + " to selection");
+		Map<BCellobject, Boolean> BCellobjectMap = new HashMap<>(1);
+		BCellobjectMap.put(BCellobject, true);
 		if (DEBUG)
 			System.out.println("[SelectionModel] Seding event to listeners: "+selectionChangeListeners);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, BCellobjectMap, null);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void removeSpotFromSelection(final Spot spot) {
-		if (!spotSelection.remove(spot))
+	public void removeBCellobjectFromSelection(final BCellobject BCellobject) {
+		if (!BCellobjectSelection.remove(BCellobject))
 			return; // Do nothing was not already present in selection
 		if (DEBUG)
-			System.out.println("[SelectionModel] Removing spot " + spot + " from selection");
-		Map<Spot, Boolean> spotMap = new HashMap<>(1);
-		spotMap.put(spot, false);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
+			System.out.println("[SelectionModel] Removing BCellobject " + BCellobject + " from selection");
+		Map<BCellobject, Boolean> BCellobjectMap = new HashMap<>(1);
+		BCellobjectMap.put(BCellobject, false);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, BCellobjectMap, null);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void addSpotToSelection(final Collection<Spot> spots) {
-		Map<Spot, Boolean> spotMap = new HashMap<>(spots.size());
-		for (Spot spot : spots) {
-			if (spotSelection.add(spot)) {
-				spotMap.put(spot, true);
+	public void addBCellobjectToSelection(final Collection<BCellobject> BCellobjects) {
+		Map<BCellobject, Boolean> BCellobjectMap = new HashMap<>(BCellobjects.size());
+		for (BCellobject BCellobject : BCellobjects) {
+			if (BCellobjectSelection.add(BCellobject)) {
+				BCellobjectMap.put(BCellobject, true);
 				if (DEBUG)
-					System.out.println("[SelectionModel] Adding spot " + spot + " to selection");
+					System.out.println("[SelectionModel] Adding BCellobject " + BCellobject + " to selection");
 			}
 		}
-		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, BCellobjectMap, null);
 		if (DEBUG) 
 			System.out.println("[SelectionModel] Seding event "+event.hashCode()+" to "+selectionChangeListeners.size()+" listeners: "+selectionChangeListeners);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void removeSpotFromSelection(final Collection<Spot> spots) {
-		Map<Spot, Boolean> spotMap = new HashMap<>(spots.size());
-		for (Spot spot : spots) {
-			if (spotSelection.remove(spot)) {
-				spotMap.put(spot, false);
+	public void removeBCellobjectFromSelection(final Collection<BCellobject> BCellobjects) {
+		Map<BCellobject, Boolean> BCellobjectMap = new HashMap<>(BCellobjects.size());
+		for (BCellobject BCellobject : BCellobjects) {
+			if (BCellobjectSelection.remove(BCellobject)) {
+				BCellobjectMap.put(BCellobject, false);
 				if (DEBUG)
-					System.out.println("[SelectionModel] Removing spot " + spot + " from selection");
+					System.out.println("[SelectionModel] Removing BCellobject " + BCellobject + " from selection");
 			}
 		}
-		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, BCellobjectMap, null);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
@@ -216,8 +218,8 @@ public class SelectionModel {
 			listener.selectionChanged(event);
 	}
 
-	public Set<Spot> getSpotSelection() {
-		return spotSelection;
+	public Set<BCellobject> getBCellobjectSelection() {
+		return BCellobjectSelection;
 	}
 
 	public Set<DefaultWeightedEdge> getEdgeSelection() {
@@ -230,35 +232,35 @@ public class SelectionModel {
 
 
 	/**
-	 * Search and add all spots and links belonging to the same track(s) that of given <code>spots</code> and 
+	 * Search and add all BCellobjects and links belonging to the same track(s) that of given <code>BCellobjects</code> and 
 	 * <code>edges</code> to current selection. A <code>direction</code> parameter allow specifying
 	 * whether we should include only parts upwards in time, downwards in time or all the way through. 
-	 * @param spots  the spots to include in search
+	 * @param BCellobjects  the BCellobjects to include in search
 	 * @param edges  the edges to include in search
 	 * @param direction  the direction to go when searching. Positive integers will result in searching
 	 * upwards in time, negative integers downwards in time and 0 all the way through.
 	 */
-	public void selectTrack(final Collection<Spot> spots, final Collection<DefaultWeightedEdge> edges, final int direction) {
+	public void selectTrack(final Collection<BCellobject> BCellobjects, final Collection<DefaultWeightedEdge> edges, final int direction) {
 
-		HashSet<Spot> inspectionSpots = new HashSet<>(spots);
+		HashSet<BCellobject> inspectionBCellobjects = new HashSet<>(BCellobjects);
 
 		for(DefaultWeightedEdge edge : edges) {
-			// We add connected spots to the list of spots to inspect
-			inspectionSpots.add(model.getTrackModel().getEdgeSource(edge));
-			inspectionSpots.add(model.getTrackModel().getEdgeTarget(edge));
+			// We add connected BCellobjects to the list of BCellobjects to inspect
+			inspectionBCellobjects.add(model.getTrackModel().getEdgeSource(edge));
+			inspectionBCellobjects.add(model.getTrackModel().getEdgeTarget(edge));
 		}
 
 		// Walk across tracks to build selection
-		final HashSet<Spot> lSpotSelection 					= new HashSet<>();
+		final HashSet<BCellobject> lBCellobjectSelection 					= new HashSet<>();
 		final HashSet<DefaultWeightedEdge> lEdgeSelection 	= new HashSet<>();
 
 		if (direction == 0) { // Unconditionally
-			for (Spot spot : inspectionSpots) {
-				lSpotSelection.add(spot);
-				GraphIterator<Spot, DefaultWeightedEdge> walker = model.getTrackModel().getDepthFirstIterator(spot, false);
+			for (BCellobject BCellobject : inspectionBCellobjects) {
+				lBCellobjectSelection.add(BCellobject);
+				GraphIterator<BCellobject, DefaultWeightedEdge> walker = model.getTrackModel().getDepthFirstIterator(BCellobject, false);
 				while (walker.hasNext()) { 
-					Spot target = walker.next();
-					lSpotSelection.add(target); 
+					BCellobject target = walker.next();
+					lBCellobjectSelection.add(target); 
 					// Deal with edges
 					Set<DefaultWeightedEdge> targetEdges = model.getTrackModel().edgesOf(target);
 					for(DefaultWeightedEdge targetEdge : targetEdges) {
@@ -268,27 +270,27 @@ public class SelectionModel {
 			}
 
 		} else { // Only upward or backward in time 
-			for (Spot spot : inspectionSpots) {
-				lSpotSelection.add(spot);
+			for (BCellobject BCellobject : inspectionBCellobjects) {
+				lBCellobjectSelection.add(BCellobject);
 
 				// A bit more complicated: we want to walk in only one direction,
 				// when branching is occurring, we do not want to get back in time.
-				Stack<Spot> stack = new Stack<>();
-				stack.add(spot);
+				Stack<BCellobject> stack = new Stack<>();
+				stack.add(BCellobject);
 				while (!stack.isEmpty()) { 
-					Spot inspected = stack.pop();
+					BCellobject inspected = stack.pop();
 					Set<DefaultWeightedEdge> targetEdges = model.getTrackModel().edgesOf(inspected);
 					for(DefaultWeightedEdge targetEdge : targetEdges) {
-						Spot other;
+						BCellobject other;
 						if (direction > 0) {
-							// Upward in time: we just have to search through edges using their source spots
+							// Upward in time: we just have to search through edges using their source BCellobjects
 							other = model.getTrackModel().getEdgeSource(targetEdge);
 						} else {
 							other = model.getTrackModel().getEdgeTarget(targetEdge);
 						}
 
 						if (other != inspected) {
-							lSpotSelection.add(other);
+							lBCellobjectSelection.add(other);
 							lEdgeSelection.add(targetEdge);
 							stack.add(other);
 						}
@@ -301,16 +303,16 @@ public class SelectionModel {
 		// edges in it.
 		ArrayList<DefaultWeightedEdge> edgesToRemove = new ArrayList<>();
 		for(DefaultWeightedEdge edge : lEdgeSelection) {
-			Spot source = model.getTrackModel().getEdgeSource(edge);
-			Spot target = model.getTrackModel().getEdgeTarget(edge);
-			if ( !(lSpotSelection.contains(source) && lSpotSelection.contains(target)) ) {
+			BCellobject source = model.getTrackModel().getEdgeSource(edge);
+			BCellobject target = model.getTrackModel().getEdgeTarget(edge);
+			if ( !(lBCellobjectSelection.contains(source) && lBCellobjectSelection.contains(target)) ) {
 				edgesToRemove.add(edge);
 			}
 		}
 		lEdgeSelection.removeAll(edgesToRemove);
 
 		// Set selection
-		addSpotToSelection(lSpotSelection);
+		addBCellobjectToSelection(lBCellobjectSelection);
 		addEdgeToSelection(lEdgeSelection);
 	}
 
