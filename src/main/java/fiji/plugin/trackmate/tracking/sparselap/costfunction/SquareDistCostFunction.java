@@ -1,5 +1,6 @@
 package fiji.plugin.trackmate.tracking.sparselap.costfunction;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Spot;
 
 /**
@@ -9,11 +10,11 @@ import fiji.plugin.trackmate.Spot;
  * @author Jean-Yves Tinevez - 2014
  *
  */
-public class SquareDistCostFunction implements CostFunction< Spot, Spot >
+public class SquareDistCostFunction implements CostFunction< BCellobject, BCellobject >
 {
 
 	@Override
-	public double linkingCost( final Spot source, final Spot target )
+	public double linkingCost( final BCellobject source, final BCellobject target )
 	{
 		final double d2 = source.squareDistanceTo( target );
 		return ( d2 == 0 ) ? Double.MIN_NORMAL : d2;

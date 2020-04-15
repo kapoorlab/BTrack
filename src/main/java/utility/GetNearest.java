@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import budDetector.Budobject;
+import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
 import displayBud.DisplayListOverlay;
@@ -100,10 +101,10 @@ public class GetNearest {
 
 						// For each bud get the list of points
 
-						Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
+						Budregionobject PairCurrentViewBit = TrackEachBud
 								.CurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
 						
-						List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+						List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 						
 						Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(truths);
 						
@@ -125,15 +126,17 @@ public class GetNearest {
 					
 
 					for (Integer labelyellow : InsideCellList.keySet()) {
-							Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = TrackEachBud
+							Budregionobject PairCurrentViewBit = TrackEachBud
 									.CurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
 
 							// For each bud get the list of points
-							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
-							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getB());
+							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
 							double cellArea = interiorcelltruths.size() * parent.calibration;
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
-							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, cellArea);
+							
+							
+							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, cellArea,PairCurrentViewBit.size );
 							Allcells.add(insidecells);
 							for (RealLocalizable insidetruth : bordercelltruths) {
 

@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
 import ij.ImagePlus;
@@ -165,11 +166,11 @@ public class TrackEachBud {
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label, first one is the border n second binary is the filled bud
-				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = CurrentLabelBinaryImage(
+				Budregionobject PairCurrentViewBit = CurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
 				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
@@ -205,11 +206,12 @@ public class TrackEachBud {
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
-				Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit = CurrentLabelBinaryImage(
+				
+				Budregionobject PairCurrentViewBit = CurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
 				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
@@ -263,7 +265,7 @@ public class TrackEachBud {
 											LabelCovered.put(label, true);
 											PairCurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
 											// For each bud get the list of points
-											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.getA());
+											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 											centerpoint = budDetector.Listordering.getMeanCord(truths);
 
 											if (parent.jpb != null)
@@ -287,13 +289,13 @@ public class TrackEachBud {
 
 	}
 
-	public void Common(Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> PairCurrentViewBit,
+	public void Common(Budregionobject PairCurrentViewBit,
 			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID, int label) {
 
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
 
-		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.getB(), ops);
+		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
 		skelmake.setClosingRadius(2);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
@@ -327,7 +329,7 @@ public class TrackEachBud {
 				double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 				
 				// Make the bud n cell object, each cell has all information about the bud n itself 
-				BCellobject budncell = new BCellobject(Budlist, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint);
+				BCellobject budncell = new BCellobject(Currentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, t);
                 Budcelllist.add(budncell); 
 			}
 			
@@ -433,7 +435,7 @@ public class TrackEachBud {
 		return gradientimg;
 	}
 
-	public static Pair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>> CurrentLabelBinaryImage(
+	public static Budregionobject CurrentLabelBinaryImage(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
@@ -469,6 +471,10 @@ public class TrackEachBud {
 				imageRA.get().setZero();
 
 		}
+		
+		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
+		
+		// Smooth the interior image a bit to give the interior cell image
 		RandomAccessibleInterval<BitType> outsmooth = new ArrayImgFactory<BitType>().create(outimg, new BitType());
 		try {
 
@@ -479,9 +485,13 @@ public class TrackEachBud {
 			es.printStackTrace();
 		}
 
+		
+		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outsmooth);
-
-		return new ValuePair<RandomAccessibleInterval<BitType>, RandomAccessibleInterval<BitType>>(gradimg, outsmooth);
+		
+		
+		Budregionobject region = new Budregionobject(gradimg, outsmooth, size);
+		return region;
 
 	}
 

@@ -13,12 +13,15 @@ public class Cellobject {
 	
 	public Localizable Location;
 	
+	public double size;
+	
 	public List<RealLocalizable> boundarylist;
 	
 	public List<RealLocalizable> interiorlist;
 	
 	
-	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double cellArea ) {
+	
+	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double cellArea, double size ) {
 		
 		this.interiorlist = interiorlist;
 		
@@ -28,6 +31,7 @@ public class Cellobject {
 		
 		this.cellArea = cellArea;
 		
+		this.size = size;
 		
 		
 	}

@@ -12,10 +12,10 @@ import java.util.NavigableSet;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.sparselap.costfunction.CostFunction;
 import fiji.plugin.trackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
@@ -23,22 +23,22 @@ import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import net.imglib2.RealPoint;
 import net.imglib2.algorithm.Benchmark;
 
-public class KalmanTracker implements SpotTracker, Benchmark
+public class KalmanTracker implements BCellobjectTracker, Benchmark
 {
 
 	private static final double ALTERNATIVE_COST_FACTOR = 1.05d;
 
 	private static final double PERCENTILE = 1d;
 
-	private static final String BASE_ERROR_MSG = "[KalmanTracker] ";
+	private static final String BASE_ERROR_MSG = "[BCellKalmanTracker] ";
 
-	private SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
+	private SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
 
 	private String errorMessage;
 
 	private Logger logger = Logger.VOID_LOGGER;
 
-	private final SpotCollection spots;
+	private final BCellobjectCollection BCellobjects;
 
 	private final double maxSearchRadius;
 
@@ -46,9 +46,8 @@ public class KalmanTracker implements SpotTracker, Benchmark
 
 	private final double initialSearchRadius;
 
-	private boolean savePredictions = false;
 
-	private SpotCollection predictionsCollection;
+	private BCellobjectCollection predictionsCollection;
 
 	private long processingTime;
 
@@ -57,15 +56,15 @@ public class KalmanTracker implements SpotTracker, Benchmark
 	 */
 
 	/**
-	 * @param spots
-	 *            the spots to track.
+	 * @param BCellobjects
+	 *            the BCellobjects to track.
 	 * @param maxSearchRadius
 	 * @param maxFrameGap
 	 * @param initialSearchRadius
 	 */
-	public KalmanTracker( final SpotCollection spots, final double maxSearchRadius, final int maxFrameGap, final double initialSearchRadius )
+	public KalmanTracker( final BCellobjectCollection BCellobjects, final double maxSearchRadius, final int maxFrameGap, final double initialSearchRadius )
 	{
-		this.spots = spots;
+		this.BCellobjects = BCellobjects;
 		this.maxSearchRadius = maxSearchRadius;
 		this.maxFrameGap = maxFrameGap;
 		this.initialSearchRadius = initialSearchRadius;
@@ -76,7 +75,7 @@ public class KalmanTracker implements SpotTracker, Benchmark
 	 */
 
 	@Override
-	public SimpleWeightedGraph< Spot, DefaultWeightedEdge > getResult()
+	public SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > getResult()
 	{
 		return graph;
 	}
@@ -97,7 +96,7 @@ public class KalmanTracker implements SpotTracker, Benchmark
 		 */
 
 		graph = new SimpleWeightedGraph< >( DefaultWeightedEdge.class );
-		predictionsCollection = new SpotCollection();
+		predictionsCollection = new BCellobjectCollection();
 
 		/*
 		 * Constants.
@@ -106,48 +105,48 @@ public class KalmanTracker implements SpotTracker, Benchmark
 		// Max KF search cost.
 		final double maxCost = maxSearchRadius * maxSearchRadius;
 		// Cost function to nucleate KFs.
-		final CostFunction< Spot, Spot > nucleatingCostFunction = new SquareDistCostFunction();
+		final CostFunction< BCellobject, BCellobject > nucleatingCostFunction = new SquareDistCostFunction();
 		// Max cost to nucleate KFs.
 		final double maxInitialCost = initialSearchRadius * initialSearchRadius;
 
 		// Find first and second non-empty frames.
-		final NavigableSet< Integer > keySet = spots.keySet();
+		final NavigableSet< Integer > keySet = BCellobjects.keySet();
 		final Iterator< Integer > frameIterator = keySet.iterator();
 
 		/*
 		 * Initialize. Find first links just based on square distance. We do
-		 * this via the orphan spots lists.
+		 * this via the orphan BCellobjects lists.
 		 */
 
-		// Spots in the PREVIOUS frame that were not part of a link.
-		Collection< Spot > previousOrphanSpots = new ArrayList<>();
+		// BCellobjects in the PREVIOUS frame that were not part of a link.
+		Collection< BCellobject > previousOrphanBCellobjects = new ArrayList<>();
 		if ( !frameIterator.hasNext() )
 			return true;
 
 		int firstFrame = frameIterator.next();
 		while ( true )
 		{
-			previousOrphanSpots = generateSpotList( spots, firstFrame );
+			previousOrphanBCellobjects = generateBCellobjectList( BCellobjects, firstFrame );
 			if ( !frameIterator.hasNext() )
 				return true;
-			if ( !previousOrphanSpots.isEmpty() )
+			if ( !previousOrphanBCellobjects.isEmpty() )
 				break;
 
 			firstFrame = frameIterator.next();
 		}
 
 		/*
-		 * Spots in the current frame that are not part of a new link (no
+		 * BCellobjects in the current frame that are not part of a new link (no
 		 * parent).
 		 */
-		Collection< Spot > orphanSpots = new ArrayList<>();
+		Collection< BCellobject > orphanBCellobjects = new ArrayList<>();
 		int secondFrame = frameIterator.next();
 		while ( true )
 		{
-			orphanSpots = generateSpotList( spots, secondFrame );
+			orphanBCellobjects = generateBCellobjectList( BCellobjects, secondFrame );
 			if ( !frameIterator.hasNext() )
 				return true;
-			if ( !orphanSpots.isEmpty() )
+			if ( !orphanBCellobjects.isEmpty() )
 				break;
 
 			secondFrame = frameIterator.next();
@@ -165,18 +164,18 @@ public class KalmanTracker implements SpotTracker, Benchmark
 		final double velocityProcessStd = maxSearchRadius / 3d;
 		/*
 		 * We assume the detector did a good job and that positions measured are
-		 * accurate up to a fraction of the spot radius
+		 * accurate up to a fraction of the BCellobject radius
 		 */
 
-		double meanSpotRadius = 0d;
-		for ( final Spot spot : orphanSpots )
-			meanSpotRadius += spot.getFeature( Spot.RADIUS ).doubleValue();
+		double meanBCellobjectRadius = 0d;
+		for ( final BCellobject BCellobject : orphanBCellobjects )
+			meanBCellobjectRadius += BCellobject.getFeature( BCellobject.RADIUS ).doubleValue();
 
-		meanSpotRadius /= orphanSpots.size();
-		final double positionMeasurementStd = meanSpotRadius / 10d;
+		meanBCellobjectRadius /= orphanBCellobjects.size();
+		final double positionMeasurementStd = meanBCellobjectRadius / 10d;
 
 		// The master map that contains the currently active KFs.
-		final Map< CVMKalmanFilter, Spot > kalmanFiltersMap = new HashMap< >( orphanSpots.size() );
+		final Map< CVMKalmanFilter, BCellobject > kalmanFiltersMap = new HashMap< >( orphanBCellobjects.size() );
 
 		/*
 		 * Then loop over time, starting from second frame.
@@ -186,8 +185,8 @@ public class KalmanTracker implements SpotTracker, Benchmark
 		{
 			p++;
 
-			// Use the spot in the next frame has measurements.
-			final List< Spot > measurements = generateSpotList( spots, frame );
+			// Use the BCellobject in the next frame has measurements.
+			final List< BCellobject > measurements = generateBCellobjectList( BCellobjects, frame );
 
 			/*
 			 * Predict for all Kalman filters, and use it to generate linking
@@ -200,14 +199,7 @@ public class KalmanTracker implements SpotTracker, Benchmark
 				final ComparableRealPoint point = new ComparableRealPoint( X );
 				predictionMap.put( new ComparableRealPoint( X ), kf );
 
-				if ( savePredictions )
-				{
-					final Spot pred = toSpot( point );
-					final Spot s = kalmanFiltersMap.get( kf );
-					pred.setName( "Pred_" + s.getName() );
-					pred.putFeature( Spot.RADIUS, s.getFeature( Spot.RADIUS ) );
-					predictionsCollection.add( pred, frame );
-				}
+				
 			}
 			final List< ComparableRealPoint > predictions = new ArrayList< >( predictionMap.keySet() );
 
@@ -222,25 +214,25 @@ public class KalmanTracker implements SpotTracker, Benchmark
 			 * to a measurement.
 			 */
 
-			orphanSpots = new HashSet< >( measurements );
+			orphanBCellobjects = new HashSet< >( measurements );
 			if ( !predictions.isEmpty() && !measurements.isEmpty() )
 			{
 				// Only link measurements to predictions if we have predictions.
 
-				final JaqamanLinkingCostMatrixCreator< ComparableRealPoint, Spot > crm = new JaqamanLinkingCostMatrixCreator< >(
+				final JaqamanLinkingCostMatrixCreator< ComparableRealPoint, BCellobject > crm = new JaqamanLinkingCostMatrixCreator< >(
 						predictions,
 						measurements,
 						CF,
 						maxCost,
 						ALTERNATIVE_COST_FACTOR,
 						PERCENTILE );
-				final JaqamanLinker< ComparableRealPoint, Spot > linker = new JaqamanLinker< >( crm );
+				final JaqamanLinker< ComparableRealPoint, BCellobject > linker = new JaqamanLinker< >( crm );
 				if ( !linker.checkInput() || !linker.process() )
 				{
 					errorMessage = BASE_ERROR_MSG + "Error linking candidates in frame " + frame + ": " + linker.getErrorMessage();
 					return false;
 				}
-				final Map< ComparableRealPoint, Spot > agnts = linker.getResult();
+				final Map< ComparableRealPoint, BCellobject > agnts = linker.getResult();
 				final Map< ComparableRealPoint, Double > costs = linker.getAssignmentCosts();
 
 				// Deal with found links.
@@ -249,8 +241,8 @@ public class KalmanTracker implements SpotTracker, Benchmark
 					final CVMKalmanFilter kf = predictionMap.get( cm );
 
 					// Create links for found match.
-					final Spot source = kalmanFiltersMap.get( kf );
-					final Spot target = agnts.get( cm );
+					final BCellobject source = kalmanFiltersMap.get( kf );
+					final BCellobject target = agnts.get( cm );
 
 					graph.addVertex( source );
 					graph.addVertex( target );
@@ -261,11 +253,11 @@ public class KalmanTracker implements SpotTracker, Benchmark
 					// Update Kalman filter
 					kf.update( toMeasurement( target ) );
 
-					// Update Kalman track spot
+					// Update Kalman track BCellobject
 					kalmanFiltersMap.put( kf, target );
 
 					// Remove from orphan set
-					orphanSpots.remove( target );
+					orphanBCellobjects.remove( target );
 
 					// Remove from childless KF set
 					childlessKFs.remove( kf );
@@ -275,42 +267,42 @@ public class KalmanTracker implements SpotTracker, Benchmark
 			/*
 			 * Deal with orphans from the previous frame. (We deal with orphans
 			 * from previous frame only now because we want to link in priority
-			 * target spots to predictions. Nucleating new KF from nearest
+			 * target BCellobjects to predictions. Nucleating new KF from nearest
 			 * neighbor only comes second.
 			 */
-			if ( !previousOrphanSpots.isEmpty() && !orphanSpots.isEmpty() )
+			if ( !previousOrphanBCellobjects.isEmpty() && !orphanBCellobjects.isEmpty() )
 			{
 
 				/*
 				 * We now deal with orphans of the previous frame. We try to
-				 * find them a target from the list of spots that are not
+				 * find them a target from the list of BCellobjects that are not
 				 * already part of a link created via KF. That is: the orphan
-				 * spots of this frame.
+				 * BCellobjects of this frame.
 				 */
 
-				final JaqamanLinkingCostMatrixCreator< Spot, Spot > ic = new JaqamanLinkingCostMatrixCreator< >(
-						previousOrphanSpots,
-						orphanSpots,
+				final JaqamanLinkingCostMatrixCreator< BCellobject, BCellobject > ic = new JaqamanLinkingCostMatrixCreator< >(
+						previousOrphanBCellobjects,
+						orphanBCellobjects,
 						nucleatingCostFunction,
 						maxInitialCost,
 						ALTERNATIVE_COST_FACTOR,
 						PERCENTILE );
-				final JaqamanLinker< Spot, Spot > newLinker = new JaqamanLinker< >( ic );
+				final JaqamanLinker< BCellobject, BCellobject > newLinker = new JaqamanLinker< >( ic );
 				if ( !newLinker.checkInput() || !newLinker.process() )
 				{
-					errorMessage = BASE_ERROR_MSG + "Error linking spots from frame " + ( frame - 1 ) + " to frame " + frame + ": " + newLinker.getErrorMessage();
+					errorMessage = BASE_ERROR_MSG + "Error linking BCellobjects from frame " + ( frame - 1 ) + " to frame " + frame + ": " + newLinker.getErrorMessage();
 					return false;
 				}
-				final Map< Spot, Spot > newAssignments = newLinker.getResult();
-				final Map< Spot, Double > assignmentCosts = newLinker.getAssignmentCosts();
+				final Map< BCellobject, BCellobject > newAssignments = newLinker.getResult();
+				final Map< BCellobject, Double > assignmentCosts = newLinker.getAssignmentCosts();
 
 				// Build links and new KFs from these links.
-				for ( final Spot source : newAssignments.keySet() )
+				for ( final BCellobject source : newAssignments.keySet() )
 				{
-					final Spot target = newAssignments.get( source );
+					final BCellobject target = newAssignments.get( source );
 
 					// Remove from orphan collection.
-					orphanSpots.remove( target );
+					orphanBCellobjects.remove( target );
 
 					// Derive initial state and create Kalman filter.
 					final double[] XP = estimateInitialState( source, target );
@@ -328,7 +320,7 @@ public class KalmanTracker implements SpotTracker, Benchmark
 					graph.setEdgeWeight( edge, cost );
 				}
 			}
-			previousOrphanSpots = orphanSpots;
+			previousOrphanBCellobjects = orphanBCellobjects;
 
 			// Deal with childless KFs.
 			for ( final CVMKalmanFilter kf : childlessKFs )
@@ -348,8 +340,7 @@ public class KalmanTracker implements SpotTracker, Benchmark
 			logger.setProgress( progress );
 		}
 
-		if ( savePredictions )
-			predictionsCollection.setVisible( true );
+	
 
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
@@ -364,27 +355,17 @@ public class KalmanTracker implements SpotTracker, Benchmark
 	}
 
 	/**
-	 * Returns the saved predicted state as a {@link SpotCollection}.
+	 * Returns the saved predicted state as a {@link BCellobjectCollection}.
 	 *
 	 * @return the predicted states.
 	 * @see #setSavePredictions(boolean)
 	 */
-	public SpotCollection getPredictions()
+	public BCellobjectCollection getPredictions()
 	{
 		return predictionsCollection;
 	}
 
-	/**
-	 * Sets whether the tracker saves the predicted states.
-	 *
-	 * @param doSave
-	 *            if <code>true</code>, the predicted states will be saved.
-	 * @see #getPredictions()
-	 */
-	public void setSavePredictions( final boolean doSave )
-	{
-		this.savePredictions = doSave;
-	}
+	
 
 	@Override
 	public void setNumThreads()
@@ -412,39 +393,34 @@ public class KalmanTracker implements SpotTracker, Benchmark
 		this.logger = logger;
 	}
 
-	private static final double[] toMeasurement( final Spot spot )
+	private static final double[] toMeasurement( final BCellobject BCellobject )
 	{
 		final double[] d = new double[] {
-				spot.getDoublePosition( 0 ),
-				spot.getDoublePosition( 1 ),
-				spot.getDoublePosition( 2 )
+				BCellobject.getDoublePosition( 0 ),
+				BCellobject.getDoublePosition( 1 ),
+				BCellobject.getDoublePosition( 2 )
 		};
 		return d;
 	}
 
-	private static final Spot toSpot( final ComparableRealPoint X )
-	{
-		final Spot spot = new Spot( X, 2d, -1d );
-		return spot;
-	}
 
-	private static final double[] estimateInitialState( final Spot first, final Spot second )
+
+	private static final double[] estimateInitialState( final BCellobject first, final BCellobject second )
 	{
 		final double[] xp = new double[] {
 				second.getDoublePosition( 0 ),
 				second.getDoublePosition( 1 ),
 				second.getDoublePosition( 2 ),
-				second.diffTo( first, Spot.POSITION_X ),
-				second.diffTo( first, Spot.POSITION_Y ),
-				second.diffTo( first, Spot.POSITION_Z )
+				second.diffTo( first, BCellobject.POSITION_X ),
+				second.diffTo( first, BCellobject.POSITION_Y ),
 		};
 		return xp;
 	}
 
-	private static final List< Spot > generateSpotList( final SpotCollection spots, final int frame )
+	private static final List< BCellobject > generateBCellobjectList( final BCellobjectCollection BCellobjects, final int frame )
 	{
-		final List< Spot > list = new ArrayList< >( spots.getNSpots( frame, true ) );
-		for ( final Iterator< Spot > iterator = spots.iterator( frame, true ); iterator.hasNext(); )
+		final List< BCellobject > list = new ArrayList< >( BCellobjects.getNBCellobjects( frame, true ) );
+		for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( frame, true ); iterator.hasNext(); )
 			list.add( iterator.next() );
 
 		return list;
@@ -476,17 +452,17 @@ public class KalmanTracker implements SpotTracker, Benchmark
 
 	/**
 	 * Cost function that returns the square distance between a KF state and a
-	 * spots.
+	 * BCellobjects.
 	 */
-	private static final CostFunction< ComparableRealPoint, Spot > CF = new CostFunction< ComparableRealPoint, Spot >()
+	private static final CostFunction< ComparableRealPoint, BCellobject > CF = new CostFunction< ComparableRealPoint, BCellobject >()
 	{
 
 		@Override
-		public double linkingCost( final ComparableRealPoint state, final Spot spot )
+		public double linkingCost( final ComparableRealPoint state, final BCellobject BCellobject )
 		{
-			final double dx = state.getDoublePosition( 0 ) - spot.getDoublePosition( 0 );
-			final double dy = state.getDoublePosition( 1 ) - spot.getDoublePosition( 1 );
-			final double dz = state.getDoublePosition( 2 ) - spot.getDoublePosition( 2 );
+			final double dx = state.getDoublePosition( 0 ) - BCellobject.getDoublePosition( 0 );
+			final double dy = state.getDoublePosition( 1 ) - BCellobject.getDoublePosition( 1 );
+			final double dz = state.getDoublePosition( 2 ) - BCellobject.getDoublePosition( 2 );
 			return dx * dx + dy * dy + dz * dz + Double.MIN_NORMAL;
 			// So that it's never 0
 		}

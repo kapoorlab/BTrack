@@ -3,6 +3,7 @@ package fiji.plugin.trackmate.tracking;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import budDetector.BCellobject;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Spot;
 import net.imglib2.algorithm.MultiThreaded;
@@ -33,7 +34,7 @@ import net.imglib2.algorithm.OutputAlgorithm;
  * implementations are not multithreaded, they can safely ignore the associated
  * methods.
  */
-public interface SpotTracker extends OutputAlgorithm< SimpleWeightedGraph< Spot, DefaultWeightedEdge > >, MultiThreaded
+public interface BCellobjectTracker extends OutputAlgorithm< SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > >, MultiThreaded
 {
 	/**
 	 * Sets the {@link Logger} instance that will receive messages from this
