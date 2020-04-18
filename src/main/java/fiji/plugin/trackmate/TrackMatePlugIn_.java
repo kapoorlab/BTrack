@@ -7,15 +7,25 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import pluginTools.InteractiveBud;
 
 public class TrackMatePlugIn_ implements PlugIn
 {
 
 	protected TrackMate trackmate;
+	
+	protected InteractiveBud parent;
 
 	protected Settings settings;
 
 	protected Model model;
+	
+	public TrackMatePlugIn_(final InteractiveBud parent){
+		
+		this.parent = parent;
+	}
+	
 
 	/**
 	 * Runs the TrackMate GUI plugin.
@@ -30,41 +40,37 @@ public class TrackMatePlugIn_ implements PlugIn
 	@Override
 	public void run( final String imagePath )
 	{
-		final ImagePlus imp;
-		if ( imagePath != null && imagePath.length() > 0 )
-		{
-			imp = new ImagePlus( imagePath );
-			if ( null == imp.getOriginalFileInfo() )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, "Could not load image with path " + imagePath + "." );
-				return;
-			}
+		final ImagePlus imp = ImageJFunctions.show(parent.originalimg);
+		int channels;
+		int frames;
+		if(imp.getNChannels() > imp.getNFrames()) {
+			channels = imp.getNFrames();
+		    frames = imp.getNChannels();
+		    
 		}
-		else
-		{
-			imp = WindowManager.getCurrentImage();
-			if ( null == imp )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, "Please open an image before running TrackMate." );
-				return;
-			}
+		
+		else {
+			
+			channels = imp.getNChannels();
+		    frames = imp.getNFrames();
+			
 		}
-		if ( !imp.isVisible() )
-		{
-			imp.setOpenAsHyperStack( true );
-			imp.show();
-		}
+		imp.setC(channels);
+		imp.setT(frames);
+		final int[] dims = imp.getDimensions();
+		imp.setDimensions(channels, dims[4], dims[3]);
 		GuiUtils.userCheckImpDimensions( imp );
 
 		settings = createSettings( imp );
 		model = createModel();
+		model.setBCellobjects(parent.budcells, true);
 		trackmate = createTrackMate();
 
 		/*
 		 * Launch GUI.
 		 */
 
-		final TrackMateGUIController controller = new TrackMateGUIController( trackmate );
+		final TrackMateGUIController controller = new TrackMateGUIController(parent, trackmate );
 		GuiUtils.positionWindow( controller.getGUI(), imp.getWindow() );
 	}
 
@@ -80,6 +86,10 @@ public class TrackMatePlugIn_ implements PlugIn
 	 * @return a new {@link Model} instance.
 	 */
 
+	public InteractiveBud inputparent() {
+		
+		return parent;
+	}
 	protected Model createModel()
 	{
 		return new Model();
@@ -116,19 +126,17 @@ public class TrackMatePlugIn_ implements PlugIn
 		 */
 		final String spaceUnits = settings.imp.getCalibration().getXUnit();
 		final String timeUnits = settings.imp.getCalibration().getTimeUnit();
+		
 		model.setPhysicalUnits( spaceUnits, timeUnits );
 
-		return new TrackMate( model, settings );
+		System.out.println("Starting trackmate");
+		return new TrackMate( parent, settings );
 	}
 
 	/*
 	 * MAIN METHOD
 	 */
 
-	public static void main( final String[] args )
-	{
-		ImageJ.main( args );
-		new TrackMatePlugIn_().run( "samples/FakeTracks.tif" );
-	}
+	
 
 }

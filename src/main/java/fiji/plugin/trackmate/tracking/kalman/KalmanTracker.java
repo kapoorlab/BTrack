@@ -416,8 +416,8 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 
 	private static final List< BCellobject > generateBCellobjectList( final BCellobjectCollection BCellobjects, final int frame )
 	{
-		final List< BCellobject > list = new ArrayList< >( BCellobjects.getNBCellobjects( frame, true ) );
-		for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( frame, true ); iterator.hasNext(); )
+		final List< BCellobject > list = new ArrayList< >( BCellobjects.getNBCellobjects( frame ) );
+		for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( frame ); iterator.hasNext(); )
 			list.add( iterator.next() );
 
 		return list;

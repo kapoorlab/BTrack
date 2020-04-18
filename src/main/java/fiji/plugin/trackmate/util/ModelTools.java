@@ -16,6 +16,7 @@ import fiji.plugin.trackmate.FeatureModel;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.tracking.kdtree.NearestNeighborTracker;
+import pluginTools.InteractiveBud;
 
 /**
  * A collection of static utilities made to ease the manipulation of a TrackMate
@@ -79,17 +80,16 @@ public class ModelTools
 	 * @param selectionModel
 	 *            the selection that contains the BCellobjects to link.
 	 */
-	public static void linkBCellobjects( final Model model, final SelectionModel selectionModel )
+	public static void linkBCellobjects( final InteractiveBud parent, final Model model, final SelectionModel selectionModel )
 	{
 
 		/*
 		 * Configure tracker
 		 */
 
-		final BCellobjectCollection BCellobjects = BCellobjectCollection.fromCollection( selectionModel.getBCellobjectSelection() );
 		final Map< String, Object > settings = new HashMap<>( 1 );
 		settings.put( KEY_LINKING_MAX_DISTANCE, Double.POSITIVE_INFINITY );
-		final NearestNeighborTracker tracker = new NearestNeighborTracker( BCellobjects, settings );
+		final NearestNeighborTracker tracker = new NearestNeighborTracker( parent, settings );
 		tracker.setNumThreads( 1 );
 
 		/*

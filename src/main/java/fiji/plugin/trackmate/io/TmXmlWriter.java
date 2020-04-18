@@ -505,7 +505,7 @@ public class TmXmlWriter
 
 		final Element BCellobjectCollectionElement = new Element( BCellobject_COLLECTION_ELEMENT_KEY );
 		// Store total number of BCellobjects
-		BCellobjectCollectionElement.setAttribute( BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, "" + BCellobjects.getNBCellobjects( false ) );
+		BCellobjectCollectionElement.setAttribute( BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, "" + BCellobjects.getNBCellobjects(  ) );
 
 		for ( final int frame : BCellobjects.keySet() )
 		{
@@ -513,14 +513,14 @@ public class TmXmlWriter
 			final Element frameBCellobjectsElement = new Element( BCellobject_FRAME_COLLECTION_ELEMENT_KEY );
 			frameBCellobjectsElement.setAttribute( FRAME_ATTRIBUTE_NAME, "" + frame );
 
-			for ( final Iterator< BCellobject > it = BCellobjects.iterator( frame, false ); it.hasNext(); )
+			for ( final Iterator< BCellobject > it = BCellobjects.iterator( frame  ); it.hasNext(); )
 			{
 				final Element BCellobjectElement = marshalBCellobject( it.next(), model.getFeatureModel() );
 				frameBCellobjectsElement.addContent( BCellobjectElement );
 			}
 			BCellobjectCollectionElement.addContent( frameBCellobjectsElement );
 		}
-		logger.log( "  Added " + BCellobjects.getNBCellobjects( false ) + " BCellobjects.\n" );
+		logger.log( "  Added " + BCellobjects.getNBCellobjects(  ) + " BCellobjects.\n" );
 		return BCellobjectCollectionElement;
 	}
 

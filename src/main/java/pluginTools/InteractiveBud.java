@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+import net.imagej.ops.Ops;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -40,7 +40,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
-
+import net.imagej.ops.*;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -48,6 +48,8 @@ import budDetector.BCellobject;
 import budDetector.BudTrackobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import ch.qos.logback.core.pattern.Converter;
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
@@ -73,6 +75,11 @@ import listeners.BudTimeListener;
 import listeners.BudTlocListener;
 import listeners.BudTrackidListener;
 import net.imagej.ImageJ;
+import net.imagej.ops.OpMethod;
+import net.imagej.ops.AbstractNamespace;
+import net.imagej.ops.Namespace;
+import net.imagej.ops.OpMethod;
+import net.imagej.ops.Ops;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
@@ -163,7 +170,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public double calibration;
 	public double timecal;
 	public File saveFile;
-	
+	public BCellobjectCollection budcells = new BCellobjectCollection();
 	
 	// Input Bud and its segmentation
 	public InteractiveBud(final RandomAccessibleInterval<ARGBType> originalimg,
@@ -279,10 +286,13 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 
 		return thirdDimensionSize;
 	}
+	
+	@OpMethod(op = net.imagej.ops.convert.ConvertImages.Uint16.class)
 	@Override
 	public void run(String arg0) {
 
 	
+		
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
@@ -358,9 +368,11 @@ public class InteractiveBud  extends JPanel implements PlugIn {
         ConnectedComponents.labelAllConnectedComponents(Segoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
         
 		Segoriginalimg = labeling.getIndexImg();
-		
+		ij = new net.imagej.ImageJ();
 		if(SegYelloworiginalimg!=null) {
 			
+			SegYelloworiginalimg = (RandomAccessibleInterval<IntType>) ij.op().run(
+					Ops.Convert.Uint16.class, SegYelloworiginalimg); 
 			
 			
 			  dims = new long[SegYelloworiginalimg.numDimensions()];
@@ -400,6 +412,8 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		if(SegGreenoriginalimg!=null) {
 			
 			
+			SegGreenoriginalimg = (RandomAccessibleInterval<IntType>) ij.op().run(
+					Ops.Convert.Uint16.class, SegGreenoriginalimg); 
 			
 			  dims = new long[SegGreenoriginalimg.numDimensions()];
 		        // get image dimension
@@ -437,7 +451,8 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		if(SegRedoriginalimg!=null) {
 			
 			
-			
+			SegRedoriginalimg = (RandomAccessibleInterval<IntType>) ij.op().run(
+					Ops.Convert.Uint16.class, SegRedoriginalimg); 
 			  dims = new long[SegRedoriginalimg.numDimensions()];
 		        // get image dimension
 			  SegRedoriginalimg.dimensions(dims);
@@ -591,7 +606,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public void Card() {
 		
 	
-		Cellbutton.setEnabled(false);
+		//Cellbutton.setEnabled(false);
 		CardLayout cl = new CardLayout();
 
 		c.insets = new Insets(5, 5, 5, 5);

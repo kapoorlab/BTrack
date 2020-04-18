@@ -143,7 +143,7 @@ public class GetNearest {
 								Integer xPts = (int) insidetruth.getFloatPosition(0);
 								Integer yPts = (int) insidetruth.getFloatPosition(1);
 								OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
-								points.setStrokeColor(Color.YELLOW);
+								points.setStrokeColor(Color.RED);
 								points.setStrokeWidth(2);
 								parent.overlay.add(points);
 

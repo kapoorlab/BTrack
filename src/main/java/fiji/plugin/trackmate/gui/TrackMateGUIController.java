@@ -60,6 +60,7 @@ import fiji.plugin.trackmate.gui.descriptors.TrackerConfigurationDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.TrackingDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.ViewChoiceDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
+import fiji.plugin.trackmate.gui.panels.tracker.JPanelTrackerSettingsMain;	
 import fiji.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
 import fiji.plugin.trackmate.providers.ActionProvider;
 import fiji.plugin.trackmate.providers.DetectorProvider;
@@ -82,6 +83,7 @@ import fiji.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.IJ;
 import ij.Prefs;
+import pluginTools.InteractiveBud;
 
 public class TrackMateGUIController implements ActionListener
 {
@@ -97,6 +99,8 @@ public class TrackMateGUIController implements ActionListener
 	/** The trackmate piloted here. */
 	protected final TrackMate trackmate;
 
+	protected final InteractiveBud parent;
+	
 	/** The GUI controlled by this controller. */
 	protected final TrackMateWizard gui;
 
@@ -119,7 +123,6 @@ public class TrackMateGUIController implements ActionListener
 
 	protected StartDialogDescriptor startDialoDescriptor;
 
-	protected DetectionDescriptor detectionDescriptor;
 
 
 	protected ViewChoiceDescriptor viewChoiceDescriptor;
@@ -171,7 +174,7 @@ public class TrackMateGUIController implements ActionListener
 	 * CONSTRUCTOR
 	 */
 
-	public TrackMateGUIController( final TrackMate trackmate )
+	public TrackMateGUIController(final InteractiveBud parent, final TrackMate trackmate )
 	{
 
 		// I can't stand the metal look. If this is a problem, contact me
@@ -201,6 +204,7 @@ public class TrackMateGUIController implements ActionListener
 		}
 
 		this.trackmate = trackmate;
+		this.parent = parent;
 		trackmate.setNumThreads( Prefs.getThreads() );
 
 		/*
@@ -250,7 +254,7 @@ public class TrackMateGUIController implements ActionListener
 		gui.setVisible( true );
 		gui.addActionListener( this );
 
-		init();
+		init(parent);
 	}
 
 	/*
@@ -267,9 +271,9 @@ public class TrackMateGUIController implements ActionListener
 	 *            the instance that will be piloted by the new controller.
 	 * @return a new instance of the controller.
 	 */
-	public TrackMateGUIController createOn( final TrackMate lTrackmate )
+	public TrackMateGUIController createOn( final InteractiveBud parent,  final TrackMate lTrackmate )
 	{
-		return new TrackMateGUIController( lTrackmate );
+		return new TrackMateGUIController( parent,  lTrackmate );
 	}
 
 	/**
@@ -353,7 +357,7 @@ public class TrackMateGUIController implements ActionListener
 				{
 					gui.setPreviousButtonEnabled( true );
 				}
-				descriptor.displayingPanel();
+				descriptor.displayingPanel(parent);
 				return;
 
 			}
@@ -373,16 +377,6 @@ public class TrackMateGUIController implements ActionListener
 		return viewProvider;
 	}
 
-	/**
-	 * Returns the {@link DetectorProvider} instance, serving
-	 * {@link fiji.plugin.trackmate.detection.BCellobjectDetectorFactory}s to this GUI
-	 *
-	 * @return the detector provider.
-	 */
-	public DetectorProvider getDetectorProvider()
-	{
-		return detectorProvider;
-	}
 
 	/**
 	 * Returns the {@link BCellobjectAnalyzerProvider} instance, serving
@@ -475,7 +469,6 @@ public class TrackMateGUIController implements ActionListener
 		BCellobjectAnalyzerProvider = new BCellobjectAnalyzerProvider();
 		edgeAnalyzerProvider = new EdgeAnalyzerProvider();
 		trackAnalyzerProvider = new TrackAnalyzerProvider();
-		detectorProvider = new DetectorProvider();
 		viewProvider = new ViewProvider();
 		trackerProvider = new TrackerProvider();
 		actionProvider = new ActionProvider();
@@ -507,9 +500,9 @@ public class TrackMateGUIController implements ActionListener
 			}
 
 			@Override
-			public void displayingPanel()
+			public void displayingPanel(InteractiveBud parent)
 			{
-				super.displayingPanel();
+				super.displayingPanel(parent);
 				if ( startDialoDescriptor.isImpValid() )
 				{
 					// Ensure we reset default save location
@@ -544,7 +537,6 @@ public class TrackMateGUIController implements ActionListener
 		/*
 		 * Execute and report detection progress
 		 */
-		detectionDescriptor = new DetectionDescriptor( this );
 
 
 
@@ -655,7 +647,7 @@ public class TrackMateGUIController implements ActionListener
 		/*
 		 * Load descriptor
 		 */
-		loadDescriptor = new LoadDescriptor( this );
+		loadDescriptor = new LoadDescriptor( parent, this );
 
 		/*
 		 * Store created descriptors
@@ -663,7 +655,6 @@ public class TrackMateGUIController implements ActionListener
 		final ArrayList< WizardPanelDescriptor > descriptors = new ArrayList< >( 16 );
 		descriptors.add( actionChooserDescriptor );
 		descriptors.add( configureViewsDescriptor );
-		descriptors.add( detectionDescriptor );
 		descriptors.add( grapherDescriptor );
 		descriptors.add( loadDescriptor );
 		descriptors.add( logPanelDescriptor );
@@ -685,6 +676,13 @@ public class TrackMateGUIController implements ActionListener
 	protected WizardPanelDescriptor nextDescriptor( final WizardPanelDescriptor currentDescriptor )
 	{
 
+		if ( currentDescriptor == startDialoDescriptor )
+		{
+			
+			return trackerChoiceDescriptor;
+
+		}
+		
 		if ( currentDescriptor == trackerChoiceDescriptor )
 		{
 			if ( null == trackmate.getSettings().trackerFactory || trackmate.getSettings().trackerFactory.getKey().equals( ManualTrackerFactory.TRACKER_KEY ) )
@@ -732,6 +730,11 @@ public class TrackMateGUIController implements ActionListener
 	protected WizardPanelDescriptor previousDescriptor( final WizardPanelDescriptor currentDescriptor )
 	{
 
+		if ( currentDescriptor == trackerChoiceDescriptor )
+		{
+			return startDialoDescriptor;
+
+		}
 		
 		if ( currentDescriptor == trackerConfigurationDescriptor )
 		{
@@ -768,15 +771,16 @@ public class TrackMateGUIController implements ActionListener
 		}
 		else
 		{
-			throw new IllegalArgumentException( "Previous descriptor for " + currentDescriptor + " is unknown." );
+			return startDialoDescriptor;
 		}
 	}
 
 	/**
 	 * Display the first panel
 	 */
-	protected void init()
+	protected void init(InteractiveBud parent)
 	{
+		
 		// We need to listen to events happening on the View configuration
 		configureViewsDescriptor.getComponent().addActionListener( this );
 
@@ -788,11 +792,8 @@ public class TrackMateGUIController implements ActionListener
 		final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION + " started on:\n" + TMUtils.getCurrentTimeString() + '\n';
 		// Log GUI processing start
 		gui.getLogger().log( welcomeMessage, Logger.BLUE_COLOR );
-		gui.getLogger().log( "Please note that TrackMate is available through Fiji, and is based on a publication. "
-				+ "If you use it successfully for your research please be so kind to cite our work:\n" );
-		gui.getLogger().log( "Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), 'TrackMate: An open and extensible platform for single-particle tracking.', "
-				+ "Methods 115: 80-90, PMID 27713081.\n", Logger.GREEN_COLOR );
-		gui.getLogger().log( "https://www.ncbi.nlm.nih.gov/pubmed/27713081\n", Logger.BLUE_COLOR );
+		gui.getLogger().log( " A Fiji hack to track Buds and cells in BTrack, based on this publication: " );
+		
 		gui.getLogger().log( "https://scholar.google.com/scholar?cluster=9846627681021220605\n", Logger.BLUE_COLOR );
 		// Execute about to be displayed action of the new one
 		panelDescriptor.aboutToDisplayPanel();
@@ -801,7 +802,7 @@ public class TrackMateGUIController implements ActionListener
 		gui.show( panelDescriptor );
 
 		// Show the panel in the dialog, and execute action after display
-		panelDescriptor.displayingPanel();
+		panelDescriptor.displayingPanel(parent);
 	}
 
 	/**
@@ -971,7 +972,7 @@ public class TrackMateGUIController implements ActionListener
 		gui.show( panelDescriptor );
 
 		// Show the panel in the dialog, and execute action after display
-		panelDescriptor.displayingPanel();
+		panelDescriptor.displayingPanel(parent);
 	}
 
 	private void previous()
@@ -983,7 +984,7 @@ public class TrackMateGUIController implements ActionListener
 		// Execute its backward-navigation actions.
 		panelDescriptor.comingBackToPanel();
 		// Do whatever we do when the panel is shown.
-		panelDescriptor.displayingPanel();
+		panelDescriptor.displayingPanel(parent);
 		gui.show( panelDescriptor );
 		guimodel.currentDescriptor = panelDescriptor;
 
@@ -1008,7 +1009,7 @@ public class TrackMateGUIController implements ActionListener
 		gui.show( loadDescriptor );
 
 		// Instantiate GuiReader, ask for file, and load it in memory
-		loadDescriptor.displayingPanel();
+		loadDescriptor.displayingPanel(parent);
 	}
 
 	private void save()
@@ -1034,7 +1035,7 @@ public class TrackMateGUIController implements ActionListener
 
 		gui.show( saveDescriptor );
 		gui.getLogger().log( TMUtils.getCurrentTimeString() + '\n', Logger.BLUE_COLOR );
-		saveDescriptor.displayingPanel();
+		saveDescriptor.displayingPanel(parent);
 	}
 
 	/**

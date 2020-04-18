@@ -38,7 +38,7 @@ public class ResetBCellobjectTimeFeatureAction extends AbstractTMAction {
 		final BCellobjectCollection BCellobjects = trackmate.getModel().getBCellobjects();
 		final Set<Integer> frames = BCellobjects.keySet();
 		for(final int frame : frames) {
-			for (final Iterator<BCellobject> iterator = BCellobjects.iterator(frame, true); iterator.hasNext();) {
+			for (final Iterator<BCellobject> iterator = BCellobjects.iterator(frame); iterator.hasNext();) {
 				iterator.next().putFeature(BCellobject.POSITION_T, frame * dt);
 			}
 			logger.setProgress((double) (frame + 1) / frames.size());

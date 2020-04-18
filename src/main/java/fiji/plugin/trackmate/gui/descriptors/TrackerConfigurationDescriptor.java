@@ -8,6 +8,7 @@ import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import pluginTools.InteractiveBud;
 
 public class TrackerConfigurationDescriptor implements WizardPanelDescriptor
 {
@@ -69,7 +70,7 @@ public class TrackerConfigurationDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		if ( null == configPanel )
 		{

@@ -3,6 +3,7 @@ package fiji.plugin.trackmate.tracking;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
+import pluginTools.InteractiveBud;
 
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class ManualTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public BCellobjectTracker create( final InteractiveBud parent, final Map< String, Object > settings )
 	{
 		return null;
 	}

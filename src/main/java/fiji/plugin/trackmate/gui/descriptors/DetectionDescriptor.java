@@ -7,6 +7,7 @@ import fiji.plugin.trackmate.gui.LogPanel;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.TrackMateWizard;
 import fiji.plugin.trackmate.util.TMUtils;
+import pluginTools.InteractiveBud;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -51,7 +52,7 @@ public class DetectionDescriptor implements WizardPanelDescriptor
 	{}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		controller.disableButtonsAndStoreState();
 		final Settings settings = trackmate.getSettings();

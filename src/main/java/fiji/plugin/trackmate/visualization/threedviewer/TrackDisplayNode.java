@@ -607,7 +607,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener
 			x += BCellobject.getFeature( BCellobject.POSITION_X );
 			y += BCellobject.getFeature( BCellobject.POSITION_Y );
 		}
-		final int nBCellobject = model.getBCellobjects().getNBCellobjects( true );
+		final int nBCellobject = model.getBCellobjects().getNBCellobjects(  );
 		x /= nBCellobject;
 		y /= nBCellobject;
 		z /= nBCellobject;

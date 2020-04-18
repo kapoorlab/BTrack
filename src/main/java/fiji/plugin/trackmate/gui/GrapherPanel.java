@@ -183,7 +183,7 @@ public class GrapherPanel extends ActionListenablePanel
 		final String xFeature = spotFeatureSelectionPanel.getXKey();
 		final Set< String > yFeatures = spotFeatureSelectionPanel.getYKeys();
 		// Collect only the spots that are in tracks
-		final List< BCellobject > spots = new ArrayList< >( trackmate.getModel().getBCellobjects().getNBCellobjects( true ) );
+		final List< BCellobject > spots = new ArrayList< >( trackmate.getModel().getBCellobjects().getNBCellobjects(  ) );
 		for ( final Integer trackID : trackmate.getModel().getTrackModel().trackIDs( true ) )
 		{
 			spots.addAll( trackmate.getModel().getTrackModel().trackBCellobjects( trackID ) );

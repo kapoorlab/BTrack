@@ -28,6 +28,7 @@ import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMat
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.multithreading.SimpleMultiThreading;
+import pluginTools.InteractiveBud;
 
 @SuppressWarnings( "deprecation" )
 public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker
@@ -38,17 +39,17 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 
 	protected Logger logger = Logger.VOID_LOGGER;
 
-	protected final BCellobjectCollection BCellobjects;
-
 	protected final Map< String, Object > settings;
 
+	
+	public final InteractiveBud parent;
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public SparseLAPFrameToFrameTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public SparseLAPFrameToFrameTracker( final InteractiveBud parent, final Map< String, Object > settings )
 	{
-		this.BCellobjects = BCellobjects;
+		this.parent = parent;
 		this.settings = settings;
 	}
 
@@ -71,6 +72,10 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 	@Override
 	public boolean process()
 	{
+		
+		BCellobjectCollection BCellobjects = parent.budcells;
+		
+		System.out.println("My object is inside trackmate" + BCellobjects.keySet().size());
 		/*
 		 * Check input now.
 		 */
@@ -93,7 +98,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		boolean empty = true;
 		for ( final int frame : BCellobjects.keySet() )
 		{
-			if ( BCellobjects.getNBCellobjects( frame, true ) > 0 )
+			if ( BCellobjects.getNBCellobjects( frame ) > 0 )
 			{
 				empty = false;
 				break;
@@ -168,13 +173,17 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 
 						// Get BCellobjects - we have to create a list from each
 						// content.
-						final List< BCellobject > sources = new ArrayList<>( BCellobjects.getNBCellobjects( lFrame0, true ) );
-						for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( lFrame0, true ); iterator.hasNext(); )
+						final List< BCellobject > sources = new ArrayList<>( BCellobjects.getNBCellobjects( lFrame0 ) );
+						for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( lFrame0 ); iterator.hasNext(); ) {
 							sources.add( iterator.next() );
+							System.out.println("Targets" + sources.size());	
+						}
 
-						final List< BCellobject > targets = new ArrayList<>( BCellobjects.getNBCellobjects( lFrame1, true ) );
-						for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( lFrame1, true ); iterator.hasNext(); )
+						final List< BCellobject > targets = new ArrayList<>( BCellobjects.getNBCellobjects( lFrame1 ) );
+						for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( lFrame1 ); iterator.hasNext(); ) {
 							targets.add( iterator.next() );
+						    System.out.println("Targets" + targets.size());	
+						}
 
 						if ( sources.isEmpty() || targets.isEmpty() )
 							continue;

@@ -5,6 +5,7 @@ import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.LogPanel;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import pluginTools.InteractiveBud;
 
 import javax.swing.SwingUtilities;
 
@@ -37,7 +38,7 @@ public class TrackingDescriptor implements WizardPanelDescriptor
 	{}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		final Logger logger = trackmate.getModel().getLogger();
 		final BCellobjectTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;

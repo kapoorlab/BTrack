@@ -9,6 +9,7 @@ import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.io.IOUtils;
 import fiji.plugin.trackmate.io.TmXmlWriter;
+import pluginTools.InteractiveBud;
 
 public class SaveDescriptor extends SomeDialogDescriptor
 {
@@ -27,7 +28,7 @@ public class SaveDescriptor extends SomeDialogDescriptor
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 
 		final Logger logger = logPanel.getLogger();

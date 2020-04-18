@@ -2,6 +2,8 @@ package fiji.plugin.trackmate.gui.descriptors;
 
 import java.awt.Component;
 
+import pluginTools.InteractiveBud;
+
 /**
  * A base descriptor class used to reference a Component panel for the Wizard,
  * as well as provide general rules as to how the panel should behave.
@@ -59,8 +61,9 @@ public interface WizardPanelDescriptor
 	 * Concrete implementations must re-enable it before this method returns.
 	 * For instance, you want to disable the 'Next' button while an intense
 	 * calculation is ongoing, then re-enable it.
+	 * @param parent 
 	 */
-	public void displayingPanel();
+	public void displayingPanel(InteractiveBud parent);
 
 	/**
 	 * This method is used to perform functionality just before the panel is to

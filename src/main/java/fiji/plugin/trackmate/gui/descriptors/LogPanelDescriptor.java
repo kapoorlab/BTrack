@@ -1,6 +1,7 @@
 package fiji.plugin.trackmate.gui.descriptors;
 
 import fiji.plugin.trackmate.gui.LogPanel;
+import pluginTools.InteractiveBud;
 
 import java.awt.Component;
 
@@ -27,7 +28,7 @@ public class LogPanelDescriptor implements WizardPanelDescriptor
 	{}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{}
 
 	@Override

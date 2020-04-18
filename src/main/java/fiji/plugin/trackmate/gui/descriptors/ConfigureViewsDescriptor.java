@@ -9,6 +9,7 @@ import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
 import fiji.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
+import pluginTools.InteractiveBud;
 
 public class ConfigureViewsDescriptor implements WizardPanelDescriptor
 {
@@ -45,7 +46,7 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		panel.refreshColorFeatures();
 	}

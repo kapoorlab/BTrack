@@ -8,6 +8,7 @@ import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.TrackMateModule;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
+import pluginTools.InteractiveBud;
 
 public interface BCellobjectTrackerFactory extends TrackMateModule
 {
@@ -22,7 +23,7 @@ public interface BCellobjectTrackerFactory extends TrackMateModule
 	 *            the settings map configuring the tracker.
 	 * @return a new {@link BCellobjectTracker} instance.
 	 */
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings );
+	public BCellobjectTracker create( final InteractiveBud parent, final Map< String, Object > settings );
 
 	/**
 	 * Returns a new GUI panel able to configure the settings suitable for the

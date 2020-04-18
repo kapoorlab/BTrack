@@ -8,6 +8,7 @@ import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
 import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import pluginTools.InteractiveBud;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class TrackerChoiceDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		controller.getGUI().setNextButtonEnabled( true );
 	}

@@ -41,12 +41,15 @@ import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
+import pluginTools.InteractiveBud;
 
 public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 {
 
 	private JFrame frame;
 
+	protected InteractiveBud parent;
+	
 	protected Model model;
 
 	protected Settings settings;
@@ -187,20 +190,15 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 			// trackmate.computeTrackFeatures(true);
 		}
 
-		controller = new TrackMateGUIController( trackmate );
+		controller = new TrackMateGUIController( parent, trackmate );
 
 		// We feed then the reader with the providers taken from the NEW
 		// controller.
-		final DetectorProvider detectorProvider = controller.getDetectorProvider();
 		final TrackerProvider trackerProvider = controller.getTrackerProvider();
 		final BCellobjectAnalyzerProvider spotAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
 		final EdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
 		final TrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
-		reader.readSettings( settings, detectorProvider, trackerProvider, spotAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider );
-		if ( !reader.isReadingOk() )
-		{
-			logger.error( "Problem reading the settings:\n" + reader.getErrorMessage() );
-		}
+		
 		if ( null == settings.imp )
 		{
 			settings.imp = ViewUtils.makeEmpytImagePlus( model );
@@ -312,7 +310,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		frame = new JFrame();
 		frame.getContentPane().add( logPanel );
@@ -350,7 +348,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	 */
 	protected TrackMate createTrackMate()
 	{
-		return new TrackMate( model, settings );
+		return new TrackMate( parent, settings );
 	}
 
 	/**
@@ -391,5 +389,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 		final LoadTrackMatePlugIn_ plugIn = new LoadTrackMatePlugIn_();
 		plugIn.run( "samples/FakeTracks.xml" );
 	}
+
+
 
 }

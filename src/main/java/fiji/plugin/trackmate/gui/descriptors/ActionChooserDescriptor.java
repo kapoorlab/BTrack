@@ -5,6 +5,7 @@ import fiji.plugin.trackmate.gui.TrackMateGUIController;
 import fiji.plugin.trackmate.gui.panels.ActionChooserPanel;
 import fiji.plugin.trackmate.gui.panels.ListChooserPanel;
 import fiji.plugin.trackmate.providers.ActionProvider;
+import pluginTools.InteractiveBud;
 
 public class ActionChooserDescriptor implements WizardPanelDescriptor
 {
@@ -29,7 +30,7 @@ public class ActionChooserDescriptor implements WizardPanelDescriptor
 	{}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{}
 
 	@Override

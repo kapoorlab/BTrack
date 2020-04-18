@@ -3,6 +3,7 @@ package fiji.plugin.trackmate.gui.descriptors;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.gui.GrapherPanel;
 import fiji.plugin.trackmate.gui.TrackMateGUIController;
+import pluginTools.InteractiveBud;
 
 import java.awt.Component;
 
@@ -34,7 +35,7 @@ public class GrapherDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		controller.getGUI().setNextButtonEnabled( true );
 	}

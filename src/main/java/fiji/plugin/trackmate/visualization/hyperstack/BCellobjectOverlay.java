@@ -82,7 +82,7 @@ public class BCellobjectOverlay extends Roi
 		final BCellobjectCollection BCellobjects = model.getBCellobjects();
 
 		final boolean BCellobjectVisible = ( Boolean ) displaySettings.get( TrackMateModelView.KEY_BCellobjectS_VISIBLE );
-		if ( !BCellobjectVisible || BCellobjects.getNBCellobjects( true ) == 0 ) {
+		if ( !BCellobjectVisible || BCellobjects.getNBCellobjects(  ) == 0 ) {
 			return;
 		}
 
@@ -140,7 +140,7 @@ public class BCellobjectOverlay extends Roi
 		{
 			// Other track displays.
 
-			for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( frame, true ); iterator.hasNext(); )
+			for ( final Iterator< BCellobject > iterator = BCellobjects.iterator( frame ); iterator.hasNext(); )
 			{
 				final BCellobject BCellobject = iterator.next();
 

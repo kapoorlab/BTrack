@@ -22,6 +22,7 @@ import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
+import pluginTools.InteractiveBud;
 
 import java.io.File;
 import java.util.Collection;
@@ -30,21 +31,26 @@ import java.util.Map;
 public class LoadDescriptor extends SomeDialogDescriptor
 {
 
+	
+	protected InteractiveBud parent;
+	
+	
 	private static final String KEY = "Loading";
 
 	private final TrackMate trackmate;
 
 	private final TrackMateGUIController controller;
 
-	public LoadDescriptor( final TrackMateGUIController controller )
+	public LoadDescriptor(final InteractiveBud parent, final TrackMateGUIController controller )
 	{
 		super( controller.getGUI().getLogPanel() );
+		this.parent = parent;
 		this.controller = controller;
 		this.trackmate = controller.getPlugin();
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 
 		if ( null == file )
@@ -95,17 +101,15 @@ public class LoadDescriptor extends SomeDialogDescriptor
 		final Settings settings = new Settings();
 
 		// With this we can create a new controller from the provided one:
-		final TrackMate lTrackmate = new TrackMate( model, settings );
-		final TrackMateGUIController newcontroller = controller.createOn( lTrackmate );
+		final TrackMate lTrackmate = new TrackMate( parent, settings );
+		final TrackMateGUIController newcontroller = controller.createOn(parent,  lTrackmate );
 
 		// We feed then the reader with the providers taken from the NEW
 		// controller.
-		final DetectorProvider detectorProvider = newcontroller.getDetectorProvider();
 		final TrackerProvider trackerProvider = newcontroller.getTrackerProvider();
 		final BCellobjectAnalyzerProvider spotAnalyzerProvider = newcontroller.getBCellobjectAnalyzerProvider();
 		final EdgeAnalyzerProvider edgeAnalyzerProvider = newcontroller.getEdgeAnalyzerProvider();
 		final TrackAnalyzerProvider trackAnalyzerProvider = newcontroller.getTrackAnalyzerProvider();
-		reader.readSettings( settings, detectorProvider, trackerProvider, spotAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider );
 
 		// GUI position
 		GuiUtils.positionWindow( newcontroller.getGUI(), settings.imp.getWindow() );
@@ -162,5 +166,7 @@ public class LoadDescriptor extends SomeDialogDescriptor
 	{
 		return KEY;
 	}
+
+	
 
 }

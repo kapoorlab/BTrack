@@ -24,6 +24,7 @@ import net.imglib2.algorithm.Algorithm;
 import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
 import net.imglib2.multithreading.SimpleMultiThreading;
+import pluginTools.InteractiveBud;
 
 /**
  * <p>
@@ -50,6 +51,10 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	/**
 	 * The model this trackmate will shape.
 	 */
+	
+	protected InteractiveBud parent;
+	
+	
 	protected final Model model;
 
 	protected final Settings settings;
@@ -64,21 +69,21 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	 * CONSTRUCTORS
 	 */
 
-	public TrackMate( final Settings settings )
-	{
-		this( new Model(), settings );
-	}
+	
 
-	public TrackMate( final Model model, final Settings settings )
+	
+	public TrackMate( final InteractiveBud parent, final Settings settings )
 	{
+		
+		this.parent = parent;
+		final Model model = new Model();
+		model.setBCellobjects(parent.budcells, true);
+		
 		this.model = model;
 		this.settings = settings;
 	}
 
-	public TrackMate()
-	{
-		this( new Model(), new Settings() );
-	}
+	
 
 	/*
 	 * PROTECTED METHODS
@@ -257,7 +262,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	{
 		final Logger logger = model.getLogger();
 		logger.log( "Starting tracking process.\n" );
-		final BCellobjectTracker tracker = settings.trackerFactory.create( model.getBCellobjects(), settings.trackerSettings );
+		final BCellobjectTracker tracker = settings.trackerFactory.create( parent, settings.trackerSettings );
 		tracker.setNumThreads( numThreads );
 		tracker.setLogger( logger );
 		if ( tracker.checkInput() && tracker.process() )
@@ -265,7 +270,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 			model.setTracks( tracker.getResult(), true );
 			return true;
 		}
-
+		System.out.println(parent.budcells.keySet().size() + " Parent and Bud " + model.BCellobjects.keySet().size());
 		errorMessage = "Tracking process failed:\n" + tracker.getErrorMessage();
 		return false;
 	}
@@ -283,229 +288,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
 	public boolean execDetection()
 	{
-		final Logger logger = model.getLogger();
-		logger.log( "Starting detection process using "
-				+ ( ( numThreads > 1 ) ? ( numThreads + " threads" ) : "1 thread" )
-				+ ".\n" );
 
-		final BCellobjectDetectorFactory< ? > factory = settings.detectorFactory;
-		if ( null == factory )
-		{
-			errorMessage = "Detector factory is null.\n";
-			return false;
-		}
-		if ( null == settings.detectorSettings )
-		{
-			errorMessage = "Detector settings is null.\n";
-			return false;
-		}
-		if (factory instanceof ManualDetectorFactory)
-		{
-			// Skip detection (don't delete anything) if we received this factory.
-			return true;
-		}
+		model.setBCellobjects( parent.budcells, true );
 
-		/*
-		 * Prepare interval
-		 */
-		final ImgPlus img = TMUtils.rawWraps( settings.imp );
-		final Interval interval = TMUtils.getInterval( img, settings );
-		final int zindex = TMUtils.findZAxisIndex( img );
 
-		factory.setTarget( img, settings.detectorSettings );
-
-		final int numFrames = settings.tend - settings.tstart + 1;
-		// Final results holder, for all frames
-		final BCellobjectCollection BCellobjects = new BCellobjectCollection();
-		BCellobjects.setNumThreads( numThreads );
-		// To report progress
-		final AtomicInteger BCellobjectFound = new AtomicInteger( 0 );
-		final AtomicInteger progress = new AtomicInteger( 0 );
-		// To translate BCellobjects, later
-		final double[] calibration = TMUtils.getSpatialCalibration( settings.imp );
-
-		/*
-		 * Fine tune multi-threading: If we have 10 threads and 15 frames to
-		 * process, we process 10 frames at once, and allocate 1 thread per
-		 * frame. But if we have 10 threads and 2 frames, we process the 2
-		 * frames at once, and allocate 5 threads per frame if we can.
-		 */
-		final int nSimultaneousFrames = Math.min( numThreads, numFrames );
-		final int threadsPerFrame = Math.max( 1, numThreads / nSimultaneousFrames );
-
-		logger.log( "Detection processes "
-				+ ( ( nSimultaneousFrames > 1 ) ? ( nSimultaneousFrames + " frames" ) : "1 frame" )
-				+ " simultaneously and allocates "
-				+ ( ( threadsPerFrame > 1 ) ? ( threadsPerFrame + " threads" ) : "1 thread" )
-				+ " per frame.\n" );
-
-		final Thread[] threads = SimpleMultiThreading.newThreads( nSimultaneousFrames );
-		final AtomicBoolean ok = new AtomicBoolean( true );
-
-		// Prepare the thread array
-		final AtomicInteger ai = new AtomicInteger( settings.tstart );
-		for ( int ithread = 0; ithread < threads.length; ithread++ )
-		{
-
-			threads[ ithread ] = new Thread( "TrackMate BCellobject detection thread " + ( 1 + ithread ) + "/" + threads.length )
-			{
-				private boolean wasInterrupted()
-				{
-					try
-					{
-						if ( isInterrupted() )
-							return true;
-						sleep( 0 );
-						return false;
-					}
-					catch ( final InterruptedException e )
-					{
-						return true;
-					}
-				}
-
-				@Override
-				public void run()
-				{
-
-					for ( int frame = ai.getAndIncrement(); frame <= settings.tend; frame = ai.getAndIncrement() )
-						try
-						{
-							// Yield detector for target frame
-							final BCellobjectDetector< ? > detector = factory.getDetector( interval, frame );
-							if ( detector instanceof MultiThreaded )
-							{
-								final MultiThreaded md = ( MultiThreaded ) detector;
-								md.setNumThreads( threadsPerFrame );
-							}
-
-							if ( wasInterrupted() )
-								return;
-
-							// Execute detection
-							if ( ok.get() && detector.checkInput() && detector.process() )
-							{
-								// On success, get results.
-								final List< BCellobject > BCellobjectsThisFrame = detector.getResult();
-
-								/*
-								 * Special case: if we have a single column
-								 * image, then the detectors internally dealt
-								 * with a single line image. We need to permute
-								 * back the X & Y coordinates if it's the case.
-								 */
-								if ( img.dimension( 0 ) < 2 && zindex < 0 )
-								{
-									for ( final BCellobject BCellobject : BCellobjectsThisFrame )
-									{
-										BCellobject.putFeature( BCellobject.POSITION_Y, BCellobject.getDoublePosition( 0 ) );
-										BCellobject.putFeature( BCellobject.POSITION_X, 0d );
-									}
-								}
-
-								List< BCellobject > prunedBCellobjects;
-								if ( settings.roi instanceof ShapeRoi )
-								{
-									prunedBCellobjects = new ArrayList<>();
-									for ( final BCellobject BCellobject : BCellobjectsThisFrame )
-									{
-										if ( settings.roi.contains( (int) Math.round( BCellobject.getFeature( BCellobject.POSITION_X ) / calibration[ 0 ] ), (int) Math.round( BCellobject.getFeature( BCellobject.POSITION_Y ) / calibration[ 1 ] ) ) )
-											prunedBCellobjects.add( BCellobject );
-									}
-								}
-								else if ( null != settings.polygon )
-								{
-									prunedBCellobjects = new ArrayList< >();
-									for ( final BCellobject BCellobject : BCellobjectsThisFrame )
-									{
-										if ( settings.polygon.contains( BCellobject.getFeature( BCellobject.POSITION_X ) / calibration[ 0 ], BCellobject.getFeature( BCellobject.POSITION_Y ) / calibration[ 1 ] ) )
-											prunedBCellobjects.add( BCellobject );
-									}
-								}
-								else
-								{
-									prunedBCellobjects = BCellobjectsThisFrame;
-								}
-								// Add detection feature other than position
-								for ( final BCellobject BCellobject : prunedBCellobjects )
-								{
-									// FRAME will be set upon adding to
-									// BCellobjectCollection.
-									BCellobject.putFeature( BCellobject.POSITION_T, frame * settings.dt );
-								}
-								// Store final results for this frame
-								BCellobjects.put( frame, prunedBCellobjects );
-								// Report
-								BCellobjectFound.addAndGet( prunedBCellobjects.size() );
-								logger.setProgress( progress.incrementAndGet() / ( double ) numFrames );
-
-							}
-							else
-							{
-								// Fail: exit and report error.
-								ok.set( false );
-								errorMessage = detector.getErrorMessage();
-								return;
-							}
-
-						}
-						catch ( final RuntimeException e )
-						{
-							final Throwable cause = e.getCause();
-							if ( cause != null && cause instanceof InterruptedException ) { return; }
-							throw e;
-						}
-				}
-			};
-		}
-
-		logger.setStatus( "Detection..." );
-		logger.setProgress( 0 );
-
-		try
-		{
-			SimpleMultiThreading.startAndJoin( threads );
-		}
-		catch ( final RuntimeException e )
-		{
-			ok.set( false );
-			if ( e.getCause() != null && e.getCause() instanceof InterruptedException )
-			{
-				errorMessage = "Detection workers interrupted.\n";
-				for ( final Thread thread : threads )
-					thread.interrupt();
-				for ( final Thread thread : threads )
-				{
-					if ( thread.isAlive() )
-						try
-						{
-							thread.join();
-						}
-						catch ( final InterruptedException e2 )
-						{
-							// ignore
-						}
-				}
-			}
-			else
-			{
-				throw e;
-			}
-		}
-		model.setBCellobjects( BCellobjects, true );
-
-		if ( ok.get() )
-		{
-			logger.log( "Found " + BCellobjectFound.get() + " BCellobjects.\n" );
-		}
-		else
-		{
-			logger.error( "Detection failed after " + progress.get() + " frames:\n" + errorMessage );
-			logger.log( "Found " + BCellobjectFound.get() + " BCellobjects prior failure.\n" );
-		}
-		logger.setProgress( 1 );
-		logger.setStatus( "" );
-		return ok.get();
+		return true;
 	}
 
 	/**

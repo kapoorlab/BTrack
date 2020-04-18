@@ -297,16 +297,7 @@ public class TmXmlReader_v12 extends TmXmlReader
 		// BCellobjects
 		final BCellobjectCollection allBCellobjects = getAllBCellobjects();
 		final Map< Integer, Set< Integer > > filteredIDs = getFilteredBCellobjectsIDs();
-		if ( null != filteredIDs )
-		{
-			for ( final Integer frame : filteredIDs.keySet() )
-			{
-				for ( final Integer ID : filteredIDs.get( frame ) )
-				{
-					cache.get( ID ).putFeature( BCellobjectCollection.VISIBLITY, BCellobjectCollection.ONE );
-				}
-			}
-		}
+	
 		model.setBCellobjects( allBCellobjects, false );
 
 		// Tracks

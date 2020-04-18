@@ -31,6 +31,7 @@ import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.panels.tracker.LAPTrackerSettingsPanel;
 import fiji.plugin.trackmate.tracking.LAPUtils;
+import pluginTools.InteractiveBud;
 import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 
@@ -80,9 +81,9 @@ public class LAPTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public BCellobjectTracker create( final InteractiveBud parent, final Map< String, Object > settings )
 	{
-		return new LAPTracker( BCellobjects, settings );
+		return new LAPTracker( parent, settings );
 	}
 
 	@Override

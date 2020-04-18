@@ -11,6 +11,7 @@ import fiji.plugin.trackmate.providers.ViewProvider;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.plugin.trackmate.visualization.ViewFactory;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
+import pluginTools.InteractiveBud;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class ViewChoiceDescriptor implements WizardPanelDescriptor
 	{}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		final String oldText = controller.getGUI().getNextButton().getText();
 		final Icon oldIcon = controller.getGUI().getNextButton().getIcon();
@@ -77,8 +78,8 @@ public class ViewChoiceDescriptor implements WizardPanelDescriptor
 				final TrackMate trackmate = controller.getPlugin();
 				final Model model = trackmate.getModel();
 				final Logger logger = model.getLogger();
-				final int ntotal = model.getBCellobjects().getNBCellobjects( false );
-				final int nselected = model.getBCellobjects().getNBCellobjects( false );
+				final int ntotal = model.getBCellobjects().getNBCellobjects(  );
+				final int nselected = model.getBCellobjects().getNBCellobjects(  );
 				logger.log( String.format( "Retained %d spots out of %d.\n", nselected, ntotal ) );
 
 				/*

@@ -197,7 +197,7 @@ public class BCellobjectFeatureCalculator extends MultiThreadedBenchmarkAlgorith
 				}
 			};
 		}
-		logger.setStatus( "Calculating " + toCompute.getNBCellobjects( false ) + " BCellobjects features..." );
+		logger.setStatus( "Calculating " + toCompute.getNBCellobjects( ) + " BCellobjects features..." );
 		logger.setProgress( 0 );
 
 		SimpleMultiThreading.startAndJoin( threads );

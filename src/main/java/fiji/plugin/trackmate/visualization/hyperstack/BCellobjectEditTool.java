@@ -358,10 +358,7 @@ public class BCellobjectEditTool extends AbstractTool implements MouseMotionList
 					final SelectionModel selectionModel = displayer.getSelectionModel();
 
 					final Iterator< BCellobject > it;
-					if ( IJ.shiftKeyDown() )
-						it = model.getBCellobjects().iterator( true );
-					else
-						it = model.getBCellobjects().iterator( frame, true );
+					it = model.getBCellobjects().iterator( frame );
 
 					final Collection< BCellobject > added = new ArrayList< >();
 					final double calibration[] = TMUtils.getSpatialCalibration( lImp );
@@ -730,13 +727,13 @@ public class BCellobjectEditTool extends AbstractTool implements MouseMotionList
 				{
 
 					final BCellobjectCollection BCellobjects = model.getBCellobjects();
-					if ( BCellobjects.getNBCellobjects( currentFrame - 1, true ) == 0 )
+					if ( BCellobjects.getNBCellobjects( currentFrame - 1 ) == 0 )
 					{
 						e.consume();
 						break;
 					}
-					final HashSet< BCellobject > copiedBCellobjects = new HashSet< >( BCellobjects.getNBCellobjects( currentFrame - 1, true ) );
-					final HashSet< String > featuresKey = new HashSet< >( BCellobjects.iterator( currentFrame - 1, true ).next().getFeatures().keySet() );
+					final HashSet< BCellobject > copiedBCellobjects = new HashSet< >( BCellobjects.getNBCellobjects( currentFrame - 1 ) );
+					final HashSet< String > featuresKey = new HashSet< >( BCellobjects.iterator( currentFrame - 1 ).next().getFeatures().keySet() );
 					featuresKey.remove( BCellobject.POSITION_T ); // Deal with time
 															// separately
 					double dt = lImp.getCalibration().frameInterval;
@@ -745,7 +742,7 @@ public class BCellobjectEditTool extends AbstractTool implements MouseMotionList
 						dt = 1;
 					}
 
-					for ( final Iterator< BCellobject > it = BCellobjects.iterator( currentFrame - 1, true ); it.hasNext(); )
+					for ( final Iterator< BCellobject > it = BCellobjects.iterator( currentFrame - 1 ); it.hasNext(); )
 					{
 						final BCellobject BCellobject = it.next();
 						final BCellobject newBCellobject =  BCellobject; 
@@ -769,7 +766,7 @@ public class BCellobjectEditTool extends AbstractTool implements MouseMotionList
 					{
 						// Remove old ones
 						final HashSet< BCellobject > toRemove = new HashSet< >(  );
-						for ( final Iterator< BCellobject > it = BCellobjects.iterator( currentFrame, true ); it.hasNext(); )
+						for ( final Iterator< BCellobject > it = BCellobjects.iterator( currentFrame ); it.hasNext(); )
 						{
 							toRemove.add( it.next() );
 						}

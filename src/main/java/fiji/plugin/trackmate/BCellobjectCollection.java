@@ -41,7 +41,7 @@ public class BCellobjectCollection implements MultiThreaded
 
 	public static final Double ONE = Double.valueOf( 1d );
 
-	public static final String VISIBLITY = "VISIBILITY";
+
 
 	/**
 	 * Time units for filtering and cropping operation timeouts. Filtering
@@ -104,10 +104,10 @@ public class BCellobjectCollection implements MultiThreaded
 	public String toString()
 	{
 		String str = super.toString();
-		str += ": contains " + getNBCellobjects( false ) + " BCellobjects total in " + keySet().size() + " different frames, over which " + getNBCellobjects( true ) + " are visible:\n";
+		str += ": contains " + getNBCellobjects(  ) + " BCellobjects total in " + keySet().size() + " different frames, over which " + getNBCellobjects(  ) + " are visible:\n";
 		for ( final int key : content.keySet() )
 		{
-			str += "\tframe " + key + ": " + getNBCellobjects( key, false ) + " BCellobjects total, " + getNBCellobjects( key, true ) + " visible.\n";
+			str += "\tframe " + key + ": " + getNBCellobjects( key ) + " BCellobjects total, " + getNBCellobjects( key ) + " visible.\n";
 		}
 		return str;
 	}
@@ -251,11 +251,7 @@ public class BCellobjectCollection implements MultiThreaded
 		for ( final BCellobject s : BCellobjects )
 		{
 
-			if ( visibleBCellobjectsOnly && ( s.getFeature( VISIBLITY ).compareTo( ZERO ) <= 0 ) )
-			{
-				continue;
-			}
-
+			
 			d2 = s.squareDistanceTo( location );
 			if ( d2 < minDist )
 			{
@@ -293,8 +289,7 @@ public class BCellobjectCollection implements MultiThreaded
 		double d2;
 		for ( final BCellobject s : BCellobjects )
 		{
-			if ( visibleBCellobjectsOnly && ( s.getFeature( VISIBLITY ).compareTo( ZERO ) <= 0 ) )
-				continue;
+			
 
 			d2 = s.squareDistanceTo( location );
 			if ( d2 < s.getFeature( BCellobject.RADIUS ) * s.getFeature( BCellobject.RADIUS ) )
@@ -334,10 +329,7 @@ public class BCellobjectCollection implements MultiThreaded
 		for ( final BCellobject s : BCellobjects )
 		{
 
-			if ( visibleBCellobjectsOnly && ( s.getFeature( VISIBLITY ).compareTo( ZERO ) <= 0 ) )
-			{
-				continue;
-			}
+		
 
 			d2 = s.squareDistanceTo( location );
 			distanceToBCellobject.put( d2, s );
@@ -361,11 +353,10 @@ public class BCellobjectCollection implements MultiThreaded
 	 *            BCellobjects.
 	 * @return the total number of BCellobjects in this collection.
 	 */
-	public final int getNBCellobjects( final boolean visibleBCellobjectsOnly )
+	public final int getNBCellobjects(  )
 	{
 		int nBCellobjects = 0;
-		if ( visibleBCellobjectsOnly )
-		{
+		
 
 			final Iterator< BCellobject > it = iterator( true );
 			while ( it.hasNext() )
@@ -374,13 +365,8 @@ public class BCellobjectCollection implements MultiThreaded
 				nBCellobjects++;
 			}
 
-		}
-		else
-		{
-
-			for ( final Set< BCellobject > BCellobjects : content.values() )
-				nBCellobjects += BCellobjects.size();
-		}
+		
+		
 		return nBCellobjects;
 	}
 
@@ -394,11 +380,10 @@ public class BCellobjectCollection implements MultiThreaded
 	 *            BCellobjects.
 	 * @return the number of BCellobjects at the given frame.
 	 */
-	public int getNBCellobjects( final int frame, final boolean visibleBCellobjectsOnly )
+	public int getNBCellobjects( final int frame)
 	{
-		if ( visibleBCellobjectsOnly )
-		{
-			final Iterator< BCellobject > it = iterator( frame, true );
+		
+			final Iterator< BCellobject > it = iterator( frame );
 			int nBCellobjects = 0;
 			while ( it.hasNext() )
 			{
@@ -406,13 +391,7 @@ public class BCellobjectCollection implements MultiThreaded
 				nBCellobjects++;
 			}
 			return nBCellobjects;
-		}
-
-		final Set< BCellobject > BCellobjects = content.get( frame );
-		if ( null == BCellobjects )
-			return 0;
 		
-		return BCellobjects.size();
 	}
 
 	/*
@@ -485,7 +464,7 @@ public class BCellobjectCollection implements MultiThreaded
 	 */
 	public final double[] collectValues( final String feature, final boolean visibleOnly )
 	{
-		final double[] values = new double[ getNBCellobjects( visibleOnly ) ];
+		final double[] values = new double[ getNBCellobjects(  ) ];
 		int index = 0;
 		for ( final BCellobject BCellobject : iterable( visibleOnly ) )
 		{
@@ -537,12 +516,11 @@ public class BCellobjectCollection implements MultiThreaded
 	 * @return an iterator that iterates over the content of a frame of this
 	 *         collection.
 	 */
-	public Iterator< BCellobject > iterator( final Integer frame, final boolean visibleBCellobjectsOnly )
+	public Iterator< BCellobject > iterator( final Integer frame )
 	{
-		final Set< BCellobject > frameContent = content.get( frame );
+		final Set< BCellobject > frameContent = content.get(frame  );
 		if ( null == frameContent ) { return EMPTY_ITERATOR; }
-		if ( visibleBCellobjectsOnly )
-			return new VisibleBCellobjectsFrameIterator( frameContent );
+		
 
 		return frameContent.iterator();
 	}
@@ -604,7 +582,7 @@ public class BCellobjectCollection implements MultiThreaded
 		for ( final BCellobject BCellobject : value )
 		{
 			BCellobject.putFeature( BCellobject.POSITION_T, Double.valueOf( frame ) );
-			BCellobject.putFeature( VISIBLITY, ZERO );
+			
 		}
 		content.put( frame, value );
 	}
@@ -810,11 +788,7 @@ public class BCellobjectCollection implements MultiThreaded
 				}
 				next = contentIterator.next();
 				// Is it visible?
-				if ( next.getFeature( VISIBLITY ).compareTo( ZERO ) > 0 )
-				{
-					// Yes! Be happy and return
-					return;
-				}
+				
 			}
 		}
 
@@ -875,11 +849,7 @@ public class BCellobjectCollection implements MultiThreaded
 				}
 				next = contentIterator.next();
 				// Is it visible?
-				if ( next.getFeature( VISIBLITY ).compareTo( ZERO ) > 0 )
-				{
-					// Yes. Be happy, and return.
-					return;
-				}
+		
 			}
 		}
 
@@ -927,15 +897,12 @@ public class BCellobjectCollection implements MultiThreaded
 				public void run()
 				{
 					final Set< BCellobject > fc = content.get( frame );
-					final Set< BCellobject > nfc = new HashSet< >( getNBCellobjects( frame, true ) );
+					final Set< BCellobject > nfc = new HashSet< >( getNBCellobjects( frame ) );
 
 					for ( final BCellobject BCellobject : fc )
 					{
-						if ( BCellobject.getFeature( VISIBLITY ).compareTo( ZERO ) > 0 )
-						{
+						
 							nfc.add( BCellobject );
-							BCellobject.putFeature( VISIBLITY, ZERO );
-						}
 					}
 					ns.content.put( frame, nfc );
 				}

@@ -8,13 +8,16 @@ import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
+import pluginTools.InteractiveBud;
 
 public class ManualTrackingGUIController extends TrackMateGUIController
 {
-
-	public ManualTrackingGUIController( final TrackMate trackmate )
+	final InteractiveBud parent;
+	public ManualTrackingGUIController( final InteractiveBud parent,final TrackMate trackmate )
 	{
-		super( trackmate );
+		
+		super( parent, trackmate );
+		this.parent = parent;
 	}
 
 	@Override

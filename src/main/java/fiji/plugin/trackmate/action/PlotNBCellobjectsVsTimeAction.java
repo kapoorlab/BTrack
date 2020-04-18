@@ -44,9 +44,9 @@ public class PlotNBCellobjectsVsTimeAction extends AbstractTMAction {
 		final double[][] data = new double[2][nFrames];
 		int index = 0;
 		for (final int frame : BCellobjects.keySet()) {
-			data[1][index] = BCellobjects.getNBCellobjects(frame, true);
+			data[1][index] = BCellobjects.getNBCellobjects(frame);
 			if (data[1][index] > 0) {
-				data[0][index] = BCellobjects.iterator(frame, false).next().getFeature(BCellobject.POSITION_T);
+				data[0][index] = BCellobjects.iterator(frame).next().getFeature(BCellobject.POSITION_T);
 			} else {
 				data[0][index] = frame * settings.dt;
 			}

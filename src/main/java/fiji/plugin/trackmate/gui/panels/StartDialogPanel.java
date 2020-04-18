@@ -28,6 +28,8 @@ import fiji.util.NumberParser;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import pluginTools.InteractiveBud;
 
 public class StartDialogPanel extends ActionListenablePanel
 {
@@ -83,14 +85,14 @@ public class StartDialogPanel extends ActionListenablePanel
 
 	private boolean impValid = false;
 
-	public StartDialogPanel()
+	public StartDialogPanel(InteractiveBud parent)
 	{
 		this.setPreferredSize( new java.awt.Dimension( 266, 476 ) );
 		final GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
 		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 1.0, 1.0 };
 		setLayout( gridBagLayout );
-
+		
 		final JLabel lblCitation = new JLabel( "<html>"
 				+ "Please note that TrackMate is available through Fiji, "
 				+ "and is based on a publication. If you use it successfully "
@@ -480,7 +482,7 @@ public class StartDialogPanel extends ActionListenablePanel
 			@Override
 			public void actionPerformed( final ActionEvent e )
 			{
-				imp = WindowManager.getCurrentImage();
+				imp = ImageJFunctions.show(parent.originalimg);
 				getFrom( imp );
 				fireAction( IMAGEPLUS_REFRESHED );
 			}
@@ -545,6 +547,7 @@ public class StartDialogPanel extends ActionListenablePanel
 			settings.imageFileName = imp.getOriginalFileInfo().fileName;
 			settings.imageFolder = imp.getOriginalFileInfo().directory;
 		}
+		
 	}
 
 	/*
@@ -582,19 +585,14 @@ public class StartDialogPanel extends ActionListenablePanel
 	public void getFrom( final ImagePlus lImp )
 	{
 		this.imp = lImp;
-		if ( null == lImp )
-		{
-			jLabelImageName.setText( "No image selected." );
-			impValid = false;
-			return;
-		}
+	
 
 		if ( lImp.getType() == ImagePlus.COLOR_RGB )
 		{
 			// We do not know how to process RGB images
-			jLabelImageName.setText( lImp.getShortTitle() + " is RGB: invalid." );
-			impValid = false;
-			return;
+			jLabelImageName.setText( lImp.getShortTitle() + " is RGB" );
+			impValid = true;
+			
 		}
 
 		jLabelImageName.setText( "Target: " + lImp.getShortTitle() );

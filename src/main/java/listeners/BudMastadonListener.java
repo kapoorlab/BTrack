@@ -3,8 +3,11 @@ package listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.LoadTrackMatePlugIn_;
+import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.TrackMatePlugIn_;
+import ij.IJ;
 import pluginTools.InteractiveBud;
 
 public class BudMastadonListener implements ActionListener {
@@ -20,8 +23,14 @@ public class BudMastadonListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		TrackMatePlugIn_ plugin = new TrackMatePlugIn_();
+		
+		
+		
+	
+		IJ.log(Integer.toString(parent.budcells.keySet().size()));
+		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
 		plugin.run(null);
+		
 		
 		
 		

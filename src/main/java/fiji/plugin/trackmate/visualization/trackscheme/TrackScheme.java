@@ -1232,7 +1232,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 		final HashMap< Integer, HashSet< BCellobject > > BCellobjectPerFrame = new HashMap<>( frames.size() );
 		for ( final Integer frame : frames )
 		{
-			BCellobjectPerFrame.put( frame, new HashSet< BCellobject >( model.getBCellobjects().getNBCellobjects( frame, true ) ) ); // max
+			BCellobjectPerFrame.put( frame, new HashSet< BCellobject >( model.getBCellobjects().getNBCellobjects( frame ) ) ); // max
 			// size
 		}
 		for ( final Integer trackID : model.getTrackModel().trackIDs( true ) )

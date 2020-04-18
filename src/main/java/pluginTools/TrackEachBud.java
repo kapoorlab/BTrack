@@ -45,6 +45,7 @@ import net.imglib2.view.Views;
 import skeleton.*;
 import utility.GetNearest;
 import displayBud.DisplayListOverlay;
+import fiji.plugin.trackmate.BCellobjectCollection;
 
 public class TrackEachBud {
 
@@ -331,6 +332,7 @@ public class TrackEachBud {
 				// Make the bud n cell object, each cell has all information about the bud n itself 
 				BCellobject budncell = new BCellobject(Currentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, t);
                 Budcelllist.add(budncell); 
+                parent.budcells.add(budncell, t);  
 			}
 			
 

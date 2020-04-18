@@ -4,6 +4,7 @@ import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import fiji.plugin.trackmate.tracking.oldlap.LAPTrackerFactory;
+import pluginTools.InteractiveBud;
 
 import java.util.Map;
 
@@ -46,9 +47,9 @@ public class SparseLAPTrackerFactory extends LAPTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection Bcellobjects, final Map< String, Object > settings )
+	public BCellobjectTracker create( final InteractiveBud parent, final Map< String, Object > settings )
 	{
-		return new SparseLAPTracker( Bcellobjects, settings );
+		return new SparseLAPTracker( parent, settings );
 	}
 
 }

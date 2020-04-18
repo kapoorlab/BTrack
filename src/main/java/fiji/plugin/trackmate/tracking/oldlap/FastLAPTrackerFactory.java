@@ -3,6 +3,7 @@ package fiji.plugin.trackmate.tracking.oldlap;
 import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import pluginTools.InteractiveBud;
 
 import java.util.Map;
 
@@ -38,8 +39,8 @@ public class FastLAPTrackerFactory extends LAPTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public BCellobjectTracker create( final InteractiveBud parent, final Map< String, Object > settings )
 	{
-		return new FastLAPTracker( BCellobjects, settings );
+		return new FastLAPTracker( parent, settings );
 	}
 }

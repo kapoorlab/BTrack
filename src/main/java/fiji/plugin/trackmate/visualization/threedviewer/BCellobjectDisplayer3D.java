@@ -96,7 +96,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView
 			for ( final int frame : blobs.keySet() )
 			{
 				final BCellobjectGroupNode< BCellobject > frameBlobs = blobs.get( frame );
-				for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( frame, false ); it.hasNext(); )
+				for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( frame ); it.hasNext(); )
 				{
 					final BCellobject BCellobject = it.next();
 					final boolean visible = true;
@@ -278,7 +278,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView
 
 		for ( final int frame : BCellobjects.keySet() )
 		{
-			if ( BCellobjects.getNBCellobjects( frame, false ) == 0 )
+			if ( BCellobjects.getNBCellobjects( frame ) == 0 )
 			{
 				continue; // Do not create content for empty frames
 			}
@@ -293,11 +293,11 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView
 
 	private void buildFrameContent( final BCellobjectCollection BCellobjects, final Integer frame, final double radiusRatio, final FeatureColorGenerator< BCellobject > BCellobjectColorGenerator )
 	{
-		final Map< BCellobject, Point4d > centers = new HashMap< >( BCellobjects.getNBCellobjects( frame, false ) );
-		final Map< BCellobject, Color4f > colors = new HashMap< >( BCellobjects.getNBCellobjects( frame, false ) );
+		final Map< BCellobject, Point4d > centers = new HashMap< >( BCellobjects.getNBCellobjects( frame ) );
+		final Map< BCellobject, Color4f > colors = new HashMap< >( BCellobjects.getNBCellobjects( frame ) );
 		final double[] coords = new double[ 3 ];
 
-		for ( final Iterator< BCellobject > it = BCellobjects.iterator( frame, false ); it.hasNext(); )
+		for ( final Iterator< BCellobject > it = BCellobjects.iterator( frame ); it.hasNext(); )
 		{
 			final BCellobject BCellobject = it.next();
 			TMUtils.localize( BCellobject, coords );
@@ -321,7 +321,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView
 		}
 
 		// Set visibility:
-		if ( BCellobjects.getNBCellobjects( frame, true ) > 0 )
+		if ( BCellobjects.getNBCellobjects( frame ) > 0 )
 		{
 			blobGroup.setVisible( BCellobjects.iterable( frame, true ) );
 		}
@@ -337,7 +337,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView
 		for ( final int frame : blobs.keySet() )
 		{
 			final BCellobjectGroupNode< BCellobject > BCellobjectGroup = blobs.get( frame );
-			for ( final Iterator< BCellobject > iterator = model.getBCellobjects().iterator( frame, false ); iterator.hasNext(); )
+			for ( final Iterator< BCellobject > iterator = model.getBCellobjects().iterator( frame ); iterator.hasNext(); )
 			{
 				final BCellobject BCellobject = iterator.next();
 				BCellobjectGroup.setRadius( BCellobject, radiusRatio * BCellobject.getFeature( BCellobject.RADIUS ) );
@@ -353,7 +353,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView
 		for ( final int frame : blobs.keySet() )
 		{
 			final BCellobjectGroupNode< BCellobject > BCellobjectGroup = blobs.get( frame );
-			for ( final Iterator< BCellobject > iterator = model.getBCellobjects().iterator( frame, false ); iterator.hasNext(); )
+			for ( final Iterator< BCellobject > iterator = model.getBCellobjects().iterator( frame ); iterator.hasNext(); )
 			{
 				final BCellobject BCellobject = iterator.next();
 				BCellobjectGroup.setColor( BCellobject, new Color3f( BCellobjectColorGenerator.color( BCellobject ) ) );

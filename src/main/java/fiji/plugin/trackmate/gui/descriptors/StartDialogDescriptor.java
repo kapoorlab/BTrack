@@ -22,6 +22,8 @@ import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.ImagePlus;
 import ij.WindowManager;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import pluginTools.InteractiveBud;
 
 public class StartDialogDescriptor implements WizardPanelDescriptor
 {
@@ -33,7 +35,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	private final ArrayList< ActionListener > actionListeners = new ArrayList<>();
 
 	private final TrackMateGUIController controller;
-
+	public InteractiveBud parent;
 	/**
 	 * The view that is launched immediately when this descriptor leaves. It
 	 * will be used as a central view.
@@ -43,7 +45,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	public StartDialogDescriptor( final TrackMateGUIController controller )
 	{
 		this.controller = controller;
-		this.panel = new StartDialogPanel();
+		this.panel = new StartDialogPanel(parent);
 		panel.addActionListener( new ActionListener()
 		{
 			@Override
@@ -86,13 +88,13 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void displayingPanel()
+	public void displayingPanel(InteractiveBud parent)
 	{
 		ImagePlus imp;
 		final TrackMate trackmate = controller.getPlugin();
 		if ( null == trackmate.getSettings().imp )
 		{
-			imp = WindowManager.getCurrentImage();
+			imp = ImageJFunctions.show(parent.originalimg);
 		}
 		else
 		{
@@ -226,5 +228,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 			l.actionPerformed( e );
 		}
 	}
+
+
 
 }

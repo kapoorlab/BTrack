@@ -33,6 +33,7 @@ import fiji.plugin.trackmate.Logger.SlaveLogger;
 import fiji.plugin.trackmate.BCellobjectCollection;
 import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
+import pluginTools.InteractiveBud;
 
 public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker
 {
@@ -42,17 +43,17 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 
 	private Logger logger = Logger.VOID_LOGGER;
 
-	private final BCellobjectCollection BCellobjects;
 
 	private final Map< String, Object > settings;
-
+	
+	private final InteractiveBud parent;
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public SparseLAPTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public SparseLAPTracker( final InteractiveBud parent, final Map< String, Object > settings )
 	{
-		this.BCellobjects = BCellobjects;
+		this.parent = parent;
 		this.settings = settings;
 	}
 
@@ -79,7 +80,8 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		/*
 		 * Check input now.
 		 */
-
+		BCellobjectCollection BCellobjects = parent.budcells;
+		System.out.println("In LAP process" + parent.budcells.keySet().size());
 		// Check that the objects list itself isn't null
 		if ( null == BCellobjects )
 		{
@@ -98,7 +100,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		boolean empty = true;
 		for ( final int frame : BCellobjects.keySet() )
 		{
-			if ( BCellobjects.getNBCellobjects( frame, true ) > 0 )
+			if ( BCellobjects.getNBCellobjects( frame) > 0 )
 			{
 				empty = false;
 				break;
@@ -106,7 +108,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		}
 		if ( empty )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is totally empty.";
 			return false;
 		}
 		// Check parameters
@@ -134,7 +136,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		ftfSettings.put( KEY_ALTERNATIVE_LINKING_COST_FACTOR, settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR ) );
 		ftfSettings.put( KEY_LINKING_FEATURE_PENALTIES, settings.get( KEY_LINKING_FEATURE_PENALTIES ) );
 
-		final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( BCellobjects, ftfSettings );
+		final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( parent, ftfSettings );
 		frameToFrameLinker.setNumThreads( numThreads );
 		final SlaveLogger ftfLogger = new SlaveLogger( logger, 0, 0.5 );
 		frameToFrameLinker.setLogger( ftfLogger );

@@ -156,15 +156,15 @@ public class Model
 		}
 		else
 		{
-			str.append( "Contains " + BCellobjects.getNBCellobjects( false ) + " BCellobjects in total.\n" );
+			str.append( "Contains " + BCellobjects.getNBCellobjects(  ) + " BCellobjects in total.\n" );
 		}
-		if ( BCellobjects.getNBCellobjects( true ) == 0 )
+		if ( BCellobjects.getNBCellobjects(  ) == 0 )
 		{
 			str.append( "No filtered BCellobjects.\n" );
 		}
 		else
 		{
-			str.append( "Contains " + BCellobjects.getNBCellobjects( true ) + " filtered BCellobjects.\n" );
+			str.append( "Contains " + BCellobjects.getNBCellobjects(  ) + " filtered BCellobjects.\n" );
 		}
 
 		str.append( '\n' );

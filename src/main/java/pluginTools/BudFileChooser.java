@@ -3,6 +3,7 @@ package pluginTools;
 import java.awt.CardLayout;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -51,6 +52,7 @@ import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoThreeChForceFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
+import net.imagej.ImageJ;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
@@ -147,7 +149,8 @@ public class BudFileChooser extends JPanel {
 		  
 		  public BudFileChooser() {
 			
-			
+			  
+				
 			   inputLabelcalX = new Label("Pixel calibration in X,Y (um)");
 		       inputFieldcalX = new TextField(5);
 			   inputFieldcalX.setText("1");
@@ -245,7 +248,6 @@ public class BudFileChooser extends JPanel {
 				YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
 				GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
 				RedMode.addItemListener(new BTrackGoRedFLListener(this));
-				
 				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
 				
 				inputFieldcalX.addTextListener(new CalXListener());
@@ -324,7 +326,7 @@ public class BudFileChooser extends JPanel {
 			    org.apache.log4j.BasicConfigurator.configure();
 				//IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
 				//IJ.run("RGB Color");
-
+				
 				RandomAccessibleInterval<ARGBType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
 				
 				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType());
@@ -344,7 +346,6 @@ public class BudFileChooser extends JPanel {
 				if(RGBBud && DoYellow) {
 					
 					
-					
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					
 					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
@@ -354,7 +355,6 @@ public class BudFileChooser extends JPanel {
 				}
 				
 				if(RGBBud && DoGreen) {
-					
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
 					assert (imageOrig.numDimensions() == imageSegA.numDimensions());

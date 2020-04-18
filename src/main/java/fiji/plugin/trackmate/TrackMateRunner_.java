@@ -42,6 +42,7 @@ import ij.ImagePlus;
 import ij.Macro;
 import ij.WindowManager;
 import net.imglib2.util.ValuePair;
+import pluginTools.InteractiveBud;
 
 public class TrackMateRunner_ extends TrackMatePlugIn_
 {
@@ -49,6 +50,11 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 	/*
 	 * List of arguments usable in the macro.
 	 */
+	final InteractiveBud parent;
+	public TrackMateRunner_(InteractiveBud parent) {
+		super(parent);
+		this.parent = parent;
+	}
 
 	/**
 	 * The macro parameter to set the detection radius of particles. Accept
@@ -398,7 +404,7 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 						imp.show();
 					}
 					GuiUtils.userCheckImpDimensions( imp );
-					final TrackMateGUIController controller = new TrackMateGUIController( trackmate );
+					final TrackMateGUIController controller = new TrackMateGUIController(parent,  trackmate );
 					GuiUtils.positionWindow( controller.getGUI(), imp.getWindow() );
 					return;
 				}
@@ -498,7 +504,7 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 					 * And show GUI.
 					 */
 
-					final TrackMateGUIController controller = new TrackMateGUIController( trackmate );
+					final TrackMateGUIController controller = new TrackMateGUIController(parent,  trackmate );
 					// GUI position
 					GuiUtils.positionWindow( controller.getGUI(), settings.imp.getWindow() );
 
@@ -721,22 +727,6 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 	 * MAIN METHOD
 	 */
 
-	public static void main( final String[] args )
-	{
-		ImageJ.main( args );
-		new TrackMateRunner_().run(
-				"use_gui=false "
-						+ "save_to=[/Users/tinevez/Desktop/TrackMateSaveTest.xml] "
-						+ "export_to=[/Users/tinevez/Desktop/TrackMateExportTest.xml] "
-						+ "image_path=[samples/FakeTracks.tif] "
-						+ "display_results=true "
-						+ "radius=2.5 "
-						+ "threshold=50.1 "
-						+ "subpixel=false "
-						+ "median=false "
-						+ "channel=1 "
-						+ "max_frame_gap=0 "
-						+ "paf!=pif!" );
-	}
+
 
 }

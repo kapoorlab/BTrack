@@ -30,6 +30,7 @@ import fiji.plugin.trackmate.tracking.oldlap.hungarian.AssignmentProblem;
 import fiji.plugin.trackmate.tracking.oldlap.hungarian.HungarianAlgorithm;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.multithreading.SimpleMultiThreading;
+import pluginTools.InteractiveBud;
 
 /**
  *
@@ -164,7 +165,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	/** The graph this tracker will use to link BCellobjects. */
 	protected SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> graph;
 	/** The BCellobject collection that will be linked in the graph. */
-	protected final BCellobjectCollection BCellobjects;
+	public final InteractiveBud parent;
 	/** The settings map that configures this tracker. */
 	protected final Map< String, Object > settings;
 
@@ -172,15 +173,17 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 * CONSTRUCTOR
 	 */
 
-	public LAPTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public LAPTracker( final InteractiveBud parent, final Map< String, Object > settings )
 	{
-		this.BCellobjects = BCellobjects;
+		this.parent = parent;
 		this.settings = settings;
 	}
 
 	/*
 	 * PROTECTED METHODS
 	 */
+
+
 
 	/**
 	 * Hook for subclassers. Generate the assignment algorithm that will be used
@@ -203,7 +206,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 */
 	public void reset() {
 		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		final Iterator<BCellobject> it = BCellobjects.iterator(true);
+		final Iterator<BCellobject> it = parent.budcells.iterator(true);
 		while (it.hasNext()) {
 			graph.addVertex(it.next());
 		}
@@ -261,22 +264,24 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 */
 	@Override
 	public boolean process() {
+		
+		System.out.println(parent.budcells.keySet().size());
 		// Check that the objects list itself isn't null
-		if (null == BCellobjects) {
+		if (null == parent.budcells) {
 			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is null.";
 			return false;
 		}
 
 		// Check that the objects list contains inner collections.
-		if (BCellobjects.keySet().isEmpty()) {
+		if (parent.budcells.keySet().isEmpty()) {
 			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
-		for (final int frame : BCellobjects.keySet()) {
-			if (BCellobjects.getNBCellobjects(frame, true) > 0) {
+		for (final int frame : parent.budcells.keySet()) {
+			if (parent.budcells.getNBCellobjects(frame) > 0) {
 				empty = false;
 				break;
 			}
@@ -438,8 +443,8 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 
 		// Prepare frame pairs in order, not necessarily separated by 1.
-		final ArrayList<int[]> framePairs = new ArrayList<>(BCellobjects.keySet().size() - 1);
-		final Iterator<Integer> frameIterator = BCellobjects.keySet().iterator();
+		final ArrayList<int[]> framePairs = new ArrayList<>(parent.budcells.keySet().size() - 1);
+		final Iterator<Integer> frameIterator = parent.budcells.keySet().iterator();
 		int frame0 = frameIterator.next();
 		int frame1;
 		while (frameIterator.hasNext()) { // ascending order
@@ -468,13 +473,13 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 						final int lFrame1 = framePairs.get(i)[1];
 
 						// Get BCellobjects - we have to create a list from each content
-						final List<BCellobject> t0 = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame0, true));
-						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame0, true); iterator.hasNext();) {
+						final List<BCellobject> t0 = new ArrayList<>(parent.budcells.getNBCellobjects(lFrame0));
+						for (final Iterator<BCellobject> iterator = parent.budcells.iterator(lFrame0); iterator.hasNext();) {
 							t0.add(iterator.next());
 
 						}
-						final List<BCellobject> t1 = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame1, true));
-						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame1, true); iterator.hasNext();) {
+						final List<BCellobject> t1 = new ArrayList<>(parent.budcells.getNBCellobjects(lFrame1));
+						for (final Iterator<BCellobject> iterator = parent.budcells.iterator(lFrame1); iterator.hasNext();) {
 							t1.add(iterator.next());
 						}
 

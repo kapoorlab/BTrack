@@ -23,6 +23,7 @@ import fiji.plugin.trackmate.gui.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.panels.tracker.KalmanTrackerConfigPanel;
 import fiji.plugin.trackmate.tracking.BCellobjectTracker;
 import fiji.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import pluginTools.InteractiveBud;
 
 @Plugin( type = BCellobjectTrackerFactory.class )
 public class KalmanTrackerFactory implements BCellobjectTrackerFactory
@@ -90,12 +91,12 @@ public class KalmanTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public BCellobjectTracker create( final InteractiveBud parent, final Map< String, Object > settings )
 	{
 		final double maxSearchRadius = ( Double ) settings.get( KEY_KALMAN_SEARCH_RADIUS );
 		final int maxFrameGap = ( Integer ) settings.get( KEY_GAP_CLOSING_MAX_FRAME_GAP );
 		final double initialSearchRadius = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
-		return new KalmanTracker( BCellobjects, maxSearchRadius, maxFrameGap, initialSearchRadius );
+		return new KalmanTracker( parent.budcells, maxSearchRadius, maxFrameGap, initialSearchRadius );
 	}
 
 	@Override

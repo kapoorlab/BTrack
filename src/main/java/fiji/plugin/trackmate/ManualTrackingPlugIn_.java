@@ -10,9 +10,16 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import pluginTools.InteractiveBud;
 
 public class ManualTrackingPlugIn_ extends TrackMatePlugIn_
 {
+
+	final InteractiveBud parent;
+	public ManualTrackingPlugIn_(InteractiveBud parent) {
+		super(parent);
+		this.parent = parent;
+	}
 
 	/**
 	 * Runs the Manual tracking with TrackMate GUI plugin.
@@ -62,7 +69,7 @@ public class ManualTrackingPlugIn_ extends TrackMatePlugIn_
 		 * Launch GUI.
 		 */
 
-		final ManualTrackingGUIController controller = new ManualTrackingGUIController( trackmate );
+		final ManualTrackingGUIController controller = new ManualTrackingGUIController(parent,  trackmate );
 		GuiUtils.positionWindow( controller.getGUI(), imp.getWindow() );
 
 		/*
@@ -93,9 +100,5 @@ public class ManualTrackingPlugIn_ extends TrackMatePlugIn_
 		return lSettings;
 	}
 
-	public static void main( final String[] args )
-	{
-		ImageJ.main( args );
-		new ManualTrackingPlugIn_().run( "samples/Merged.tif" );
-	}
+	
 }

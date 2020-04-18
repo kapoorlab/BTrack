@@ -813,13 +813,13 @@ public class TmXmlReader
 	private BCellobjectCollection getBCellobjects( final Element modelElement )
 	{
 		// Root element for collection
-		final Element BCellobjectCollection = modelElement.getChild( BCellobject_COLLECTION_ELEMENT_KEY );
+		final Element bCellobjectCollection = modelElement.getChild( BCellobject_COLLECTION_ELEMENT_KEY );
 
 		// Retrieve children elements for each frame
-		final List< Element > frameContent = BCellobjectCollection.getChildren( BCellobject_FRAME_COLLECTION_ELEMENT_KEY );
+		final List< Element > frameContent = bCellobjectCollection.getChildren( BCellobject_FRAME_COLLECTION_ELEMENT_KEY );
 
 		// Determine total number of BCellobjects
-		int nBCellobjects = readIntAttribute( BCellobjectCollection, BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, Logger.VOID_LOGGER );
+		int nBCellobjects = readIntAttribute( bCellobjectCollection, BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME, Logger.VOID_LOGGER );
 		if ( nBCellobjects == 0 )
 		{
 			/*
