@@ -10,8 +10,8 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
-import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.ui.RectangleEdge;
 
 public class XYEdgeRenderer extends AbstractXYItemRenderer
 {
@@ -35,8 +35,8 @@ public class XYEdgeRenderer extends AbstractXYItemRenderer
 		if ( Double.isNaN( y1 ) || Double.isNaN( x1 ) || Double.isNaN( y0 ) || Double.isNaN( x0 ) )
 			return;
 
-		final org.jfree.ui.RectangleEdge xAxisLocation = plot.getDomainAxisEdge();
-		final org.jfree.ui.RectangleEdge yAxisLocation = plot.getRangeAxisEdge();
+		final RectangleEdge xAxisLocation = plot.getDomainAxisEdge();
+		final RectangleEdge yAxisLocation = plot.getRangeAxisEdge();
 
 		final double transX0 = domainAxis.valueToJava2D( x0, dataArea, xAxisLocation );
 		final double transY0 = rangeAxis.valueToJava2D( y0, dataArea, yAxisLocation );

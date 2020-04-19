@@ -1,6 +1,5 @@
 package fiji.plugin.trackmate.features;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -144,11 +143,7 @@ public class BCellobjectFeatureCalculator extends MultiThreadedBenchmarkAlgorith
 		{
 			// Try to extract it from detector settings target channel
 			final Map< String, Object > ds = settings.detectorSettings;
-			final Object obj = ds.get( KEY_TARGET_CHANNEL );
-			if ( null != obj && obj instanceof Integer )
-			{
-				tc = ( ( Integer ) obj ) - 1;
-			}
+			
 		}
 		final int targetChannel = tc;
 

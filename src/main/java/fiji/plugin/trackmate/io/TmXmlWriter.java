@@ -1,6 +1,5 @@
 package fiji.plugin.trackmate.io;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.XML_ATTRIBUTE_DETECTOR_NAME;
 import static fiji.plugin.trackmate.io.TmXmlKeys.ANALYSER_ELEMENT_KEY;
 import static fiji.plugin.trackmate.io.TmXmlKeys.ANALYSER_KEY_ATTRIBUTE;
 import static fiji.plugin.trackmate.io.TmXmlKeys.ANALYZER_COLLECTION_ELEMENT_KEY;
@@ -317,20 +316,7 @@ public class TmXmlWriter
 	{
 		final Element el = new Element( DETECTOR_SETTINGS_ELEMENT_KEY );
 
-		if ( null == settings.detectorFactory ) { return el; }
-
-		// Set the detector factory key NOW.
-		el.setAttribute( XML_ATTRIBUTE_DETECTOR_NAME, settings.detectorFactory.getKey() );
-
-		// Marshal the rest.
-		if ( null != settings.detectorFactory )
-		{
-			final boolean ok = settings.detectorFactory.marshall( settings.detectorSettings, el );
-			if ( !ok )
-				logger.error( settings.detectorFactory.getErrorMessage() );
-			else
-				logger.log( "  Added detector settings.\n" );
-		}
+		
 
 		return el;
 	}

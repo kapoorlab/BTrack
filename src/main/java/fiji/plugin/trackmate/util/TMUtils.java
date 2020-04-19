@@ -1,6 +1,5 @@
 package fiji.plugin.trackmate.util;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -604,18 +603,7 @@ public class TMUtils
 			max[ zindex ] = settings.zend;
 		}
 
-		// CHANNEL, we might have it.
-		final int cindex = TMUtils.findCAxisIndex( img );
-		if ( cindex >= 0 )
-		{
-			Integer c = ( Integer ) settings.detectorSettings.get( KEY_TARGET_CHANNEL ); // 1-based.
-			if ( null == c )
-			{
-				c = 1;
-			}
-			min[ cindex ] = c - 1; // 0-based.
-			max[ cindex ] = min[ cindex ];
-		}
+		
 
 		// TIME, we might have it, but anyway we leave the start & end
 		// management to elsewhere.

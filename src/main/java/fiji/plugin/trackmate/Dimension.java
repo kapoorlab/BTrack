@@ -2,7 +2,8 @@ package fiji.plugin.trackmate;
 
 public enum Dimension {
 	NONE,
-	
+	distBud,
+	distDynamicBud,
 	INTENSITY,
 	INTENSITY_SQUARED,
 	POSITION,

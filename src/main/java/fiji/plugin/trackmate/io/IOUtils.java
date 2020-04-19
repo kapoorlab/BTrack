@@ -1,11 +1,6 @@
 package fiji.plugin.trackmate.io;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DOWNSAMPLE_FACTOR;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_MEDIAN_FILTERING;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_RADIUS;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_THRESHOLD;
+
 import static fiji.plugin.trackmate.gui.TrackMateWizard.TRACKMATE_ICON;
 import fiji.plugin.trackmate.Logger;
 import fiji.util.NumberParser;
@@ -396,39 +391,7 @@ public class IOUtils {
 		return ok;
 	}
 
-	/*
-	 * MARSHALLING UTILS
-	 */
-
-	public static final boolean writeTargetChannel( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
-	{
-		return writeAttribute( settings, element, KEY_TARGET_CHANNEL, Integer.class, errorHolder );
-	}
-
-	public static final boolean writeRadius( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
-	{
-		return writeAttribute( settings, element, KEY_RADIUS, Double.class, errorHolder );
-	}
-
-	public static final boolean writeThreshold( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
-	{
-		return writeAttribute( settings, element, KEY_THRESHOLD, Double.class, errorHolder );
-	}
-
-	public static final boolean writeDoMedian( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
-	{
-		return writeAttribute( settings, element, KEY_DO_MEDIAN_FILTERING, Boolean.class, errorHolder );
-	}
-
-	public static final boolean writeDoSubPixel( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
-	{
-		return writeAttribute( settings, element, KEY_DO_SUBPIXEL_LOCALIZATION, Boolean.class, errorHolder );
-	}
-
-	public static final boolean writeDownsamplingFactor( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
-	{
-		return writeAttribute( settings, element, KEY_DOWNSAMPLE_FACTOR, Integer.class, errorHolder );
-	}
+	
 
 	/**
 	 * Add a parameter attribute to the given element, taken from the given

@@ -11,7 +11,6 @@ import fiji.plugin.trackmate.io.TmXmlReader;
 import fiji.plugin.trackmate.io.TmXmlReader_v12;
 import fiji.plugin.trackmate.io.TmXmlReader_v20;
 import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
-import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;

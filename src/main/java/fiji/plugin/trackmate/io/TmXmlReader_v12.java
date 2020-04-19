@@ -1,11 +1,6 @@
 package fiji.plugin.trackmate.io;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DOWNSAMPLE_FACTOR;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_MEDIAN_FILTERING;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_RADIUS;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_THRESHOLD;
+
 import static fiji.plugin.trackmate.io.IOUtils.readBooleanAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.readFloatAttribute;
@@ -108,7 +103,6 @@ import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
@@ -116,7 +110,6 @@ import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackDurationAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
-import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
@@ -229,7 +222,7 @@ public class TmXmlReader_v12 extends TmXmlReader
 	 */
 
 	@Override
-	public void readSettings( final Settings settings, final DetectorProvider detectorProvider, final TrackerProvider trackerProvider, final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
+	public void readSettings( final Settings settings,  final TrackerProvider trackerProvider, final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
 			final EdgeAnalyzerProvider edgeAnalyzerProvider, final TrackAnalyzerProvider trackAnalyzerProvider )
 	{
 

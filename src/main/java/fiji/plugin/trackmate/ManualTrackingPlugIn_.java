@@ -1,7 +1,6 @@
 package fiji.plugin.trackmate;
 
 import java.util.Map;
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
 import fiji.plugin.trackmate.gui.GuiUtils;
 import fiji.plugin.trackmate.gui.ManualTrackingGUIController;
 import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
@@ -92,8 +91,6 @@ public class ManualTrackingPlugIn_ extends TrackMatePlugIn_
 	{
 		final Settings lSettings = super.createSettings( imp );
 		// Manual detection
-		lSettings.detectorFactory = new ManualDetectorFactory();
-		lSettings.detectorSettings = lSettings.detectorFactory.getDefaultSettings();
 		// Manual tracker
 		lSettings.trackerFactory = new ManualTrackerFactory();
 		lSettings.trackerSettings = lSettings.trackerFactory.getDefaultSettings();

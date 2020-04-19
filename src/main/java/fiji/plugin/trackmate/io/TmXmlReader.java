@@ -1,6 +1,5 @@
 package fiji.plugin.trackmate.io;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.XML_ATTRIBUTE_DETECTOR_NAME;
 import static fiji.plugin.trackmate.io.IOUtils.readBooleanAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.readIntAttribute;
@@ -104,7 +103,6 @@ import fiji.plugin.trackmate.Logger.StringBuilderLogger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
 import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
@@ -113,7 +111,6 @@ import fiji.plugin.trackmate.features.track.TrackAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
-import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackerProvider;
@@ -399,7 +396,6 @@ public class TmXmlReader
 	 */
 	public void readSettings(
 			final Settings settings,
-			final DetectorProvider detectorProvider,
 			final TrackerProvider trackerProvider,
 			final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
 			final EdgeAnalyzerProvider edgeAnalyzerProvider,
@@ -415,9 +411,6 @@ public class TmXmlReader
 		// Image
 		settings.imp = getImage( settingsElement );
 
-		// Detector
-		if ( null != detectorProvider )
-			getDetectorSettings( settingsElement, settings, detectorProvider );
 
 		// Tracker
 		if ( null != trackerProvider )
@@ -699,44 +692,7 @@ public class TmXmlReader
 	 *            a {@link DetectorProvider}, required to read detector
 	 *            parameters.
 	 */
-	private void getDetectorSettings(
-			final Element settingsElement,
-			final Settings settings,
-			final DetectorProvider provider )
-	{
-		final Element element = settingsElement.getChild( DETECTOR_SETTINGS_ELEMENT_KEY );
 
-		if ( null == element )
-		{
-			logger.error( "Could not find the detector element in file.\n" );
-			this.ok = false;
-			return;
-		}
-
-		// Get the detector key
-		final String detectorKey = element.getAttributeValue( XML_ATTRIBUTE_DETECTOR_NAME );
-		if ( null == detectorKey )
-		{
-			logger.error( "Could not find the detector key element in file.\n" );
-			this.ok = false;
-			return;
-		}
-
-		final BCellobjectDetectorFactory< ? > factory = provider.getFactory( detectorKey );
-		if ( null == factory )
-		{
-			logger.error( "The detector identified by the key " + detectorKey + " is unknown to TrackMate.\n" );
-			this.ok = false;
-			return;
-		}
-		settings.detectorFactory = factory;
-
-		final Map< String, Object > ds = new HashMap< >();
-		ok = factory.unmarshall( element, ds );
-
-		if ( ok )
-			settings.detectorSettings = ds;
-	}
 
 	/**
 	 * Update the given {@link Settings} object with {@link BCellobjectTracker} proper

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import fiji.plugin.trackmate.action.ExportTracksToXML;
-import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
@@ -298,7 +297,6 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 				 * Configure default settings.
 				 */
 
-				final Map< String, ValuePair< String, MacroArgumentConverter > > detectorParsers = prepareDetectorParsableArguments();
 				final Map< String, ValuePair< String, MacroArgumentConverter > > trackerParsers = prepareTrackerParsableArguments();
 				final Map< String, FilterGenerator > trackFiltersParsers = prepareTrackFiltersParsableArguments();
 
@@ -307,34 +305,7 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 				settings.trackerFactory = new SimpleSparseLAPTrackerFactory();
 				settings.trackerSettings = settings.trackerFactory.getDefaultSettings();
 
-				/*
-				 * Detector parameters.
-				 */
-
-				for ( final String parameter : macroOptions.keySet() )
-				{
-					final String value = macroOptions.get( parameter );
-					final ValuePair< String, MacroArgumentConverter > parser = detectorParsers.get( parameter );
-					if ( parser == null )
-					{
-						continue;
-					}
-
-					final String key = parser.getA();
-					final MacroArgumentConverter converter = parser.getB();
-					try
-					{
-
-						final Object val = converter.convert( value );
-						settings.detectorSettings.put( key, val );
-					}
-					catch ( final NumberFormatException nfe )
-					{
-						logger.error( "Cannot interprete value for parameter " + parameter + ": " + value + ". Skipping.\n" );
-						continue;
-					}
-
-				}
+			
 
 				/*
 				 * Tracker parameters.
@@ -575,49 +546,6 @@ public class TrackMateRunner_ extends TrackMatePlugIn_
 		return s;
 	}
 
-	/**
-	 * Prepare a map of all the arguments that are accepted by this macro for
-	 * the detection part.
-	 *
-	 * @return a map of parsers that can handle macro parameters.
-	 */
-	private Map< String, ValuePair< String, MacroArgumentConverter > > prepareDetectorParsableArguments()
-	{
-		// Map
-		final Map< String, ValuePair< String, MacroArgumentConverter > > parsers = new HashMap<>();
-
-		// Converters.
-		final DoubleMacroArgumentConverter doubleConverter = new DoubleMacroArgumentConverter();
-		final IntegerMacroArgumentConverter integerConverter = new IntegerMacroArgumentConverter();
-		final BooleanMacroArgumentConverter booleanConverter = new BooleanMacroArgumentConverter();
-
-		// BCellobject radius.
-		final ValuePair< String, MacroArgumentConverter > radiusPair =
-				new ValuePair< >( DetectorKeys.KEY_RADIUS, doubleConverter );
-		parsers.put( ARG_RADIUS, radiusPair );
-
-		// BCellobject quality threshold.
-		final ValuePair< String, MacroArgumentConverter > thresholdPair =
-				new ValuePair< >( DetectorKeys.KEY_THRESHOLD, doubleConverter );
-		parsers.put( ARG_THRESHOLD, thresholdPair );
-
-		// Sub-pixel localization.
-		final ValuePair< String, MacroArgumentConverter > subpixelPair =
-				new ValuePair< >( DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION, booleanConverter );
-		parsers.put( ARG_SUBPIXEL, subpixelPair );
-
-		// Do median filtering.
-		final ValuePair< String, MacroArgumentConverter > medianPair =
-				new ValuePair< >( DetectorKeys.KEY_DO_MEDIAN_FILTERING, booleanConverter );
-		parsers.put( ARG_MEDIAN, medianPair );
-
-		// Target channel.
-		final ValuePair< String, MacroArgumentConverter > channelPair =
-				new ValuePair< >( DetectorKeys.KEY_TARGET_CHANNEL, integerConverter );
-		parsers.put( ARG_CHANNEL, channelPair );
-
-		return parsers;
-	}
 
 	/**
 	 * Prepare a map of all the arguments that are accepted by this macro for

@@ -8,9 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.util.VersionUtils;
 
 import budDetector.BCellobject;
-import fiji.plugin.trackmate.detection.BCellobjectDetector;
-import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
 import fiji.plugin.trackmate.features.BCellobjectFeatureCalculator;
 import fiji.plugin.trackmate.features.EdgeFeatureCalculator;
 import fiji.plugin.trackmate.features.FeatureFilter;

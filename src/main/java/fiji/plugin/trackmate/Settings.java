@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fiji.plugin.trackmate.detection.BCellobjectDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureAnalyzer;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
@@ -115,7 +114,6 @@ public class Settings
 	 * {@link fiji.plugin.trackmate.detection.BCellobjectDetector} for each target
 	 * frame.
 	 */
-	public BCellobjectDetectorFactory< ? > detectorFactory;
 
 	/** The the tracker to use. */
 	public BCellobjectTrackerFactory trackerFactory;
@@ -339,24 +337,8 @@ public class Settings
 
 		str.append( '\n' );
 		str.append( "BCellobject detection:\n" );
-		if ( null == detectorFactory )
-		{
-			str.append( "No detector factory set.\n" );
-		}
-		else
-		{
-			str.append( "Detector: " + detectorFactory.toString() + ".\n" );
-			if ( null == detectorSettings )
-			{
-				str.append( "No detector settings found.\n" );
-			}
-			else
-			{
-				str.append( "Detector settings:\n" );
-				str.append( detectorSettings );
-				str.append( '\n' );
-			}
-		}
+		
+		
 
 		str.append( '\n' );
 		str.append( toStringFeatureAnalyzersInfo() );
@@ -433,16 +415,8 @@ public class Settings
 			errorMessage = "The source image is null.\n";
 			return false;
 		}
-		if ( null == detectorFactory )
-		{
-			errorMessage = "The detector factory is null.\n";
-			return false;
-		}
-		if ( null == detectorSettings )
-		{
-			errorMessage = "The detector settings is null.\n";
-			return false;
-		}
+		
+	
 		if ( null == initialBCellobjectFilterValue )
 		{
 			errorMessage = "Initial BCellobject quality threshold is not set.\n";

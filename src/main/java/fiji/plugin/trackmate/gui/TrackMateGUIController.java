@@ -41,13 +41,11 @@ import fiji.plugin.trackmate.TrackMateOptionUtils;
 import fiji.plugin.trackmate.action.AbstractTMAction;
 import fiji.plugin.trackmate.action.ExportAllBCellobjectsStatsAction;
 import fiji.plugin.trackmate.action.ExportStatsToIJAction;
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
 import fiji.plugin.trackmate.features.ModelFeatureUpdater;
 import fiji.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import fiji.plugin.trackmate.gui.descriptors.ActionChooserDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
-import fiji.plugin.trackmate.gui.descriptors.DetectionDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.GrapherDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.LoadDescriptor;
 import fiji.plugin.trackmate.gui.descriptors.LogPanelDescriptor;
@@ -63,7 +61,6 @@ import fiji.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
 import fiji.plugin.trackmate.gui.panels.tracker.JPanelTrackerSettingsMain;	
 import fiji.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
 import fiji.plugin.trackmate.providers.ActionProvider;
-import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import fiji.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
@@ -112,7 +109,6 @@ public class TrackMateGUIController implements ActionListener
 
 	protected TrackAnalyzerProvider trackAnalyzerProvider;
 
-	protected DetectorProvider detectorProvider;
 
 	protected ViewProvider viewProvider;
 

@@ -82,6 +82,13 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 	}
 
+	
+	/** The name of the spot X position feature. */
+	public static final String distBud = "distclosestBudPoint";
+
+	/** The name of the spot Y position feature. */
+	public static final String distDynamicBud = "distclosestGrowthPoint";
+	
 	/** The name of the spot X position feature. */
 	public static final String POSITION_X = "POSITION_X";
 
@@ -97,7 +104,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	/** The position features. */
 	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y};
 
-	static int totalfeatures = 4;
+	static int totalfeatures = 6;
 	public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
 
 	/** The 4 privileged spot feature names. */
@@ -135,23 +142,36 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURES.add( POSITION_Y );
 		FEATURES.add( POSITION_T );
 		FEATURES.add( RADIUS );
+		FEATURES.add( distBud );
+		FEATURES.add( distDynamicBud );
 		
 		
+		FEATURE_NAMES.put( distBud, "DistBud" );
+		FEATURE_NAMES.put( distDynamicBud, "DistDynamicBud" );
 		FEATURE_NAMES.put( POSITION_X, "X" );
 		FEATURE_NAMES.put( POSITION_Y, "Y" );
 		FEATURE_NAMES.put( POSITION_T, "T" );
 		FEATURE_NAMES.put( RADIUS, "Radius" );
 		
+		
+		FEATURE_SHORT_NAMES.put( distBud, "DistBud" );
+		FEATURE_SHORT_NAMES.put( distDynamicBud, "DistDynamicBud" );
 		FEATURE_SHORT_NAMES.put( POSITION_X, "X" );
 		FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
 		FEATURE_SHORT_NAMES.put( POSITION_T, "T" );
 		FEATURE_SHORT_NAMES.put( RADIUS, "R" );
 		
+		
+		FEATURE_DIMENSIONS.put( distBud, Dimension.distBud );
+		FEATURE_DIMENSIONS.put( distDynamicBud, Dimension.distDynamicBud );
 		FEATURE_DIMENSIONS.put( POSITION_X, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_Y, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_T, Dimension.TIME );
 		FEATURE_DIMENSIONS.put( RADIUS, Dimension.LENGTH );
 		
+		
+		IS_INT.put( distBud, Boolean.FALSE );
+		IS_INT.put( distDynamicBud, Boolean.FALSE );
 		IS_INT.put( POSITION_X, Boolean.FALSE );
 		IS_INT.put( POSITION_Y, Boolean.FALSE );
 		IS_INT.put( POSITION_T, Boolean.FALSE );
