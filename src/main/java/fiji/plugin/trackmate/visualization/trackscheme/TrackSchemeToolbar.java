@@ -24,18 +24,18 @@ public class TrackSchemeToolbar extends JToolBar
 
 	private static final long serialVersionUID = 3442140463984241266L;
 
-	private static final ImageIcon LINKING_ON_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/connect.png" ) );
-	private static final ImageIcon LINKING_OFF_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/connect_bw.png" ) );
-	private static final ImageIcon THUMBNAIL_ON_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/images.png" ) );
-	private static final ImageIcon THUMBNAIL_OFF_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/images_bw.png" ) );
-	private static final ImageIcon RESET_ZOOM_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom.png" ) );
-	private static final ImageIcon ZOOM_IN_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_in.png" ) );
-	private static final ImageIcon ZOOM_OUT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_out.png" ) );
-	private static final ImageIcon REFRESH_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/refresh.png" ) );
-	private static final ImageIcon CAPTURE_UNDECORATED_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_go.png" ) );
-	private static final ImageIcon CAPTURE_DECORATED_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_edit.png" ) );
-	private static final ImageIcon DISPLAY_DECORATIONS_ON_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/application_view_columns.png" ) );
-	private static final ImageIcon SELECT_STYLE_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/theme.png" ) );
+	private static final ImageIcon LINKING_ON_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/connect.png" ) );
+	private static final ImageIcon LINKING_OFF_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/connect_bw.png" ) );
+	private static final ImageIcon THUMBNAIL_ON_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/images.png" ) );
+	private static final ImageIcon THUMBNAIL_OFF_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/images_bw.png" ) );
+	private static final ImageIcon RESET_ZOOM_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom.png" ) );
+	private static final ImageIcon ZOOM_IN_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_in.png" ) );
+	private static final ImageIcon ZOOM_OUT_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_out.png" ) );
+	private static final ImageIcon REFRESH_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/refresh.png" ) );
+	private static final ImageIcon CAPTURE_UNDECORATED_ICON =null; // new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_go.png" ) );
+	private static final ImageIcon CAPTURE_DECORATED_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_edit.png" ) );
+	private static final ImageIcon DISPLAY_DECORATIONS_ON_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/application_view_columns.png" ) );
+	private static final ImageIcon SELECT_STYLE_ICON = null; //new ImageIcon( TrackSchemeFrame.class.getResource( "resources/theme.png" ) );
 	private final TrackScheme trackScheme;
 
 	public TrackSchemeToolbar( final TrackScheme trackScheme )

@@ -14,6 +14,7 @@ import fiji.plugin.trackmate.Dimension;
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.util.AlphanumComparator;
 import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 
 public class BCellobject extends AbstractEuclideanSpace implements RealLocalizable, Comparable<BCellobject> {
@@ -28,7 +29,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	
 	public final Cellobject currentcell;
 	// Location of the cell
-	public double[] Location;
+
 	// Distance from center of cell to nearest bud growth point
 	public double closestGrowthPoint;
 	// Distance from center of cell to nearest bud point
@@ -99,16 +100,16 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	static int totalfeatures = 4;
 	public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
 
-	/** The 7 privileged spot feature names. */
+	/** The 4 privileged spot feature names. */
 	public final static Map< String, String > FEATURE_NAMES = new HashMap< >( totalfeatures );
 
-	/** The 7 privileged spot feature short names. */
+	/** The 4 privileged spot feature short names. */
 	public final static Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( totalfeatures );
 
-	/** The 7 privileged spot feature dimensions. */
+	/** The 4 privileged spot feature dimensions. */
 	public final static Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( totalfeatures );
 
-	/** The 7 privileged spot feature isInt flags. */
+	/** The 4 privileged spot feature isInt flags. */
 	public final static Map< String, Boolean > IS_INT = new HashMap< >( totalfeatures );
 	/**
 	 * @return the name for this Spot.
@@ -195,12 +196,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 	@Override
 	public float getFloatPosition(int d) {
-		return (float) Location[d];
+		return (float) currentcell.Location.getFloatPosition(d);
 	}
 
 	@Override
 	public double getDoublePosition(int d) {
-		return Location[d];
+		return currentcell.Location.getDoublePosition(d);
 	}
 	
 	/**
@@ -215,8 +216,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	 */
 	public double diffTo(final BCellobject target, int n) {
 
-		final double thisBloblocation = Location[n];
-		final double targetBloblocation = target.Location[n];
+		final double thisBloblocation = currentcell.Location.getDoublePosition(n);
+		final double targetBloblocation = target.currentcell.Location.getDoublePosition(n);
 		return thisBloblocation - targetBloblocation;
 	}
 	/**
@@ -281,14 +282,13 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public double squareDistanceTo(BCellobject target) {
 		// Returns squared distance between the source Blob and the target Blob.
 
-		final double[] sourceLocation = Location;
-		final double[] targetLocation = target.Location;
-
+		final Localizable sourceLocation = currentcell.Location;
+		final Localizable targetLocation = target.currentcell.Location;
 		double distance = 0;
+		
+		for (int d = 0; d < sourceLocation.numDimensions(); ++d) {
 
-		for (int d = 0; d < sourceLocation.length; ++d) {
-
-			distance += (sourceLocation[d] - targetLocation[d]) * (sourceLocation[d] - targetLocation[d]);
+			distance += (sourceLocation.getDoublePosition(d) - targetLocation.getDoublePosition(d)) * (sourceLocation.getDoublePosition(d) - targetLocation.getDoublePosition(d));
 		}
 
 		return distance;
@@ -296,14 +296,14 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public double DistanceTo(BCellobject target, final double alpha, final double beta) {
 		// Returns squared distance between the source Blob and the target Blob.
 
-		final double[] sourceLocation = Location;
-		final double[] targetLocation = target.Location;
+		final Localizable sourceLocation = currentcell.Location;
+		final Localizable targetLocation = target.currentcell.Location;
 
 		double distance = 1.0E-5;
 
-		for (int d = 0; d < sourceLocation.length; ++d) {
+		for (int d = 0; d < sourceLocation.numDimensions(); ++d) {
 
-			distance += (sourceLocation[d] - targetLocation[d]) * (sourceLocation[d] - targetLocation[d]);
+			distance += (sourceLocation.getDoublePosition(d) - targetLocation.getDoublePosition(d)) * (sourceLocation.getDoublePosition(d) - targetLocation.getDoublePosition(d));
 		}
 
 			return distance;

@@ -140,6 +140,7 @@ public class Listordering {
 			Ymean += currentpoint.getDoublePosition(1);
 
 		}
+		
 		Point meanCord = new Point(new int[] { (int) (Xmean / truths.size()), (int) (Ymean / truths.size()) });
 
 		return meanCord;

@@ -79,7 +79,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		putFeature( POSITION_Y, Double.valueOf( y ) );
 		putFeature( POSITION_Z, Double.valueOf( z ) );
 		putFeature( RADIUS, Double.valueOf( radius ) );
-		putFeature( QUALITY, Double.valueOf( quality ) );
 		if ( null == name )
 		{
 			this.name = "ID" + ID;
@@ -456,7 +455,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 
 	static
 	{
-		FEATURES.add( QUALITY );
 		FEATURES.add( POSITION_X );
 		FEATURES.add( POSITION_Y );
 		FEATURES.add( POSITION_Z );
@@ -486,7 +484,6 @@ public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Com
 		FEATURE_DIMENSIONS.put( POSITION_T, Dimension.TIME );
 		FEATURE_DIMENSIONS.put( FRAME, Dimension.NONE );
 		FEATURE_DIMENSIONS.put( RADIUS, Dimension.LENGTH );
-		FEATURE_DIMENSIONS.put( QUALITY, Dimension.QUALITY );
 
 		IS_INT.put( POSITION_X, Boolean.FALSE );
 		IS_INT.put( POSITION_Y, Boolean.FALSE );

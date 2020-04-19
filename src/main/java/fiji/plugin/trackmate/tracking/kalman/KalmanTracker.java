@@ -172,6 +172,7 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 			meanBCellobjectRadius += BCellobject.getFeature( BCellobject.RADIUS ).doubleValue();
 
 		meanBCellobjectRadius /= orphanBCellobjects.size();
+		System.out.println("Cell radius" + meanBCellobjectRadius);
 		final double positionMeasurementStd = meanBCellobjectRadius / 10d;
 
 		// The master map that contains the currently active KFs.
@@ -187,7 +188,8 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 
 			// Use the BCellobject in the next frame has measurements.
 			final List< BCellobject > measurements = generateBCellobjectList( BCellobjects, frame );
-
+			System.out.println("Time" + frame + " " + keySet.last());
+			System.out.println("Size of measurements" + measurements.size());
 			/*
 			 * Predict for all Kalman filters, and use it to generate linking
 			 * candidates.

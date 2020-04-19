@@ -43,12 +43,12 @@ import javax.swing.filechooser.FileFilter;
 public class SaveAction extends AbstractAction {
 
 	private static final long serialVersionUID = 7672151690754466760L;
-	private static final ImageIcon ICON = new ImageIcon(TrackSchemeFrame.class.getResource("resources/camera_export.png"));
+	private static final ImageIcon ICON = null; //new ImageIcon(TrackSchemeFrame.class.getResource("resources/camera_export.png"));
 	protected String lastDir = null;
 	private final TrackScheme trackScheme;
 
 	public SaveAction(TrackScheme trackScheme) {
-		putValue(Action.SMALL_ICON, ICON);
+		
 		this.trackScheme = trackScheme;
 	}
 

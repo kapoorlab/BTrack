@@ -538,9 +538,7 @@ public class TMUtils
 		case LENGTH:
 			units = spaceUnits;
 			break;
-		case QUALITY:
-			units = "Quality";
-			break;
+
 		case TIME:
 			units = timeUnits;
 			break;

@@ -324,7 +324,6 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm
 		final Logger logger = model.getLogger();
 		logger.log( "Starting initial filtering process.\n" );
 
-		final Double initialBCellobjectFilterValue = settings.initialBCellobjectFilterValue;
 
 		BCellobjectCollection BCellobjects = model.getBCellobjects();
 		BCellobjects = BCellobjects.crop();
