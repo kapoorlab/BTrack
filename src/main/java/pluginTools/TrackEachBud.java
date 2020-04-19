@@ -297,7 +297,7 @@ public class TrackEachBud {
 		OpService ops = parent.ij.op();
 
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
-		skelmake.setClosingRadius(2);
+		//skelmake.setClosingRadius(0);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons, ops);

@@ -98,7 +98,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		}
 		if (minid != Integer.MAX_VALUE) {
 
-			for (final Integer id : model.trackIDs(true)) {
+			for (final Integer id : model.trackIDs(false)) {
 				
 				Comparator<Budpointobject> ThirdDimcomparison = new Comparator<Budpointobject>() {
 
@@ -184,7 +184,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		}
 		if (minid != Integer.MAX_VALUE) {
 
-			for (final Integer id : model.trackIDs(true)) {
+			for (final Integer id : model.trackIDs(false)) {
 
 				Comparator<Pair<String, Budobject>> ThirdDimcomparison = new Comparator<Pair<String, Budobject>>() {
 
@@ -289,7 +289,6 @@ for (ValuePair<String, Budobject> BudTrack: parent.BudTracklist) {
 			int maxtime = Track.endtime;
 			if(LabelCovered.get(ID)!=null)
 				if(!LabelCovered.get(ID))
-			System.out.println(maxtime + " " + currentbud.t);
 			if(currentbud.t == maxtime) {
 				
 			parent.table.getModel().setValueAt(ID, parent.row, 0);

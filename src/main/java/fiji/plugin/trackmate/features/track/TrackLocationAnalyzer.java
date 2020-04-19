@@ -33,33 +33,48 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 
 	public static final String Y_LOCATION = "TRACK_Y_LOCATION";
 
+	public static final String DistBud = "TRACK_DistBud";
 
-	public static final List< String > FEATURES = new ArrayList< >( 3 );
+	public static final String DistDynamicBud = "TRACK_DistDynamicBud";
+	
 
-	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 3 );
+	public static final List< String > FEATURES = new ArrayList< >( 4 );
 
-	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 3 );
+	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 4 );
 
-	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 3 );
+	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 4 );
 
-	public static final Map< String, Boolean > IS_INT = new HashMap< >( 3 );
+	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 4 );
+
+	public static final Map< String, Boolean > IS_INT = new HashMap< >( 4 );
 
 	static
 	{
 		FEATURES.add( X_LOCATION );
 		FEATURES.add( Y_LOCATION );
+		FEATURES.add( DistBud );
+		FEATURES.add( DistDynamicBud );
+		
 
 		FEATURE_NAMES.put( X_LOCATION, "X Location (mean)" );
 		FEATURE_NAMES.put( Y_LOCATION, "Y Location (mean)" );
+		FEATURE_NAMES.put( DistBud, "DistBud" );
+		FEATURE_NAMES.put( DistDynamicBud, "DistDynamicBud" );
 
 		FEATURE_SHORT_NAMES.put( X_LOCATION, "X" );
 		FEATURE_SHORT_NAMES.put( Y_LOCATION, "Y" );
+		FEATURE_SHORT_NAMES.put( DistBud, "DistBud" );
+		FEATURE_SHORT_NAMES.put( DistDynamicBud, "DistDynamicBud" );
 
 		FEATURE_DIMENSIONS.put( X_LOCATION, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( Y_LOCATION, Dimension.POSITION );
+		FEATURE_DIMENSIONS.put( DistBud, Dimension.distBud);
+		FEATURE_DIMENSIONS.put( DistDynamicBud, Dimension.distDynamicBud );
 
 		IS_INT.put( X_LOCATION, Boolean.FALSE );
 		IS_INT.put( Y_LOCATION, Boolean.FALSE );
+		IS_INT.put( DistBud, Boolean.FALSE );
+		IS_INT.put( DistDynamicBud, Boolean.FALSE );
 	}
 
 	private int numThreads;
@@ -106,19 +121,28 @@ public class TrackLocationAnalyzer implements TrackAnalyzer
 
 						double x = 0;
 						double y = 0;
+						double distBud = 0;
+						double distDynamicBud = 0;
 
 						for ( final BCellobject BCellobject : track )
 						{
 							x += BCellobject.getFeature( BCellobject.POSITION_X );
 							y += BCellobject.getFeature( BCellobject.POSITION_Y );
+							distBud += BCellobject.getFeature( BCellobject.distBud);
+							distDynamicBud += BCellobject.getFeature(BCellobject.distDynamicBud);
 						}
+						
+						
 						final int nBCellobjects = track.size();
 						x /= nBCellobjects;
 						y /= nBCellobjects;
-
+                        distBud/=nBCellobjects;
+                        distDynamicBud/=nBCellobjects; 
 						fm.putTrackFeature( trackID, X_LOCATION, x );
 						fm.putTrackFeature( trackID, Y_LOCATION, y );
-
+                         fm.putTrackFeature(trackID, DistBud, distBud);
+                         fm.putTrackFeature(trackID, DistDynamicBud, distDynamicBud);
+						
 					}
 
 				}
