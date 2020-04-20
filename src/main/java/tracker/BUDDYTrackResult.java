@@ -52,16 +52,18 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				java.awt.image.ColorModel.getRGBdefault());
 
 		parent.table.removeAll();
+		parent.PanelSelectFile.remove(parent.scrollPane);
+		parent.PanelSelectFile.add(parent.scrollPane, BorderLayout.CENTER);
 		parent.Tracklist.clear();
 		parent.Finalresult.clear();
 		
 		
 		BUDDYTrackingFunctions track = new BUDDYTrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
-		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
+		//SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
 		// Display Graph results, make table etc
 		
-		BudDisplayGraph(Budsimplegraph);
+		//BudDisplayGraph(Budsimplegraph);
 		DisplayGraph(simplegraph);
 		
 	
@@ -70,6 +72,28 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		
 
 		return null;
+	}
+
+	public static HashMap<Integer, Integer> sortByInteger(HashMap<Integer, Integer> map) {
+		List<Entry<Integer, Integer>> list = new LinkedList<Entry<Integer, Integer>>(map.entrySet());
+		// Defined Custom Comparator here
+		Collections.sort(list, new Comparator<Entry<Integer, Integer>>() {
+
+			@Override
+			public int compare(Entry<Integer, Integer> o1, Entry<Integer, Integer> o2) {
+				
+				return -o1.getValue() + o2.getValue();
+			}
+		});
+
+		// Here I am copying the sorted list in HashMap
+		// using LinkedHashMap to preserve the insertion order
+		HashMap<Integer, Integer> sortedHashMap = new LinkedHashMap<Integer, Integer>();
+		for (Iterator<Entry<Integer, Integer>> it = list.iterator(); it.hasNext();) {
+			Map.Entry<Integer, Integer> entry = (Map.Entry<Integer, Integer>) it.next();
+			sortedHashMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedHashMap;
 	}
 
 	
@@ -87,64 +111,49 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 			if (id < minid)
 				minid = id;
+			
+			
+			final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
+			
+			int tracklength = Angleset.size();
+			if(tracklength >= CovistoKalmanPanel.trackduration * parent.AutoendTime/100)
+			parent.IDlist.put(id, tracklength);
+			
 		}
+		parent.IDlist= sortByInteger(parent.IDlist);
+		
+
+		
+		
 		if (minid != Integer.MAX_VALUE) {
 
-			for (final Integer id : model.trackIDs(true)) {
+			for(Map.Entry<Integer, Integer> tracks: parent.IDlist.entrySet()) {
 
-				Comparator<Pair<String, Budpointobject>> ThirdDimcomparison = new Comparator<Pair<String, Budpointobject>>() {
-
-					@Override
-					public int compare(final Pair<String, Budpointobject> A, final Pair<String, Budpointobject> B) {
-
-						return A.getB().t - B.getB().t;
-
-					}
-
-				};
-				
-				Comparator<Budpointobject> ListThirdDimcomparison = new Comparator<Budpointobject>() {
-
-					@Override
-					public int compare(final Budpointobject A, final Budpointobject B) {
-
-						return A.t - B.t;
-
-					}
-
-				};
+				int id = tracks.getKey();
+				int tracklength = tracks.getValue();
+				System.out.println("TrackID" + id + "was present for" + " " + tracklength + "frames");
+		
 
 				String ID = Integer.toString(id);
 			
-				model.setName(id, "Track" + id);
+				model.setName(id, "Track" + id + tracklength);
 				parent.Globalmodel = model;
 				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
+				
+				
+				
 		          List<Budpointobject> sortedList = new ArrayList<Budpointobject>(Angleset);
 					
-					Collections.sort(sortedList, ListThirdDimcomparison);
-				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.AutoendTime) {
 			
-				Iterator<Budpointobject> Angleiter = Angleset.iterator();
-       
-				
-				while (Angleiter.hasNext()) {
 
-					Budpointobject currentbud = Angleiter.next();
-					
-					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, currentbud));
-					
-				}
-				Collections.sort(parent.Tracklist, ThirdDimcomparison);
-
-				}
 				
-				Iterator<Budpointobject> Angleiter = sortedList.iterator();
+				Iterator<Budpointobject> listiter = sortedList.iterator();
 				Budpointobject previousbud = null;
-				while (Angleiter.hasNext()) {
+				while (listiter.hasNext()) {
 					
 					
 	                double velocity = 0; 
-					Budpointobject currentbud = Angleiter.next();
+					Budpointobject currentbud = listiter.next();
 					if(previousbud!=null) { 
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
 					
@@ -162,46 +171,27 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 			
 			
 
-			for (int id = minid; id <= maxid; ++id) {
+			for(Map.Entry<Integer, Integer> tracks: parent.IDlist.entrySet()) {
+				int id = tracks.getKey();
 				Budpointobject bestbud = null;
 				
-				if (model.trackBudpointobjects(id) != null && model.trackBudpointobjects(id).size() > parent.AccountedT.size() / 4) {
 
 					List<Budpointobject> sortedList = new ArrayList<Budpointobject>(model.trackBudpointobjects(id));
 
-					Collections.sort(sortedList, new Comparator<Budpointobject>() {
-
-						@Override
-						public int compare(Budpointobject o1, Budpointobject o2) {
-
-							return o1.t - o2.t;
-						}
-
-					});
-
+			
 					Iterator<Budpointobject> iterator = sortedList.iterator();
 
-					int count = 0;
+					
 					while (iterator.hasNext()) {
 
 						Budpointobject currentbud = iterator.next();
-						if (count == 0)
+						
 							bestbud = currentbud;
-						if (parent.originalimg.numDimensions() <= 3) {
-							if (currentbud.t == parent.thirdDimension) {
-								bestbud = currentbud;
-								count++;
-								break;
-
-							}
-
-						}
+						
 
 					}
 					parent.Finalresult.put(Integer.toString(id) , bestbud);
 					
-					
-				}
 
 			}
 			
@@ -266,7 +256,6 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				model.setName(id, "Track" + id);
 				parent.BudGlobalModel = model;
 				final HashSet<Budobject> Angleset = model.trackBudobjects(id);
-				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.AutoendTime) {
 			
 				Iterator<Budobject> Angleiter = Angleset.iterator();
 				while (Angleiter.hasNext()) {
@@ -279,12 +268,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				Collections.sort(parent.BudTracklist, ThirdDimcomparison);
 				
 
-				}
 			}
-
-	
-			
-			
 
 		}
 	}
@@ -304,12 +288,11 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		f.setGroupingUsed(false);
 		parent.row = 0;
 
-		parent.Finalresult = sortByIntegerInter(parent.Finalresult);
-		
-		for (Map.Entry<String, Budpointobject> entry : parent.Finalresult.entrySet()) {
 
-			Budpointobject currentbud = entry.getValue();
-			parent.table.getModel().setValueAt(entry.getKey(), parent.row, 0);
+		for(Map.Entry<Integer, Integer> tracks: parent.IDlist.entrySet()) {
+
+			Budpointobject currentbud = parent.Finalresult.get(Integer.toString(tracks.getKey()));
+			parent.table.getModel().setValueAt(Integer.toString(tracks.getKey()), parent.row, 0);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[0]), parent.row, 1);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[1]), parent.row, 2);
 			parent.table.getModel().setValueAt(f.format(currentbud.t), parent.row, 3);

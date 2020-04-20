@@ -113,7 +113,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public NumberFormat nf;
 	public RandomAccessibleInterval<ARGBType> originalimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
-	
+	public HashMap<Integer,Integer> IDlist = new HashMap<Integer, Integer>();
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
 	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
@@ -787,6 +787,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
 				CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
+		
 		
 		inputtrackField.addTextListener(new BudTrackidListener(this));
 		Batchbutton.addActionListener(new BudSaveBatchListener(this));

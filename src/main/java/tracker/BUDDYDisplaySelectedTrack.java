@@ -302,7 +302,6 @@ public class BUDDYDisplaySelectedTrack {
 			
 			if(Track.getA().equals(ID)) {
 			
-				
 			double time = Track.getB().t * parent.timecal;
 			double LocationX = Track.getB().Location[0] * parent.calibration;
 			double LocationY = Track.getB().Location[1] * parent.calibration;
@@ -310,7 +309,8 @@ public class BUDDYDisplaySelectedTrack {
 			
 			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 			
-		
+	
+			
 			}
 		
 		
@@ -341,7 +341,6 @@ public class BUDDYDisplaySelectedTrack {
 		    double LocationX = current[1];
 		    double LocationY = current[2];
 		    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
-			
 		}
 		
    	

@@ -49,12 +49,25 @@ public SimpleWeightedGraph<Budobject, DefaultWeightedEdge> BudTrackfunction() {
 			
 			
 			}
+			
+			
+		
 
 		}
 
-		
-		ForBudKFsearch Tsearch = new ForBudKFsearch(colllist, parent.BudUserchosenCostFunction,  parent.originalimg.dimension(0) * parent.originalimg.dimension(1) ,
-				parent.originalimg.dimension(0) * parent.originalimg.dimension(1), 
+		for(ArrayList<Budobject> point:colllist) {
+			
+			for(Budobject curr: point) {
+				
+				
+				System.out.println(" Bud Point" +curr.t + " " + curr.Budcenter.getDoublePosition(0) + " " + curr.Budcenter.getDoublePosition(1) );
+				
+			}
+			
+			
+		}
+		ForBudKFsearch Tsearch = new ForBudKFsearch(colllist, parent.BudUserchosenCostFunction,  CovistoKalmanPanel.initialSearchradius/parent.calibration  ,
+				CovistoKalmanPanel.initialSearchradius/parent.calibration , 
 				CovistoKalmanPanel.maxframegap, parent.AccountedT, parent.jpb);
 		Tsearch.process();
 		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> simplegraph = Tsearch.getResult();
@@ -74,15 +87,18 @@ public SimpleWeightedGraph<Budobject, DefaultWeightedEdge> BudTrackfunction() {
 		for (Map.Entry<String, ArrayList<Budpointobject>> entry : parent.AllBudpoints.entrySet()) {
 
 			ArrayList<Budpointobject> bloblist = entry.getValue();
+			System.out.println(entry.getKey() + " " + entry.getValue().size() + "Hash map");
 			if(bloblist.size() > 0) {
 			colllist.add(bloblist);
 			}
+			
+			
 
 		}
 
 		
-		BUDDYKFsearch Tsearch = new BUDDYKFsearch(colllist, parent.UserchosenCostFunction,  CovistoKalmanPanel.maxSearchradius ,
-				CovistoKalmanPanel.maxSearchradius, 
+		BUDDYKFsearch Tsearch = new BUDDYKFsearch(colllist, parent.UserchosenCostFunction,   0.5 * CovistoKalmanPanel.initialSearchradius/parent.calibration ,
+				CovistoKalmanPanel.initialSearchradius/parent.calibration, 
 				CovistoKalmanPanel.maxframegap, parent.AccountedT, parent.jpb);
 		Tsearch.process();
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = Tsearch.getResult();

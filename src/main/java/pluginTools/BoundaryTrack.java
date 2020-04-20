@@ -105,26 +105,21 @@ public class BoundaryTrack {
 		IntType min = new IntType();
 		IntType max = new IntType();
 		computeMinMax(Views.iterable(BudSeg), min, max);
-		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
-		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
-		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
+		
 		if(parent.SegYelloworiginalimg!=null) {
 			RandomAccessibleInterval<IntType> BudYellowSeg = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
-		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg, Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
+		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg,  parent.thirdDimension, max.get(), percent);
 		    compute.displayBuds();
 		}
 		
 		else {
-		  TrackEachBud compute = new TrackEachBud(parent, BudSeg, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
+		  TrackEachBud compute = new TrackEachBud(parent, BudSeg,  parent.thirdDimension, max.get(), percent);
 			
 		  compute.displayBuds();
 		}
 		
-			parent.AllBuds.put(Integer.toString(t), Budlist);
-			
-
-			parent.AllBudpoints.put(Integer.toString(t), Budpointlist);
+	
 			
 		
 		percent++;
@@ -143,6 +138,30 @@ public class BoundaryTrack {
 			parent.ChosenBudcenter = new ArrayList<RealLocalizable>();	
 			
 		}
+	}
+	public static void RemoveDuplicates(ArrayList<Budobject> points) {
+		
+		int j = 0;
+
+		for (int i = 0; i < points.size(); ++i) {
+
+			j = i + 1;
+			while (j < points.size()) {
+
+				if (points.get(i).getDoublePosition(0) == points.get(j).getDoublePosition(0) && points.get(i).getDoublePosition(1) == points.get(j).getDoublePosition(1) ) {
+
+					points.remove(j);
+
+				}
+
+				else {
+					++j;
+				}
+
+			}
+
+		}
+
 	}
 	
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {

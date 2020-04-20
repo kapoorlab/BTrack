@@ -1,6 +1,7 @@
 package listeners;
 
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -43,11 +44,16 @@ public class BudLinkobjectListener implements ActionListener {
 
 	public void go() {
 
+		
 		parent.table.removeAll();
+		parent.scrollPane.removeAll();
 		parent.Tracklist.clear();
+		parent.Finalresult.clear();
+		parent.IDlist.clear();
 		parent.table.repaint();
 		parent.table.validate();
-		
+		parent.panelFirst.repaint();
+		parent.panelFirst.validate();
 		
 		BUDDYTrackResult track = new BUDDYTrackResult(parent);
 		track.execute();
