@@ -32,7 +32,7 @@ import org.jgrapht.util.TypeUtil;
  *
  * @author Jean-Yves Tinevez 2012-2013
  */
-public class MyBuddySortedDepthFirstIterator< V, E > extends AbstractGraphIterator< V, E >
+public class ForBudSortedDepthFirstIterator< V, E > extends AbstractGraphIterator< V, E >
 {
 
 	// ~ Static fields/initializers
@@ -127,7 +127,7 @@ public class MyBuddySortedDepthFirstIterator< V, E > extends AbstractGraphIterat
 	 *             if <code>g==null</code> or does not contain
 	 *             <code>startVertex</code>
 	 */
-	public MyBuddySortedDepthFirstIterator( final Graph< V, E > g, final V startVertex, final Comparator< V > comparator )
+	public ForBudSortedDepthFirstIterator( final Graph< V, E > g, final V startVertex, final Comparator< V > comparator )
 	{
 		super(g);
 		this.comparator = comparator;

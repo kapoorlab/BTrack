@@ -28,7 +28,7 @@ import pluginTools.InteractiveBud;
 import utility.BudChartMaker;
 import zGUI.CovistoZselectPanel;
 
-public class DisplaySelectedTrack {
+public class BUDDYDisplaySelectedTrack {
 	
 	
 	
@@ -124,9 +124,9 @@ public class DisplaySelectedTrack {
 					String CordY = (String) parent.table.getValueAt(row, 2);
 					
 			        
-					for (BudTrackobject Track: parent.Tracklist) {
+					for (Pair<String, Budpointobject> Track: parent.Tracklist) {
 						
-						String ImageID = Track.ID;
+						String ImageID = Track.getA();
 						
 						
 						if(ID.equals(ImageID)) {
@@ -291,22 +291,22 @@ public class DisplaySelectedTrack {
    		String ID = (String) parent.table.getValueAt(trackindex, 0);
    		if(parent.resultimp!=null)
 			parent.resultimp.close();
-   		DisplayTrack display = new DisplayTrack(parent, parent.Globalmodel);
+   		BUDDYDisplayTrack display = new BUDDYDisplayTrack(parent, parent.Globalmodel);
 		display.getImp();
 		
    	
    		
    		
    		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
-		for (BudTrackobject Track: parent.Tracklist) {
+		for (Pair<String, Budpointobject> Track: parent.Tracklist) {
 			
-			if(Track.ID.equals(ID)) {
+			if(Track.getA().equals(ID)) {
 			
 				
-			double time = Track.budpoints.t * parent.timecal;
-			double LocationX = Track.budpoints.Location[0] * parent.calibration;
-			double LocationY = Track.budpoints.Location[1] * parent.calibration;
-			double Velocity = Track.budpoints.velocity;
+			double time = Track.getB().t * parent.timecal;
+			double LocationX = Track.getB().Location[0] * parent.calibration;
+			double LocationY = Track.getB().Location[1] * parent.calibration;
+			double Velocity = Track.getB().velocity;
 			
 			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 			

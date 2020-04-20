@@ -42,7 +42,7 @@ import budDetector.Budpointobject;
 
 
 
-public class TrackModel {
+public class BUDDYTrackModel {
 	/**
 	 * A component of {@link Model} specialized for tracks.
 	 *
@@ -130,11 +130,11 @@ public class TrackModel {
 	 * Constructors -----------------------------------------------------------
 	 */
 
-	public TrackModel() {
+	public BUDDYTrackModel() {
 		this(new SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge>(DefaultWeightedEdge.class));
 	}
 
-	public TrackModel(final SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> graph) {
+	public BUDDYTrackModel(final SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> graph) {
 		this.mgl = new MyGraphListener();
 		setGraph(graph);
 	}
@@ -738,7 +738,7 @@ public class TrackModel {
 	public GraphIterator<Budpointobject, DefaultWeightedEdge> getDepthFirstIterator(final Budpointobject start,
 			final boolean directed) {
 		if (directed) {
-			return new MyBuddyTimeDirectedDepthFirstIterator(graph, start);
+			return new BUDDYTimeDirectedDepthFirstIterator(graph, start);
 		} else {
 			return new DepthFirstIterator<Budpointobject, DefaultWeightedEdge>(graph, start);
 		}
@@ -761,17 +761,17 @@ public class TrackModel {
 	 *            the comparator to use to pick children in order when branching.
 	 * @return a new depth-first iterator.
 	 */
-	public MyBuddySortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
+	public BUDDYSortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
 			final Budpointobject start, final Comparator<Budpointobject> comparator, final boolean directed) {
 		if (directed) {
-			return new MyBuddyTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
+			return new BUDDYTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
 		} else {
-			return new MyBuddySortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge>(graph, start, comparator);
+			return new BUDDYSortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge>(graph, start, comparator);
 		}
 	}
 
-	public MyBuddyTimeDirectedNeighborIndex getDirectedNeighborIndex() {
-		return new MyBuddyTimeDirectedNeighborIndex(graph);
+	public BUDDYTimeDirectedNeighborIndex getDirectedNeighborIndex() {
+		return new BUDDYTimeDirectedNeighborIndex(graph);
 	}
 
 	/**

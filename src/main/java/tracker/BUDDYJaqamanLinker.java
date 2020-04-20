@@ -12,15 +12,15 @@ import net.imglib2.algorithm.BenchmarkAlgorithm;
 import net.imglib2.algorithm.OutputAlgorithm;
 import net.imglib2.util.Util;
 
-	public class BudJaqamanLinker< K extends Comparable< K >, J extends Comparable< J > > extends BenchmarkAlgorithm implements OutputAlgorithm< Map< K, J > >
+	public class BUDDYJaqamanLinker< K extends Comparable< K >, J extends Comparable< J > > extends BenchmarkAlgorithm implements OutputAlgorithm< Map< K, J > >
 	{
 		private Map< K, J > assignments;
 
 		private Map< K, Double > costs;
 
-		private final BudCostMatrixCreator< K, J > costMatrixCreator;
+		private final BUDDYCostMatrixCreator< K, J > costMatrixCreator;
 
-		private final BudLogger logger;
+		private final BUDDYLogger logger;
 
 		/**
 		 * Creates a new linker for the specified cost matrix creator. See Jaqaman
@@ -31,15 +31,15 @@ import net.imglib2.util.Util;
 		 * @param logger
 		 *            a logger that will receive progress messages.
 		 */
-		public BudJaqamanLinker( final BudCostMatrixCreator< K, J > costMatrixCreator, final BudLogger logger )
+		public BUDDYJaqamanLinker( final BUDDYCostMatrixCreator< K, J > costMatrixCreator, final BUDDYLogger logger )
 		{
 			this.costMatrixCreator = costMatrixCreator;
 			this.logger = logger;
 		}
 
-		public BudJaqamanLinker( final BudCostMatrixCreator< K, J > costMatrixCreator )
+		public BUDDYJaqamanLinker( final BUDDYCostMatrixCreator< K, J > costMatrixCreator )
 		{
-			this( costMatrixCreator, BudLogger.VOID_LOGGER );
+			this( costMatrixCreator, BUDDYLogger.VOID_LOGGER );
 		}
 
 		/**
@@ -94,7 +94,7 @@ import net.imglib2.util.Util;
 			}
 			logger.setProgress( 0.5 );
 
-			final SparseCostMatrix tl = costMatrixCreator.getResult();
+			final BUDDYSparseCostMatrix tl = costMatrixCreator.getResult();
 			final List< K > matrixRows = costMatrixCreator.getSourceList();
 			final List< J > matrixCols = costMatrixCreator.getTargetList();
 
@@ -129,7 +129,7 @@ import net.imglib2.util.Util;
 			}
 			final int[] numbertr = new int[ nRows ];
 			Arrays.fill( numbertr, 1 );
-			final SparseCostMatrix tr = new SparseCostMatrix( cctr, kktr, numbertr, nRows );
+			final BUDDYSparseCostMatrix tr = new BUDDYSparseCostMatrix( cctr, kktr, numbertr, nRows );
 
 			/*
 			 * Bottom left
@@ -143,7 +143,7 @@ import net.imglib2.util.Util;
 			}
 			final int[] numberbl = new int[ nCols ];
 			Arrays.fill( numberbl, 1 );
-			final SparseCostMatrix bl = new SparseCostMatrix( ccbl, kkbl, numberbl, nCols );
+			final BUDDYSparseCostMatrix bl = new BUDDYSparseCostMatrix( ccbl, kkbl, numberbl, nCols );
 
 			/*
 			 * Bottom right.
@@ -152,20 +152,20 @@ import net.imglib2.util.Util;
 			 * extend a bit the u-track code.
 			 */
 			final double minCost = Math.min( Util.min( ccbl ), Util.min( cctr ) );
-			final SparseCostMatrix br = tl.transpose();
+			final BUDDYSparseCostMatrix br = tl.transpose();
 			br.fillWith( minCost );
 
 			/*
 			 * Stitch them together
 			 */
-			final SparseCostMatrix full = ( tl.hcat( tr ) ).vcat( bl.hcat( br ) );
+			final BUDDYSparseCostMatrix full = ( tl.hcat( tr ) ).vcat( bl.hcat( br ) );
 			logger.setProgress( 0.6 );
 
 			/*
 			 * Solve the full cost matrix.
 			 */
 			logger.setStatus( "Solving the cost matrix..." );
-			final BudLAPJV solver = new BudLAPJV( full );
+			final BUDDYLAPJV solver = new BUDDYLAPJV( full );
 			if ( !solver.checkInput() || !solver.process() )
 			{
 				errorMessage = solver.getErrorMessage();

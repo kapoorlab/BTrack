@@ -42,7 +42,7 @@ import budDetector.Budobject;
 
 
 
-public class BudTrackModel {
+public class ForBudTrackModel {
 	/**
 	 * A component of {@link Model} specialized for tracks.
 	 *
@@ -130,11 +130,11 @@ public class BudTrackModel {
 	 * Constructors -----------------------------------------------------------
 	 */
 
-	public BudTrackModel() {
+	public ForBudTrackModel() {
 		this(new SimpleWeightedGraph<Budobject, DefaultWeightedEdge>(DefaultWeightedEdge.class));
 	}
 
-	public BudTrackModel(final SimpleWeightedGraph<Budobject, DefaultWeightedEdge> graph) {
+	public ForBudTrackModel(final SimpleWeightedGraph<Budobject, DefaultWeightedEdge> graph) {
 		this.mgl = new MyGraphListener();
 		setGraph(graph);
 	}
@@ -738,7 +738,7 @@ public class BudTrackModel {
 	public GraphIterator<Budobject, DefaultWeightedEdge> getDepthFirstIterator(final Budobject start,
 			final boolean directed) {
 		if (directed) {
-			return new BudTimeDirectedDepthFirstIterator(graph, start);
+			return new ForBudTimeDirectedDepthFirstIterator(graph, start);
 		} else {
 			return new DepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start);
 		}
@@ -761,17 +761,17 @@ public class BudTrackModel {
 	 *            the comparator to use to pick children in order when branching.
 	 * @return a new depth-first iterator.
 	 */
-	public MyBuddySortedDepthFirstIterator<Budobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
+	public ForBudSortedDepthFirstIterator<Budobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
 			final Budobject start, final Comparator<Budobject> comparator, final boolean directed) {
 		if (directed) {
-			return new BudTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
+			return new ForBudTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
 		} else {
-			return new MyBuddySortedDepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start, comparator);
+			return new ForBudSortedDepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start, comparator);
 		}
 	}
 
-	public BudTimeDirectedNeighborIndex getDirectedNeighborIndex() {
-		return new BudTimeDirectedNeighborIndex(graph);
+	public ForBudTimeDirectedNeighborIndex getDirectedNeighborIndex() {
+		return new ForBudTimeDirectedNeighborIndex(graph);
 	}
 
 	/**

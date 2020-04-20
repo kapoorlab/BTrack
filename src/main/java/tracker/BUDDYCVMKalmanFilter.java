@@ -10,7 +10,7 @@ import Jama.Matrix;
  * @author aimachine
  *
  */
-	public class BudCVMKalmanFilter {
+	public class BUDDYCVMKalmanFilter {
 
 		/**
 		 * The evolution matrix, or state transition matrix. In our case, it is the
@@ -79,7 +79,7 @@ import Jama.Matrix;
 		 *            position <b>measurement</b>. Large values means that the
 		 *            positions measured are not accurate.
 		 */
-		public BudCVMKalmanFilter( final double[] X0, final double initStateCovariance, final double positionProcessStd, final double velocityProcessStd, final double positionMeasurementStd )
+		public BUDDYCVMKalmanFilter( final double[] X0, final double initStateCovariance, final double positionProcessStd, final double velocityProcessStd, final double positionMeasurementStd )
 		{
 			// Initial state
 			X = new Matrix( X0, 4 );

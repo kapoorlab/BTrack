@@ -43,6 +43,9 @@ public class BudTimeListener implements AdjustmentListener {
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent e) {
 		
+		if(CovistoKalmanPanel.Skeletontime.isEnabled())
+			parent.imp.getOverlay().clear();
+		
 		parent.thirdDimension = (int) Math.round(utility.BudSlicer.computeValueFromScrollbarPosition(e.getValue(), min, max, scrollbarSize));
 
 

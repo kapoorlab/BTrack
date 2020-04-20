@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 import net.imglib2.RealLocalizable;
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
-import tracker.TrackResult;
+import tracker.BUDDYTrackResult;
 
 
 public class BudLinkobjectListener implements ActionListener {
@@ -49,7 +49,7 @@ public class BudLinkobjectListener implements ActionListener {
 		parent.table.validate();
 		
 		
-		TrackResult track = new TrackResult(parent);
+		BUDDYTrackResult track = new BUDDYTrackResult(parent);
 		track.execute();
 		
 		parent.Cellbutton.setEnabled(true);

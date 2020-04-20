@@ -35,7 +35,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
-import tracker.TrackModel;
+import tracker.BUDDYTrackModel;
 
 public class BudSaveAllListener implements ActionListener {
 	
@@ -127,15 +127,15 @@ public class BudSaveAllListener implements ActionListener {
 			
 				
 				ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
-				for (BudTrackobject Track: parent.Tracklist) {
+				for (Pair<String, Budpointobject> Track: parent.Tracklist) {
 					
-					if(Track.ID.equals(ID)) {
+					if(Track.getA().equals(ID)) {
 					
 						
-					double time = Track.budpoints.t * parent.timecal;
-					double LocationX = Track.budpoints.Location[0] * parent.calibration;
-					double LocationY = Track.budpoints.Location[1] * parent.calibration;
-					double Velocity = Track.budpoints.velocity;
+					double time = Track.getB().t * parent.timecal;
+					double LocationX = Track.getB().Location[0] * parent.calibration;
+					double LocationY = Track.getB().Location[1] * parent.calibration;
+					double Velocity = Track.getB().velocity;
 					
 					Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 					
@@ -226,7 +226,7 @@ public class BudSaveAllListener implements ActionListener {
 		
 		// Get the corresponding set for each id
 		Integer id = Integer.parseInt(ID);
-		TrackModel model = parent.Globalmodel;
+		BUDDYTrackModel model = parent.Globalmodel;
 		final HashSet<Budpointobject> Snakeset = model.trackBudpointobjects(id);
 		ArrayList<Budpointobject> list = new ArrayList<Budpointobject>();
 

@@ -160,8 +160,8 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark
 		 * search radius, then the fluctuations over predicted states are
 		 * large.
 		 */
-		final double positionProcessStd = maxSearchRadius / 3d;
-		final double velocityProcessStd = maxSearchRadius / 3d;
+		final double positionProcessStd = maxSearchRadius / 2d;
+		final double velocityProcessStd = maxSearchRadius / 2d;
 		/*
 		 * We assume the detector did a good job and that positions measured are
 		 * accurate up to a fraction of the BCellobject radius

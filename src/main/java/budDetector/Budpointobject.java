@@ -151,13 +151,13 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 
 		return distance;
 	}
-	public double DistanceTo(Budpointobject target, final double alpha, final double beta) {
+	public double DistanceTo(Budpointobject target) {
 		// Returns squared distance between the source Blob and the target Blob.
 
 		final double[] sourceLocation = Location;
 		final double[] targetLocation = target.Location;
 
-		double distance = 1.0E-5;
+		double distance = 0;
 
 		for (int d = 0; d < sourceLocation.length; ++d) {
 

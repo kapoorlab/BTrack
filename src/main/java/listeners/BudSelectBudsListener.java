@@ -28,14 +28,12 @@ public class BudSelectBudsListener {
 	public static void choosebuds(final InteractiveBud parent, final RealLocalizable ceneterpoint) {
 		
 		
-		 double maxdist = CovistoKalmanPanel.initialSearchradius;
 		if(parent.ChosenBudcenter.size() > 0	) {
 		RealLocalizable Closestpoint = GetNearest.getNearestBudcenter(parent, ceneterpoint);
-		double dist = Distance.DistanceSqrt(ceneterpoint, Closestpoint);
-		if(dist <= maxdist) {
+		
 		parent.ChosenBudcenter.remove(Closestpoint);
 		parent.ChosenBudcenter.add(ceneterpoint);
-		}
+		
 		}
 		
 	}

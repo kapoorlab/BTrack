@@ -41,7 +41,7 @@ import net.imglib2.util.Util;
  *      >A. Volgenant
  *      "Linear and semi-assignment problems: A core oriented approach"</a>
  */
-public class BudLAPJV implements OutputAlgorithm< int[] >, Benchmark
+public class BUDDYLAPJV implements OutputAlgorithm< int[] >, Benchmark
 {
 
 	private static final String BASE_ERROR_MESSAGE = "[JonkerVolgenantSparseAlgorithm] ";
@@ -52,7 +52,7 @@ public class BudLAPJV implements OutputAlgorithm< int[] >, Benchmark
 
 	private long processingTime;
 
-	private final SparseCostMatrix cm;
+	private final BUDDYSparseCostMatrix cm;
 
 	/**
 	 * Instantiates a new Jonker-Volgenant algorithm for the specified sparse
@@ -61,7 +61,7 @@ public class BudLAPJV implements OutputAlgorithm< int[] >, Benchmark
 	 * @param cm
 	 *            the cost matrix of the linear assignment problem to solve.
 	 */
-	public BudLAPJV( final SparseCostMatrix cm )
+	public BUDDYLAPJV( final BUDDYSparseCostMatrix cm )
 	{
 		this.cm = cm;
 	}

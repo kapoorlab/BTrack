@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Jean-Yves Tinevez - 2014
  */
-public class SparseCostMatrix
+public class BUDDYSparseCostMatrix
 {
 
 	/**
@@ -98,7 +98,7 @@ public class SparseCostMatrix
 	 *             the column array is not sorted row by row, of if one row has
 	 *             0 non-infinite costs.
 	 */
-	public SparseCostMatrix( final double[] cc, final int[] kk, final int[] number, final int nCols )
+	public BUDDYSparseCostMatrix( final double[] cc, final int[] kk, final int[] number, final int nCols )
 	{
 		this.cc = cc;
 		this.kk = kk;
@@ -380,7 +380,7 @@ public class SparseCostMatrix
 	 * @throws IllegalArgumentException
 	 *             if B does not have the same number of columns as this matrix.
 	 */
-	public final SparseCostMatrix vcat( final SparseCostMatrix B )
+	public final BUDDYSparseCostMatrix vcat( final BUDDYSparseCostMatrix B )
 	{
 		if ( nCols != B.nCols ) { throw new IllegalArgumentException( "Matrices A & B do not have the same number of columns. Found " + nCols + " and " + B.nCols + " respectively." ); }
 
@@ -398,7 +398,7 @@ public class SparseCostMatrix
 		System.arraycopy( B.cc, 0, cc2, cardinality, B.cardinality );
 		System.arraycopy( B.number, 0, number2, nRows, B.nRows );
 
-		return new SparseCostMatrix( cc2, kk2, number2, nCols );
+		return new BUDDYSparseCostMatrix( cc2, kk2, number2, nCols );
 	}
 
 	/**
@@ -417,7 +417,7 @@ public class SparseCostMatrix
 	 * @throws IllegalArgumentException
 	 *             if B does not have the same number of rows as this matrix.
 	 */
-	public final SparseCostMatrix hcat( final SparseCostMatrix B )
+	public final BUDDYSparseCostMatrix hcat( final BUDDYSparseCostMatrix B )
 	{
 		if ( nRows != B.nRows ) { throw new IllegalArgumentException( "Matrices A & B do not have the same number of rows. Found " + nRows + " and " + B.nRows + " respectively." ); }
 
@@ -451,7 +451,7 @@ public class SparseCostMatrix
 			number2[ i ] = number[ i ] + B.number[ i ];
 		}
 
-		return new SparseCostMatrix( cc2, kk2, number2, nCols + B.nCols );
+		return new BUDDYSparseCostMatrix( cc2, kk2, number2, nCols + B.nCols );
 	}
 
 	/**
@@ -459,7 +459,7 @@ public class SparseCostMatrix
 	 * 
 	 * @return a new sparse matrix.
 	 */
-	public final SparseCostMatrix transpose()
+	public final BUDDYSparseCostMatrix transpose()
 	{
 		// Build column histogram, which will give the transposed number
 		final int[] number2 = new int[ nCols ];
@@ -513,7 +513,7 @@ public class SparseCostMatrix
 			System.arraycopy( costs[ i ], 0, cc2, index, number2[ i ] );
 			index += number2[ i ];
 		}
-		return new SparseCostMatrix( cc2, kk2, number2, nRows );
+		return new BUDDYSparseCostMatrix( cc2, kk2, number2, nRows );
 	}
 
 	/**

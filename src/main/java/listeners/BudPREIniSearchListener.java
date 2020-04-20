@@ -43,7 +43,7 @@ public class BudPREIniSearchListener implements AdjustmentListener {
 		
 			scrollbar.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(CovistoKalmanPanel.initialSearchradius, min, max, scrollbarSize));
 
-			label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.initialSearchradius));
+			label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.initialSearchradius/parent.calibration));
 
 			
 	

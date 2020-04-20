@@ -58,6 +58,7 @@ import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
+import kalmanGUI.CovistoNNPanel;
 import listeners.BTrackAutoEndListener;
 import listeners.BTrackFilenameListener;
 import listeners.BudLinkobjectListener;
@@ -95,9 +96,9 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
-import tracker.BudTrackModel;
-import tracker.BudCostFunction;
-import tracker.TrackModel;
+import tracker.BUDDYCostFunction;
+import tracker.BUDDYTrackModel;
+import tracker.ForBudTrackModel;
 import zGUI.CovistoZselectPanel;
 
 public class InteractiveBud  extends JPanel implements PlugIn {
@@ -131,13 +132,13 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public ConcurrentHashMap<String, ArrayList<Budpointobject>> AllBudpoints;
 	public ConcurrentHashMap<String, ArrayList<Budobject>> AllBuds;
 	public ConcurrentHashMap<String, ArrayList<BCellobject>> AllBudcells;
-	
+	public ForBudTrackModel BudGlobalModel;
 	public HashMap<String, Integer> BudLastTime;
-	public BudCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
-	public BudCostFunction<Budobject, Budobject> BudUserchosenCostFunction;
+	public BUDDYCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
+	public BUDDYCostFunction<Budobject, Budobject> BudUserchosenCostFunction;
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
-	public ArrayList<BudTrackobject> Tracklist;
+	public ArrayList<Pair<String, Budpointobject>> Tracklist;
 	public ArrayList<ValuePair<String, Budobject>> BudTracklist;
 	public Overlay overlay;
 	public ImagePlus imp;
@@ -151,8 +152,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public ArrayList<RealLocalizable> ChosenBudcenter;
 	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
-	public TrackModel Globalmodel;
-	public BudTrackModel BudGlobalModel;
+	public BUDDYTrackModel Globalmodel;
 	public int thirdDimensionSize;
 	public ImagePlus impA;
 	public int rowchoice;
@@ -165,7 +165,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public ImagePlus resultimp;
 	public XYSeriesCollection Velocitydataset;
 	public ImageJ ij = new ImageJ();
-	
+	public HashMap<String, Budpointobject> Finalresult;
 	public JFreeChart chartVelocity;
 	public double calibration;
 	public double timecal;
@@ -296,6 +296,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
+		Finalresult = new HashMap<String, Budpointobject>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		BudOvalRois = new ArrayList<OvalRoi>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
@@ -306,7 +307,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		nf.setGroupingUsed(false);
 		Clickedpoints = new int[2];
 		pixellist = new HashSet<Integer>();
-		Tracklist = new ArrayList<BudTrackobject>();
+		Tracklist = new ArrayList<Pair<String, Budpointobject>>();
 		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
 		AllBudpoints = new ConcurrentHashMap<String, ArrayList<Budpointobject>>(); 
 		AllBuds = new ConcurrentHashMap<String, ArrayList<Budobject>>();
@@ -336,11 +337,14 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		panelFirst.validate();
 		saveFile = new java.io.File(".");
 		
+		/*
 		//Get Labelled images
 		
 		  long[] dims = new long[Segoriginalimg.numDimensions()];
         // get image dimension
 		 Segoriginalimg.dimensions(dims);
+		 Segoriginalimg = (RandomAccessibleInterval<IntType>) ij.op().run(
+					Ops.Convert.Uint16.class, Segoriginalimg); 
         // create labeling index image
          RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
          ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
@@ -485,7 +489,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		        SegRedoriginalimg = labeling.getIndexImg();
 			
 		}
-		
+		*/
 		StartDisplayer();
 		Card();
 	}
@@ -606,7 +610,7 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 	public void Card() {
 		
 	
-		//Cellbutton.setEnabled(false);
+		Cellbutton.setEnabled(false);
 		CardLayout cl = new CardLayout();
 
 		c.insets = new Insets(5, 5, 5, 5);
@@ -628,12 +632,17 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Growth Rate" };
 
 		Object[][] rowvalues = new Object[0][colnames.length];
-		
-		if (Tracklist != null && Tracklist.size() > 0) {
+		if (Finalresult != null && Finalresult.size() > 0) {
+
+			rowvalues = new Object[Finalresult.size()][colnames.length];
+
+		}
+		/*if (Tracklist != null && Tracklist.size() > 0) {
 
 			rowvalues = new Object[Tracklist.size()][colnames.length];
 
 		}
+		*/
 		
 		table = new JTable(rowvalues, colnames);
 		header  = table.getTableHeader();
@@ -765,12 +774,15 @@ public class InteractiveBud  extends JPanel implements PlugIn {
 		CovistoKalmanPanel.Timetrack.addActionListener(new BudLinkobjectListener(this));
 		CovistoKalmanPanel.lostframe.addTextListener(new BudPRELostFrameListener(this));
 		CovistoKalmanPanel.tracklength.addTextListener(new BudSkeletonTrackLengthListener(this));
-		
+
 		
 		CovistoKalmanPanel.maxSearchKalman.addAdjustmentListener(new BudPREMaxSearchTListener(this,
 				CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,
 				CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
+		CovistoKalmanPanel.setInitialsearchradius((float) (CovistoKalmanPanel.initialSearchradius/calibration));
+		KalmanPanel.validate();
+		KalmanPanel.repaint();
 		CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new BudPREIniSearchListener(this,
 				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
 				CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,

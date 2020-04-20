@@ -11,10 +11,10 @@ import ij.IJ;
 /**
  * This class is used to log messages occurring during TrackMate execution.
  */
-public abstract class BudLogger extends PrintWriter
+public abstract class BUDDYLogger extends PrintWriter
 {
 
-	public BudLogger()
+	public BUDDYLogger()
 	{
 		// Call super with a dummy writer
 		super( new Writer()
@@ -110,7 +110,7 @@ public abstract class BudLogger extends PrintWriter
 	/**
 	 * This logger discard any message.
 	 */
-	public static final BudLogger VOID_LOGGER = new BudLogger()
+	public static final BUDDYLogger VOID_LOGGER = new BUDDYLogger()
 	{
 
 		@Override
@@ -135,7 +135,7 @@ public abstract class BudLogger extends PrintWriter
 	 * error. The {@link #setProgress(double)} method is ignored, the
 	 * {@link #setStatus(String)} is sent to the console.
 	 */
-	public static BudLogger DEFAULT_LOGGER = new BudLogger()
+	public static BUDDYLogger DEFAULT_LOGGER = new BUDDYLogger()
 	{
 
 		@Override
@@ -165,7 +165,7 @@ public abstract class BudLogger extends PrintWriter
 	 * This {@link Logger} outputs to the ImageJ log window, and to the ImageJ
 	 * toolbar to report progress. Colors are ignored.
 	 */
-	public static BudLogger IJ_LOGGER = new BudLogger()
+	public static BUDDYLogger IJ_LOGGER = new BUDDYLogger()
 	{
 
 		@Override
@@ -197,7 +197,7 @@ public abstract class BudLogger extends PrintWriter
 	 * This {@link Logger} outputs everything to the ImageJ toolbar. This is not
 	 * optimal for long messages. Colors are ignored.
 	 */
-	public static BudLogger IJTOOLBAR_LOGGER = new BudLogger()
+	public static BUDDYLogger IJTOOLBAR_LOGGER = new BUDDYLogger()
 	{
 		@Override
 		public void log( final String message, final Color color )
@@ -228,7 +228,7 @@ public abstract class BudLogger extends PrintWriter
 	 * This {@link Logger} outputs to a StringBuilder given at construction.
 	 * Report progress and colors are ignored.
 	 */
-	public static class StringBuilderLogger extends BudLogger
+	public static class StringBuilderLogger extends BUDDYLogger
 	{
 
 		private final StringBuilder sb;
@@ -286,10 +286,10 @@ public abstract class BudLogger extends PrintWriter
 	 * @author Jean-Yves Tinevez - 2014
 	 *
 	 */
-	public static class SlaveLogger extends BudLogger
+	public static class BUDDYSlaveLogger extends BUDDYLogger
 	{
 
-		private final BudLogger master;
+		private final BUDDYLogger master;
 
 		private final double progressStart;
 
@@ -308,7 +308,7 @@ public abstract class BudLogger extends PrintWriter
 		 * @param progressRange
 		 *            the progress range to report.
 		 */
-		public SlaveLogger( final BudLogger master, final double progressStart, final double progressRange )
+		public BUDDYSlaveLogger( final BUDDYLogger master, final double progressStart, final double progressRange )
 		{
 			this.master = master;
 			this.progressStart = progressStart;

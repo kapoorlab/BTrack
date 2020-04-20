@@ -7,6 +7,7 @@ import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 
 import ij.IJ;
+import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
@@ -68,7 +69,8 @@ public class BudTlocListener implements TextListener {
 					parent.timeslider.repaint();
 					parent.timeslider.validate();
 					
-					
+					if(CovistoKalmanPanel.Skeletontime.isEnabled())
+						parent.imp.getOverlay().clear();
 					
 			    		
 					 }

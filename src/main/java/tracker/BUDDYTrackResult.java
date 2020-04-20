@@ -2,11 +2,6 @@ package tracker;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.table.JTableHeader;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +11,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Map.Entry;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
@@ -25,25 +22,22 @@ import javax.swing.SwingWorker;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import budDetector.BudTrackobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.ImageStack;
 import kalmanGUI.CovistoKalmanPanel;
-import net.imglib2.RealLocalizable;
-import net.imglib2.ops.parse.token.Int;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
 import zGUI.CovistoZselectPanel;
 
-public class TrackResult extends SwingWorker<Void, Void> {
+public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 	final InteractiveBud parent;
 
-	public TrackResult(final InteractiveBud parent) {
+	public BUDDYTrackResult(final InteractiveBud parent) {
 
 		this.parent = parent;
 	}
@@ -57,21 +51,21 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		parent.prestack = new ImageStack((int) parent.originalimg.dimension(0), (int) parent.originalimg.dimension(1),
 				java.awt.image.ColorModel.getRGBdefault());
 
+		parent.table.removeAll();
+		parent.Tracklist.clear();
+		parent.Finalresult.clear();
 		
-		TrackingFunctions track = new TrackingFunctions(parent);
-		// Seperate graph for buds
-		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
 		
+		BUDDYTrackingFunctions track = new BUDDYTrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
+		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
+		// Display Graph results, make table etc
+		
+		BudDisplayGraph(Budsimplegraph);
+		DisplayGraph(simplegraph);
 		
 	
-	
-		// Display Graph results, make table etc
-		DisplayGraph(simplegraph,Budsimplegraph);
-	
-		if(parent.jpb!=null )
-			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
-					"Bud Tracking Done Click on Enter Mastadon for cell tracking" );
+		
 		
 		
 
@@ -79,17 +73,15 @@ public class TrackResult extends SwingWorker<Void, Void> {
 	}
 
 	
-	protected void DisplayGraph(SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph, SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph) {
+	protected void DisplayGraph(SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph) {
 
-		
-		BudDisplayGraph(Budsimplegraph);
-		
 		int minid = Integer.MAX_VALUE;
 		int maxid = Integer.MIN_VALUE;
-		TrackModel model = new TrackModel(simplegraph);
+		BUDDYTrackModel model = new BUDDYTrackModel(simplegraph);
 
 	
 		for (final Integer id : model.trackIDs(false)) {
+
 			if (id > maxid)
 				maxid = id;
 
@@ -98,9 +90,20 @@ public class TrackResult extends SwingWorker<Void, Void> {
 		}
 		if (minid != Integer.MAX_VALUE) {
 
-			for (final Integer id : model.trackIDs(false)) {
+			for (final Integer id : model.trackIDs(true)) {
+
+				Comparator<Pair<String, Budpointobject>> ThirdDimcomparison = new Comparator<Pair<String, Budpointobject>>() {
+
+					@Override
+					public int compare(final Pair<String, Budpointobject> A, final Pair<String, Budpointobject> B) {
+
+						return A.getB().t - B.getB().t;
+
+					}
+
+				};
 				
-				Comparator<Budpointobject> ThirdDimcomparison = new Comparator<Budpointobject>() {
+				Comparator<Budpointobject> ListThirdDimcomparison = new Comparator<Budpointobject>() {
 
 					@Override
 					public int compare(final Budpointobject A, final Budpointobject B) {
@@ -112,32 +115,35 @@ public class TrackResult extends SwingWorker<Void, Void> {
 				};
 
 				String ID = Integer.toString(id);
+			
 				model.setName(id, "Track" + id);
 				parent.Globalmodel = model;
 				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
+		          List<Budpointobject> sortedList = new ArrayList<Budpointobject>(Angleset);
+					
+					Collections.sort(sortedList, ListThirdDimcomparison);
 				if (Angleset.size() > (CovistoKalmanPanel.trackduration/100.0) * parent.AutoendTime) {
 			
-					
-
-				List<Budpointobject> sortedList = new ArrayList<Budpointobject>(Angleset);
+				Iterator<Budpointobject> Angleiter = Angleset.iterator();
+       
 				
-				Collections.sort(sortedList, ThirdDimcomparison);
-			
-			Iterator<Budpointobject> CopyAngleiter = sortedList.iterator();		
-			Iterator<Budpointobject> Angleiter = sortedList.iterator();
-			
-				Budpointobject lastElement;
-				int endtime = 0;
-				  while(CopyAngleiter.hasNext()){
-				        lastElement = CopyAngleiter.next();
-				        endtime = lastElement.t; 
-				    }  
-				 
+				while (Angleiter.hasNext()) {
+
+					Budpointobject currentbud = Angleiter.next();
+					
+					parent.Tracklist.add(new ValuePair<String, Budpointobject>(ID, currentbud));
+					
+				}
+				Collections.sort(parent.Tracklist, ThirdDimcomparison);
+
+				}
+				
+				Iterator<Budpointobject> Angleiter = sortedList.iterator();
 				Budpointobject previousbud = null;
 				while (Angleiter.hasNext()) {
 					
 					
-                    double velocity = 0; 
+	                double velocity = 0; 
 					Budpointobject currentbud = Angleiter.next();
 					if(previousbud!=null) { 
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
@@ -145,34 +151,93 @@ public class TrackResult extends SwingWorker<Void, Void> {
 					velocity = velocity * (parent.calibration/parent.timecal);
 					Budpointobject newbud = new Budpointobject(currentbud.Budcenter, currentbud.linelist, currentbud.dynamiclinelist,currentbud.perimeter, currentbud.label, currentbud.Location, currentbud.t, velocity);
 					
-					BudTrackobject budtrack = new BudTrackobject(ID, newbud, endtime);
 					
-					parent.Tracklist.add(budtrack);
+					parent.Tracklist.add(new ValuePair<String,Budpointobject > (ID, newbud));
 					}
 					previousbud = currentbud;
 				}
-				
-				
-				
-
-				}
 			}
+			
+			
+			
+			
 
-	
+			for (int id = minid; id <= maxid; ++id) {
+				Budpointobject bestbud = null;
+				
+				if (model.trackBudpointobjects(id) != null && model.trackBudpointobjects(id).size() > parent.AccountedT.size() / 4) {
+
+					List<Budpointobject> sortedList = new ArrayList<Budpointobject>(model.trackBudpointobjects(id));
+
+					Collections.sort(sortedList, new Comparator<Budpointobject>() {
+
+						@Override
+						public int compare(Budpointobject o1, Budpointobject o2) {
+
+							return o1.t - o2.t;
+						}
+
+					});
+
+					Iterator<Budpointobject> iterator = sortedList.iterator();
+
+					int count = 0;
+					while (iterator.hasNext()) {
+
+						Budpointobject currentbud = iterator.next();
+						if (count == 0)
+							bestbud = currentbud;
+						if (parent.originalimg.numDimensions() <= 3) {
+							if (currentbud.t == parent.thirdDimension) {
+								bestbud = currentbud;
+								count++;
+								break;
+
+							}
+
+						}
+
+					}
+					parent.Finalresult.put(Integer.toString(id) , bestbud);
+					
+					
+				}
+
+			}
 			
 			
 			CreateTableView(parent);
-			DisplaySelectedTrack.Select(parent);
-			DisplaySelectedTrack.Mark(parent);
+            BUDDYDisplaySelectedTrack.Select(parent);
+			BUDDYDisplaySelectedTrack.Mark(parent);
+
 		}
 	}
-	
-	
+	public static HashMap<String, Budpointobject> sortByIntegerInter(HashMap<String, Budpointobject> map) {
+		List<Entry<String, Budpointobject>> list = new LinkedList<Entry<String, Budpointobject>>(map.entrySet());
+		// Defined Custom Comparator here
+		Collections.sort(list, new Comparator<Entry<String, Budpointobject>>() {
+
+			@Override
+			public int compare(Entry<String, Budpointobject> o1, Entry<String, Budpointobject> o2) {
+				
+				return -o1.getValue().t + o2.getValue().t;
+			}
+		});
+
+		// Here I am copying the sorted list in HashMap
+		// using LinkedHashMap to preserve the insertion order
+		HashMap<String, Budpointobject> sortedHashMap = new LinkedHashMap<String, Budpointobject>();
+		for (Iterator<Entry<String, Budpointobject>> it = list.iterator(); it.hasNext();) {
+			Map.Entry<String, Budpointobject> entry = (Map.Entry<String, Budpointobject>) it.next();
+			sortedHashMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedHashMap;
+	}
 	protected void BudDisplayGraph(SimpleWeightedGraph<Budobject, DefaultWeightedEdge> simplegraph) {
 
 		int minid = Integer.MAX_VALUE;
 		int maxid = Integer.MIN_VALUE;
-		BudTrackModel model = new BudTrackModel(simplegraph);
+		ForBudTrackModel model = new ForBudTrackModel(simplegraph);
 
 	
 		for (final Integer id : model.trackIDs(false)) {
@@ -223,6 +288,7 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 		}
 	}
+
 	public void CreateTableView(InteractiveBud parent) {
 
 
@@ -231,86 +297,32 @@ public class TrackResult extends SwingWorker<Void, Void> {
 
 		Object[][] rowvalues = new Object[0][colnames.length];
 
-		rowvalues = new Object[parent.Tracklist.size()][colnames.length];
+		rowvalues = new Object[parent.Finalresult.size()][colnames.length];
 
 		parent.table = new JTable(rowvalues, colnames);
+		NumberFormat f = NumberFormat.getIntegerInstance();
+		f.setGroupingUsed(false);
 		parent.row = 0;
-		NumberFormat f = NumberFormat.getInstance();
+
+		parent.Finalresult = sortByIntegerInter(parent.Finalresult);
 		
-		
-		HashMap<String, Boolean> LabelCovered = new HashMap<String, Boolean>();
-		HashMap<String, Boolean> BudLabelCovered = new HashMap<String, Boolean>();
-for (BudTrackobject Track: parent.Tracklist) {
-			
-			String ID = Track.ID;
-		LabelCovered.put(ID, false);
-		
-}
-for (ValuePair<String, Budobject> Track: parent.BudTracklist) {
-	
-	String ID = Track.getA();
-BudLabelCovered.put(ID, false);
+		for (Map.Entry<String, Budpointobject> entry : parent.Finalresult.entrySet()) {
 
-}
-
-NumberFormat format = NumberFormat.getIntegerInstance();
-format.setGroupingUsed(false);
-HashMap<String, Pair<RealLocalizable, Integer>> BudTime = new HashMap<String,Pair<RealLocalizable, Integer>>();
-
-
-
-
-
-
-for (ValuePair<String, Budobject> BudTrack: parent.BudTracklist) {
-	
-	
-	
-	Budobject masterbud = BudTrack.getB();
-	String IDbud  = BudTrack.getA();
-    RealLocalizable masterpoint = masterbud.Budcenter;	
-	int budmaxtime = masterbud.t;
-    double X =  masterbud.getDoublePosition(0);
-    double Y =  masterbud.getDoublePosition(1);
-	BudTime.put(IDbud, new ValuePair<RealLocalizable, Integer>(masterpoint, budmaxtime));
-
-		
-	
-    
-}
-
-
-
-		for (BudTrackobject Track: parent.Tracklist) {
-			
-			String ID = Track.ID;
-			
-			Budpointobject currentbud = Track.budpoints;
-			int maxtime = Track.endtime;
-			if(LabelCovered.get(ID)!=null)
-				if(!LabelCovered.get(ID))
-			if(currentbud.t == maxtime) {
-				
-			parent.table.getModel().setValueAt(ID, parent.row, 0);
-			parent.table.getModel().setValueAt(format.format(currentbud.Location[0]), parent.row, 1);
-			parent.table.getModel().setValueAt(format.format(currentbud.Location[1]), parent.row, 2);
+			Budpointobject currentbud = entry.getValue();
+			parent.table.getModel().setValueAt(entry.getKey(), parent.row, 0);
+			parent.table.getModel().setValueAt(f.format(currentbud.Location[0]), parent.row, 1);
+			parent.table.getModel().setValueAt(f.format(currentbud.Location[1]), parent.row, 2);
 			parent.table.getModel().setValueAt(f.format(currentbud.t), parent.row, 3);
-			parent.table.getModel().setValueAt(f.format(currentbud.velocity), parent.row, 4);
+
 			parent.row++;
 
 			parent.tablesize = parent.row;
-			LabelCovered.put(ID, true);
-			}
-			
-			
 		}
-
-		
 
 		makeGUI(parent);
 
 	}
-
+	
 	
 	public static void makeGUI(final InteractiveBud parent) {
 		
@@ -320,8 +332,8 @@ for (ValuePair<String, Budobject> BudTrack: parent.BudTracklist) {
 			parent.table.setFillsViewportHeight(true);
 
 			parent.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		    
-			
+		
+
 			int size = 100;
 			parent.table.getColumnModel().getColumn(0).setPreferredWidth(size);
 			parent.table.getColumnModel().getColumn(1).setPreferredWidth(size);

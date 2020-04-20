@@ -16,12 +16,12 @@ import net.imglib2.util.Util;
  * 
  * @param <K>
  */
-public class DefaultCostMatrixCreator< K extends Comparable< K >, J extends Comparable< J > > implements BudCostMatrixCreator< K, J >
+public class BUDDYDefaultCostMatrixCreator< K extends Comparable< K >, J extends Comparable< J > > implements BUDDYCostMatrixCreator< K, J >
 {
 
 	private static final String BASE_ERROR_MESSAGE = "[DefaultCostMatrixCreator] ";
 
-	private SparseCostMatrix scm;
+	private BUDDYSparseCostMatrix scm;
 
 	private ArrayList< K > uniqueRows;
 
@@ -43,7 +43,7 @@ public class DefaultCostMatrixCreator< K extends Comparable< K >, J extends Comp
 
 	private final double percentile;
 
-	public DefaultCostMatrixCreator( final List< K > rows, final List< J > cols, final double[] costs, final double alternativeCostFactor, final double percentile )
+	public BUDDYDefaultCostMatrixCreator( final List< K > rows, final List< J > cols, final double[] costs, final double alternativeCostFactor, final double percentile )
 	{
 		this.rows = rows;
 		this.cols = cols;
@@ -59,7 +59,7 @@ public class DefaultCostMatrixCreator< K extends Comparable< K >, J extends Comp
 	}
 
 	@Override
-	public SparseCostMatrix getResult()
+	public BUDDYSparseCostMatrix getResult()
 	{
 		return scm;
 	}
@@ -154,7 +154,7 @@ public class DefaultCostMatrixCreator< K extends Comparable< K >, J extends Comp
 		}
 		number[ currentRow ] = nOfEl + 1;
 
-		scm = new SparseCostMatrix( cc, kk, number, nCols );
+		scm = new BUDDYSparseCostMatrix( cc, kk, number, nCols );
 
 		alternativeCost = computeAlternativeCosts();
 

@@ -134,13 +134,13 @@ public class Budobject extends AbstractEuclideanSpace implements RealLocalizable
 
 		return distance;
 	}
-	public double DistanceTo(Budobject target, final double alpha, final double beta) {
+	public double DistanceTo(Budobject target) {
 		// Returns squared distance between the source Blob and the target Blob.
 
 		final double[] sourceLocation = new double[] {Budcenter.getDoublePosition(0),Budcenter.getDoublePosition(1) };
 		final double[] targetLocation = new double[] {target.getDoublePosition(0), target.getDoublePosition(1)};
 
-		double distance = 1.0E-5;
+		double distance = 0;
 
 		for (int d = 0; d < sourceLocation.length; ++d) {
 

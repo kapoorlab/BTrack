@@ -19,15 +19,15 @@ import ij.gui.TextRoi;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import pluginTools.InteractiveBud;
 
-public class DisplayTrack {
+public class BUDDYDisplayTrack {
 
-	public TrackModel model;
+	public BUDDYTrackModel model;
 
 	public InteractiveBud parent;
 
 	public final int ndims;
 
-	public DisplayTrack(final InteractiveBud parent, final TrackModel model) {
+	public BUDDYDisplayTrack(final InteractiveBud parent, final BUDDYTrackModel model) {
 
 		this.parent = parent;
 

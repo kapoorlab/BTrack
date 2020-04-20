@@ -25,7 +25,7 @@ import budDetector.Budpointobject;
 
 
 
-public class MyBuddyTimeDirectedNeighborIndex extends NeighborIndex< Budpointobject, DefaultWeightedEdge >
+public class BUDDYTimeDirectedNeighborIndex extends NeighborIndex< Budpointobject, DefaultWeightedEdge >
 {
 
 	// ~ Instance fields
@@ -40,7 +40,7 @@ public class MyBuddyTimeDirectedNeighborIndex extends NeighborIndex< Budpointobj
 	// ~ Constructors
 	// -----------------------------------------------------------
 
-	public MyBuddyTimeDirectedNeighborIndex( final Graph< Budpointobject, DefaultWeightedEdge > g )
+	public BUDDYTimeDirectedNeighborIndex( final Graph< Budpointobject, DefaultWeightedEdge > g )
 	{
 		super( g );
 		this.graph = g;

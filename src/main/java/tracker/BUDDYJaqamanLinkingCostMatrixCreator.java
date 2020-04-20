@@ -16,7 +16,7 @@ import java.util.List;
  * @param <K>
  * @param <J>
  */
-public class BudJaqamanLinkingCostMatrixCreator< K extends Comparable< K >, J extends Comparable< J >> implements BUDDYCostMatrixCreator< K, J >
+public class BUDDYJaqamanLinkingCostMatrixCreator< K extends Comparable< K >, J extends Comparable< J >> implements BUDDYCostMatrixCreator< K, J >
 {
 
 	private static final String BASE_ERROR_MSG = "[JaqamanLinkingCostMatrixCreator] ";
@@ -25,7 +25,7 @@ public class BudJaqamanLinkingCostMatrixCreator< K extends Comparable< K >, J ex
 
 	private final Iterable< J > targets;
 
-	private final BudCostFunction< K, J > costFunction;
+	private final BUDDYCostFunction< K, J > costFunction;
 
 	private BUDDYSparseCostMatrix scm;
 
@@ -45,7 +45,7 @@ public class BudJaqamanLinkingCostMatrixCreator< K extends Comparable< K >, J ex
 
 	private final double percentile;
 
-	public BudJaqamanLinkingCostMatrixCreator( final Iterable< K > sources, final Iterable< J > targets, final BudCostFunction< K, J > costFunction, final double costThreshold, final double alternativeCostFactor, final double percentile )
+	public BUDDYJaqamanLinkingCostMatrixCreator( final Iterable< K > sources, final Iterable< J > targets, final BUDDYCostFunction< K, J > costFunction, final double costThreshold, final double alternativeCostFactor, final double percentile )
 	{
 		this.sources = sources;
 		this.targets = targets;

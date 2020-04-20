@@ -13,6 +13,7 @@ import java.util.Iterator;
 import budDetector.BudTrackobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 
@@ -97,15 +98,15 @@ public class BudSaveListener implements ActionListener {
 	
 			
 		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
-		for (BudTrackobject Track: parent.Tracklist) {
+		for (Pair<String, Budpointobject> Track: parent.Tracklist) {
 			
-			if(Track.ID.equals(ID)) {
+			if(Track.getA().equals(ID)) {
 			
 				
-			double time = Track.budpoints.t * parent.timecal;
-			double LocationX = Track.budpoints.Location[0] * parent.calibration;
-			double LocationY = Track.budpoints.Location[1] * parent.calibration;
-			double Velocity = Track.budpoints.velocity;
+			double time = Track.getB().t * parent.timecal;
+			double LocationX = Track.getB().Location[0] * parent.calibration;
+			double LocationY = Track.getB().Location[1] * parent.calibration;
+			double Velocity = Track.getB().velocity;
 			
 			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 			

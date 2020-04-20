@@ -16,6 +16,8 @@ import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.type.Type;
+import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
@@ -166,7 +168,7 @@ public class BoundaryTrack {
 
 	}
 	
-	public <T extends Comparable<T> & Type<T>> void computeMinMax(final Iterable<T> input, final T min, final T max) {
+	public static <T extends RealType<T> & Type<T>> void computeMinMax(final Iterable<T> input, final T min, final T max) {
 		// create a cursor for the image (the order does not matter)
 		final Iterator<T> iterator = input.iterator();
 
@@ -188,6 +190,24 @@ public class BoundaryTrack {
 				max.set(type);
 		}
 	}
+	
+	public static void Multiply(final RandomAccessibleInterval<BitType> input, final int value) {
+		// create a cursor for the image (the order does not matter)
+		final Cursor<BitType> iterator = Views.iterable(input).localizingCursor();
 
+		// initialize min and max with the first image value
+
+		
+		while (iterator.hasNext()) {
+			// we need this type more than once
+			
+			iterator.fwd();
+			
+			int newvalue = iterator.get().getInteger() * value;
+			
+			iterator.get().setInteger(newvalue);
+			
+		}
+	}
 
 }

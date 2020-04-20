@@ -14,7 +14,7 @@ import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveBud.ValueChange;
 import skeleton.SkeletonizeBuds;
-import tracker.TrackResult;
+import tracker.BUDDYTrackResult;
 import utility.BudShowView;
 
 public class BudSkeletonListener implements ActionListener {

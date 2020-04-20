@@ -12,34 +12,34 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import budDetector.Budpointobject;
+import budDetector.Budobject;
 
 
 
 
 
 
-public class MyBuddyTimeDirectedSortedDepthFirstIterator extends MyBuddySortedDepthFirstIterator<Budpointobject, DefaultWeightedEdge> {
+public class ForBudTimeDirectedSortedDepthFirstIterator extends ForBudSortedDepthFirstIterator<Budobject, DefaultWeightedEdge> {
 
-	public MyBuddyTimeDirectedSortedDepthFirstIterator(final Graph<Budpointobject, DefaultWeightedEdge> g, final Budpointobject startVertex, final Comparator<Budpointobject> comparator) {
+	public ForBudTimeDirectedSortedDepthFirstIterator(final Graph<Budobject, DefaultWeightedEdge> g, final Budobject startVertex, final Comparator<Budobject> comparator) {
 		super(g, startVertex, comparator);
 	}
 
 
 
     @Override
-	protected void addUnseenChildrenOf(final Budpointobject vertex) {
+	protected void addUnseenChildrenOf(final Budobject vertex) {
 
 		// Retrieve target vertices, and sort them in a list
-		final List< Budpointobject > sortedChildren = new ArrayList< Budpointobject >();
+		final List< Budobject > sortedChildren = new ArrayList< Budobject >();
     	// Keep a map of matching edges so that we can retrieve them in the same order
-    	final Map<Budpointobject, DefaultWeightedEdge> localEdges = new HashMap<Budpointobject, DefaultWeightedEdge>();
+    	final Map<Budobject, DefaultWeightedEdge> localEdges = new HashMap<Budobject, DefaultWeightedEdge>();
 
-    	final int ts = vertex.getFeature(Budpointobject.TIME).intValue();
+    	final int ts = vertex.getFeature(Budobject.TIME).intValue();
         for (final DefaultWeightedEdge edge : specifics.edgesOf(vertex)) {
 
-        	final Budpointobject oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
-        	final int tt = oppositeV.getFeature(Budpointobject.TIME).intValue();
+        	final Budobject oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
+        	final int tt = oppositeV.getFeature(Budobject.TIME).intValue();
         	if (tt <= ts) {
         		continue;
         	}
@@ -51,9 +51,9 @@ public class MyBuddyTimeDirectedSortedDepthFirstIterator extends MyBuddySortedDe
         }
 
 		Collections.sort( sortedChildren, Collections.reverseOrder( comparator ) );
-		final Iterator< Budpointobject > it = sortedChildren.iterator();
+		final Iterator< Budobject > it = sortedChildren.iterator();
         while (it.hasNext()) {
-			final Budpointobject child = it.next();
+			final Budobject child = it.next();
 
             if (nListeners != 0) {
                 fireEdgeTraversed(createEdgeTraversalEvent(localEdges.get(child)));

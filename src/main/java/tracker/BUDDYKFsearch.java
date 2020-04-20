@@ -13,12 +13,12 @@ import javax.swing.JProgressBar;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import budDetector.Budobject;
+import budDetector.Budpointobject;
 import net.imglib2.RealPoint;
 
 
 	
-	public class BudKFsearch implements BudTracker {
+	public class BUDDYKFsearch implements BudpointTracker {
 
 		private static final double ALTERNATIVE_COST_FACTOR = 1.05d;
 
@@ -26,21 +26,21 @@ import net.imglib2.RealPoint;
 
 		private static final String BASE_ERROR_MSG = "[KalmanTracker] ";
 
-		private final ArrayList<ArrayList<Budobject>> Allblobs;
+		private final ArrayList<ArrayList<Budpointobject>> Allblobs;
 		public final JProgressBar jpb;
 		private final double maxsearchRadius;
 		private final double initialsearchRadius;
-		private final BudCostFunction<Budobject, Budobject> UserchosenCostFunction;
+		private final BUDDYCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction;
 		private final int maxframeGap;
 		private HashMap<String, Integer> Accountedframes;
-		private SimpleWeightedGraph<Budobject, DefaultWeightedEdge> graph;
+		private SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> graph;
 
-		protected BudLogger logger = BudLogger.DEFAULT_LOGGER;
+		protected BUDDYLogger logger = BUDDYLogger.DEFAULT_LOGGER;
 		protected String errorMessage;
-		ArrayList<ArrayList<Budobject>> Allblobscopy;
+		ArrayList<ArrayList<Budpointobject>> Allblobscopy;
 
-		public BudKFsearch(final ArrayList<ArrayList<Budobject>> Allblobs,
-				final BudCostFunction<Budobject, Budobject> UserchosenCostFunction,
+		public BUDDYKFsearch(final ArrayList<ArrayList<Budpointobject>> Allblobs,
+				final BUDDYCostFunction<Budpointobject, Budpointobject> UserchosenCostFunction,
 				final double maxsearchRadius, final double initialsearchRadius, final int maxframeGap,
 				HashMap<String, Integer> Accountedframes, final JProgressBar jpb) {
 
@@ -55,7 +55,7 @@ import net.imglib2.RealPoint;
 		}
 
 		@Override
-		public SimpleWeightedGraph<Budobject, DefaultWeightedEdge> getResult() {
+		public SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> getResult() {
 			return graph;
 		}
 
@@ -76,12 +76,12 @@ import net.imglib2.RealPoint;
 			 * Outputs
 			 */
 
-			graph = new SimpleWeightedGraph<Budobject, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+			graph = new SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
-		    Collection<Budobject> Firstorphan = Allblobs.get(0);
+		    Collection<Budpointobject> Firstorphan = Allblobs.get(0);
 			
 
-			Collection<Budobject> Secondorphan = Allblobs.get(1);
+			Collection<Budpointobject> Secondorphan = Allblobs.get(1);
 			// Max KF search cost.
 			final double maxCost = maxsearchRadius * maxsearchRadius;
 
@@ -102,13 +102,14 @@ import net.imglib2.RealPoint;
 
 			final double positionMeasurementStd = meanSpotRadius / 1d;
 
-			final Map<BUDDYCVMKalmanFilter, Budobject> kalmanFiltersMap = new HashMap<BUDDYCVMKalmanFilter, Budobject>(
+			final Map<BUDDYCVMKalmanFilter, Budpointobject> kalmanFiltersMap = new HashMap<BUDDYCVMKalmanFilter, Budpointobject>(
 					Secondorphan.size());
 			// Loop from the second frame to the last frame and build
 			// KalmanFilterMap
 			for (int i = 1; i < Allblobs.size();++i) {
 				
-				List<Budobject> measurements = Allblobs.get(i);
+			
+				List<Budpointobject> measurements = Allblobs.get(i);
 				// Make the preditiction map
 				final Map<ComparableRealPoint, BUDDYCVMKalmanFilter> predictionMap = new HashMap<ComparableRealPoint, BUDDYCVMKalmanFilter>(
 						kalmanFiltersMap.size());
@@ -132,31 +133,30 @@ import net.imglib2.RealPoint;
 				if (!predictions.isEmpty() && !measurements.isEmpty()) {
 					// Only link measurements to predictions if we have predictions.
 
-					final BudJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budobject> crm = new BudJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budobject>(
+					final BUDDYJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budpointobject> crm = new BUDDYJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budpointobject>(
 							predictions, measurements, DistanceBasedcost, maxCost, ALTERNATIVE_COST_FACTOR, PERCENTILE);
 
-					final BUDDYJaqamanLinker<ComparableRealPoint, Budobject> linker = new BUDDYJaqamanLinker<ComparableRealPoint, Budobject>(
+					final BUDDYJaqamanLinker<ComparableRealPoint, Budpointobject> linker = new BUDDYJaqamanLinker<ComparableRealPoint, Budpointobject>(
 							crm);
 					if (!linker.checkInput() || !linker.process()) {
 						errorMessage = BASE_ERROR_MSG + "Error linking candidates in frame "  + ": "
 								+ linker.getErrorMessage();
 						return false;
 					}
-					final Map<ComparableRealPoint, Budobject> agnts = linker.getResult();
+					final Map<ComparableRealPoint, Budpointobject> agnts = linker.getResult();
 					final Map<ComparableRealPoint, Double> costs = linker.getAssignmentCosts();
 
 					// Deal with found links.
-					Secondorphan = new HashSet<Budobject>(measurements);
+					Secondorphan = new HashSet<Budpointobject>(measurements);
 					for (final ComparableRealPoint cm : agnts.keySet()) {
 						final BUDDYCVMKalmanFilter kf = predictionMap.get(cm);
 
 						// Create links for found match.
-						final Budobject source = kalmanFiltersMap.get(kf);
-						final Budobject target = agnts.get(cm);
+						final Budpointobject source = kalmanFiltersMap.get(kf);
+						final Budpointobject target = agnts.get(cm);
 
 						graph.addVertex(source);
 						graph.addVertex(target);
-						if(source.hashCode()!=target.hashCode()) {
 						final DefaultWeightedEdge edge = graph.addEdge(source, target);
 						final double cost = costs.get(cm);
 						graph.setEdgeWeight(edge, cost);
@@ -172,7 +172,6 @@ import net.imglib2.RealPoint;
 						// Remove from childless KF set
 						childlessKFs.remove(kf);
 					}
-					}
 				}
 
 				// Deal with orphans from the previous frame.
@@ -182,10 +181,10 @@ import net.imglib2.RealPoint;
 
 					// Trying to link orphans with unlinked candidates.
 
-					final BudJaqamanLinkingCostMatrixCreator<Budobject, Budobject> ic = new BudJaqamanLinkingCostMatrixCreator<Budobject, Budobject>(
+					final BUDDYJaqamanLinkingCostMatrixCreator<Budpointobject, Budpointobject> ic = new BUDDYJaqamanLinkingCostMatrixCreator<Budpointobject, Budpointobject>(
 							Firstorphan, Secondorphan, UserchosenCostFunction, maxInitialCost, ALTERNATIVE_COST_FACTOR,
 							PERCENTILE);
-					final BUDDYJaqamanLinker<Budobject, Budobject> newLinker = new BUDDYJaqamanLinker<Budobject, Budobject>(
+					final BUDDYJaqamanLinker<Budpointobject, Budpointobject> newLinker = new BUDDYJaqamanLinker<Budpointobject, Budpointobject>(
 							ic);
 
 					if (!newLinker.checkInput() || !newLinker.process()) {
@@ -194,12 +193,12 @@ import net.imglib2.RealPoint;
 						return false;
 					}
 
-					final Map<Budobject, Budobject> newAssignments = newLinker.getResult();
-					final Map<Budobject, Double> assignmentCosts = newLinker.getAssignmentCosts();
+					final Map<Budpointobject, Budpointobject> newAssignments = newLinker.getResult();
+					final Map<Budpointobject, Double> assignmentCosts = newLinker.getAssignmentCosts();
 
 					// Build links and new KFs from these links.
-					for (final Budobject source : newAssignments.keySet()) {
-						final Budobject target = newAssignments.get(source);
+					for (final Budpointobject source : newAssignments.keySet()) {
+						final Budpointobject target = newAssignments.get(source);
 
 						// Remove from orphan collection.
 
@@ -253,14 +252,14 @@ import net.imglib2.RealPoint;
 
 	
 
-		private static final double[] MeasureBlob(final Budobject target) {
-			final double[] location = new double[] { target.getDoublePosition(0), target.getDoublePosition(1) };
+		private static final double[] MeasureBlob(final Budpointobject target) {
+			final double[] location = new double[] { target.Location[0], target.Location[1] };
 			return location;
 		}
 
-		private static final double[] estimateInitialState(final Budobject first,
-				final Budobject second) {
-			final double[] xp = new double[] { second.getDoublePosition(0), second.getDoublePosition(1),
+		private static final double[] estimateInitialState(final Budpointobject first,
+				final Budpointobject second) {
+			final double[] xp = new double[] { second.Location[0], second.Location[1],
 					second.diffTo(first, 0), second.diffTo(first, 1) };
 			return xp;
 		}
@@ -273,12 +272,12 @@ import net.imglib2.RealPoint;
 		 *
 		 * Cost function that returns the square distance between a KF state and a Blob.
 		 */
-		private static final BudCostFunction<ComparableRealPoint, Budobject> DistanceBasedcost = new BudCostFunction<ComparableRealPoint, Budobject>() {
+		private static final BUDDYCostFunction<ComparableRealPoint, Budpointobject> DistanceBasedcost = new BUDDYCostFunction<ComparableRealPoint, Budpointobject>() {
 
 			@Override
-			public double linkingCost(final ComparableRealPoint state, final Budobject Blob) {
-				final double dx = state.getDoublePosition(0) - Blob.getDoublePosition(0);
-				final double dy = state.getDoublePosition(1) - Blob.getDoublePosition(1);
+			public double linkingCost(final ComparableRealPoint state, final Budpointobject Blob) {
+				final double dx = state.getDoublePosition(0) - Blob.Location[0];
+				final double dy = state.getDoublePosition(1) - Blob.Location[1];
 				return dx * dx + dy * dy + Double.MIN_NORMAL;
 				// So that it's never 0
 

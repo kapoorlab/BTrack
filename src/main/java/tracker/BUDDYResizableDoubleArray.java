@@ -4,7 +4,7 @@ package tracker;
 
 import java.util.Arrays;
 
-public class ResizableDoubleArray
+public class BUDDYResizableDoubleArray
 {
 
 	/*
@@ -20,14 +20,14 @@ public class ResizableDoubleArray
 	 * CONSTRUCTORS
 	 */
 
-	public ResizableDoubleArray( final double[] data )
+	public BUDDYResizableDoubleArray( final double[] data )
 	{
 		this.data = data;
 		this.size = data.length;
 	}
 
 
-	public ResizableDoubleArray( final int initialCapacity )
+	public BUDDYResizableDoubleArray( final int initialCapacity )
 	{
 		this.data = new double[ initialCapacity ];
 		this.size = 0;
@@ -36,7 +36,7 @@ public class ResizableDoubleArray
 	/**
 	 * Creates an empty ResizableIntArray with the a initial capacity of 10.
 	 */
-	public ResizableDoubleArray()
+	public BUDDYResizableDoubleArray()
 	{
 		this( 10 );
 	}
