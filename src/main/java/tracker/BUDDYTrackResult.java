@@ -60,10 +60,10 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		
 		BUDDYTrackingFunctions track = new BUDDYTrackingFunctions(parent);
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
-		//SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
+		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
 		// Display Graph results, make table etc
 		
-		//BudDisplayGraph(Budsimplegraph);
+		BudDisplayGraph(Budsimplegraph);
 		DisplayGraph(simplegraph);
 		
 	
@@ -197,7 +197,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 			
 			
 			CreateTableView(parent);
-            BUDDYDisplaySelectedTrack.Select(parent);
+			BUDDYDisplaySelectedTrack.Select(parent);
 			BUDDYDisplaySelectedTrack.Mark(parent);
 
 		}
@@ -227,7 +227,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 		int minid = Integer.MAX_VALUE;
 		int maxid = Integer.MIN_VALUE;
-		ForBudTrackModel model = new ForBudTrackModel(simplegraph);
+		BUDDYBudTrackModel model = new BUDDYBudTrackModel(simplegraph);
 
 	
 		for (final Integer id : model.trackIDs(false)) {

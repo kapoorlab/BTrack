@@ -3,16 +3,16 @@ package tracker;
 
 import java.util.Comparator;
 
-public class AlphanumComparator implements Comparator<String>
+public class BUDDYAlphanumComparator implements Comparator<String>
 	{
-		public static final AlphanumComparator instance = new AlphanumComparator();
+		public static final BUDDYAlphanumComparator instance = new BUDDYAlphanumComparator();
 		
 	    private final boolean isDigit(final char ch) {
 	        return ch >= 48 && ch <= 57;
 	    }
 	    
 	    // Singleton
-	    private AlphanumComparator() {}
+	    private BUDDYAlphanumComparator() {}
 
 	    /** Length of string is passed in for improved efficiency (only need to calculate it once) **/
 	    private final String getChunk(final String s, final int slength, int marker) {

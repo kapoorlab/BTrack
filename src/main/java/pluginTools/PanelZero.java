@@ -2,7 +2,6 @@ package pluginTools;
 
 import javax.swing.JFrame;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
 
@@ -14,7 +13,9 @@ public class PanelZero {
 		
 		JFrame frame = new JFrame("");
 
-		
+	
+
+	
 		ImagePlus impA = new Opener()
 				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells.tif");
 		impA.show();
@@ -31,7 +32,7 @@ public class PanelZero {
 		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();
-	
+
 		frame.getContentPane().add(panel, "Center");
 		frame.setSize(panel.getPreferredSize());
 		

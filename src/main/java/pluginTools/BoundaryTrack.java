@@ -9,15 +9,11 @@ import javax.swing.JProgressBar;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
-import budDetector.Cellobject;
-import ij.IJ;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.type.Type;
-import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
@@ -105,21 +101,26 @@ public class BoundaryTrack {
 		IntType min = new IntType();
 		IntType max = new IntType();
 		computeMinMax(Views.iterable(BudSeg), min, max);
-		
+		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
+		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
+		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
 		if(parent.SegYelloworiginalimg!=null) {
 			RandomAccessibleInterval<IntType> BudYellowSeg = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
-		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg,  parent.thirdDimension, max.get(), percent);
+		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg, Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
 		    compute.displayBuds();
 		}
 		
 		else {
-		  TrackEachBud compute = new TrackEachBud(parent, BudSeg,  parent.thirdDimension, max.get(), percent);
+		  TrackEachBud compute = new TrackEachBud(parent, BudSeg, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
 			
 		  compute.displayBuds();
 		}
 		
-	
+			parent.AllBuds.put(Integer.toString(t), Budlist);
+			
+
+			parent.AllBudpoints.put(Integer.toString(t), Budpointlist);
 			
 		
 		percent++;
@@ -138,30 +139,6 @@ public class BoundaryTrack {
 			parent.ChosenBudcenter = new ArrayList<RealLocalizable>();	
 			
 		}
-	}
-	public static void RemoveDuplicates(ArrayList<Budobject> points) {
-		
-		int j = 0;
-
-		for (int i = 0; i < points.size(); ++i) {
-
-			j = i + 1;
-			while (j < points.size()) {
-
-				if (points.get(i).getDoublePosition(0) == points.get(j).getDoublePosition(0) && points.get(i).getDoublePosition(1) == points.get(j).getDoublePosition(1) ) {
-
-					points.remove(j);
-
-				}
-
-				else {
-					++j;
-				}
-
-			}
-
-		}
-
 	}
 	
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {
@@ -187,7 +164,7 @@ public class BoundaryTrack {
 
 	}
 	
-	public static <T extends RealType<T> & Type<T>> void computeMinMax(final Iterable<T> input, final T min, final T max) {
+	public <T extends Comparable<T> & Type<T>> void computeMinMax(final Iterable<T> input, final T min, final T max) {
 		// create a cursor for the image (the order does not matter)
 		final Iterator<T> iterator = input.iterator();
 
@@ -209,24 +186,6 @@ public class BoundaryTrack {
 				max.set(type);
 		}
 	}
-	
-	public static void Multiply(final RandomAccessibleInterval<BitType> input, final int value) {
-		// create a cursor for the image (the order does not matter)
-		final Cursor<BitType> iterator = Views.iterable(input).localizingCursor();
 
-		// initialize min and max with the first image value
-
-		
-		while (iterator.hasNext()) {
-			// we need this type more than once
-			
-			iterator.fwd();
-			
-			int newvalue = iterator.get().getInteger() * value;
-			
-			iterator.get().setInteger(newvalue);
-			
-		}
-	}
 
 }

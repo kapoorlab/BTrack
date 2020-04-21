@@ -42,7 +42,7 @@ import budDetector.Budobject;
 
 
 
-public class ForBudTrackModel {
+public class BUDDYBudTrackModel {
 	/**
 	 * A component of {@link Model} specialized for tracks.
 	 *
@@ -130,11 +130,11 @@ public class ForBudTrackModel {
 	 * Constructors -----------------------------------------------------------
 	 */
 
-	public ForBudTrackModel() {
+	public BUDDYBudTrackModel() {
 		this(new SimpleWeightedGraph<Budobject, DefaultWeightedEdge>(DefaultWeightedEdge.class));
 	}
 
-	public ForBudTrackModel(final SimpleWeightedGraph<Budobject, DefaultWeightedEdge> graph) {
+	public BUDDYBudTrackModel(final SimpleWeightedGraph<Budobject, DefaultWeightedEdge> graph) {
 		this.mgl = new MyGraphListener();
 		setGraph(graph);
 	}
@@ -521,7 +521,7 @@ public class ForBudTrackModel {
 	 * @return a new set of track IDs.
 	 */
 	public Set<Integer> trackIDs(final boolean visibleOnly) {
-		final Set<Integer> ids = sortByValue(names, AlphanumComparator.instance).keySet();
+		final Set<Integer> ids = sortByValue(names, BUDDYAlphanumComparator.instance).keySet();
 		if (!visibleOnly) {
 			return ids;
 		} else {
@@ -738,7 +738,7 @@ public class ForBudTrackModel {
 	public GraphIterator<Budobject, DefaultWeightedEdge> getDepthFirstIterator(final Budobject start,
 			final boolean directed) {
 		if (directed) {
-			return new ForBudTimeDirectedDepthFirstIterator(graph, start);
+			return new BUDDYBudTimeDirectedDepthFirstIterator(graph, start);
 		} else {
 			return new DepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start);
 		}
@@ -761,17 +761,17 @@ public class ForBudTrackModel {
 	 *            the comparator to use to pick children in order when branching.
 	 * @return a new depth-first iterator.
 	 */
-	public ForBudSortedDepthFirstIterator<Budobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
+	public BUDDYSortedDepthFirstIterator<Budobject, DefaultWeightedEdge> getSortedDepthFirstIterator(
 			final Budobject start, final Comparator<Budobject> comparator, final boolean directed) {
 		if (directed) {
-			return new ForBudTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
+			return new BUDDYBudTimeDirectedSortedDepthFirstIterator(graph, start, comparator);
 		} else {
-			return new ForBudSortedDepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start, comparator);
+			return new BUDDYSortedDepthFirstIterator<Budobject, DefaultWeightedEdge>(graph, start, comparator);
 		}
 	}
 
-	public ForBudTimeDirectedNeighborIndex getDirectedNeighborIndex() {
-		return new ForBudTimeDirectedNeighborIndex(graph);
+	public BUDDYBudTimeDirectedNeighborIndex getDirectedNeighborIndex() {
+		return new BUDDYBudTimeDirectedNeighborIndex(graph);
 	}
 
 	/**

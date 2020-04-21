@@ -521,7 +521,7 @@ public class BUDDYTrackModel {
 	 * @return a new set of track IDs.
 	 */
 	public Set<Integer> trackIDs(final boolean visibleOnly) {
-		final Set<Integer> ids = sortByValue(names, AlphanumComparator.instance).keySet();
+		final Set<Integer> ids = sortByValue(names, BUDDYAlphanumComparator.instance).keySet();
 		if (!visibleOnly) {
 			return ids;
 		} else {

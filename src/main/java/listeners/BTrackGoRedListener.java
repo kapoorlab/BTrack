@@ -37,7 +37,6 @@ public class BTrackGoRedListener implements ItemListener {
 			
 			
 			
-			
 			parent.panelFirst.add(parent.Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 	

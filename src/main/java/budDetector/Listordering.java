@@ -123,8 +123,7 @@ public class Listordering {
 		return meanCord;
 	}
 	
-	
-	public static Localizable getIntMeanCord(List<RealLocalizable> truths) {
+public static Localizable getIntMeanCord(List<RealLocalizable> truths) {
 
 		
 		Iterator<RealLocalizable> iter = truths.iterator();
@@ -145,7 +144,6 @@ public class Listordering {
 
 		return meanCord;
 	}
-	
 	
 	/**
 	 * 

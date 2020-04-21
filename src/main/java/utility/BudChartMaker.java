@@ -132,6 +132,7 @@ public class BudChartMaker {
 		if (mts != null) {
 			for (final double[] mt : mts) {
 				series.add(mt[0], mt[3]);
+			    System.out.println(mt[0] + " " + mt[3] );
 		}
 		}
 		return series;

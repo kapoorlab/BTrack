@@ -33,7 +33,6 @@ public class BTrackGoFreeFlListener implements ItemListener {
 			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
 			
-			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 			
@@ -46,7 +45,7 @@ public class BTrackGoFreeFlListener implements ItemListener {
 		
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
-		
+		parent.Cardframe.pack();
 		}
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {

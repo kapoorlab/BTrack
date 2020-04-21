@@ -41,7 +41,6 @@ public class BTrackGoRedFLListener implements ItemListener {
 			CovistoFourChFileLoader segmentation = new CovistoFourChFileLoader(parent.chooseRedSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.FourChannelOption();
 			
-			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 			
@@ -59,7 +58,7 @@ public class BTrackGoRedFLListener implements ItemListener {
 		
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
-		
+		parent.Cardframe.pack();
 		}
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {

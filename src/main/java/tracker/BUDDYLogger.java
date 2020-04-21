@@ -286,7 +286,7 @@ public abstract class BUDDYLogger extends PrintWriter
 	 * @author Jean-Yves Tinevez - 2014
 	 *
 	 */
-	public static class BUDDYSlaveLogger extends BUDDYLogger
+	public static class SlaveLogger extends BUDDYLogger
 	{
 
 		private final BUDDYLogger master;
@@ -308,7 +308,7 @@ public abstract class BUDDYLogger extends PrintWriter
 		 * @param progressRange
 		 *            the progress range to report.
 		 */
-		public BUDDYSlaveLogger( final BUDDYLogger master, final double progressStart, final double progressRange )
+		public SlaveLogger( final BUDDYLogger master, final double progressStart, final double progressRange )
 		{
 			this.master = master;
 			this.progressStart = progressStart;

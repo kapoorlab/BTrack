@@ -52,7 +52,7 @@ public class BTrackGoYellowFLListener implements ItemListener {
 		
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
-		
+		parent.Cardframe.pack();
 		}
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {

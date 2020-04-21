@@ -48,8 +48,6 @@ public class BudLinkobjectListener implements ActionListener {
 		parent.table.removeAll();
 		parent.scrollPane.removeAll();
 		parent.Tracklist.clear();
-		parent.Finalresult.clear();
-		parent.IDlist.clear();
 		parent.table.repaint();
 		parent.table.validate();
 		parent.panelFirst.repaint();

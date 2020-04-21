@@ -2,31 +2,23 @@ package displayBud;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections15.iterators.EntrySetMapIterator;
 
 import budDetector.Distance;
 import ij.IJ;
 import ij.gui.Arrow;
 import ij.gui.Line;
 import ij.gui.OvalRoi;
-import ij.gui.PointRoi;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
-import pluginTools.TrackEachBud;
 
 public class DisplayListOverlay {
 
@@ -91,7 +83,7 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 	// Display the found points as arrows on the bud
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
-
+	
 		Color displayColor; 
 		if (Contains(parent.ChosenBudcenter, Ordered.getA()))
 			displayColor = Color.GREEN;
@@ -132,11 +124,8 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 			parent.overlay.add(points);
 		}
 		
-        
-
 		
 		parent.imp.updateAndDraw();
-		IJ.wait(1000);
 		
 	}
 	

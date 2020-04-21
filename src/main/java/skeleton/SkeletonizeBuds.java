@@ -13,7 +13,6 @@ import ij.ImageStack;
 import net.imglib2.RealLocalizable;
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
-import tracker.BUDDYTrackingFunctions;
 
 public class SkeletonizeBuds extends SwingWorker<Void, Void> {
 

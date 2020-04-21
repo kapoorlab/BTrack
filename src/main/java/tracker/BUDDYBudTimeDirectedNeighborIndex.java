@@ -14,12 +14,10 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.NeighborIndex;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphVertexChangeEvent;
-import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.util.ModifiableInteger;
 
 import budDetector.Budobject;
-import budDetector.Budobject;
 
 
 
@@ -27,7 +25,7 @@ import budDetector.Budobject;
 
 
 
-public class ForBudTimeDirectedNeighborIndex extends NeighborIndex< Budobject, DefaultWeightedEdge >
+public class BUDDYBudTimeDirectedNeighborIndex extends NeighborIndex< Budobject, DefaultWeightedEdge >
 {
 
 	// ~ Instance fields
@@ -42,10 +40,10 @@ public class ForBudTimeDirectedNeighborIndex extends NeighborIndex< Budobject, D
 	// ~ Constructors
 	// -----------------------------------------------------------
 
-	public ForBudTimeDirectedNeighborIndex( final DefaultListenableGraph<Budobject, DefaultWeightedEdge> graph2 )
+	public BUDDYBudTimeDirectedNeighborIndex( final Graph< Budobject, DefaultWeightedEdge > g )
 	{
-		super( graph2 );
-		this.graph = graph2;
+		super( g );
+		this.graph = g;
 	}
 
 	// ~ Methods

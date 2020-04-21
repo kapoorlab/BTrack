@@ -9,9 +9,9 @@ import budDetector.Budobject;
 
 
 
-public class ForBudTimeDirectedDepthFirstIterator extends ForBudSortedDepthFirstIterator<Budobject, DefaultWeightedEdge> {
+public class BUDDYBudTimeDirectedDepthFirstIterator extends BUDDYSortedDepthFirstIterator<Budobject, DefaultWeightedEdge> {
 
-	public ForBudTimeDirectedDepthFirstIterator(Graph<Budobject, DefaultWeightedEdge> g, Budobject startVertex) {
+	public BUDDYBudTimeDirectedDepthFirstIterator(Graph<Budobject, DefaultWeightedEdge> g, Budobject startVertex) {
 		super(g, startVertex, null);
 	}
 	

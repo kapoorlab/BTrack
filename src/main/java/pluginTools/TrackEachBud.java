@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import net.imagej.ops.Ops;
+
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
@@ -17,15 +17,12 @@ import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
 import ij.ImagePlus;
-import net.imagej.ImageJ;
-import ij.gui.OvalRoi;
 import kalmanGUI.CovistoKalmanPanel;
 import listeners.BudSelectBudsListener;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
-import net.imglib2.KDTree;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
@@ -33,8 +30,6 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
-import net.imglib2.algorithm.neighborhood.DiamondShape;
-import net.imglib2.algorithm.neighborhood.Shape;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -47,14 +42,11 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import skeleton.*;
-import utility.FlagNode;
 import utility.GetNearest;
-import utility.NNFlagsearchKDtree;
 import displayBud.DisplayListOverlay;
-import dogGUI.CovistoDogPanel;
-import fiji.plugin.trackmate.BCellobjectCollection;
 
 public class TrackEachBud {
+
 
 	final InteractiveBud parent;
 	final RandomAccessibleInterval<IntType> CurrentViewInt;
@@ -62,10 +54,40 @@ public class TrackEachBud {
 	final int t;
 	final int maxlabel;
 	int percent;
-
+	final ArrayList<Budobject> Budlist;
+	final ArrayList<Budpointobject> Budpointlist;
+	final ArrayList<BCellobject> Budcelllist;
+    ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
     
-    
+	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, final int maxlabel,
+			final int percent) {
 
+		this.parent = parent;
+		this.CurrentViewInt = CurrentViewInt;
+		this.CurrentViewYellowInt = null;
+		this.t = t;
+		this.maxlabel = maxlabel;
+		this.percent = percent;
+		this.Budlist = Budlist;
+		this.Budpointlist = Budpointlist;
+        this.Budcelllist = null;
+	}
+	
+	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist, final int t, final int maxlabel,
+			final int percent) {
+
+		this.parent = parent;
+		this.CurrentViewInt = CurrentViewInt;
+		this.CurrentViewYellowInt = CurrentViewYellowInt;
+		this.t = t;
+		this.maxlabel = maxlabel;
+		this.percent = percent;
+		this.Budlist = Budlist;
+		this.Budpointlist = Budpointlist;
+        this.Budcelllist = Budcelllist;
+	}
 
 	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
 			final int t, final int maxlabel, final int percent) {
@@ -76,11 +98,13 @@ public class TrackEachBud {
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
-		
+		this.Budlist = null;
+		this.Budpointlist = null;
+        this.Budcelllist = null;
 
 	}
-
-	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,RandomAccessibleInterval<IntType> CurrentViewYellowInt,
+	
+	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt, final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
 			final int t, final int maxlabel, final int percent) {
 
 		this.parent = parent;
@@ -89,37 +113,58 @@ public class TrackEachBud {
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
-		
+		this.Budlist = null;
+		this.Budpointlist = null;
+        this.Budcelllist = null;
 
 	}
-
-
 	
-
+	
+	
+	public ArrayList<Budobject> returnBudlist(){
+		
+		
+		return Budlist;
+	}
+	
+    public ArrayList<Budpointobject> returnBudpointlist(){
+		
+		
+		return Budpointlist;
+	}
+	
+    public ArrayList<BCellobject> returnBCellobjectlist(){
+		
+		
+		return Budcelllist;
+	}
+	
+	
 	public void displayBuds() {
 
 		int sidecutpixel = 10;
 		int nThreads = Runtime.getRuntime().availableProcessors();
-
 		
-
+		
+		String uniqueID = Integer.toString(parent.thirdDimension);
+		
+		
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		Set<Integer> copyList = parent.pixellist;
 		parent.overlay.clear();
 	
-		
-		int maxlabel = 0;
 		while (setiter.hasNext()) {
 
 			int label = setiter.next();
 
 			if (label > 0) {
-				String uniqueID = Integer.toString(parent.thirdDimension)+ Integer.toString(label);
-				maxlabel = label;
+
+			
+
 				// Input the integer image of bud with the label and output the binary border
-				// for that label, first one is the border n second binary is the filled bud
+				// for that label
 				Budregionobject PairCurrentViewBit = CurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
@@ -143,7 +188,10 @@ public class TrackEachBud {
 			}
 
 		}
+
 		Iterator<Integer> setitersecond = copyList.iterator();
+
+		
 
 		HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
 		for (Integer Track : copyList) {
@@ -151,16 +199,18 @@ public class TrackEachBud {
 			LabelCovered.put(Track, false);
 
 		}
+
 		while (setitersecond.hasNext()) {
 
 			percent++;
 			int label = setitersecond.next();
 
 			if (label > 0) {
-				String uniqueID = Integer.toString(parent.thirdDimension)+ Integer.toString(label);
+
+		
+
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
-				
 				Budregionobject PairCurrentViewBit = CurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
@@ -170,18 +220,16 @@ public class TrackEachBud {
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 
-				
-				
 				if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
-
 					if(label == maxlabel)
 						 parent.ChosenBudcenter.add(centerpoint);
 					if (parent.jpb != null)
 						utility.BudProgressBar.SetProgressBar(parent.jpb,
 								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
-										+ (parent.pixellist.size()));
-					Common(PairCurrentViewBit, truths, centerpoint, uniqueID, label);
+										+ (parent.pixellist.size() ));
+					Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
+
 				}
 
 				int ndims = centerpoint.numDimensions();
@@ -200,7 +248,7 @@ public class TrackEachBud {
 
 							if (parent.jpb != null)
 								utility.BudProgressBar.SetProgressBar(parent.jpb,
-										100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
+										100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size() ),
 										"No buddies here! What are you doing?");
 
 						}
@@ -229,7 +277,7 @@ public class TrackEachBud {
 														"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize
 																+ " Total Buddies = " + (parent.pixellist.size()));
 
-											Common(PairCurrentViewBit, truths, centerpoint, uniqueID, label);
+											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
 										}
 
@@ -240,73 +288,74 @@ public class TrackEachBud {
 			}
 
 		}
+		
+	
+		
+		
 
 	}
 
-	public void Common(Budregionobject PairCurrentViewBit,
-			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID, int label) {
+	public void Common(Budregionobject  PairCurrentViewBit,
+			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
+			int label) {
 
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
 
-		//System.out.println("Making sekls" + " " + parent.ChosenBudcenter.size());
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
-		
+		skelmake.setClosingRadius(2);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
-		
-		List<RealLocalizable> isValidskeletonEndPoints = AnalyzeSkeleton(Allskeletons, ops);
-		
-		ArrayList<Budpointobject> Budpointlist = new ArrayList<Budpointobject>();
-		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
-		ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
-		if (parent.SegYelloworiginalimg != null) {
-			
+
+		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons, ops);
+
+		if (parent.SegYelloworiginalimg != null) 
 	          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
+		
+		if(!CovistoKalmanPanel.Skeletontime.isEnabled()) {
+		for (RealLocalizable budpoints : skeletonEndPoints) {
 
-			}
-		if (!CovistoKalmanPanel.Skeletontime.isEnabled()) {
-			for (RealLocalizable budpoints : isValidskeletonEndPoints) {
+			Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
+					truths.size() * parent.calibration, label,
+					new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
+					parent.thirdDimension, 0);
 
-				Budpointobject Budpoint = new Budpointobject(centerpoint, truths, isValidskeletonEndPoints,
-						truths.size() * parent.calibration, label,
-						new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
-						parent.thirdDimension, 0);
-				Budpointlist.add(Budpoint);
-				
-
-			}
-			
-			
-			Budobject Currentbud = new Budobject(centerpoint, truths, isValidskeletonEndPoints, t, label,
-					truths.size() * parent.calibration);
-			
-			Budlist.add(Currentbud);
-            parent.AllBuds.put(uniqueID, Budlist);
-			parent.AllBudpoints.put(uniqueID, Budpointlist);
-			ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Currentbud);
-			for(Cellobject currentbudcell:budcelllist) {
-				
-				Localizable centercell = currentbudcell.Location;
-				// For each cell get nearest bud growth point
-				RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(isValidskeletonEndPoints, centercell);
-				// Get distance between the center of cell and bud growth point
-				double closestGrowthPoint = Distance.DistanceSqrt(centercell, closestdynamicskel);
-				// For each cell get nearest bud point
-				RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
-				// and the distance
-				double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
-				
-				// Make the bud n cell object, each cell has all information about the bud n itself 
-				BCellobject budncell = new BCellobject(Currentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, t);
-                parent.budcells.add(budncell, t);  
-			}
-			
+			Budpointlist.add(Budpoint);
 
 		}
+		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
+				truths.size() * parent.calibration);
+		Budlist.add(Curreentbud);
+		if (parent.SegYelloworiginalimg != null) {
+	          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
+
+		ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud);
+		for(Cellobject currentbudcell:budcelllist) {
+			
+			Localizable centercell = currentbudcell.Location;
+			// For each cell get nearest bud growth point
+			RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(skeletonEndPoints, centercell);
+			// Get distance between the center of cell and bud growth point
+			double closestGrowthPoint = Distance.DistanceSqrt(centercell, closestdynamicskel);
+			// For each cell get nearest bud point
+			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
+			// and the distance
+			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
+			
+			// Make the bud n cell object, each cell has all information about the bud n itself 
+			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, t);
+            parent.budcells.add(budncell, t);  
+		}
+		
+		
+		}
+		
+		}
+		
+
 
 		DisplayListOverlay.ArrowDisplay(parent,
-				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), isValidskeletonEndPoints,
+				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,
 				uniqueID);
 
 		// Allow the user to choose or deselect buds
@@ -314,10 +363,23 @@ public class TrackEachBud {
 			BudSelectBudsListener.markbuds(parent);
 
 	}
-	
 
+	private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable currentbud) {
 
+		boolean contains = false;
 
+		for (RealLocalizable bud : Buds) {
+
+			double dist = Distance.DistanceSqrt(bud, currentbud);
+
+			if (dist <= 1)
+				contains = true;
+
+		}
+
+		return contains;
+
+	}
 
 	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons,
 			OpService ops) {
@@ -341,45 +403,12 @@ public class TrackEachBud {
 				}
 
 			}
-			
-			
-			
 
 		}
-		
 		return endPoints;
 
 	}
-	
-	
 
-	
-	
-	public static void RemoveDuplicates(ArrayList<RealLocalizable> points) {
-		
-		int j = 0;
-
-		for (int i = 0; i < points.size(); ++i) {
-
-			j = i + 1;
-			while (j < points.size()) {
-
-				if (points.get(i).getDoublePosition(0) == points.get(j).getDoublePosition(0) && points.get(i).getDoublePosition(1) == points.get(j).getDoublePosition(1) ) {
-
-					points.remove(j);
-
-				}
-
-				else {
-					++j;
-				}
-
-			}
-
-		}
-
-	}
-	
 	public static RandomAccessibleInterval<BitType> GradientmagnitudeImage(RandomAccessibleInterval<BitType> inputimg) {
 
 		RandomAccessibleInterval<BitType> gradientimg = new ArrayImgFactory<BitType>().create(inputimg, new BitType());
@@ -463,22 +492,15 @@ public class TrackEachBud {
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
 		ImageJ ij = new net.imagej.ImageJ();
-		OpService ops = ij.op();
-		RandomAccessibleInterval<BitType> outsmooth = new ArrayImgFactory<BitType>().create(outimg, new BitType());
-		try {
 
-			net.imglib2.algorithm.gauss3.Gauss3.gauss(10, Views.extendBorder(outimg), outsmooth);
-
-		} catch (IncompatibleTypeException es) {
-
-			es.printStackTrace();
-		}
-		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outsmooth);
 		
-		Budregionobject region = new Budregionobject(gradimg, outsmooth, size);
+		// Gradient image gives us the bondary points
+		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
+		
+		Budregionobject region = new Budregionobject(gradimg, outimg, size);
 		return region;
 
 	}
+
 
 }

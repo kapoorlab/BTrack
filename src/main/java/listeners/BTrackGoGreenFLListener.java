@@ -39,7 +39,6 @@ public class BTrackGoGreenFLListener implements ItemListener {
 			CovistoThreeChForceFileLoader segmentation = new CovistoThreeChForceFileLoader(parent.chooseGreenSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.ThreeChannelOption();
 			
-			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 			
@@ -55,7 +54,7 @@ public class BTrackGoGreenFLListener implements ItemListener {
 		
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
-		
+		parent.Cardframe.pack();
 		}
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {

@@ -326,12 +326,12 @@ public class BudFileChooser extends JPanel {
 				// Tracking and Measurement is done with imageA 
 		        
 			    org.apache.log4j.BasicConfigurator.configure();
-				//IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
-				//IJ.run("RGB Color");
+				IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
+				IJ.run("RGB Color");
 				
 				RandomAccessibleInterval<ARGBType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
 				
-				RandomAccessibleInterval<IntType> imageSegA =new ImgOpener().openImgs(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType()).iterator().next();
+				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType());
 				
 				String name = impOrig.getOriginalFileInfo().fileName;
 				
@@ -340,15 +340,15 @@ public class BudFileChooser extends JPanel {
 				Wavesize = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("CalibrationT:" + Wavesize);
-				if(OnlyBud || (RGBBud && !DoYellow && !DoGreen && !DoRed))
+				if(!DoYellow && !DoGreen && !DoRed)
 				
 					new InteractiveBud( imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, Wavesize,name    ).run(null);
 				
 				
-				if(RGBBud && DoYellow) {
+				if(DoYellow) {
 					
 					
-					RandomAccessibleInterval<IntType> imageSegB = new ImgOpener().openImgs(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType()).iterator().next();
+					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 				
 					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
@@ -356,9 +356,9 @@ public class BudFileChooser extends JPanel {
 					
 				}
 				
-				if(RGBBud && DoGreen) {
-					RandomAccessibleInterval<IntType> imageSegB = new ImgOpener().openImgs(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType()).iterator().next();
-					RandomAccessibleInterval<IntType> imageSegC = new ImgOpener().openImgs(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType()).iterator().next();
+				if(DoGreen) {
+					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
+					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
 				
 					
 					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
@@ -369,41 +369,13 @@ public class BudFileChooser extends JPanel {
 					
 				}
 				
-                if(RGBBud && DoRed) {
+                if(DoRed) {
 					
-					RandomAccessibleInterval<IntType> imageSegB = new ImgOpener().openImgs(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType()).iterator().next();
-					RandomAccessibleInterval<IntType> imageSegC = new ImgOpener().openImgs(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType()).iterator().next();
-					RandomAccessibleInterval<IntType> imageSegD = new ImgOpener().openImgs(impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName , new IntType()).iterator().next();
+					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
+					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
+					RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName , new IntType());
 					
-					/*
 					
-					Cursor<IntType> intcursor = Views.iterable(imageSegB).localizingCursor();
-					while(intcursor.hasNext()) {
-						
-						intcursor.fwd();
-						
-						intcursor.get().setInt((int)intcursor.get().get());
-						
-					}
-					Cursor<IntType> intcursorC = Views.iterable(imageSegC).localizingCursor();
-					while(intcursorC.hasNext()) {
-						
-						intcursorC.fwd();
-						
-						intcursorC.get().setInt((int)intcursorC.get().get());
-						
-					}
-					
-					Cursor<IntType> intcursorD = Views.iterable(imageSegD).localizingCursor();
-					while(intcursorD.hasNext()) {
-						
-						intcursorD.fwd();
-						
-						intcursorD.get().setInt((int)intcursorD.get().get());
-						
-					}
-					
-					*/
 					
 					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 					assert (imageOrig.numDimensions() == imageSegB.numDimensions());

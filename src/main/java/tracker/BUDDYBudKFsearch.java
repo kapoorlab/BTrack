@@ -19,7 +19,7 @@ import net.imglib2.RealPoint;
 
 
 	
-	public class ForBudKFsearch implements BudTracker {
+	public class BUDDYBudKFsearch implements BUDDYBudTracker {
 
 		private static final double ALTERNATIVE_COST_FACTOR = 1.05d;
 
@@ -36,18 +36,18 @@ import net.imglib2.RealPoint;
 		private HashMap<String, Integer> Accountedframes;
 		private SimpleWeightedGraph<Budobject, DefaultWeightedEdge> graph;
 
-		protected BudLogger logger = BudLogger.DEFAULT_LOGGER;
+		protected BUDDYLogger logger = BUDDYLogger.DEFAULT_LOGGER;
 		protected String errorMessage;
 		ArrayList<ArrayList<Budobject>> Allblobscopy;
 
-		public ForBudKFsearch(final ArrayList<ArrayList<Budobject>> Allblobs,
-				final BUDDYCostFunction<Budobject, Budobject> budUserchosenCostFunction,
+		public BUDDYBudKFsearch(final ArrayList<ArrayList<Budobject>> Allblobs,
+				final BUDDYCostFunction<Budobject, Budobject> UserchosenCostFunction,
 				final double maxsearchRadius, final double initialsearchRadius, final int maxframeGap,
 				HashMap<String, Integer> Accountedframes, final JProgressBar jpb) {
 
 			this.Allblobs = Allblobs;
 			this.jpb = jpb;
-			this.UserchosenCostFunction = budUserchosenCostFunction;
+			this.UserchosenCostFunction = UserchosenCostFunction;
 			this.initialsearchRadius = initialsearchRadius;
 			this.maxsearchRadius = maxsearchRadius;
 			this.maxframeGap = maxframeGap;
@@ -133,7 +133,7 @@ import net.imglib2.RealPoint;
 				if (!predictions.isEmpty() && !measurements.isEmpty()) {
 					// Only link measurements to predictions if we have predictions.
 
-					final BudJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budobject> crm = new BudJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budobject>(
+					final BUDDYJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budobject> crm = new BUDDYJaqamanLinkingCostMatrixCreator<ComparableRealPoint, Budobject>(
 							predictions, measurements, DistanceBasedcost, maxCost, ALTERNATIVE_COST_FACTOR, PERCENTILE);
 
 					final BUDDYJaqamanLinker<ComparableRealPoint, Budobject> linker = new BUDDYJaqamanLinker<ComparableRealPoint, Budobject>(
@@ -274,7 +274,7 @@ import net.imglib2.RealPoint;
 		 *
 		 * Cost function that returns the square distance between a KF state and a Blob.
 		 */
-		private static final BudCostFunction<ComparableRealPoint, Budobject> DistanceBasedcost = new BudCostFunction<ComparableRealPoint, Budobject>() {
+		private static final BUDDYCostFunction<ComparableRealPoint, Budobject> DistanceBasedcost = new BUDDYCostFunction<ComparableRealPoint, Budobject>() {
 
 			@Override
 			public double linkingCost(final ComparableRealPoint state, final Budobject Blob) {
