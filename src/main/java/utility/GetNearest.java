@@ -114,51 +114,30 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 		
 		Cursor<IntType> intcursor = Views.iterable(CurrentViewYellowInt).localizingCursor();
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
-		HashMap<Integer, Boolean> AllCellList = new HashMap<Integer, Boolean>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 		RandomAccess<IntType> budintran = CurrentViewInt.randomAccess();
 		// Select all yellow cells
-		AllCellList.put(0, false);
 		
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();
 			budintran.setPosition(intcursor);
 			int labelyellow = intcursor.get().get();
-			AllCellList.put(labelyellow, false);
-		}
-		// Select only inside cells
-		
-					for (Integer labelyellow : AllCellList.keySet()) {
-
-						// For each bud get the list of points
-
-						Budregionobject PairCurrentViewBit = TrackEachBud
-								.CurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
-						
-						List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-						
-						Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(truths);
-						
-						
-						budintran.setPosition(cellcenterpoint);
-						
-						
-						int labelbud = budintran.get().get();
-
-						if (labelbud > 0 && labelyellow > 0) {
-
-							InsideCellList.put(labelyellow, true);
-
+			int label = budintran.get().get();
+			InsideCellList.put(labelyellow, false);
+			if(label > 0)
+				InsideCellList.put(labelyellow, true);
 			
-							
-						}
-
-					}
+			
+			
+		}
+	
 					
 					
 
 					for (Integer labelyellow : InsideCellList.keySet()) {
+						   Boolean isInterior = InsideCellList.get(labelyellow);
+						    if(isInterior) {
 							Budregionobject PairCurrentViewBit = TrackEachBud
 									.CurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
 
@@ -180,6 +159,7 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 								points.setStrokeWidth(2);
 								parent.overlay.add(points);
 							}
+						    }
 					}
 					
 					parent.imp.updateAndDraw();

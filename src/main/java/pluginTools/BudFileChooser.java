@@ -325,7 +325,7 @@ public class BudFileChooser extends JPanel {
 				
 				// Tracking and Measurement is done with imageA 
 		        
-			    org.apache.log4j.BasicConfigurator.configure();
+			   
 				IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
 				IJ.run("RGB Color");
 				

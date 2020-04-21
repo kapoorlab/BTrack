@@ -30,6 +30,7 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.algorithm.neighborhood.DiamondShape;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -40,6 +41,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
+import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 import skeleton.*;
 import utility.GetNearest;
@@ -364,22 +366,7 @@ public class TrackEachBud {
 
 	}
 
-	private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable currentbud) {
 
-		boolean contains = false;
-
-		for (RealLocalizable bud : Buds) {
-
-			double dist = Distance.DistanceSqrt(bud, currentbud);
-
-			if (dist <= 1)
-				contains = true;
-
-		}
-
-		return contains;
-
-	}
 
 	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons,
 			OpService ops) {
@@ -453,6 +440,54 @@ public class TrackEachBud {
 		return gradientimg;
 	}
 
+	public static Budregionobject NonCurrentLabelBinaryImage(
+			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
+		int n = Intimg.numDimensions();
+		long[] position = new long[n];
+		Cursor<IntType> intCursor = Views.iterable(Intimg).cursor();
+
+		RandomAccessibleInterval<BitType> outimg = new ArrayImgFactory<BitType>().create(Intimg, new BitType());
+		RandomAccess<BitType> imageRA = outimg.randomAccess();
+
+		// Go through the whole image and add every pixel, that belongs to
+		// the currently processed label
+		long[] minVal = { Intimg.max(0), Intimg.max(1) };
+		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
+
+		while (intCursor.hasNext()) {
+			intCursor.fwd();
+			imageRA.setPosition(intCursor);
+			int i = intCursor.get().get();
+			if (i == currentLabel) {
+
+				intCursor.localize(position);
+				for (int d = 0; d < n; ++d) {
+					if (position[d] < minVal[d]) {
+						minVal[d] = position[d];
+					}
+					if (position[d] > maxVal[d]) {
+						maxVal[d] = position[d];
+					}
+
+				}
+
+				imageRA.get().setOne();
+			} else
+				imageRA.get().setZero();
+
+		}
+		
+		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
+		ImageJ ij = new net.imagej.ImageJ();
+
+		IntervalView<BitType> interval = Views.interval(outimg, minVal, maxVal);
+		// Gradient image gives us the bondary points
+		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(interval);
+		
+		Budregionobject region = new Budregionobject(gradimg, interval, size);
+		return region;
+
+	}
 	public static Budregionobject CurrentLabelBinaryImage(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
@@ -493,7 +528,7 @@ public class TrackEachBud {
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
 		ImageJ ij = new net.imagej.ImageJ();
 
-		
+	
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
 		
