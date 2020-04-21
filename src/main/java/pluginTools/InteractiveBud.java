@@ -77,6 +77,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
+import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.roi.labeling.ImgLabeling;
@@ -382,13 +383,27 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		}
 
 		else {
+			try {
+				final int[] pixels = (int[]) imp.getProcessor().getPixels();
+				
+				final Cursor<ARGBType> c = Views.iterable(Activeimage).cursor();
 
-			final int[] pixels = (int[]) imp.getProcessor().getPixels();
-			final Cursor<ARGBType> c = Views.iterable(Activeimage).cursor();
+				for (int i = 0; i < pixels.length; ++i)
+					pixels[i] = c.next().get();
 
-			for (int i = 0; i < pixels.length; ++i)
-				pixels[i] = c.next().get();
+			} catch (Exception e) {
+				IJ.run("RGB Color");
+				final int[] pixels = (int[]) imp.getProcessor().getPixels();
+				final Cursor<ARGBType> c = Views.iterable(Activeimage).cursor();
 
+			
+				for (int i = 0; i < pixels.length; ++i)
+					pixels[i] = c.next().get();
+
+			   
+			}
+			
+			
 			imp.updateAndDraw();
 
 		}

@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import javax.swing.JComboBox;
 
+import ij.IJ;
 import ij.WindowManager;
 import pluginTools.BudFileChooser;
 
@@ -35,6 +36,7 @@ public class ChooseBudOrigMap implements ActionListener {
 		
 		
     	parent.impOrig = WindowManager.getImage(imagename);
+   
     	if(parent.impOrig!=null) {
 			parent.calibration = parent.impOrig.getCalibration().pixelWidth;
 			parent.Wavesize = parent.impOrig.getCalibration().frameInterval;

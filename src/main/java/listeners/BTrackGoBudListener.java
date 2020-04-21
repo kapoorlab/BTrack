@@ -34,7 +34,6 @@ public class BTrackGoBudListener implements ItemListener {
 			
 			parent.Panelfileoriginal = original.SingleChannelOption();
 			
-			parent.panelFirst.setSize(500, parent.panelFirst.getPreferredSize().height);
 			
 			
 		

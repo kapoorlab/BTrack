@@ -51,8 +51,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		parent.prestack = new ImageStack((int) parent.originalimg.dimension(0), (int) parent.originalimg.dimension(1),
 				java.awt.image.ColorModel.getRGBdefault());
 
-		parent.table.removeAll();
-		parent.PanelSelectFile.remove(parent.scrollPane);
+	
 		parent.PanelSelectFile.add(parent.scrollPane, BorderLayout.CENTER);
 		parent.Tracklist.clear();
 		parent.Finalresult.clear();

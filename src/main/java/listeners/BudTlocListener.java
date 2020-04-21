@@ -69,8 +69,10 @@ public class BudTlocListener implements TextListener {
 					parent.timeslider.repaint();
 					parent.timeslider.validate();
 					
-					if(CovistoKalmanPanel.Skeletontime.isEnabled())
+					if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
 						parent.imp.getOverlay().clear();
+					    parent.imp.updateAndDraw();	
+					}
 					
 			    		
 					 }

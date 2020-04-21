@@ -19,7 +19,7 @@ import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.File;
 import java.io.FilenameFilter;
-
+import ij.process.ImageConverter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -41,6 +41,7 @@ import fileListeners.ChooseBudSegCMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.process.ImageConverter;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
 import listeners.BTrackGoBudListener;
@@ -53,10 +54,19 @@ import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoThreeChForceFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
 import net.imagej.ImageJ;
+import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.converter.Converters;
+import net.imglib2.img.Img;
+import net.imglib2.img.ImgView;
+import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.img.display.imagej.ImgPlusViews;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.simplifiedio.SimplifiedIO;
@@ -319,17 +329,34 @@ public class BudFileChooser extends JPanel {
 			  
 			  
 		  }
-		  
+			private static ImgPlus< ARGBType >
+			convertToARGBType( ImgPlus< FloatType > image ) {
+		if ( ImgPlusViews.canFuseColor( image ) )
+			return ImgPlusViews.fuseColor( image );
+		RandomAccessibleInterval< ARGBType > convertedRAI = Converters.convertRAI(
+				image.getImg(),
+				( i, o ) -> {
+					int value = (int) i.get();
+					o.set( ARGBType.rgba( value, value, value, 255 ) );
+				},
+				new ARGBType() );
+		Img< ARGBType > convertedImg = ImgView.wrap( convertedRAI, new ArrayImgFactory< ARGBType >( new ARGBType() ) );
+		return new ImgPlus<>( convertedImg, image );
+	}
+			
+		
 		
 		  public void DoneCurrBud(Frame parent) throws ImgIOException{
 				
 				// Tracking and Measurement is done with imageA 
-		        
+			  
 			   
-				IJ.selectWindow(impOrig.getOriginalFileInfo().fileName);
-				IJ.run("RGB Color");
+			
+			    
+			  RandomAccessibleInterval<ARGBType> imageOrig = SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
+		
 				
-				RandomAccessibleInterval<ARGBType> imageOrig =  SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
+				
 				
 				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType());
 				
