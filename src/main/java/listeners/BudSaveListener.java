@@ -34,6 +34,7 @@ public class BudSaveListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	
+		parent.saveFile.mkdir();
 		String ID = parent.selectedID;
 		if(ID!=null) {
 
