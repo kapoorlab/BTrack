@@ -331,7 +331,7 @@ public class TrackEachBud {
 		if (parent.SegYelloworiginalimg != null) {
 	          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
 
-		ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud);
+		ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud, label);
 		for(Cellobject currentbudcell:budcelllist) {
 			
 			Localizable centercell = currentbudcell.Location;

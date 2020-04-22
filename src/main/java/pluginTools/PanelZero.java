@@ -13,8 +13,10 @@ public class PanelZero {
 		
 		JFrame frame = new JFrame("");
 
+		
 	
 
+	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
 				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells.tif");

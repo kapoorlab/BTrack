@@ -27,15 +27,12 @@ import pluginTools.TrackEachBud;
 
 public class GetNearest {
 	public static ArrayList<Cellobject> getLabelInteriorCells(InteractiveBud parent,final RandomAccessibleInterval<IntType> CurrentViewInt,
-			ArrayList<Cellobject> InteriorCells,Budobject Currentbud) {
+			ArrayList<Cellobject> InteriorCells,Budobject Currentbud, int currentlabel) {
 		
 		ArrayList<Cellobject> AllLabelcells = new ArrayList<Cellobject>();
 		
-		RealLocalizable centerpoint = Currentbud.Budcenter;
 		
-		List<RealLocalizable> skelpoints = Currentbud.dynamiclinelist;
 		
-		int ID = Currentbud.ID;
 		
 		RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
 		
@@ -45,7 +42,7 @@ public class GetNearest {
 			intranac.setPosition(cellcenter);
 			int label = intranac.get().get();
 			
-			if(label == ID) {
+			if(label == currentlabel) {
 				
 				
 				AllLabelcells.add(currentcell);
