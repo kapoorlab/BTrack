@@ -167,11 +167,11 @@ public class TrackEachBud {
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
-				Budregionobject PairCurrentViewBit = CurrentLabelBinaryImage(
+				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
 				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
+				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage, PairCurrentViewBit.minVal);
 
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
@@ -213,11 +213,11 @@ public class TrackEachBud {
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
-				Budregionobject PairCurrentViewBit = CurrentLabelBinaryImage(
+				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
 						CurrentViewInt, label);
 
 				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
+				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage, PairCurrentViewBit.minVal);
 
 				// Get the center point of each bud
 				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
@@ -267,9 +267,9 @@ public class TrackEachBud {
 										if (label == Labelchosen) {
 
 											LabelCovered.put(label, true);
-											PairCurrentViewBit = CurrentLabelBinaryImage(CurrentViewInt, label);
+											PairCurrentViewBit = BudCurrentLabelBinaryImage(CurrentViewInt, label);
 											// For each bud get the list of points
-											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
+											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage, PairCurrentViewBit.minVal);
 											centerpoint = budDetector.Listordering.getMeanCord(truths);
 
 											if (parent.jpb != null)
@@ -309,7 +309,7 @@ public class TrackEachBud {
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 
-		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons, ops);
+		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons,PairCurrentViewBit.minVal, ops);
 
 		if (parent.SegYelloworiginalimg != null) 
 	          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
@@ -368,7 +368,7 @@ public class TrackEachBud {
 
 
 
-	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons,
+	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, Point min,
 			OpService ops) {
 
 		ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
@@ -384,8 +384,10 @@ public class TrackEachBud {
 
 				skelcursor.next();
 
+				RealPoint addPoint = new RealPoint(skelcursor);
+				addPoint.move(min);
 				if (skelcursor.get().getInteger() > 0) {
-					endPoints.add(new RealPoint(skelcursor.getDoublePosition(0), skelcursor.getDoublePosition(1)));
+					endPoints.add(addPoint);
 
 				}
 
@@ -440,7 +442,7 @@ public class TrackEachBud {
 		return gradientimg;
 	}
 
-	public static Budregionobject NonCurrentLabelBinaryImage(
+	public static Budregionobject BudCurrentLabelBinaryImage(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
@@ -478,61 +480,67 @@ public class TrackEachBud {
 		}
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
-		ImageJ ij = new net.imagej.ImageJ();
-
-		IntervalView<BitType> interval = Views.interval(outimg, minVal, maxVal);
-		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(interval);
-		
-		Budregionobject region = new Budregionobject(gradimg, interval, size);
-		return region;
-
-	}
-	public static Budregionobject CurrentLabelBinaryImage(
-			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
-		int n = Intimg.numDimensions();
-		long[] position = new long[n];
-		Cursor<IntType> intCursor = Views.iterable(Intimg).cursor();
-
-		RandomAccessibleInterval<BitType> outimg = new ArrayImgFactory<BitType>().create(Intimg, new BitType());
-		RandomAccess<BitType> imageRA = outimg.randomAccess();
-
-		// Go through the whole image and add every pixel, that belongs to
-		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1) };
-		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
-
-		while (intCursor.hasNext()) {
-			intCursor.fwd();
-			imageRA.setPosition(intCursor);
-			int i = intCursor.get().get();
-			if (i == currentLabel) {
-
-				intCursor.localize(position);
-				for (int d = 0; d < n; ++d) {
-					if (position[d] < minVal[d]) {
-						minVal[d] = position[d];
-					}
-					if (position[d] > maxVal[d]) {
-						maxVal[d] = position[d];
-					}
-
-				}
-
-				imageRA.get().setOne();
-			} else
-				imageRA.get().setZero();
-
-		}
-		
-		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
-		ImageJ ij = new net.imagej.ImageJ();
 
 	
+		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
 		
-		Budregionobject region = new Budregionobject(gradimg, outimg, size);
+		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
+		return region;
+
+	}
+	public static Budregionobject YellowCurrentLabelBinaryImage(
+			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
+		int n = Intimg.numDimensions();
+		long[] position = new long[n];
+		Cursor<IntType> intCursor = Views.iterable(Intimg).cursor();
+
+		RandomAccessibleInterval<BitType> outimg = new ArrayImgFactory<BitType>().create(Intimg, new BitType());
+		RandomAccess<BitType> imageRA = outimg.randomAccess();
+
+		// Go through the whole image and add every pixel, that belongs to
+		// the currently processed label
+		long[] minVal = { Intimg.max(0), Intimg.max(1) };
+		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
+
+		while (intCursor.hasNext()) {
+			intCursor.fwd();
+			imageRA.setPosition(intCursor);
+			int i = intCursor.get().get();
+			if (i == currentLabel) {
+
+				intCursor.localize(position);
+				for (int d = 0; d < n; ++d) {
+					if (position[d] < minVal[d]) {
+						minVal[d] = position[d];
+					}
+					if (position[d] > maxVal[d]) {
+						maxVal[d] = position[d];
+					}
+
+				}
+
+				imageRA.get().setOne();
+			} else
+				imageRA.get().setZero();
+
+		}
+		
+		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
+		for (int d = 0; d < n; ++d) {
+			
+			minVal[d] = minVal[d] - 10;
+			maxVal[d] = maxVal[d] + 10;
+			
+		}
+	
+		Point min = new Point(minVal);
+		outimg = Views.offsetInterval(outimg, minVal, maxVal);
+		// Gradient image gives us the bondary points
+		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
+		
+		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
 		return region;
 
 	}
