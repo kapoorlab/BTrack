@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import fiji.plugin.trackmate.BCellobjectCollection;
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.util.AlphanumComparator;
+import Buddy.plugin.trackmate.Dimension;
+import Buddy.plugin.trackmate.util.AlphanumComparator;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
@@ -52,6 +49,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
 		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
+		putFeature( distBud, Double.valueOf( closestBudPoint ) );
+		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
+		
 		this.mybud = null;
 		this.mybudpoints = null;
 		this.currentcell = currentcell;
@@ -72,6 +72,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
 		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
+		putFeature( distBud, Double.valueOf( closestBudPoint ) );
+		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
 		this.mybud = mybud;
 		this.mybudpoints = mybudpoints;
 		this.currentcell = currentcell;

@@ -46,7 +46,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
-import fiji.plugin.trackmate.BCellobjectCollection;
+import Buddy.plugin.trackmate.BCellobjectCollection;
 import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
