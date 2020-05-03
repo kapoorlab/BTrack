@@ -35,11 +35,11 @@ public class BUDDYTimeDirectedSortedDepthFirstIterator extends BUDDYSortedDepthF
     	// Keep a map of matching edges so that we can retrieve them in the same order
     	final Map<Budpointobject, DefaultWeightedEdge> localEdges = new HashMap<Budpointobject, DefaultWeightedEdge>();
 
-    	final int ts = vertex.getFeature(Budpointobject.TIME).intValue();
+    	final int ts = vertex.getFeature(Budpointobject.POSITION_T).intValue();
         for (final DefaultWeightedEdge edge : specifics.edgesOf(vertex)) {
 
         	final Budpointobject oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
-        	final int tt = oppositeV.getFeature(Budpointobject.TIME).intValue();
+        	final int tt = oppositeV.getFeature(Budpointobject.POSITION_T).intValue();
         	if (tt <= ts) {
         		continue;
         	}

@@ -31,6 +31,7 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
+import tracker.trackanalyzer.BudTrackVelocityAnalyzer;
 import zGUI.CovistoZselectPanel;
 
 public class BUDDYTrackResult extends SwingWorker<Void, Void> {
@@ -100,10 +101,15 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 		int minid = Integer.MAX_VALUE;
 		int maxid = Integer.MIN_VALUE;
-		BUDDYTrackModel model = new BUDDYTrackModel(simplegraph);
+		
+		BUDDYModel model = new BUDDYModel();
+		model.setTracks(simplegraph, false);
 
-	
-		for (final Integer id : model.trackIDs(false)) {
+		BudTrackVelocityAnalyzer TrackVelocity =  new BudTrackVelocityAnalyzer();
+		TrackVelocity.process(model.getTrackModel().trackIDs(false), model);
+		
+	    
+		for (final Integer id : model.getTrackModel().trackIDs(false)) {
 
 			if (id > maxid)
 				maxid = id;
@@ -112,7 +118,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				minid = id;
 			
 			
-			final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
+			final HashSet<Budpointobject> Angleset = model.getTrackModel().trackBudpointobjects(id);
 			
 			int tracklength = Angleset.size();
 			if(tracklength >= CovistoKalmanPanel.trackduration * parent.AutoendTime/100)
@@ -135,9 +141,9 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 				String ID = Integer.toString(id);
 			
-				model.setName(id, "Track" + id + tracklength);
-				parent.Globalmodel = model;
-				final HashSet<Budpointobject> Angleset = model.trackBudpointobjects(id);
+				model.getTrackModel().setName(id, "Track" + id + tracklength);
+				parent.Globalmodel = model.getTrackModel();
+				final HashSet<Budpointobject> Angleset = model.getTrackModel().trackBudpointobjects(id);
 				
 				
 				
@@ -164,6 +170,15 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 					}
 					previousbud = currentbud;
 				}
+				
+				
+				double trackmeanspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MEAN_SPEED);
+				double trackmaxspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MAX_SPEED);
+				
+				parent.TrackMeanVelocitylist.add(new ValuePair<String, Double> (ID, trackmeanspeed* (parent.calibration/parent.timecal)));
+				parent.TrackMaxVelocitylist.add(new ValuePair<String, Double> (ID, trackmaxspeed* (parent.calibration/parent.timecal)));
+				
+				System.out.println(ID + " " + trackmeanspeed + " " + trackmaxspeed);
 			}
 			
 			
@@ -175,7 +190,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				Budpointobject bestbud = null;
 				
 
-					List<Budpointobject> sortedList = new ArrayList<Budpointobject>(model.trackBudpointobjects(id));
+					List<Budpointobject> sortedList = new ArrayList<Budpointobject>(model.getTrackModel().trackBudpointobjects(id));
 
 			
 					Iterator<Budpointobject> iterator = sortedList.iterator();

@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import Buddy.plugin.trackmate.Dimension;
 import budDetector.Budpointobject;
 import net.imglib2.multithreading.SimpleMultiThreading;
+import tracker.BUDDYDimension;
 import tracker.BUDDYFeatureModel;
 import tracker.BUDDYModel;
 import tracker.BUDDYTrackModel;
@@ -38,7 +39,7 @@ public class BudTrackLocationAnalyzer implements BudTrackAnalyzer {
 
 	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( featurenumber );
 
-	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( featurenumber );
+	public static final Map< String, BUDDYDimension > FEATURE_DIMENSIONS = new HashMap< >( featurenumber );
 
 	public static final Map< String, Boolean > IS_INT = new HashMap< >( featurenumber );
 
@@ -53,8 +54,8 @@ public class BudTrackLocationAnalyzer implements BudTrackAnalyzer {
 		FEATURE_SHORT_NAMES.put( X_LOCATION, "X" );
 		FEATURE_SHORT_NAMES.put( Y_LOCATION, "Y" );
 
-		FEATURE_DIMENSIONS.put( X_LOCATION, Dimension.POSITION );
-		FEATURE_DIMENSIONS.put( Y_LOCATION, Dimension.POSITION );
+		FEATURE_DIMENSIONS.put( X_LOCATION, BUDDYDimension.POSITION );
+		FEATURE_DIMENSIONS.put( Y_LOCATION, BUDDYDimension.POSITION );
 
 		IS_INT.put( X_LOCATION, Boolean.FALSE );
 		IS_INT.put( Y_LOCATION, Boolean.FALSE );
@@ -179,7 +180,7 @@ public class BudTrackLocationAnalyzer implements BudTrackAnalyzer {
 	}
 
 	@Override
-	public Map< String, Dimension > getFeatureDimensions()
+	public Map< String, BUDDYDimension > getFeatureDimensions()
 	{
 		return FEATURE_DIMENSIONS;
 	}

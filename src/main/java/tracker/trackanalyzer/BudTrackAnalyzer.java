@@ -8,7 +8,7 @@ import net.imglib2.algorithm.MultiThreaded;
 import tracker.BUDDYModel;
 import tracker.BUDDYTrackModel;
 
-public interface BudTrackAnalyzer extends Benchmark, FeatureAnalyzer, MultiThreaded
+public interface BudTrackAnalyzer extends Benchmark, BudFeatureAnalyzer, MultiThreaded
 {
 
 	/**

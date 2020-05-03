@@ -195,10 +195,10 @@ public class BUDDYTimeDirectedNeighborIndex extends NeighborIndex< Budpointobjec
 		{
 			final List< Budpointobject > nl = Graphs.neighborListOf( graph, v );
 			final List< Budpointobject > bnl = new ArrayList< Budpointobject >();
-			final int ts = v.getFeature( Budpointobject.TIME ).intValue();
+			final int ts = v.getFeature( Budpointobject.POSITION_T ).intValue();
 			for ( final Budpointobject Budpointobject : nl )
 			{
-				final int tt = Budpointobject.getFeature( Budpointobject.TIME ).intValue();
+				final int tt = Budpointobject.getFeature( Budpointobject.POSITION_T ).intValue();
 				if ( tt < ts )
 				{
 					bnl.add( Budpointobject );
@@ -217,10 +217,10 @@ public class BUDDYTimeDirectedNeighborIndex extends NeighborIndex< Budpointobjec
 		{
 			final List< Budpointobject > nl = Graphs.neighborListOf( graph, v );
 			final List< Budpointobject > bnl = new ArrayList< Budpointobject >();
-			final int ts = v.getFeature( Budpointobject.TIME ).intValue();
+			final int ts = v.getFeature( Budpointobject.POSITION_T ).intValue();
 			for ( final Budpointobject Budpointobject : nl )
 			{
-				final int tt = Budpointobject.getFeature( Budpointobject.TIME ).intValue();
+				final int tt = Budpointobject.getFeature( Budpointobject.POSITION_T ).intValue();
 				if ( tt > ts )
 				{
 					bnl.add( Budpointobject );

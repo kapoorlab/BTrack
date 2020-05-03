@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Buddy.plugin.trackmate.Dimension;
+import Buddy.plugin.trackmate.Spot;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import tracker.BUDDYDimension;
@@ -52,7 +53,7 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 		this.perimeter = perimeter;
 		
 		
-		putFeature(TIME,  (double)this.t);
+		putFeature(POSITION_T,  (double)this.t);
 		putFeature(POSITION_X, this.Location[0]);
 		putFeature(POSITION_Y, this.Location[1]);
 		putFeature(Velocity, this.velocity);
@@ -74,7 +75,6 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 
 	/** The position features. */
 	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y };
-	public static final String TIME = "TIME";
 	static int numfeatures = 4;
 	public final static Collection<String> FEATURES = new ArrayList<>(numfeatures);
 
@@ -178,13 +178,12 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 	 *            n n = 0 for X- coordinate, n = 1 for Y- coordinate
 	 * @return the difference in co-ordinate specified.
 	 */
-	public double diffTo(final Budpointobject target, int n) {
-
-		final double thisBloblocation = Location[n];
-		final double targetBloblocation = target.Location[n];
-		return thisBloblocation - targetBloblocation;
+	public double diffTo(final Budpointobject s, final String feature) {
+		final double f1 = features.get(feature).doubleValue();
+		final double f2 = s.getFeature(feature).doubleValue();
+		return f1 - f2;
 	}
-	
+
 	/**
 	 * Returns the squared distance between two clouds.
 	 *

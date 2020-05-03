@@ -262,7 +262,7 @@ import net.imglib2.RealPoint;
 		private static final double[] estimateInitialState(final Budpointobject first,
 				final Budpointobject second) {
 			final double[] xp = new double[] { second.Location[0], second.Location[1],
-					second.diffTo(first, 0), second.diffTo(first, 1) };
+					second.diffTo(first, Budpointobject.POSITION_X), second.diffTo(first, Budpointobject.POSITION_Y) };
 			return xp;
 		}
 

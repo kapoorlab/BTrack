@@ -123,6 +123,12 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
+	public ArrayList<ValuePair<String, Double>> TrackMeanVelocitylist;
+	public ArrayList<ValuePair<String, Double>> TrackMaxVelocitylist;
+	
+	
+	
+	
 	public ArrayList<ValuePair<String, Budobject>> BudTracklist;
 	public HashMap<String, ArrayList<BCellobject>> AllBudcells;
 	public Overlay overlay;
@@ -292,6 +298,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Clickedpoints = new int[2];
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
+		TrackMeanVelocitylist = new ArrayList<ValuePair<String, Double>>();
+		TrackMaxVelocitylist = new ArrayList<ValuePair<String, Double>>();
 		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
 		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
 		AllBuds = new HashMap<String, ArrayList<Budobject>>();

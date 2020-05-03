@@ -19,14 +19,14 @@ public class BUDDYTimeDirectedDepthFirstIterator extends BUDDYSortedDepthFirstIt
 	
     protected void addUnseenChildrenOf(Budpointobject vertex) {
     	
-    	int ts = vertex.getFeature(Budpointobject.TIME).intValue();
+    	int ts = vertex.getFeature(Budpointobject.POSITION_T).intValue();
         for (DefaultWeightedEdge edge : specifics.edgesOf(vertex)) {
             if (nListeners != 0) {
                 fireEdgeTraversed(createEdgeTraversalEvent(edge));
             }
 
             Budpointobject oppositeV = Graphs.getOppositeVertex(graph, edge, vertex);
-            int tt = oppositeV.getFeature(Budpointobject.TIME).intValue();
+            int tt = oppositeV.getFeature(Budpointobject.POSITION_T).intValue();
             if (tt <= ts) {
             	continue;
             }
