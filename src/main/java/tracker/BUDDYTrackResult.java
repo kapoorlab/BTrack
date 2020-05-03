@@ -62,7 +62,6 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = track.Trackfunction();
 		SimpleWeightedGraph<Budobject, DefaultWeightedEdge> Budsimplegraph = track.BudTrackfunction();
 		// Display Graph results, make table etc
-		
 		BudDisplayGraph(Budsimplegraph);
 		DisplayGraph(simplegraph);
 		
@@ -72,6 +71,33 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		
 
 		return null;
+	}
+	
+	public static List<Budpointobject> sortTrack(List<Budpointobject> Angleset) {
+		
+		List<Budpointobject> sortedlist = new ArrayList<Budpointobject>();
+		Collections.sort(Angleset, new Comparator<Budpointobject>() {
+
+			@Override
+			public int compare(Budpointobject o1, Budpointobject o2) {
+				// TODO Auto-generated method stub
+				return o1.t - o2.t;
+			}
+			
+			
+			
+			
+			
+		});
+		
+		for (Iterator<Budpointobject> it = Angleset.iterator(); it.hasNext();) {
+			Budpointobject entry =  it.next();
+			sortedlist.add(entry);
+		}
+		return sortedlist;
+		
+		
+		
 	}
 
 	public static HashMap<Integer, Integer> sortByInteger(HashMap<Integer, Integer> map) {
@@ -104,10 +130,11 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 		
 		BUDDYModel model = new BUDDYModel();
 		model.setTracks(simplegraph, false);
-
-		BudTrackVelocityAnalyzer TrackVelocity =  new BudTrackVelocityAnalyzer();
+		BudTrackVelocityAnalyzer TrackVelocity =  new BudTrackVelocityAnalyzer(parent);
 		TrackVelocity.process(model.getTrackModel().trackIDs(false), model);
-		
+		HashMap<Integer, HashMap<Integer,Double>> VelocityMap = TrackVelocity.getVelocityMap();
+	    parent.BudVelocityMap = VelocityMap;
+	    
 	    
 		for (final Integer id : model.getTrackModel().trackIDs(false)) {
 
@@ -136,7 +163,6 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 				int id = tracks.getKey();
 				int tracklength = tracks.getValue();
-				System.out.println("TrackID" + id + "was present for" + " " + tracklength + "frames");
 		
 
 				String ID = Integer.toString(id);
@@ -146,9 +172,8 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				final HashSet<Budpointobject> Angleset = model.getTrackModel().trackBudpointobjects(id);
 				
 				
-				
-		          List<Budpointobject> sortedList = new ArrayList<Budpointobject>(Angleset);
-					
+		          List<Budpointobject> unsortedList = new ArrayList<Budpointobject>(Angleset);
+		          List<Budpointobject> sortedList  =  sortTrack(unsortedList);
 			
 
 				
@@ -175,10 +200,9 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				double trackmeanspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MEAN_SPEED);
 				double trackmaxspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MAX_SPEED);
 				
-				parent.TrackMeanVelocitylist.add(new ValuePair<String, Double> (ID, trackmeanspeed* (parent.calibration/parent.timecal)));
-				parent.TrackMaxVelocitylist.add(new ValuePair<String, Double> (ID, trackmaxspeed* (parent.calibration/parent.timecal)));
+				parent.TrackMeanVelocitylist.put(ID, trackmeanspeed* (parent.calibration/parent.timecal));
+				parent.TrackMaxVelocitylist.put(ID, trackmaxspeed* (parent.calibration/parent.timecal));
 				
-				System.out.println(ID + " " + trackmeanspeed + " " + trackmaxspeed);
 			}
 			
 			
@@ -211,8 +235,8 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 			
 			
 			CreateTableView(parent);
-			BUDDYDisplaySelectedTrack.Select(parent);
-			BUDDYDisplaySelectedTrack.Mark(parent);
+			BUDDYDisplaySelectedTrack.Select(parent, VelocityMap);
+			BUDDYDisplaySelectedTrack.Mark(parent, VelocityMap);
 
 		}
 	}
@@ -291,7 +315,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 
 
-		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Growth Rate" };
+		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Mean Growth Rate", "Max Growth Rate" };
 
 		Object[][] rowvalues = new Object[0][colnames.length];
 
@@ -305,12 +329,16 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 
 		for(Map.Entry<Integer, Integer> tracks: parent.IDlist.entrySet()) {
 
-			Budpointobject currentbud = parent.Finalresult.get(Integer.toString(tracks.getKey()));
+			String ID =  Integer.toString(tracks.getKey());
+			double meanRate = parent.TrackMeanVelocitylist.get(ID);
+			double maxRate = parent.TrackMaxVelocitylist.get(ID);
+			Budpointobject currentbud = parent.Finalresult.get(ID);
 			parent.table.getModel().setValueAt(Integer.toString(tracks.getKey()), parent.row, 0);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[0]), parent.row, 1);
 			parent.table.getModel().setValueAt(f.format(currentbud.Location[1]), parent.row, 2);
 			parent.table.getModel().setValueAt(f.format(currentbud.t), parent.row, 3);
-
+			parent.table.getModel().setValueAt(parent.nf.format(meanRate), parent.row, 4);
+			parent.table.getModel().setValueAt(parent.nf.format(maxRate), parent.row, 5);
 			parent.row++;
 
 			parent.tablesize = parent.row;

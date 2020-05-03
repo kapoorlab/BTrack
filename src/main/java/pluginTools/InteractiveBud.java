@@ -123,9 +123,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
-	public ArrayList<ValuePair<String, Double>> TrackMeanVelocitylist;
-	public ArrayList<ValuePair<String, Double>> TrackMaxVelocitylist;
-	
+	public HashMap<String, Double> TrackMeanVelocitylist;
+	public HashMap<String, Double> TrackMaxVelocitylist;
+	public HashMap<Integer, HashMap<Integer,Double>> BudVelocityMap;
 	
 	
 	
@@ -289,6 +289,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
 		BudOvalRois = new ArrayList<OvalRoi>();
+		BudVelocityMap = new HashMap<Integer, HashMap<Integer,Double>>() ;
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
 		jpb = new JProgressBar();
@@ -298,8 +299,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		Clickedpoints = new int[2];
 		pixellist = new HashSet<Integer>();
 		Tracklist = new ArrayList<ValuePair<String, Budpointobject>>();
-		TrackMeanVelocitylist = new ArrayList<ValuePair<String, Double>>();
-		TrackMaxVelocitylist = new ArrayList<ValuePair<String, Double>>();
+		TrackMeanVelocitylist = new HashMap<String, Double>();
+		TrackMaxVelocitylist = new HashMap<String, Double>();
 		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
 		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
 		AllBuds = new HashMap<String, ArrayList<Budobject>>();

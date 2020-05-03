@@ -98,6 +98,9 @@ public class BudSaveListener implements ActionListener {
 	
 			
 		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
+		HashMap<Integer, Double> VelocityID = parent.BudVelocityMap.get(Integer.parseInt(ID));
+		double maxRate = parent.TrackMaxVelocitylist.get(ID);
+		double meanRate = parent.TrackMeanVelocitylist.get(ID);
 		for (Pair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			if(Track.getA().equals(ID)) {
@@ -106,9 +109,11 @@ public class BudSaveListener implements ActionListener {
 			double time = Track.getB().t * parent.timecal;
 			double LocationX = Track.getB().Location[0] * parent.calibration;
 			double LocationY = Track.getB().Location[1] * parent.calibration;
-			double Velocity = Track.getB().velocity;
+			double Velocity = 0;
+			if(VelocityID.get(Track.getB().t)!=null)
+			 Velocity = VelocityID.get(Track.getB().t);
 			
-			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
+			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity, meanRate, maxRate});
 			
 		
 			}
@@ -117,31 +122,7 @@ public class BudSaveListener implements ActionListener {
 	
 	}
 		
-		int averageframe = 3;
-		ArrayList<double[]> AverageTrackinfo = new ArrayList<double[]>();
-		for(int i = 0; i< Trackinfo.size() - averageframe; ++i) {
-			
-			double[] current = Trackinfo.get(i);
-    		double[] next = Trackinfo.get(i + 1);
-    		double[] secondnext = Trackinfo.get(i + 2);
-    		double[] thirdnext = Trackinfo.get(i + 3);
-    		double[] fourthnext = Trackinfo.get(i + 4);
-    		double[] fifthnext = Trackinfo.get(i + 5);
-    		
-    	    double currentvelocity = current[3];
-    	    double nextvelocity = next[3];
-    	    double secondnextvelocity = secondnext[3];
-    	    double thirdnextvelocity = thirdnext[3];
-    	    double fourthnextvelocity = fourthnext[3];
-    	    double fifthnextvelocity = fifthnext[3];
-    	    
-    	    double averagevelocity = (currentvelocity + nextvelocity + secondnextvelocity + thirdnextvelocity + fourthnextvelocity + fifthnextvelocity )/6.0;
-	    double time = current[0];
-	    double LocationX = current[1];
-	    double LocationY = current[2];
-	    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
-			
-		}
+
 		
 		try {
 			
@@ -153,11 +134,11 @@ public class BudSaveListener implements ActionListener {
 			BufferedWriter bw = new BufferedWriter(fw);
 			
 			bw.write(
-					" Time, LocationX , LocationY , Velocity \n");
+					" Time, LocationX , LocationY , Velocity, Mean Growth Rate, Max Growth Rate \n");
 			
-			for(int i = 0; i< AverageTrackinfo.size(); ++i) {
+			for(int i = 0; i< Trackinfo.size(); ++i) {
 				
-				double[] current = AverageTrackinfo.get(i);
+				double[] current = Trackinfo.get(i);
 				 double time = current[0];
 				    double LocationX = current[1];
 				    double LocationY = current[2];
@@ -166,11 +147,12 @@ public class BudSaveListener implements ActionListener {
 				    bw.write((int)time + "," 
 							+ parent.nf.format(LocationX) + "," 
 							+ parent.nf.format(LocationY) + "," 
-							+ parent.nf.format(Velocity) + 
+							+ parent.nf.format(Velocity) + "," 
+							+ parent.nf.format(meanRate) + "," 
+							+ parent.nf.format(maxRate) +
 							"\n");
 				
 			}
-	
 		
 		bw.close();
 		fw.close();

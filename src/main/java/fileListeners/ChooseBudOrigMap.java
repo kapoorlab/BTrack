@@ -39,14 +39,14 @@ public class ChooseBudOrigMap implements ActionListener {
    
     	if(parent.impOrig!=null) {
 			parent.calibration = parent.impOrig.getCalibration().pixelWidth;
-			parent.Wavesize = parent.impOrig.getCalibration().frameInterval;
-			if (parent.Wavesize == 0)
-				parent.Wavesize = 1;
+			parent.FrameInterval = parent.impOrig.getCalibration().frameInterval;
+			if (parent.FrameInterval == 0)
+				parent.FrameInterval = 1;
 			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
 			otherSymbols.setDecimalSeparator('.');
 			otherSymbols.setGroupingSeparator(','); 
 			DecimalFormat df = new DecimalFormat(("#.###"), otherSymbols);
-			parent.Fieldwavesize.setText(String.valueOf(df.format(parent.Wavesize))); 
+			parent.Fieldwavesize.setText(String.valueOf(df.format(parent.FrameInterval))); 
 			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibration)));
 	}
  

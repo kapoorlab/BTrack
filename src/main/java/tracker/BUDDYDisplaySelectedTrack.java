@@ -31,7 +31,7 @@ public class BUDDYDisplaySelectedTrack {
 	
 	
 	
-	public static void Select(final InteractiveBud parent) {
+	public static void Select(final InteractiveBud parent,HashMap<Integer, HashMap<Integer,Double>>  VelocityMap) {
 		
 		
 
@@ -89,7 +89,7 @@ public class BUDDYDisplaySelectedTrack {
 
 	}
 		
-       public static void Mark(final InteractiveBud parent) {
+       public static void Mark(final InteractiveBud parent, HashMap<Integer, HashMap<Integer,Double>>  VelocityMap) {
 
     	   
 			Color Drawcolor = Color.ORANGE;
@@ -135,7 +135,6 @@ public class BUDDYDisplaySelectedTrack {
 							parent.imp.getOverlay().add(points);
 							points.setStrokeColor(Drawcolor);
 							points.setStrokeWidth(40);
-							System.out.println(ID + " " + ImageID + " " + points.getContourCentroid()[0] + " " + points.getContourCentroid()[1] );
 							parent.imp.updateAndDraw();
 						}
 						
@@ -283,7 +282,7 @@ public class BUDDYDisplaySelectedTrack {
 
 	}
        
-       public static void displayclicked(InteractiveBud parent, int trackindex) {
+       public static void displayclicked(InteractiveBud parent,  int trackindex) {
 
    		// Make something happen
    		parent.row = trackindex;
@@ -295,9 +294,10 @@ public class BUDDYDisplaySelectedTrack {
 		
    	
    		
+		HashMap<Integer, Double> VelocityID = parent.BudVelocityMap.get(Integer.parseInt(ID));
+   		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();	
    		
-   		ArrayList<double[]> Trackinfo = new ArrayList<double[]>();
-		for (ValuePair<String, Budpointobject> Track: parent.Tracklist) {
+   		for (Pair<String, Budpointobject> Track: parent.Tracklist) {
 			
 			if(Track.getA().equals(ID)) {
 			
@@ -305,8 +305,9 @@ public class BUDDYDisplaySelectedTrack {
 			double time = Track.getB().t * parent.timecal;
 			double LocationX = Track.getB().Location[0] * parent.calibration;
 			double LocationY = Track.getB().Location[1] * parent.calibration;
-			double Velocity = Track.getB().velocity;
-			
+			double Velocity = 0;
+			if(VelocityID.get(Track.getB().t)!=null)
+			 Velocity = VelocityID.get(Track.getB().t);
 			Trackinfo.add(new double[] {time, LocationX, LocationY, Velocity});
 			
 		
@@ -316,32 +317,10 @@ public class BUDDYDisplaySelectedTrack {
 	
 	}
 		
-		int averageframe = 5;
-		ArrayList<double[]> AverageTrackinfo = new ArrayList<double[]>();
-		for(int i = 0; i< Trackinfo.size() - averageframe; ++i) {
-			
-         
-        		double[] current = Trackinfo.get(i);
-        		double[] next = Trackinfo.get(i + 1);
-        		double[] secondnext = Trackinfo.get(i + 2);
-        		double[] thirdnext = Trackinfo.get(i + 3);
-        		double[] fourthnext = Trackinfo.get(i + 4);
-        		double[] fifthnext = Trackinfo.get(i + 5);
-        		
-        	    double currentvelocity = current[3];
-        	    double nextvelocity = next[3];
-        	    double secondnextvelocity = secondnext[3];
-        	    double thirdnextvelocity = thirdnext[3];
-        	    double fourthnextvelocity = fourthnext[3];
-        	    double fifthnextvelocity = fifthnext[3];
-        	    
-        	    double averagevelocity = (currentvelocity + nextvelocity + secondnextvelocity + thirdnextvelocity + fourthnextvelocity + fifthnextvelocity )/6.0;
-		    double time = current[0];
-		    double LocationX = current[1];
-		    double LocationY = current[2];
-		    AverageTrackinfo.add(new double[] {time, LocationX, LocationY, averagevelocity});
-			
-		}
+		
+		
+	
+		
 		
    	
    		
@@ -354,7 +333,7 @@ public class BUDDYDisplaySelectedTrack {
    		
    		if(parent.Velocitydataset!=null)
    	   		parent.Velocitydataset.removeAllSeries();
-   	   		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(AverageTrackinfo, "Intensity"));
+   	   		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(Trackinfo, "Track Velocity"));
 
    	   		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/min)", "Time", "Velocity");
    	   		

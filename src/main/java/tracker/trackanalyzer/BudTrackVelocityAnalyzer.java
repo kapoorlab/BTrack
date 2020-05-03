@@ -17,6 +17,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import net.imglib2.util.Pair;
 import net.imglib2.util.Util;
 import net.imglib2.util.ValuePair;
+import pluginTools.InteractiveBud;
 import tracker.BUDDYDimension;
 import tracker.BUDDYFeatureModel;
 import tracker.BUDDYModel;
@@ -99,10 +100,12 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 
 	private long processingTime;
 	
-	HashMap<Integer, ArrayList<Pair<Integer,Double>>> VelocityMap;
+	HashMap<Integer, HashMap<Integer,Double>> VelocityMap;
 
-	public BudTrackVelocityAnalyzer()
+	public InteractiveBud parent;
+	public BudTrackVelocityAnalyzer(final InteractiveBud parent)
 	{
+		this.parent = parent;
 		setNumThreads();
 	}
 
@@ -116,7 +119,7 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 		return true;
 	}
 
-	public HashMap<Integer, ArrayList<Pair<Integer,Double>>> getVelocityMap(){
+	public HashMap<Integer, HashMap<Integer,Double>> getVelocityMap(){
 		
 		
 		return VelocityMap;
@@ -126,8 +129,8 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 	public void process( final Collection< Integer > trackIDs, final BUDDYModel model )
 	{
 
-		VelocityMap = new HashMap<Integer, ArrayList<Pair<Integer,Double>>>();
-		ArrayList<Pair<Integer,Double>> VelocityList = new ArrayList<Pair<Integer,Double>>(); 
+		VelocityMap = new HashMap<Integer, HashMap<Integer,Double>>();
+	
 		if ( trackIDs.isEmpty() ) { return; }
 
 		final ArrayBlockingQueue< Integer > queue = new ArrayBlockingQueue< >( trackIDs.size(), false, trackIDs );
@@ -145,7 +148,7 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 					Integer trackID;
 					while ( ( trackID = queue.poll() ) != null )
 					{
-
+						HashMap<Integer,Double> VelocityList = new HashMap<Integer,Double>(); 
 						final Set< DefaultWeightedEdge > track = model.getTrackModel().trackEdges( trackID );
 
 						double sum = 0;
@@ -172,7 +175,7 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 							final double d2 = source.squareDistanceTo( target );
 							final double dt = source.diffTo( target, Budpointobject.POSITION_T );
 							val = Math.sqrt( d2 ) / Math.abs( dt );
-							VelocityList.add(new ValuePair<Integer, Double>(source.t, val));
+							VelocityList.put((int)source.t, val* (parent.calibration/parent.timecal));
 							
 							// For median, min and max
 							velocities[ n ] = val;
