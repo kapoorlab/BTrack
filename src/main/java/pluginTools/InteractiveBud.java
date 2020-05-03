@@ -410,6 +410,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 
 	}
 	
+	
+	
 	public JFrame Cardframe = new JFrame("Bud n Cell Tracker");
 	public JPanel panelFirst = new JPanel();
 	public JPanel Original = new JPanel();

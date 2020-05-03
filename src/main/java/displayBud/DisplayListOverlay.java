@@ -27,7 +27,7 @@ public class DisplayListOverlay {
 	
 	// Get all the non-zero co ordinates of a binary image 
 	public static ArrayList<RealLocalizable> GetCoordinatesBit(
-			RandomAccessibleInterval<BitType> actualRoiimg, Point minVal) {
+			RandomAccessibleInterval<BitType> actualRoiimg) {
 
 		ArrayList<RealLocalizable> coordinatelist = new ArrayList<RealLocalizable>();
 		int ndims = actualRoiimg.numDimensions();
@@ -45,7 +45,7 @@ public class DisplayListOverlay {
 			double[] posf = new double[ndims];
 			center.localize(posf);
 			final RealPoint rpos = new RealPoint(posf);
-			rpos.move(minVal);
+		
 			if(center.get().getInteger() > 0) {
 				coordinatelist.add(rpos);
 			}

@@ -32,11 +32,17 @@ public class BudShowView {
 			
 			parent.CurrentView = utility.BudSlicer.getCurrentBudView(parent.originalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
+			if(parent.SegYelloworiginalimg!=null)
+				parent.CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
+						(int)parent.thirdDimensionSize);
 			
 		} else {
 
 			parent.CurrentView = utility.BudSlicer.getCurrentBudView(parent.originalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
+			if(parent.SegYelloworiginalimg!=null)
+				parent.CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
+						(int)parent.thirdDimensionSize);
 			
 		}
 

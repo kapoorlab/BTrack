@@ -220,7 +220,14 @@
 			<scope>test</scope>
 		</dependency>
 		
-	
+	<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.tinyjee.jgraphx</groupId>
+			<artifactId>jgraphx</artifactId>
+		</dependency>
 
 		<!-- ImageJ dependencies -->
 		<dependency>

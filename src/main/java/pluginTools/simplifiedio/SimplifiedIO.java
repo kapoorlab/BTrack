@@ -154,7 +154,7 @@ public class SimplifiedIO {
 		} else if ( imageType instanceof RealType && type instanceof RealType ) {
 			return convertBetweenRealType( image, ( RealType ) type );
 		} else if ( imageType instanceof UnsignedByteType && type instanceof ARGBType ) {
-			return convertUnsignedByteTypeToARGBType( image );
+			return UNconvertToRGB( image );
 		} else if ( imageType instanceof ARGBType && type instanceof RealType ) { return convertARGBTypeToRealType( image, ( RealType ) type ); }
 		
 		else if (imageType instanceof FloatType)
@@ -163,7 +163,26 @@ public class SimplifiedIO {
 		
 			throw new IllegalStateException( "Cannot convert between given pixel types: " + imageType.getClass().getSimpleName() + ", " + type.getClass().getSimpleName() );
 	}
-	
+	public static  RandomAccessibleInterval<ARGBType> UNconvertToRGB(RandomAccessibleInterval<UnsignedByteType> image) {
+		RandomAccessibleInterval< ARGBType > convertedRAI = new ArrayImgFactory().create(image, new ARGBType());
+		Cursor<UnsignedByteType> cur = Views.iterable(image).localizingCursor();
+		RandomAccess<ARGBType> ran = convertedRAI.randomAccess();
+		
+		while(cur.hasNext()) {
+			
+			
+			cur.fwd();
+			int value =  cur.get().get();
+			ran.setPosition(cur);
+			ran.get().set(ARGBType.rgba( value, value, value, 255 ));
+			
+			
+		}
+		
+		return convertedRAI;
+		
+	}
+
 	
 	public static  RandomAccessibleInterval<ARGBType> convertToRGB(RandomAccessibleInterval<FloatType> image) {
 		RandomAccessibleInterval< ARGBType > convertedRAI = new ArrayImgFactory().create(image, new ARGBType());
@@ -214,20 +233,7 @@ public class SimplifiedIO {
 		return path;
 	}
 
-	private static ImgPlus< ARGBType >
-			convertUnsignedByteTypeToARGBType( ImgPlus< UnsignedByteType > image ) {
-		if ( ImgPlusViews.canFuseColor( image ) )
-			return ImgPlusViews.fuseColor( image );
-		RandomAccessibleInterval< ARGBType > convertedRAI = Converters.convertRAI(
-				image.getImg(),
-				( i, o ) -> {
-					int value = i.get();
-					o.set( ARGBType.rgba( value, value, value, 255 ) );
-				},
-				new ARGBType() );
-		Img< ARGBType > convertedImg = ImgView.wrap( convertedRAI, new ArrayImgFactory< ARGBType >( new ARGBType() ) );
-		return new ImgPlus<>( convertedImg, image );
-	}
+
 
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	private static < T extends NativeType< T > > ImgPlus< T >

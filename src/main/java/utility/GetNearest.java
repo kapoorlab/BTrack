@@ -139,8 +139,8 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 									.BudCurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
 
 							// For each bud get the list of points
-							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage, PairCurrentViewBit.minVal);
-							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage, PairCurrentViewBit.minVal);
+							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
 							double cellArea = interiorcelltruths.size() * parent.calibration;
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
 							

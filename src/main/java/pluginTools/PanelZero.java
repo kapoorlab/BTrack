@@ -22,7 +22,10 @@ public class PanelZero {
 				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells.tif");
 		impA.show();
 		
-
+		ImagePlus impB = new Opener()
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Small_Yellow_Cells.tif");
+		impB.show();
+	
 	
 		
 		ImagePlus impC = new Opener()
