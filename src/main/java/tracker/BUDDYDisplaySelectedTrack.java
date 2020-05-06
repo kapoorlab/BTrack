@@ -92,7 +92,7 @@ public class BUDDYDisplaySelectedTrack {
        public static void Mark(final InteractiveBud parent, HashMap<Integer, HashMap<Integer,Double>>  VelocityMap) {
 
     	   
-			Color Drawcolor = Color.ORANGE;
+			parent.Drawcolor = Color.ORANGE;
 
     	   
 		parent.table.addMouseListener(parent.tvl = new MouseListener() {
@@ -104,7 +104,7 @@ public class BUDDYDisplaySelectedTrack {
                 Roi[] Roipoints = parent.imp.getOverlay().toArray();
 				
 				for(Roi point:Roipoints) {
-				if(Roi.getColor() == Drawcolor) {
+				if(Roi.getColor() == parent.Drawcolor) {
 					
 					parent.imp.getOverlay().remove(point);
 					
@@ -133,7 +133,7 @@ public class BUDDYDisplaySelectedTrack {
 							OvalRoi points =  new OvalRoi((int) Integer.parseInt(CordX), (int) Integer.parseInt(CordY),
 									25, 25);
 							parent.imp.getOverlay().add(points);
-							points.setStrokeColor(Drawcolor);
+							points.setStrokeColor(parent.Drawcolor);
 							points.setStrokeWidth(40);
 							parent.imp.updateAndDraw();
 						}

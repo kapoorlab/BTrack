@@ -215,13 +215,21 @@ public class Budpointobject extends AbstractEuclideanSpace implements RealLocali
 		final double[] targetLocation = target.Location;
 
 		double distance = 1.0E-5;
+		double angle = 0;
 
 		for (int d = 0; d < sourceLocation.length; ++d) {
 
 			distance += (sourceLocation[d] - targetLocation[d]) * (sourceLocation[d] - targetLocation[d]);
+			
+			
 		}
+		
+		
+		angle = Math.abs((sourceLocation[1] - targetLocation[1])/ (sourceLocation[0] - targetLocation[0] + 1.0E-10));
 
-			return distance;
+		double cost = alpha * distance + beta * angle;
+		
+			return cost;
 	}
 
 

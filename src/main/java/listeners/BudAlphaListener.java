@@ -8,9 +8,8 @@ import javax.swing.JScrollBar;
 
 import kalmanGUI.CovistoKalmanPanel;
 import pluginTools.InteractiveBud;
-import zGUI.CovistoZselectPanel;
 
-public class BudPREIniSearchListener implements AdjustmentListener {
+public class BudAlphaListener implements AdjustmentListener {
 	
 	final Label label;
 	final String string;
@@ -20,7 +19,7 @@ public class BudPREIniSearchListener implements AdjustmentListener {
 	final JScrollBar scrollbar;
 	
 	
-	public BudPREIniSearchListener(final InteractiveBud parent, final Label label, final String string, final float min, final float max, final int scrollbarSize, final JScrollBar scrollbar) {
+	public BudAlphaListener(final InteractiveBud parent, final Label label, final String string, final float min, final float max, final int scrollbarSize, final JScrollBar scrollbar) {
 		
 		this.parent = parent;
 		this.label = label;
@@ -38,15 +37,12 @@ public class BudPREIniSearchListener implements AdjustmentListener {
 	
 	@Override
 	public void adjustmentValueChanged(final AdjustmentEvent event) {
-		CovistoKalmanPanel.initialSearchradius = utility.BudSlicer.computeValueFromScrollbarPosition(event.getValue(), min, max, scrollbarSize);
+		CovistoKalmanPanel.alpha = utility.BudSlicer.computeValueFromScrollbarPosition(event.getValue(), min, max, scrollbarSize);
 
-		
-
-			label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.initialSearchradius));
-
+			label.setText(string +  " = "  + parent.nf.format(CovistoKalmanPanel.alpha));
+			CovistoKalmanPanel.beta = 1 - CovistoKalmanPanel.alpha; 
 			
 	
 	}
 	
-
 }

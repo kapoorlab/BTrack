@@ -55,6 +55,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 	
 		parent.PanelSelectFile.add(parent.scrollPane, BorderLayout.CENTER);
 		parent.Tracklist.clear();
+		parent.IDlist.clear();
 		parent.Finalresult.clear();
 		
 		

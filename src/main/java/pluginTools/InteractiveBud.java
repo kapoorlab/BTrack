@@ -2,6 +2,7 @@ package pluginTools;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -57,6 +58,7 @@ import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
 import listeners.BTrackAutoEndListener;
 import listeners.BTrackFilenameListener;
+import listeners.BudAlphaListener;
 import listeners.BudLinkobjectListener;
 import listeners.BudMastadonListener;
 import listeners.BudPREIniSearchListener;
@@ -103,6 +105,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public final int scrollbarSize = 1000;
 	public Set<Integer> pixellist;
 	public NumberFormat nf;
+	public Color Drawcolor; 
 	public RandomAccessibleInterval<ARGBType> originalimg;
 	public RandomAccessibleInterval<FloatType> originalSecimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
@@ -637,14 +640,16 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
 		CovistoKalmanPanel.setInitialsearchradius((float) (CovistoKalmanPanel.initialSearchradius/calibration));
-		KalmanPanel.validate();
-		KalmanPanel.repaint();
+		
 		CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new BudPREIniSearchListener(this,
 				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
 				CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
-		
-		
+		CovistoKalmanPanel.alphaS.addAdjustmentListener(new BudAlphaListener(this, CovistoKalmanPanel.alphaText, CovistoKalmanPanel.alphastring,
+				CovistoKalmanPanel.alphaMin, CovistoKalmanPanel.alphaMax, CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.alphaS));
+		CovistoKalmanPanel.setInitialAlpha(CovistoKalmanPanel.alphaInit);
+		KalmanPanel.validate();
+		KalmanPanel.repaint();
 		inputtrackField.addTextListener(new BudTrackidListener(this));
 		Batchbutton.addActionListener(new BudSaveBatchListener(this));
 		inputField.addTextListener(new BTrackFilenameListener(this));

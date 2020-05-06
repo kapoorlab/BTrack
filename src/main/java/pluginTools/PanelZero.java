@@ -29,11 +29,11 @@ public class PanelZero {
 	
 		
 		ImagePlus impC = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/BudOriginalRGB.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Transmitted Light_Bud2.tif");
 		impC.show();
 
 		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/mask_Transmitted Light_Bud2.tif");
 		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();
