@@ -463,9 +463,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Label inputtrackLabel;
 	public TextField inputtrackField;
 	public Border selectcell = new CompoundBorder(new TitledBorder("Select Cell"), new EmptyBorder(c.insets));
-	public JLabel inputLabel = new JLabel("Filename:");
+	//public JLabel inputLabel = new JLabel("Filename:");
 	public TextField inputField = new TextField();
-	public Border origborder = new CompoundBorder(new TitledBorder("Enter filename for results files"),
+	public Border origborder = new CompoundBorder(new TitledBorder("Results files"),
 			new EmptyBorder(c.insets));
 	public final JButton ChooseDirectory = new JButton("Choose Directory to save results in");
 	public void Card() {
@@ -592,11 +592,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelFirst.add(PanelSelectFile, new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
-		Original.add(inputLabel, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		//Original.add(inputLabel, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		//		GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
-		Original.add(inputField, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
-				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		//Original.add(inputField, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
+		//		GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
 		Original.add(inputtrackLabel, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));

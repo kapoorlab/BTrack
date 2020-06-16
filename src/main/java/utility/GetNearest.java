@@ -98,6 +98,7 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 			final RealLocalizable source = ClickedPoint;
 			final RealPoint sourceCoords = new RealPoint(source);
 			Search.search(sourceCoords);
+				
 			final FlagNode<RealLocalizable> targetNode = Search.getSampler().get();
 
 			KDtreeroi = targetNode.getValue();
