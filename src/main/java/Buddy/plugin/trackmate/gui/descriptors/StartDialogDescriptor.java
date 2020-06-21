@@ -90,7 +90,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 			panel.echoSettings(trackmate.getModel(), trackmate.getSettings());
 			imp = trackmate.getSettings().imp;
 		}
-		panel.getFrom(imp);
+		panel.getFrom(parent,imp);
 	}
 
 	@Override

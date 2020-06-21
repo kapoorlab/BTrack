@@ -44,17 +44,6 @@ public class StartDialogPanel extends ActionListenablePanel {
 
 	private final JLabel jLabelImageName;
 
-	private final JNumericTextField jTextFieldXStart;
-
-	private final JNumericTextField jTextFieldXEnd;
-
-	private final JNumericTextField jTextFieldYStart;
-
-	private final JNumericTextField jTextFieldYEnd;
-
-	private final JNumericTextField jTextFieldZStart;
-
-	private final JNumericTextField jTextFieldZEnd;
 
 	private final JNumericTextField jTextFieldTEnd;
 
@@ -90,12 +79,12 @@ public class StartDialogPanel extends ActionListenablePanel {
 		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 1.0, 1.0 };
 		setLayout(gridBagLayout);
 
-		final JLabel lblCitation = new JLabel("<html>" + "Please note that TrackMate is available through Fiji, "
-				+ "and is based on a publication. If you use it successfully "
-				+ "for your research please be so kind to cite our work:" + "<p>"
-				+ "<b>Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), "
-				+ "<i>TrackMate: An open and extensible platform for single-particle "
-				+ "tracking.</i></b> Methods 115: 80-90." + "</html>");
+
+		
+		final JLabel lblCitation = new JLabel("<html>" +" BTrack is based on TrackMate which is a published Fiji tool for tracking,"
+		+  "<b>Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), "
+		+ "<i>TrackMate: An open and extensible platform for single-particle "
+		+ "tracking.</i></b> Methods 115: 80-90.");
 		lblCitation.setFont(SMALL_FONT);
 		final GridBagConstraints gbc_lblCitation = new GridBagConstraints();
 		gbc_lblCitation.fill = GridBagConstraints.BOTH;
@@ -285,134 +274,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 		gbc_jLabelCropSetting.gridy = 9;
 		add(jLabelCropSetting, gbc_jLabelCropSetting);
 
-		jTextFieldXStart = new JNumericTextField();
-		jTextFieldXStart.setFormat("%.0f");
-		jTextFieldXStart.setHorizontalAlignment(SwingConstants.CENTER);
-		jTextFieldXStart.setPreferredSize(TEXTFIELD_DIMENSION);
-		jTextFieldXStart.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jTextFieldXStart = new GridBagConstraints();
-		gbc_jTextFieldXStart.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jTextFieldXStart.anchor = GridBagConstraints.NORTH;
-		gbc_jTextFieldXStart.insets = new Insets(5, 5, 5, 5);
-		gbc_jTextFieldXStart.gridx = 1;
-		gbc_jTextFieldXStart.gridy = 10;
-		add(jTextFieldXStart, gbc_jTextFieldXStart);
-
-		jTextFieldXEnd = new JNumericTextField();
-		jTextFieldXEnd.setFormat("%.0f");
-		jTextFieldXEnd.setHorizontalAlignment(SwingConstants.CENTER);
-		jTextFieldXEnd.setPreferredSize(TEXTFIELD_DIMENSION);
-		jTextFieldXEnd.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jTextFieldXEnd = new GridBagConstraints();
-		gbc_jTextFieldXEnd.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jTextFieldXEnd.anchor = GridBagConstraints.NORTH;
-		gbc_jTextFieldXEnd.insets = new Insets(5, 5, 5, 5);
-		gbc_jTextFieldXEnd.gridx = 3;
-		gbc_jTextFieldXEnd.gridy = 10;
-		add(jTextFieldXEnd, gbc_jTextFieldXEnd);
-
-		final JLabel jLabelX = new JLabel("X");
-		jLabelX.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jLabelX = new GridBagConstraints();
-		gbc_jLabelX.anchor = GridBagConstraints.EAST;
-		gbc_jLabelX.insets = new Insets(5, 5, 5, 5);
-		gbc_jLabelX.gridx = 0;
-		gbc_jLabelX.gridy = 10;
-		add(jLabelX, gbc_jLabelX);
-
-		final JLabel jLabelTo1 = new JLabel("to");
-		jLabelTo1.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jLabelTo1 = new GridBagConstraints();
-		gbc_jLabelTo1.insets = new Insets(5, 5, 5, 5);
-		gbc_jLabelTo1.gridx = 2;
-		gbc_jLabelTo1.gridy = 10;
-		add(jLabelTo1, gbc_jLabelTo1);
-
-		final JLabel jLabelY = new JLabel("Y");
-		jLabelY.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jLabelY = new GridBagConstraints();
-		gbc_jLabelY.anchor = GridBagConstraints.EAST;
-		gbc_jLabelY.insets = new Insets(5, 5, 5, 5);
-		gbc_jLabelY.gridx = 0;
-		gbc_jLabelY.gridy = 11;
-		add(jLabelY, gbc_jLabelY);
-
-		final JLabel jLabelTo3 = new JLabel("to");
-		jLabelTo3.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jLabelTo3 = new GridBagConstraints();
-		gbc_jLabelTo3.insets = new Insets(5, 5, 5, 5);
-		gbc_jLabelTo3.gridx = 2;
-		gbc_jLabelTo3.gridy = 12;
-		add(jLabelTo3, gbc_jLabelTo3);
-
-		jTextFieldYStart = new JNumericTextField();
-		jTextFieldYStart.setFormat("%.0f");
-		jTextFieldYStart.setHorizontalAlignment(SwingConstants.CENTER);
-		jTextFieldYStart.setPreferredSize(TEXTFIELD_DIMENSION);
-		jTextFieldYStart.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jTextFieldYStart = new GridBagConstraints();
-		gbc_jTextFieldYStart.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jTextFieldYStart.anchor = GridBagConstraints.NORTH;
-		gbc_jTextFieldYStart.insets = new Insets(5, 5, 5, 5);
-		gbc_jTextFieldYStart.gridx = 1;
-		gbc_jTextFieldYStart.gridy = 11;
-		add(jTextFieldYStart, gbc_jTextFieldYStart);
-
-		final JLabel jLabelTo2 = new JLabel("to");
-		jLabelTo2.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jLabelTo2 = new GridBagConstraints();
-		gbc_jLabelTo2.insets = new Insets(5, 5, 5, 5);
-		gbc_jLabelTo2.gridx = 2;
-		gbc_jLabelTo2.gridy = 11;
-		add(jLabelTo2, gbc_jLabelTo2);
-
-		final JLabel jLabelZ = new JLabel("Z");
-		jLabelZ.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jLabelZ = new GridBagConstraints();
-		gbc_jLabelZ.anchor = GridBagConstraints.EAST;
-		gbc_jLabelZ.insets = new Insets(5, 5, 5, 5);
-		gbc_jLabelZ.gridx = 0;
-		gbc_jLabelZ.gridy = 12;
-		add(jLabelZ, gbc_jLabelZ);
-
-		jTextFieldYEnd = new JNumericTextField();
-		jTextFieldYEnd.setFormat("%.0f");
-		jTextFieldYEnd.setHorizontalAlignment(SwingConstants.CENTER);
-		jTextFieldYEnd.setPreferredSize(TEXTFIELD_DIMENSION);
-		jTextFieldYEnd.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jTextFieldYEnd = new GridBagConstraints();
-		gbc_jTextFieldYEnd.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jTextFieldYEnd.anchor = GridBagConstraints.NORTH;
-		gbc_jTextFieldYEnd.insets = new Insets(5, 5, 5, 5);
-		gbc_jTextFieldYEnd.gridx = 3;
-		gbc_jTextFieldYEnd.gridy = 11;
-		add(jTextFieldYEnd, gbc_jTextFieldYEnd);
-
-		jTextFieldZStart = new JNumericTextField();
-		jTextFieldZStart.setFormat("%.0f");
-		jTextFieldZStart.setHorizontalAlignment(SwingConstants.CENTER);
-		jTextFieldZStart.setPreferredSize(TEXTFIELD_DIMENSION);
-		jTextFieldZStart.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jTextFieldZStart = new GridBagConstraints();
-		gbc_jTextFieldZStart.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jTextFieldZStart.anchor = GridBagConstraints.NORTH;
-		gbc_jTextFieldZStart.insets = new Insets(5, 5, 5, 5);
-		gbc_jTextFieldZStart.gridx = 1;
-		gbc_jTextFieldZStart.gridy = 12;
-		add(jTextFieldZStart, gbc_jTextFieldZStart);
-
-		jTextFieldZEnd = new JNumericTextField();
-		jTextFieldZEnd.setFormat("%.0f");
-		jTextFieldZEnd.setHorizontalAlignment(SwingConstants.CENTER);
-		jTextFieldZEnd.setPreferredSize(TEXTFIELD_DIMENSION);
-		jTextFieldZEnd.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jTextFieldZEnd = new GridBagConstraints();
-		gbc_jTextFieldZEnd.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jTextFieldZEnd.anchor = GridBagConstraints.NORTH;
-		gbc_jTextFieldZEnd.insets = new Insets(5, 5, 5, 5);
-		gbc_jTextFieldZEnd.gridx = 3;
-		gbc_jTextFieldZEnd.gridy = 12;
-		add(jTextFieldZEnd, gbc_jTextFieldZEnd);
+		
 
 		jTextFieldTStart = new JNumericTextField();
 		jTextFieldTStart.setFormat("%.0f");
@@ -460,21 +322,6 @@ public class StartDialogPanel extends ActionListenablePanel {
 		jButtonRefresh = new JButton("Refresh source");
 		jButtonRefresh.setToolTipText(TOOLTIP);
 		jButtonRefresh.setFont(SMALL_FONT);
-		final GridBagConstraints gbc_jButtonRefresh = new GridBagConstraints();
-		gbc_jButtonRefresh.anchor = GridBagConstraints.SOUTHWEST;
-		gbc_jButtonRefresh.insets = new Insets(5, 5, 5, 5);
-		gbc_jButtonRefresh.gridwidth = 4;
-		gbc_jButtonRefresh.gridx = 0;
-		gbc_jButtonRefresh.gridy = 14;
-		add(jButtonRefresh, gbc_jButtonRefresh);
-		jButtonRefresh.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				imp = ImageJFunctions.show(parent.originalimg);
-				getFrom(imp);
-				fireAction(IMAGEPLUS_REFRESHED);
-			}
-		});
 	}
 
 	/*
@@ -502,12 +349,6 @@ public class StartDialogPanel extends ActionListenablePanel {
 		// Crop cube
 		settings.tstart = NumberParser.parseInteger(jTextFieldTStart.getText());
 		settings.tend = NumberParser.parseInteger(jTextFieldTEnd.getText());
-		settings.xstart = NumberParser.parseInteger(jTextFieldXStart.getText());
-		settings.xend = NumberParser.parseInteger(jTextFieldXEnd.getText());
-		settings.ystart = NumberParser.parseInteger(jTextFieldYStart.getText());
-		settings.yend = NumberParser.parseInteger(jTextFieldYEnd.getText());
-		settings.zstart = NumberParser.parseInteger(jTextFieldZStart.getText());
-		settings.zend = NumberParser.parseInteger(jTextFieldZEnd.getText());
 		// Image info
 		settings.dx = NumberParser.parseDouble(jTextFieldPixelWidth.getText());
 		settings.dy = NumberParser.parseDouble(jTextFieldPixelHeight.getText());
@@ -551,12 +392,6 @@ public class StartDialogPanel extends ActionListenablePanel {
 		jLabelUnits2.setText(model.getSpaceUnits());
 		jLabelUnits3.setText(model.getSpaceUnits());
 		jLabelUnits4.setText(model.getTimeUnits());
-		jTextFieldXStart.setText("" + settings.xstart);
-		jTextFieldYStart.setText("" + settings.ystart);
-		jTextFieldXEnd.setText("" + settings.xend);
-		jTextFieldYEnd.setText("" + settings.yend);
-		jTextFieldZStart.setText("" + settings.zstart);
-		jTextFieldZEnd.setText("" + settings.zend);
 		jTextFieldTStart.setText("" + settings.tstart);
 		jTextFieldTEnd.setText("" + settings.tend);
 	}
@@ -564,7 +399,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 	/**
 	 * Fill the text fields with parameters grabbed from specified ImagePlus.
 	 */
-	public void getFrom(final ImagePlus lImp) {
+	public void getFrom(final InteractiveBud parent,  final ImagePlus lImp) {
 		this.imp = lImp;
 
 		if (lImp.getType() == ImagePlus.COLOR_RGB) {
@@ -575,29 +410,18 @@ public class StartDialogPanel extends ActionListenablePanel {
 		}
 
 		jLabelImageName.setText("Target: " + lImp.getShortTitle());
-		jTextFieldPixelWidth.setValue(lImp.getCalibration().pixelWidth);
-		jTextFieldPixelHeight.setValue(lImp.getCalibration().pixelHeight);
+		jTextFieldPixelWidth.setValue(parent.calibration);
+		jTextFieldPixelHeight.setValue(parent.calibration);
 		jTextFieldVoxelDepth.setValue(lImp.getCalibration().pixelDepth);
-		if (lImp.getCalibration().frameInterval == 0) {
-			jTextFieldTimeInterval.setValue(1);
-			jLabelUnits4.setText("frame");
-		} else {
-			jTextFieldTimeInterval.setValue(lImp.getCalibration().frameInterval);
-			jLabelUnits4.setText(lImp.getCalibration().getTimeUnit());
-		}
+		jTextFieldTimeInterval.setValue(parent.timecal);
+		jLabelUnits4.setText(lImp.getCalibration().getTimeUnit());
+		
 		jLabelUnits1.setText(lImp.getCalibration().getXUnit());
 		jLabelUnits2.setText(lImp.getCalibration().getYUnit());
 		jLabelUnits3.setText(lImp.getCalibration().getZUnit());
 		Roi roi = lImp.getRoi();
 		if (null == roi)
 			roi = new Roi(0, 0, lImp.getWidth(), lImp.getHeight());
-		final Rectangle boundingRect = roi.getBounds();
-		jTextFieldXStart.setText("" + (boundingRect.x));
-		jTextFieldYStart.setText("" + (boundingRect.y));
-		jTextFieldXEnd.setText("" + (boundingRect.width + boundingRect.x - 1));
-		jTextFieldYEnd.setText("" + (boundingRect.height + boundingRect.y - 1));
-		jTextFieldZStart.setText("" + 0);
-		jTextFieldZEnd.setText("" + (lImp.getNSlices() - 1));
 		jTextFieldTStart.setText("" + 0);
 		jTextFieldTEnd.setText("" + (lImp.getNFrames() - 1));
 

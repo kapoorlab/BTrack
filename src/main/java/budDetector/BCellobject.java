@@ -25,7 +25,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public final ArrayList<Budpointobject> mybudpoints;
 	
 	public final Cellobject currentcell;
-	// Location of the cell
 
 	// Distance from center of cell to nearest bud growth point
 	public double closestGrowthPoint;
@@ -48,6 +47,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( POSITION_X, Double.valueOf( currentcell.Location.getDoublePosition(0) ) );
 		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
 		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
+		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
 		putFeature( distBud, Double.valueOf( closestBudPoint ) );
 		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
@@ -71,6 +71,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( POSITION_X, Double.valueOf( currentcell.Location.getDoublePosition(0) ) );
 		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
 		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
+		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
 		putFeature( distBud, Double.valueOf( closestBudPoint ) );
 		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
@@ -99,6 +100,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 	/** The name of the spot Radius feature. */
 	public static final String RADIUS = "RADIUS";
+	
+	/** The name of the spot Radius feature. */
+	public static final String INTENSITY = "INTENSITY";
 
 	/** The name of the spot T position feature. */
 	public static final String POSITION_T = "POSITION_T";
@@ -106,7 +110,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	/** The position features. */
 	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y};
 
-	static int totalfeatures = 6;
+	static int totalfeatures = 7;
 	public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
 
 	/** The 4 privileged spot feature names. */
@@ -144,6 +148,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURES.add( POSITION_Y );
 		FEATURES.add( POSITION_T );
 		FEATURES.add( RADIUS );
+		FEATURES.add( INTENSITY );
 		FEATURES.add( distBud );
 		FEATURES.add( distDynamicBud );
 		
@@ -154,7 +159,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_NAMES.put( POSITION_Y, "Y" );
 		FEATURE_NAMES.put( POSITION_T, "T" );
 		FEATURE_NAMES.put( RADIUS, "Radius" );
-		
+		FEATURE_NAMES.put( INTENSITY, "Intensity" );
 		
 		FEATURE_SHORT_NAMES.put( distBud, "DistBud" );
 		FEATURE_SHORT_NAMES.put( distDynamicBud, "DistDynamicBud" );
@@ -162,7 +167,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
 		FEATURE_SHORT_NAMES.put( POSITION_T, "T" );
 		FEATURE_SHORT_NAMES.put( RADIUS, "R" );
-		
+		FEATURE_SHORT_NAMES.put( INTENSITY, "I" );
 		
 		FEATURE_DIMENSIONS.put( distBud, Dimension.distBud );
 		FEATURE_DIMENSIONS.put( distDynamicBud, Dimension.distDynamicBud );
@@ -170,7 +175,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_DIMENSIONS.put( POSITION_Y, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_T, Dimension.TIME );
 		FEATURE_DIMENSIONS.put( RADIUS, Dimension.LENGTH );
-		
+		FEATURE_DIMENSIONS.put( INTENSITY, Dimension.LENGTH );
 		
 		IS_INT.put( distBud, Boolean.FALSE );
 		IS_INT.put( distDynamicBud, Boolean.FALSE );
@@ -178,6 +183,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		IS_INT.put( POSITION_Y, Boolean.FALSE );
 		IS_INT.put( POSITION_T, Boolean.FALSE );
 		IS_INT.put( RADIUS, Boolean.FALSE );
+		IS_INT.put( INTENSITY, Boolean.FALSE );
 	}
 
 	public final Double getFeature(final String feature) {

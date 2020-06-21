@@ -29,47 +29,33 @@ public class TrackSchemeActions {
 	 */
 	private static final int PAN_AMOUNT = 100;
 
-	private static final ImageIcon RESET_ZOOM_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/zoom.png"));
+	private static final ImageIcon RESET_ZOOM_ICON = new ImageIcon(("../resources/zoom.png"));
 
-	private static final ImageIcon ZOOM_IN_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/zoom_in.png"));
+	private static final ImageIcon ZOOM_IN_ICON = new ImageIcon(("../resources/zoom_in.png"));
 
-	private static final ImageIcon ZOOM_OUT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/zoom_out.png"));
+	private static final ImageIcon ZOOM_OUT_ICON = new ImageIcon(("../resources/zoom_out.png"));
 
-	private static final ImageIcon EDIT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/tag_blue_edit.png"));
+	private static final ImageIcon EDIT_ICON = new ImageIcon(("../resources/tag_blue_edit.png"));
 
-	private static final ImageIcon HOME_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/control_start.png"));
+	private static final ImageIcon HOME_ICON = new ImageIcon(("../resources/control_start.png"));
 
-	private static final ImageIcon END_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/control_end.png"));
+	private static final ImageIcon END_ICON = new ImageIcon(("../resources/control_end.png"));
 
-	private static final ImageIcon ARROW_UP_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_up.png"));
+	private static final ImageIcon ARROW_UP_ICON = new ImageIcon(("../resources/arrow_up.png"));
 
-	private static final ImageIcon ARROW_DOWN_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_down.png"));
+	private static final ImageIcon ARROW_DOWN_ICON = new ImageIcon(("../resources/arrow_down.png"));
 
-	private static final ImageIcon ARROW_LEFT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_left.png"));
+	private static final ImageIcon ARROW_LEFT_ICON = new ImageIcon(("../resources/arrow_left.png"));
 
-	private static final ImageIcon ARROW_RIGHT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_right.png"));
+	private static final ImageIcon ARROW_RIGHT_ICON = new ImageIcon(("../resources/arrow_right.png"));
 
-	private static final ImageIcon ARROW_UPLEFT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_nw.png"));
+	private static final ImageIcon ARROW_UPLEFT_ICON = new ImageIcon(("../resources/arrow_nw.png"));
 
-	private static final ImageIcon ARROW_DOWNLEFT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_sw.png"));
+	private static final ImageIcon ARROW_DOWNLEFT_ICON = new ImageIcon(("../resources/arrow_sw.png"));
 
-	private static final ImageIcon ARROW_UPRIGHT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_ne.png"));
+	private static final ImageIcon ARROW_UPRIGHT_ICON = new ImageIcon(("../resources/arrow_ne.png"));
 
-	private static final ImageIcon ARROW_DOWNRIGHT_ICON = new ImageIcon(
-			TrackSchemeFrame.class.getResource("resources/arrow_se.png"));
+	private static final ImageIcon ARROW_DOWNRIGHT_ICON = new ImageIcon(("../resources/arrow_se.png"));
 
 	private static Action zoomInAction;
 

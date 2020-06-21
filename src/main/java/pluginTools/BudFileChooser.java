@@ -353,7 +353,7 @@ public class BudFileChooser extends JPanel {
 			   
 			
 			    
-			  RandomAccessibleInterval<ARGBType> imageOrig = SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new ARGBType());
+			  RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
 		
 				
 				

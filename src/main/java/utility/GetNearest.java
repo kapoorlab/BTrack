@@ -20,7 +20,9 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
 import pluginTools.TrackEachBud;
@@ -126,13 +128,8 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 			if(label > 0)
 				InsideCellList.put(labelyellow, true);
 			
-			
-			
 		}
 	
-					
-					
-
 					for (Integer labelyellow : InsideCellList.keySet()) {
 						   Boolean isInterior = InsideCellList.get(labelyellow);
 						    if(isInterior) {
@@ -144,9 +141,9 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
 							double cellArea = interiorcelltruths.size() * parent.calibration;
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
+							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
 							
-							
-							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, cellArea,PairCurrentViewBit.size );
+							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea,PairCurrentViewBit.size );
 							Allcells.add(insidecells);
 							for (RealLocalizable insidetruth : bordercelltruths) {
 
@@ -164,6 +161,33 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 		return Allcells;
 		
 	}
+	
+	
+	public static double getIntensity(InteractiveBud parent, RandomAccessibleInterval<BitType> Regionimage) {
+		
+		double intensity = 0;
+		
+		Cursor<BitType> cursor =  Views.iterable(Regionimage).localizingCursor();
+		
+		RandomAccess<FloatType> intran = parent.CurrentView.randomAccess();
+		
+		while(cursor.hasNext()) {
+			
+			cursor.fwd();
+			
+			if(cursor.get().getInteger() > 0 ) {
+				
+				intensity+=intran.get().get();
+				
+			}
+			
+		}
+		
+		
+		return intensity;		
+		
+	}
+	
 	
 	public static OvalRoi getNearestRois(ArrayList<OvalRoi> Allrois, double[] Clickedpoint) {
 

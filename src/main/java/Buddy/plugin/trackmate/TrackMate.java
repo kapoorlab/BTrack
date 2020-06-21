@@ -40,7 +40,7 @@ import pluginTools.InteractiveBud;
 @SuppressWarnings("deprecation")
 public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 
-	public static final String PLUGIN_NAME_STR = "TrackMate";
+	public static final String PLUGIN_NAME_STR = "BTrackMate";
 
 	public static final String PLUGIN_NAME_VERSION = VersionUtils.getVersion(TrackMate.class);
 

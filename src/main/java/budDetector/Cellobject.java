@@ -15,13 +15,15 @@ public class Cellobject {
 	
 	public double size;
 	
+	public double totalIntensity;
+	
 	public List<RealLocalizable> boundarylist;
 	
 	public List<RealLocalizable> interiorlist;
 	
 	
 	
-	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double cellArea, double size ) {
+	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double totalIntensity, double cellArea, double size ) {
 		
 		this.interiorlist = interiorlist;
 		
@@ -33,6 +35,7 @@ public class Cellobject {
 		
 		this.size = size;
 		
+		this.totalIntensity = totalIntensity;
 		
 	}
 	
