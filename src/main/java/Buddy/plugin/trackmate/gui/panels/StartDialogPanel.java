@@ -388,10 +388,10 @@ public class StartDialogPanel extends ActionListenablePanel {
 		jTextFieldPixelHeight.setText("" + settings.dy);
 		jTextFieldVoxelDepth.setText("" + settings.dz);
 		jTextFieldTimeInterval.setText("" + settings.dt);
-		jLabelUnits1.setText(model.getSpaceUnits());
-		jLabelUnits2.setText(model.getSpaceUnits());
-		jLabelUnits3.setText(model.getSpaceUnits());
-		jLabelUnits4.setText(model.getTimeUnits());
+		jLabelUnits1.setText("pixel");
+		jLabelUnits2.setText("pixel");
+		jLabelUnits3.setText("pixel");
+		jLabelUnits4.setText("pixel");
 		jTextFieldTStart.setText("" + settings.tstart);
 		jTextFieldTEnd.setText("" + settings.tend);
 	}
@@ -399,7 +399,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 	/**
 	 * Fill the text fields with parameters grabbed from specified ImagePlus.
 	 */
-	public void getFrom(final InteractiveBud parent,  final ImagePlus lImp) {
+	public void getFrom(final ImagePlus lImp) {
 		this.imp = lImp;
 
 		if (lImp.getType() == ImagePlus.COLOR_RGB) {
@@ -410,18 +410,23 @@ public class StartDialogPanel extends ActionListenablePanel {
 		}
 
 		jLabelImageName.setText("Target: " + lImp.getShortTitle());
-		jTextFieldPixelWidth.setValue(parent.calibration);
-		jTextFieldPixelHeight.setValue(parent.calibration);
-		jTextFieldVoxelDepth.setValue(lImp.getCalibration().pixelDepth);
-		jTextFieldTimeInterval.setValue(parent.timecal);
-		jLabelUnits4.setText(lImp.getCalibration().getTimeUnit());
-		
+		jTextFieldPixelWidth.setValue(1);
+		jTextFieldPixelHeight.setValue(1);
+		jTextFieldVoxelDepth.setValue(1);
+		if (lImp.getCalibration().frameInterval == 0) {
+			jTextFieldTimeInterval.setValue(1);
+			jLabelUnits4.setText("frame");
+		} else {
+			jTextFieldTimeInterval.setValue(1);
+			jLabelUnits4.setText(lImp.getCalibration().getTimeUnit());
+		}
 		jLabelUnits1.setText(lImp.getCalibration().getXUnit());
 		jLabelUnits2.setText(lImp.getCalibration().getYUnit());
 		jLabelUnits3.setText(lImp.getCalibration().getZUnit());
 		Roi roi = lImp.getRoi();
 		if (null == roi)
 			roi = new Roi(0, 0, lImp.getWidth(), lImp.getHeight());
+		final Rectangle boundingRect = roi.getBounds();
 		jTextFieldTStart.setText("" + 0);
 		jTextFieldTEnd.setText("" + (lImp.getNFrames() - 1));
 

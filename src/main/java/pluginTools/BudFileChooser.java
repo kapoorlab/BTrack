@@ -29,46 +29,23 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.apache.log4j.BasicConfigurator;
 
 import fileListeners.ChooseBudOrigMap;
-import fileListeners.ChooseBudSecOrigMap;
 import fileListeners.ChooseBudSegAMap;
-import fileListeners.ChooseBudSegBMap;
-import fileListeners.ChooseBudSegCMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.process.ImageConverter;
 import io.scif.img.ImgIOException;
-import io.scif.img.ImgOpener;
 import listeners.BTrackGoBudListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoRedFLListener;
-import listeners.BTrackGoRedListener;
 import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
-import loadfile.CovistoThreeChForceFileLoader;
-import loadfile.CovistoTwoChForceFileLoader;
-import net.imagej.ImageJ;
-import net.imagej.ImgPlus;
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.converter.Converters;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgView;
-import net.imglib2.img.array.ArrayImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.img.display.imagej.ImgPlusViews;
-import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.view.Views;
 import pluginTools.simplifiedio.SimplifiedIO;
 
 
@@ -127,9 +104,6 @@ public class BudFileChooser extends JPanel {
 		  public Border chooseoriginalbudfile = new CompoundBorder(new TitledBorder(chooseoriginalbudfilestring),
 					new EmptyBorder(c.insets));
 		  
-		  public String chooseoriginalrgbfilestring = "We analyze Buds & cell(s)";
-		  public Border chooseoriginalrgbfile = new CompoundBorder(new TitledBorder(chooseoriginalrgbfilestring),
-					new EmptyBorder(c.insets));
 		  
 		  
 		  public String donestring = "Done Selection";
@@ -144,8 +118,7 @@ public class BudFileChooser extends JPanel {
 		  public CheckboxGroup budmode = new CheckboxGroup();
 		  public boolean OnlyBud = true;
 		  public boolean RGBBud = false;
-		  public Checkbox GoBud = new Checkbox("Only Bud", OnlyBud, budmode);
-		  public Checkbox GoRed = new Checkbox("Input RGB", RGBBud, budmode);
+		  public Checkbox GoBud = new Checkbox("Bud", OnlyBud, budmode);
 		  
 		  public boolean DoYellow = false;
 		  public boolean DoGreen = false;
@@ -195,8 +168,6 @@ public class BudFileChooser extends JPanel {
 				
 				
 				panelFirst.add(GoBud, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL, insets, 0, 0));
-				panelFirst.add(GoRed, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
@@ -255,7 +226,6 @@ public class BudFileChooser extends JPanel {
 				// Listeneres 
 				
 				GoBud.addItemListener(new BTrackGoBudListener(this));
-				GoRed.addItemListener(new BTrackGoRedListener(this));
 				FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
 				YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
 				GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
@@ -329,20 +299,7 @@ public class BudFileChooser extends JPanel {
 			  
 			  
 		  }
-			private static ImgPlus< ARGBType >
-			convertToARGBType( ImgPlus< FloatType > image ) {
-		if ( ImgPlusViews.canFuseColor( image ) )
-			return ImgPlusViews.fuseColor( image );
-		RandomAccessibleInterval< ARGBType > convertedRAI = Converters.convertRAI(
-				image.getImg(),
-				( i, o ) -> {
-					int value = (int) i.get();
-					o.set( ARGBType.rgba( value, value, value, 255 ) );
-				},
-				new ARGBType() );
-		Img< ARGBType > convertedImg = ImgView.wrap( convertedRAI, new ArrayImgFactory< ARGBType >( new ARGBType() ) );
-		return new ImgPlus<>( convertedImg, image );
-	}
+		
 			
 		
 		
