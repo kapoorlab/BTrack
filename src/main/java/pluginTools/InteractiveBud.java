@@ -455,7 +455,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public JScrollBar timeslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
 			scrollbarSize + 10);
 	public JButton Savebutton = new JButton("Save Track");
-	public JButton Cellbutton = new JButton("Enter Mastadon");
+	public JButton Cellbutton = new JButton("Enter BTrackmate");
 	public JButton Restartbutton = new JButton("Restart");
 	public JButton Batchbutton = new JButton("Save Parameters for batch mode and exit");
 	public JButton SaveAllbutton = new JButton("Save All Tracks");
@@ -463,7 +463,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Label inputtrackLabel;
 	public TextField inputtrackField;
 	public Border selectcell = new CompoundBorder(new TitledBorder("Select Cell"), new EmptyBorder(c.insets));
-	//public JLabel inputLabel = new JLabel("Filename:");
 	public TextField inputField = new TextField();
 	public Border origborder = new CompoundBorder(new TitledBorder("Results files"),
 			new EmptyBorder(c.insets));
