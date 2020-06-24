@@ -270,10 +270,6 @@ public class TrackEachBud {
 								RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
 								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
 										(long) currentpoint.getFloatPosition(1) });
-								int Labelchosen = intranac.get().get();
-								if (LabelCovered.get(Labelchosen) != null)
-									if (!LabelCovered.get(Labelchosen))
-										if (label == Labelchosen) {
 
 											LabelCovered.put(label, true);
 											PairCurrentViewBit = BudCurrentLabelBinaryImage(CurrentViewInt, label);
@@ -290,7 +286,6 @@ public class TrackEachBud {
 
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
-										}
 
 							}
 

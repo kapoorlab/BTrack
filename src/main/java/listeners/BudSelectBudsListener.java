@@ -77,10 +77,10 @@ public class BudSelectBudsListener {
 					 RealLocalizable Closestpoint = GetNearest.getNearestPoint(parent, new RealPoint(new double[] {x,y}));
 					 if(parent.ChosenBudcenter.contains(Closestpoint)) {
 						 
-						 parent.ChosenBudcenter.remove(Closestpoint);
+						 //arent.ChosenBudcenter.remove(Closestpoint);
 							
-						 Closestroi.setStrokeColor(Color.RED);
-						 parent.imp.updateAndDraw();
+						// Closestroi.setStrokeColor(Color.RED);
+						 //parent.imp.updateAndDraw();
 						 
 					 }
 					 else {
