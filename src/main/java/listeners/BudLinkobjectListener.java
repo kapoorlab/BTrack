@@ -53,9 +53,10 @@ public class BudLinkobjectListener implements ActionListener {
 		parent.Tracklist.clear();
 		parent.Finalresult.clear();
 		parent.PanelSelectFile.removeAll();
+		parent.scrollPane.removeAll();
 		parent.panelFirst.repaint();
 		parent.panelFirst.validate();
-		
+		parent.table.removeAll();
 		parent.scrollPane = new JScrollPane(parent.table);
 		parent.scrollPane.getViewport().add(parent.table);
 		parent.scrollPane.setAutoscrolls(true);

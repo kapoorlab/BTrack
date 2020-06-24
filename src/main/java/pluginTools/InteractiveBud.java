@@ -362,6 +362,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
 		repaintView(CurrentView);
 		
+		
+		
 		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			imp.getOverlay().clear();
 			imp.updateAndDraw();

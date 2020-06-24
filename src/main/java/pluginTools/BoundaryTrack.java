@@ -128,10 +128,11 @@ public class BoundaryTrack {
 		}
 		
 		if(parent.jpb!=null && parent.thirdDimension == parent.AutoendTime) {
-			//CovistoKalmanPanel.Skeletontime.setEnabled(true);
+			CovistoKalmanPanel.Skeletontime.setEnabled(true);
 			CovistoKalmanPanel.Timetrack.setEnabled(true);
 			parent.SaveAllbutton.setEnabled(true);
 			parent.Savebutton.setEnabled(true);
+			
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Skeletons Created, Push Track Buddies Button" );
 			parent.AllRefcords = new HashMap<String, RealLocalizable>();

@@ -244,9 +244,7 @@ public class TrackEachBud {
 				}
 
 				int ndims = centerpoint.numDimensions();
-				for (int d = 0; d < ndims; ++d)
-					if (centerpoint.getDoublePosition(d) > sidecutpixel
-							&& centerpoint.getDoublePosition(d) < CurrentViewInt.dimension(d) - sidecutpixel) {
+				
 
 						if (!CovistoKalmanPanel.Skeletontime.isEnabled()) {
 
@@ -264,7 +262,6 @@ public class TrackEachBud {
 
 						}
 
-						if (parent.ChosenBudcenter.size() != 0)
 							for (RealLocalizable currentpoint : parent.ChosenBudcenter) {
 
 								RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
@@ -291,12 +288,7 @@ public class TrackEachBud {
 
 					}
 
-			}
-
-		}
-		
-	
-		
+      		}
 		
 
 	}
