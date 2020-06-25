@@ -331,6 +331,150 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelFirst.repaint();
 		panelFirst.validate();
 		saveFile = new java.io.File(".");
+		//Get Labelled images
+		
+		  long[] dims = new long[Segoriginalimg.numDimensions()];
+      // get image dimension
+		 Segoriginalimg.dimensions(dims);
+      // create labeling index image
+       RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
+       ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
+       Iterator<Integer> labels = new Iterator<Integer>()
+      {
+          private int i = 1;
+
+          @Override
+          public boolean hasNext()
+          {
+              return true;
+          }
+
+          @Override
+          public Integer next()
+          {
+              return i++;
+          }
+
+          @Override
+          public void remove()
+          {}
+      };
+      
+      ConnectedComponents.labelAllConnectedComponents(Segoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+      
+		Segoriginalimg = labeling.getIndexImg();
+		
+		if(SegYelloworiginalimg!=null) {
+			
+			
+			
+			  dims = new long[SegYelloworiginalimg.numDimensions()];
+		        // get image dimension
+			  SegYelloworiginalimg.dimensions(dims);
+		        // create labeling index image
+		         indexImg = ArrayImgs.ints(dims);
+		        labeling = new ImgLabeling<>(indexImg);
+		        labels = new Iterator<Integer>()
+		        {
+		            private int i = 1;
+
+		            @Override
+		            public boolean hasNext()
+		            {
+		                return true;
+		            }
+
+		            @Override
+		            public Integer next()
+		            {
+		                return i++;
+		            }
+
+		            @Override
+		            public void remove()
+		            {}
+		        };
+		        
+		        ConnectedComponents.labelAllConnectedComponents(SegYelloworiginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        
+		        SegYelloworiginalimg = labeling.getIndexImg();
+			
+		}
+		
+		
+		if(SegGreenoriginalimg!=null) {
+			
+			
+			
+			  dims = new long[SegGreenoriginalimg.numDimensions()];
+		        // get image dimension
+			  SegGreenoriginalimg.dimensions(dims);
+		        // create labeling index image
+		         indexImg = ArrayImgs.ints(dims);
+		        labeling = new ImgLabeling<>(indexImg);
+		        labels = new Iterator<Integer>()
+		        {
+		            private int i = 1;
+
+		            @Override
+		            public boolean hasNext()
+		            {
+		                return true;
+		            }
+
+		            @Override
+		            public Integer next()
+		            {
+		                return i++;
+		            }
+
+		            @Override
+		            public void remove()
+		            {}
+		        };
+		        
+		        ConnectedComponents.labelAllConnectedComponents(SegGreenoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        
+		        SegGreenoriginalimg = labeling.getIndexImg();
+			
+		}
+		
+		if(SegRedoriginalimg!=null) {
+			
+			
+			
+			  dims = new long[SegRedoriginalimg.numDimensions()];
+		        // get image dimension
+			  SegRedoriginalimg.dimensions(dims);
+		        // create labeling index image
+		         indexImg = ArrayImgs.ints(dims);
+		        labeling = new ImgLabeling<>(indexImg);
+		        labels = new Iterator<Integer>()
+		        {
+		            private int i = 1;
+
+		            @Override
+		            public boolean hasNext()
+		            {
+		                return true;
+		            }
+
+		            @Override
+		            public Integer next()
+		            {
+		                return i++;
+		            }
+
+		            @Override
+		            public void remove()
+		            {}
+		        };
+		        
+		        ConnectedComponents.labelAllConnectedComponents(SegRedoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        
+		        SegRedoriginalimg = labeling.getIndexImg();
+			
+		}
 		
 		
 		

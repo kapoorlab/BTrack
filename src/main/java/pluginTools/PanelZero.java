@@ -19,7 +19,7 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Downloads/UNETSegmentationResults.tif");
+				.openImage("/Users/aimachine/Downloads/UNETSegmentationResults-2.tif");
 		impA.show();
 		
 		ImagePlus impB = new Opener()
