@@ -220,13 +220,19 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 			
 					Iterator<Budpointobject> iterator = sortedList.iterator();
 
-					
+					double tmax = Double.MIN_VALUE;
 					while (iterator.hasNext()) {
 
 						Budpointobject currentbud = iterator.next();
-						
+						int time = currentbud.t;
+						if (time > tmax) {
+							
+							
+						    tmax = time;
 							bestbud = currentbud;
 						
+							
+						}
 
 					}
 					parent.Finalresult.put(Integer.toString(id) , bestbud);
