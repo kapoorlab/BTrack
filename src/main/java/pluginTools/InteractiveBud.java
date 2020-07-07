@@ -591,7 +591,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
 	
-	public Label explain = new Label("Left click selcts/deselects buds (Label 1 chosen by default)" , Label.CENTER);
 	
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
 	public Label fourthexplain = new Label("Click Skeletonize buddies after selection" , Label.CENTER);
@@ -719,7 +718,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
 		
-		Timeselect.add(explain, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);
