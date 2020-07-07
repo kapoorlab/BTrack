@@ -87,10 +87,9 @@ private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable
 		
 	
 		Color displayColor; 
-		if (Contains(parent.ChosenBudcenter, Ordered.getA()))
+		
 			displayColor = Color.GREEN;
-		else
-			displayColor = Color.RED;
+		
 		
 		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 

@@ -19,11 +19,11 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Downloads/UNETSegmentationResults-2.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
 		impA.show();
 		
 		ImagePlus impB = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Small_Yellow_Cells.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells.tif");
 		impB.show();
 	
 	

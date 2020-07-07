@@ -38,24 +38,22 @@ public class BoundaryTrack {
 	public void ShowBoundary() {
 		
 		int percent = 0;
-		RandomAccessibleInterval<IntType> BudSeg = utility.BudSlicer.getCurrentBudView(parent.Segoriginalimg,(int) parent.thirdDimension,
-				(int)parent.thirdDimensionSize);
 		
-		GetPixelList(BudSeg);
+		
+		GetPixelList(parent.CurrentViewInt);
 		IntType min = new IntType();
 		IntType max = new IntType();
-		computeMinMax(Views.iterable(BudSeg), min, max);
+		computeMinMax(Views.iterable(parent.CurrentViewInt), min, max);
 		
 		
 		if(parent.SegYelloworiginalimg!=null) {
-			RandomAccessibleInterval<IntType> BudYellowSeg = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
-					(int)parent.thirdDimensionSize);
-		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg, parent.thirdDimension, max.get(), percent);
+			
+		    TrackEachBud compute = new TrackEachBud(parent,  parent.thirdDimension, max.get(), percent);
 		    compute.displayBuds();
 		}
 		
 		else {
-		  TrackEachBud compute = new TrackEachBud(parent, BudSeg,  parent.thirdDimension, max.get(), percent);
+		  TrackEachBud compute = new TrackEachBud(parent,  parent.thirdDimension, max.get(), percent);
 			
 		  compute.displayBuds();
 		}
@@ -105,14 +103,13 @@ public class BoundaryTrack {
 		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
 		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
 		if(parent.SegYelloworiginalimg!=null) {
-			RandomAccessibleInterval<IntType> BudYellowSeg = utility.BudSlicer.getCurrentBudView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
-					(int)parent.thirdDimensionSize);
-		    TrackEachBud compute = new TrackEachBud(parent, BudSeg, BudYellowSeg, Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
+			
+		    TrackEachBud compute = new TrackEachBud(parent,  Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
 		    compute.displayBuds();
 		}
 		
 		else {
-		  TrackEachBud compute = new TrackEachBud(parent, BudSeg, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
+		  TrackEachBud compute = new TrackEachBud(parent, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
 			
 		  compute.displayBuds();
 		}

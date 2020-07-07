@@ -60,8 +60,6 @@ public class TrackEachBud {
 
 
 	final InteractiveBud parent;
-	final RandomAccessibleInterval<IntType> CurrentViewInt;
-	final RandomAccessibleInterval<IntType> CurrentViewYellowInt;
 	final int t;
 	final int maxlabel;
 	int percent;
@@ -70,13 +68,11 @@ public class TrackEachBud {
 	final ArrayList<BCellobject> Budcelllist;
     ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
     
-	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
+	public TrackEachBud(final InteractiveBud parent, 
 			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, final int maxlabel,
 			final int percent) {
 
 		this.parent = parent;
-		this.CurrentViewInt = CurrentViewInt;
-		this.CurrentViewYellowInt = null;
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
@@ -85,13 +81,11 @@ public class TrackEachBud {
         this.Budcelllist = null;
 	}
 	
-	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
+	public TrackEachBud(final InteractiveBud parent, 
 			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist, final int t, final int maxlabel,
 			final int percent) {
 
 		this.parent = parent;
-		this.CurrentViewInt = CurrentViewInt;
-		this.CurrentViewYellowInt = CurrentViewYellowInt;
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
@@ -100,12 +94,10 @@ public class TrackEachBud {
         this.Budcelllist = Budcelllist;
 	}
 
-	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt,
+	public TrackEachBud(final InteractiveBud parent, 
 			final int t, final int maxlabel, final int percent) {
 
 		this.parent = parent;
-		this.CurrentViewInt = CurrentViewInt;
-		this.CurrentViewYellowInt = null;
 		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
@@ -115,21 +107,7 @@ public class TrackEachBud {
 
 	}
 	
-	public TrackEachBud(final InteractiveBud parent, final RandomAccessibleInterval<IntType> CurrentViewInt, final RandomAccessibleInterval<IntType> CurrentViewYellowInt,
-			final int t, final int maxlabel, final int percent) {
 
-		this.parent = parent;
-		this.CurrentViewInt = CurrentViewInt;
-		this.CurrentViewYellowInt = CurrentViewYellowInt;
-		this.t = t;
-		this.maxlabel = maxlabel;
-		this.percent = percent;
-		this.Budlist = null;
-		this.Budpointlist = null;
-        this.Budcelllist = null;
-
-	}
-	
 	
 	
 	public ArrayList<Budobject> returnBudlist(){
@@ -177,7 +155,7 @@ public class TrackEachBud {
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
-						CurrentViewInt, label);
+						parent.CurrentViewInt, label);
 
 				// For each bud get the list of points
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
@@ -188,7 +166,7 @@ public class TrackEachBud {
 				int ndims = centerpoint.numDimensions();
 				for (int d = 0; d < ndims; ++d)
 					if (centerpoint.getDoublePosition(d) > sidecutpixel
-							&& centerpoint.getDoublePosition(d) < CurrentViewInt.dimension(d) - sidecutpixel) {
+							&& centerpoint.getDoublePosition(d) < parent.CurrentViewInt.dimension(d) - sidecutpixel) {
 						parent.AllBudcenter.add(centerpoint);
 
 						parent.Refcord = centerpoint;
@@ -223,7 +201,7 @@ public class TrackEachBud {
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
-						CurrentViewInt, label);
+						parent.CurrentViewInt, label);
 
 				// For each bud get the list of points
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
@@ -264,12 +242,12 @@ public class TrackEachBud {
 
 							for (RealLocalizable currentpoint : parent.ChosenBudcenter) {
 
-								RandomAccess<IntType> intranac = CurrentViewInt.randomAccess();
+								RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
 								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
 										(long) currentpoint.getFloatPosition(1) });
 
 											LabelCovered.put(label, true);
-											PairCurrentViewBit = BudCurrentLabelBinaryImage(CurrentViewInt, label);
+											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 											// For each bud get the list of points
 											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 											centerpoint = budDetector.Listordering.getMeanCord(truths);
@@ -390,7 +368,7 @@ public class TrackEachBud {
 		
 		
 		if (parent.SegYelloworiginalimg != null) 
-	          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
+	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 		
 		if(!CovistoKalmanPanel.Skeletontime.isEnabled()) {
 		for (RealLocalizable budpoints : skeletonEndPoints) {
@@ -407,7 +385,7 @@ public class TrackEachBud {
 				truths.size() * parent.calibration);
 		Budlist.add(Curreentbud);
 		if (parent.SegYelloworiginalimg != null) {
-	          celllist = GetNearest.getAllInteriorCells(parent, CurrentViewInt, CurrentViewYellowInt);
+	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 
 	          // check over this point later
 		//ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud, label);
@@ -439,9 +417,7 @@ public class TrackEachBud {
 				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,
 				uniqueID);
 
-		// Allow the user to choose or deselect buds
-		if (parent.thirdDimension == 1)
-			BudSelectBudsListener.markbuds(parent);
+	
 
 	}
 

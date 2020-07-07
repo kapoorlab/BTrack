@@ -111,6 +111,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
 	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
 	public RandomAccessibleInterval<FloatType> CurrentView;
+	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
 	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
@@ -320,6 +321,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		}
 		setTime(thirdDimension);
 		CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+		CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
 		if(SegYelloworiginalimg!=null)
 			CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
 		imp = ImageJFunctions.show(CurrentView, "Original Image");
@@ -502,6 +504,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			String TID = Integer.toString( thirdDimension);
 			AccountedT.put(TID,  thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
 			if(SegYelloworiginalimg!=null)
 				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
 		repaintView(CurrentView);
@@ -511,8 +514,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			imp.getOverlay().clear();
 			imp.updateAndDraw();
-			//CovistoKalmanPanel.Skeletontime.setEnabled(false);
-			//CovistoKalmanPanel.Timetrack.setEnabled(false);
 			StartDisplayer();
 			
 		}
