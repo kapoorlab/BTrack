@@ -7,6 +7,7 @@ import java.awt.event.ItemListener;
 
 import fileListeners.ChooseBudOrigMap;
 import fileListeners.ChooseBudSecOrigMap;
+import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
 import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
@@ -30,8 +31,12 @@ public class BTrackGoFreeFlListener implements ItemListener {
 			parent.panelFirst.remove(parent.Panelfile);
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
+			
+			
 			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
+			segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
+			
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));

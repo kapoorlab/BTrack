@@ -19,14 +19,15 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-
+import javax.swing.JOptionPane;
 import fileListeners.ChooseGreenOrigMap;
-import fileListeners.ChooseGreenSegAMap;
+import fileListeners.ChooseGreenSegMap;
 import ij.ImagePlus;
 import ij.WindowManager;
 import io.scif.img.ImgIOException;
@@ -37,12 +38,10 @@ import listeners.BTrackGoRedFLListener;
 import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
-import pluginTools.GreenFileChooser.GreenDoneListener;
-import pluginTools.GreenFileChooser.CalXListener;
-import pluginTools.GreenFileChooser.WaveListener;
-import pluginTools.simplifiedio.SimplifiedIO;
+import fileListeners.SimplifiedIO;
 
 public class RedGreenFileChooser extends JPanel {
 
@@ -52,12 +51,13 @@ public class RedGreenFileChooser extends JPanel {
 		private static final long serialVersionUID = 1L;
 		  public JFrame Cardframe = new JFrame("Red and Green Cell Tracker");
 		  public JPanel panelCont = new JPanel();
-		  public ImagePlus impOrigRed, impOrigGreen, impSegGreen, impSegRed;
+		  public ImagePlus impOrigRed, impOrigGreen, impSegGreen, impSegRed, impMask;
 		  public File impOrigRedfile, impOrigGreenfile;
 		  public JPanel panelFirst = new JPanel();
 		  public JPanel Panelfile = new JPanel();
 		  public JPanel Panelsuperfile = new JPanel();
 		  public JPanel Panelfileoriginal = new JPanel();
+		  public JPanel Panelfilemask = new JPanel();
 		  public JPanel Paneldone = new JPanel();
 		  public JPanel Panelrun = new JPanel();
 		  public JPanel Microscope = new JPanel();
@@ -81,8 +81,11 @@ public class RedGreenFileChooser extends JPanel {
 					new EmptyBorder(c.insets));
 		  
 		  
+		  public String chooseMaskstring = "The XYT mask"; 
+		  public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskstring),
+					new EmptyBorder(c.insets));
 		  
-		  public String chooseRedSegstring = "Segmentation Image for Red"; 
+		  public String chooseRedSegstring = "Segmentation Image for Green and Red"; 
 		  public Border chooseRedSeg = new CompoundBorder(new TitledBorder(chooseRedSegstring),
 					new EmptyBorder(c.insets));
 		  
@@ -147,8 +150,8 @@ public class RedGreenFileChooser extends JPanel {
 				
 				
 				
-				panelFirst.add(GoGreen, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+			//	panelFirst.add(GoGreen, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+			//			GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
 				CovistoOneChFileLoader original = new CovistoOneChFileLoader(chooseoriginalGreenfilestring, blankimageNames);
@@ -161,23 +164,21 @@ public class RedGreenFileChooser extends JPanel {
 		
 				original.ChooseImage.addActionListener(new ChooseGreenOrigMap(this, original.ChooseImage));
 				
-				
-				panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL, insets, 0, 0));
-				panelFirst.add(YellowMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL, insets, 0, 0));
-				panelFirst.add(GreenMode, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
-						GridBagConstraints.HORIZONTAL, insets, 0, 0));
-				panelFirst.add(RedMode, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-						GridBagConstraints.HORIZONTAL, insets, 0, 0));
-				
-				
 				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseGreenSegstring, blankimageNames);
 				Panelfile = segmentation.SingleChannelOption();
 				
 				
-				panelFirst.add(Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(Panelfile, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
+				CovistoOneChFileLoader mask = new CovistoOneChFileLoader(chooseMaskstring, blankimageNames);
+				Panelfilemask = mask.SingleChannelOption();
+				
+				
+				panelFirst.add(Panelfilemask, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
+				
 				
 				Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
@@ -206,11 +207,8 @@ public class RedGreenFileChooser extends JPanel {
 				// Listeneres 
 				
 				GoGreen.addItemListener(new BTrackGoGreenListener(this));
-				FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
-				YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
-				GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
-				RedMode.addItemListener(new BTrackGoRedFLListener(this));
-				segmentation.ChooseImage.addActionListener(new ChooseGreenSegAMap(this, segmentation.ChooseImage));
+				
+				segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(this, segmentation.ChooseImage));
 				
 				inputFieldcalX.addTextListener(new CalXListener());
 				Fieldwavesize.addTextListener(new WaveListener());
@@ -289,66 +287,36 @@ public class RedGreenFileChooser extends JPanel {
 			   
 			
 			    
-			  RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
-		
+     			RandomAccessibleInterval<FloatType> imageOrigGreen = SimplifiedIO.openImage(impOrigGreen.getOriginalFileInfo().directory + impOrigGreen.getOriginalFileInfo().fileName, new FloatType());
 				
+				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegGreen.getOriginalFileInfo().directory + impSegGreen.getOriginalFileInfo().fileName , new IntType());
 				
+				RandomAccessibleInterval<BitType> imageMask = SimplifiedIO.openImage(impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName , new BitType());
 				
-				RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName , new IntType());
-				
-				String name = impOrig.getOriginalFileInfo().fileName;
+				String name = impOrigGreen.getOriginalFileInfo().fileName;
 				
 				WindowManager.closeAllWindows();
 				calibration = Float.parseFloat(inputFieldcalX.getText());
 				FrameInterval = Float.parseFloat(Fieldwavesize.getText());
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("CalibrationT:" + FrameInterval);
-				if(!DoYellow && !DoGreen && !DoRed)
 				
-					new InteractiveGreen( imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
+				if(imageOrigGreen.numDimensions() == 4 && imageMask.numDimensions() == 3)
 				
+					new InteractiveGreen( imageOrigGreen, imageSegA, imageMask, impOrigGreen.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
 				
-				if(DoYellow) {
+				else
+					switch(JOptionPane.showConfirmDialog(null, "Oh Claudia, Did you forget to split the channels again? The red and the green split, also the segmentations"))
+					
+					{
+					
+					case JOptionPane.YES_NO_CANCEL_OPTION:
+						
+						return;
 					
 					
-					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
+					}
 				
-					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-					new InteractiveGreen(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
-					
-				}
-				
-				if(DoGreen) {
-					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
-					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
-				
-					
-					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-					assert (imageOrig.numDimensions() == imageSegC.numDimensions());
-					
-					new InteractiveGreen(imageOrig, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
-					
-				}
-				
-              if(DoRed) {
-					
-					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
-					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
-					RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName , new IntType());
-					
-					
-					
-					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-					assert (imageOrig.numDimensions() == imageSegC.numDimensions());
-					assert (imageOrig.numDimensions() == imageSegD.numDimensions());
-					
-					
-					new InteractiveGreen(imageOrig, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
-					
-				}
 				
 				
 				close(parent);
