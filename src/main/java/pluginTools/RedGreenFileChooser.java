@@ -3,7 +3,6 @@ package pluginTools;
 import java.awt.CardLayout;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,16 +12,12 @@ import java.awt.TextComponent;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.File;
-import java.io.FilenameFilter;
-import ij.process.ImageConverter;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -30,14 +25,12 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-
-import fileListeners.ChooseBudOrigMap;
-import fileListeners.ChooseBudSegAMap;
-import ij.IJ;
+import fileListeners.ChooseGreenOrigMap;
+import fileListeners.ChooseGreenSegAMap;
 import ij.ImagePlus;
 import ij.WindowManager;
 import io.scif.img.ImgIOException;
-import listeners.BTrackGoBudListener;
+import listeners.BTrackGoGreenListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoRedFLListener;
@@ -46,19 +39,21 @@ import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import pluginTools.GreenFileChooser.GreenDoneListener;
+import pluginTools.GreenFileChooser.CalXListener;
+import pluginTools.GreenFileChooser.WaveListener;
 import pluginTools.simplifiedio.SimplifiedIO;
 
-
-public class BudFileChooser extends JPanel {
+public class RedGreenFileChooser extends JPanel {
 
 	  /**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		  public JFrame Cardframe = new JFrame("Bud n Cell tracker");
+		  public JFrame Cardframe = new JFrame("Red and Green Cell Tracker");
 		  public JPanel panelCont = new JPanel();
-		  public ImagePlus impOrig, impOrigRGB, impSegA, impSegB, impSegC, impSegD;
-		  public File impOrigfile, impOrigSecfile, impSegAfile, impSegBfile, impSegCfile;
+		  public ImagePlus impOrigRed, impOrigGreen, impSegGreen, impSegRed;
+		  public File impOrigRedfile, impOrigGreenfile;
 		  public JPanel panelFirst = new JPanel();
 		  public JPanel Panelfile = new JPanel();
 		  public JPanel Panelsuperfile = new JPanel();
@@ -76,32 +71,27 @@ public class BudFileChooser extends JPanel {
 		  public JComboBox<String> ChooseRGBImage;
 		  public JButton Done =  new JButton("Finished choosing files, start BTrack");
 		
-		  public boolean simple = false;
-		  public boolean curvesuper = true;
-		  public boolean curvesimple = false;
 		  public boolean twochannel = false;
 		  
 
 		  
 		  
-		  public String chooseBudSegstring = "Segmentation Image for buds"; 
-		  public Border chooseBudSeg = new CompoundBorder(new TitledBorder(chooseBudSegstring),
-					new EmptyBorder(c.insets));
-		  
-		  public String chooseYellowSegstring = "Segmentation Image for buds and cell Ch 1"; 
-		  public Border chooseYellowSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
-					new EmptyBorder(c.insets));
-		  public String chooseGreenSegstring = "Segmentation Image for buds and cell Ch 1,2"; 
-		  public Border chooseGreenSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
+		  public String chooseGreenSegstring = "Segmentation Image for Green"; 
+		  public Border chooseGreenSeg = new CompoundBorder(new TitledBorder(chooseGreenSegstring),
 					new EmptyBorder(c.insets));
 		  
 		  
-		  public String chooseRedSegstring = "Segmentation Image for buds and cell Ch 1,2,3"; 
-		  public Border chooseRedSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
+		  
+		  public String chooseRedSegstring = "Segmentation Image for Red"; 
+		  public Border chooseRedSeg = new CompoundBorder(new TitledBorder(chooseRedSegstring),
 					new EmptyBorder(c.insets));
 		  
-		  public String chooseoriginalbudfilestring = "We analyze only Buds";
-		  public Border chooseoriginalbudfile = new CompoundBorder(new TitledBorder(chooseoriginalbudfilestring),
+		  public String chooseoriginalGreenfilestring = "We analyze only Greens";
+		  public Border chooseoriginalGreenfile = new CompoundBorder(new TitledBorder(chooseoriginalGreenfilestring),
+					new EmptyBorder(c.insets));
+		  
+		  public String chooseoriginalRedfilestring = "We analyze Red and Greens";
+		  public Border chooseoriginalRedfile = new CompoundBorder(new TitledBorder(chooseoriginalRedfilestring),
 					new EmptyBorder(c.insets));
 		  
 		  
@@ -115,24 +105,14 @@ public class BudFileChooser extends JPanel {
 
 		  public TextField inputFieldcalX, Fieldwavesize;
 		  public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"), new EmptyBorder(c.insets));
-		  public CheckboxGroup budmode = new CheckboxGroup();
-		  public boolean OnlyBud = true;
-		  public boolean RGBBud = false;
-		  public Checkbox GoBud = new Checkbox("Bud", OnlyBud, budmode);
-		  
-		  public boolean DoYellow = false;
-		  public boolean DoGreen = false;
-		  public boolean DoRed = false;
-		  public boolean NoChannel = true;
-		  
-		  public CheckboxGroup cellmode = new CheckboxGroup();
-		  public Checkbox FreeMode = new Checkbox("No Flourescent Channel", NoChannel, cellmode);
-		  public Checkbox YellowMode = new Checkbox("Flourescent Channel 1", DoYellow, cellmode);
-		  public Checkbox GreenMode = new Checkbox("Flourescent Channel 2", DoGreen, cellmode);
-		  public Checkbox RedMode = new Checkbox("Flourescent Channel 3", DoRed, cellmode);
+		  public CheckboxGroup Greenmode = new CheckboxGroup();
+		  public boolean OnlyGreen = true;
+		  public boolean RedandGreen = false;
+		  public Checkbox GoGreen = new Checkbox("Single Flourescent Channel", OnlyGreen, Greenmode);
+		  public Checkbox RedGreen = new Checkbox("Double Flourescent Channel", RedandGreen, Greenmode);
 		  
 		  
-		  public BudFileChooser() {
+		  public RedGreenFileChooser() {
 			
 			  
 				
@@ -167,11 +147,11 @@ public class BudFileChooser extends JPanel {
 				
 				
 				
-				panelFirst.add(GoBud, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(GoGreen, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
-				CovistoOneChFileLoader original = new CovistoOneChFileLoader(chooseoriginalbudfilestring, blankimageNames);
+				CovistoOneChFileLoader original = new CovistoOneChFileLoader(chooseoriginalGreenfilestring, blankimageNames);
 				
 				Panelfileoriginal = original.SingleChannelOption();
 				
@@ -179,7 +159,7 @@ public class BudFileChooser extends JPanel {
 				panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		
-				original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
+				original.ChooseImage.addActionListener(new ChooseGreenOrigMap(this, original.ChooseImage));
 				
 				
 				panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -192,7 +172,7 @@ public class BudFileChooser extends JPanel {
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
-				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseBudSegstring, blankimageNames);
+				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseGreenSegstring, blankimageNames);
 				Panelfile = segmentation.SingleChannelOption();
 				
 				
@@ -225,16 +205,16 @@ public class BudFileChooser extends JPanel {
 				
 				// Listeneres 
 				
-				GoBud.addItemListener(new BTrackGoBudListener(this));
+				GoGreen.addItemListener(new BTrackGoGreenListener(this));
 				FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
 				YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
 				GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
 				RedMode.addItemListener(new BTrackGoRedFLListener(this));
-				segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
+				segmentation.ChooseImage.addActionListener(new ChooseGreenSegAMap(this, segmentation.ChooseImage));
 				
 				inputFieldcalX.addTextListener(new CalXListener());
 				Fieldwavesize.addTextListener(new WaveListener());
-				Done.addActionListener(new BudDoneListener());
+				Done.addActionListener(new GreenDoneListener());
 				panelFirst.setVisible(true);
 				cl.show(panelCont, "1");
 				Cardframe.add(panelCont, "Center");
@@ -279,7 +259,7 @@ public class BudFileChooser extends JPanel {
 				
 		  }
 			
-		  public class BudDoneListener implements ActionListener{
+		  public class GreenDoneListener implements ActionListener{
 			  
 			  
 			  @Override
@@ -287,7 +267,7 @@ public class BudFileChooser extends JPanel {
 				  
 				  
 				  try {
-					DoneCurrBud(Cardframe);
+					DoneCurrGreen(Cardframe);
 				} catch (ImgIOException e1) {
 
 
@@ -302,7 +282,7 @@ public class BudFileChooser extends JPanel {
 			
 		
 		
-		  public void DoneCurrBud(Frame parent) throws ImgIOException{
+		  public void DoneCurrGreen(Frame parent) throws ImgIOException{
 				
 				// Tracking and Measurement is done with imageA 
 			  
@@ -325,7 +305,7 @@ public class BudFileChooser extends JPanel {
 				System.out.println("CalibrationT:" + FrameInterval);
 				if(!DoYellow && !DoGreen && !DoRed)
 				
-					new InteractiveBud( imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
+					new InteractiveGreen( imageOrig, imageSegA,impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
 				
 				
 				if(DoYellow) {
@@ -335,7 +315,7 @@ public class BudFileChooser extends JPanel {
 				
 					assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-					new InteractiveBud(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
+					new InteractiveGreen(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
 					
 				}
 				
@@ -348,11 +328,11 @@ public class BudFileChooser extends JPanel {
 					assert (imageOrig.numDimensions() == imageSegB.numDimensions());
 					assert (imageOrig.numDimensions() == imageSegC.numDimensions());
 					
-					new InteractiveBud(imageOrig, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
+					new InteractiveGreen(imageOrig, imageSegA, imageSegB,imageSegC, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
 					
 				}
 				
-                if(DoRed) {
+              if(DoRed) {
 					
 					RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName , new IntType());
 					RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName , new IntType());
@@ -366,7 +346,7 @@ public class BudFileChooser extends JPanel {
 					assert (imageOrig.numDimensions() == imageSegD.numDimensions());
 					
 					
-					new InteractiveBud(imageOrig, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
+					new InteractiveGreen(imageOrig, imageSegA, imageSegB,imageSegC, imageSegD, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
 					
 				}
 				
@@ -381,7 +361,5 @@ public class BudFileChooser extends JPanel {
 
 				
 			}
-
-		
 
 }

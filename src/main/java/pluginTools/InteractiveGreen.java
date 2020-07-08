@@ -23,12 +23,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
@@ -44,10 +42,10 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import Buddy.plugin.trackmate.BCellobjectCollection;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
-import Buddy.plugin.trackmate.BCellobjectCollection;
 import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
@@ -79,23 +77,20 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
-import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.roi.labeling.ImgLabeling;
 import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
+import pluginTools.InteractiveBud.ValueChange;
 import tracker.BUDDYBudTrackModel;
 import tracker.BUDDYCostFunction;
 import tracker.BUDDYTrackModel;
-import zGUI.CovistoZselectPanel;
 
-public class InteractiveBud  extends JPanel implements PlugIn{
+public class InteractiveGreen  extends JPanel implements PlugIn{
 
 	
 	private static final long serialVersionUID = 1L;
@@ -107,12 +102,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public NumberFormat nf;
 	public Color Drawcolor; 
 	public RandomAccessibleInterval<FloatType> originalimg;
-	public RandomAccessibleInterval<FloatType> originalSecimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
-	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
+	public RandomAccessibleInterval<BitType> Maskimg;
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
-	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
+	public RandomAccessibleInterval<BitType> CurrentViewMaskInt;
 	public ArrayList<OvalRoi> BudOvalRois;
 	public final String NameA;
 	public int ndims;
@@ -147,8 +141,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public ArrayList<RealLocalizable> ChosenBudcenter;
 	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
-	public BUDDYTrackModel Globalmodel;
-	public BUDDYBudTrackModel BudGlobalModel;
+	public GREENTrackModel Globalmodel;
+	public GREENTrackModel BudGlobalModel;
 	public int thirdDimensionSize;
 	public ImagePlus impA;
 	public int rowchoice;
@@ -159,111 +153,36 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public JProgressBar jpb;
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
-	public XYSeriesCollection Velocitydataset;
 	public ImageJ ij; 
-	public JFreeChart chartVelocity;
 	public double calibration;
 	public double timecal;
 	public File saveFile;
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
-	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	public BCellobjectCollection budcells = new BCellobjectCollection();
 	public HashMap<Integer,Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Budpointobject> Finalresult;
-	// Input Bud and its segmentation
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+	// Input Green and its segmentation
+		public InteractiveGreen(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
+				final RandomAccessibleInterval<BitType> Maskimg,
 				final String NameA,final double calibration, final double timecal, String inputstring) {
 			
 			
 			this.originalimg = originalimg;
 			this.Segoriginalimg = Segoriginalimg;
+			this.Maskimg = Maskimg;
 			this.NameA = NameA;
 			this.calibration = calibration;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
 			this.inputstring = inputstring;
 			
 			
 		}
 		
 		
-		// Input RGB and one flourescent channel segmentation images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
 		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.NameA = NameA;
-			this.calibration = calibration;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			
-		}
-		
-		// Input RGB and two flourescent channel segmentation images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
-		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.SegGreenoriginalimg = SegGreenoriginalimg;
-			this.NameA = NameA;
-			this.calibration = calibration;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			
-			
-		}
-		
-		// Input RGB and three flourescent channel segmentation images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
-				final RandomAccessibleInterval<IntType> SegRedoriginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
-		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.SegGreenoriginalimg = SegGreenoriginalimg;
-			this.SegRedoriginalimg = SegRedoriginalimg;
-			this.NameA = NameA;
-			this.calibration = calibration;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			
-			
-		}
-	
-	public ImageStack prestack;
 	public JTable table;
 	public JTableHeader header;
 	public static enum ValueChange {
