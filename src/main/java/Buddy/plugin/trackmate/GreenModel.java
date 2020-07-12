@@ -97,7 +97,7 @@ public class GreenModel {
 	/**
 	 * The list of listeners listening to model content change.
 	 */
-	Set<ModelChangeListener> modelChangeListeners = new LinkedHashSet<>();
+	Set<GreenModelChangeListener> modelChangeListeners = new LinkedHashSet<>();
 
 	/*
 	 * CONSTRUCTOR
@@ -181,15 +181,15 @@ public class GreenModel {
 	 * DEAL WITH MODEL CHANGE LISTENER
 	 */
 
-	public void addModelChangeListener(final ModelChangeListener listener) {
+	public void addModelChangeListener(final GreenModelChangeListener listener) {
 		modelChangeListeners.add(listener);
 	}
 
-	public boolean removeModelChangeListener(final ModelChangeListener listener) {
+	public boolean removeModelChangeListener(final GreenModelChangeListener listener) {
 		return modelChangeListeners.remove(listener);
 	}
 
-	public Set<ModelChangeListener> getModelChangeListener() {
+	public Set<GreenModelChangeListener> getModelChangeListener() {
 		return modelChangeListeners;
 	}
 
@@ -263,8 +263,8 @@ public class GreenModel {
 	public void clearTracks(final boolean doNotify) {
 		trackModel.clear();
 		if (doNotify) {
-			final ModelChangeEvent event = new ModelChangeEvent(this, ModelChangeEvent.TRACKS_COMPUTED);
-			for (final ModelChangeListener listener : modelChangeListeners)
+			final GreenModelChangeEvent event = new GreenModelChangeEvent(this, GreenModelChangeEvent.TRACKS_COMPUTED);
+			for (final GreenModelChangeListener listener : modelChangeListeners)
 				listener.modelChanged(event);
 		}
 	}
@@ -295,8 +295,8 @@ public class GreenModel {
 	public void setTracks(final SimpleWeightedGraph<Greenobject, DefaultWeightedEdge> graph, final boolean doNotify) {
 		trackModel.setGraph(graph);
 		if (doNotify) {
-			final ModelChangeEvent event = new ModelChangeEvent(this, ModelChangeEvent.TRACKS_COMPUTED);
-			for (final ModelChangeListener listener : modelChangeListeners)
+			final GreenModelChangeEvent event = new GreenModelChangeEvent(this, GreenModelChangeEvent.TRACKS_COMPUTED);
+			for (final GreenModelChangeListener listener : modelChangeListeners)
 				listener.modelChanged(event);
 		}
 	}
@@ -325,7 +325,7 @@ public class GreenModel {
 		Greenobjects.clear();
 		if (doNotify) {
 			final GreenModelChangeEvent event = new GreenModelChangeEvent(this, GreenModelChangeEvent.Greenobject_COMPUTED);
-			for (final ModelChangeListener listener : modelChangeListeners)
+			for (final GreenModelChangeListener listener : modelChangeListeners)
 				listener.modelChanged(event);
 		}
 	}
@@ -343,7 +343,7 @@ public class GreenModel {
 		this.Greenobjects = Greenobjects;
 		if (doNotify) {
 			final GreenModelChangeEvent event = new GreenModelChangeEvent(this, GreenModelChangeEvent.Greenobject_COMPUTED);
-			for (final ModelChangeListener listener : modelChangeListeners)
+			for (final GreenModelChangeListener listener : modelChangeListeners)
 				listener.modelChanged(event);
 		}
 	}
@@ -362,7 +362,7 @@ public class GreenModel {
 		Greenobjects.filter(GreenobjectFilters);
 		if (doNotify) {
 			final GreenModelChangeEvent event = new GreenModelChangeEvent(this, GreenModelChangeEvent.Greenobject_FILTERED);
-			for (final ModelChangeListener listener : modelChangeListeners)
+			for (final GreenModelChangeListener listener : modelChangeListeners)
 				listener.modelChanged(event);
 		}
 
@@ -770,7 +770,7 @@ public class GreenModel {
 					System.out.println("[TrackMateModel] to " + modelChangeListeners);
 
 				}
-				for (final ModelChangeListener listener : modelChangeListeners) {
+				for (final GreenModelChangeListener listener : modelChangeListeners) {
 					listener.modelChanged(event);
 				}
 			}
@@ -780,8 +780,8 @@ public class GreenModel {
 				if (DEBUG) {
 					System.out.println("[TrackMateModel] #flushUpdate(): firing event with ID " + eventID);
 				}
-				final ModelChangeEvent cachedEvent = new ModelChangeEvent(this, eventID);
-				for (final ModelChangeListener listener : modelChangeListeners) {
+				final GreenModelChangeEvent cachedEvent = new GreenModelChangeEvent(this, eventID);
+				for (final GreenModelChangeListener listener : modelChangeListeners) {
 					listener.modelChanged(cachedEvent);
 				}
 			}

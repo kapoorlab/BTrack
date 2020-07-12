@@ -12,6 +12,7 @@ import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.features.BCellobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.EdgeFeatureCalculator;
 import Buddy.plugin.trackmate.features.FeatureFilter;
+import Buddy.plugin.trackmate.features.GreenobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.TrackFeatureCalculator;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
 import Buddy.plugin.trackmate.util.TMUtils;

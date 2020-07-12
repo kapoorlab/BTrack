@@ -1,10 +1,12 @@
 package greenDetector;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import budDetector.BCellobject;
 import greenDetector.Greenobject;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
@@ -169,6 +171,43 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 		final double targetBloblocation = target.getDoublePosition(n);
 		return thisBloblocation - targetBloblocation;
 	}
+	
+	public double diffTo( final Greenobject s, final String feature )
+	{
+		final double f1 = features.get( feature ).doubleValue();
+		final double f2 = s.getFeature( feature ).doubleValue();
+		return f1 - f2;
+	}
+	
+	public double normalizeDiffTo( final Greenobject s, final String feature )
+	{
+		final double a = features.get( feature ).doubleValue();
+		final double b = s.getFeature( feature ).doubleValue();
+		if ( a == -b )
+			return 0d;
+		
+		return Math.abs( a - b ) / ( ( a + b ) / 2 );
+	}
+	public final static Comparator< Greenobject > featureComparator( final String feature )
+	{
+		final Comparator< Greenobject > comparator = new Comparator< Greenobject >()
+		{
+			@Override
+			public int compare( final Greenobject o1, final Greenobject o2 )
+			{
+				final double diff = o2.diffTo( o1, feature );
+				if ( diff == 0 )
+					return 0;
+				else if ( diff < 0 )
+					return 1;
+				else
+					return -1;
+			}
+		};
+		return comparator;
+	}
+	/** A comparator used to sort spots by ascending time frame. */
+	public final static Comparator<Greenobject> frameComparator = featureComparator( POSITION_T );
 	
 	@Override
 	public int compareTo(Greenobject o) {

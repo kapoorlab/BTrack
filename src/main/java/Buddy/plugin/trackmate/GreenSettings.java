@@ -9,8 +9,11 @@ import java.util.Map;
 
 import Buddy.plugin.trackmate.features.FeatureAnalyzer;
 import Buddy.plugin.trackmate.features.FeatureFilter;
+import Buddy.plugin.trackmate.features.GreenFeatureAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
+import Buddy.plugin.trackmate.features.edges.GreenEdgeAnalyzer;
 import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.track.GreenTrackAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.tracking.GreenobjectTrackerFactory;
 import ij.ImagePlus;
@@ -165,7 +168,7 @@ public class GreenSettings {
 	 * are ordered in a {@link List} in case some analyzers requires the results of
 	 * another analyzer to proceed.
 	 */
-	protected List<EdgeAnalyzer> edgeAnalyzers = new ArrayList<>();
+	protected List<GreenEdgeAnalyzer> edgeAnalyzers = new ArrayList<>();
 
 	// Track features
 
@@ -174,7 +177,7 @@ public class GreenSettings {
 	 * are ordered in a {@link List} in case some analyzers requires the results of
 	 * another analyzer to proceed.
 	 */
-	protected List<TrackAnalyzer> trackAnalyzers = new ArrayList<>();
+	protected List<GreenTrackAnalyzer> trackAnalyzers = new ArrayList<>();
 
 	/*
 	 * METHODS
@@ -469,7 +472,7 @@ public class GreenSettings {
 	 *
 	 * @return the list of {@link EdgeAnalyzer}s.
 	 */
-	public List<EdgeAnalyzer> getEdgeAnalyzers() {
+	public List<GreenEdgeAnalyzer> getEdgeAnalyzers() {
 		return new ArrayList<>(edgeAnalyzers);
 	}
 
@@ -479,7 +482,7 @@ public class GreenSettings {
 	 * @param edgeAnalyzer
 	 *            the {@link EdgeAnalyzer} to add, at the end of the list.
 	 */
-	public void addEdgeAnalyzer(final EdgeAnalyzer edgeAnalyzer) {
+	public void addEdgeAnalyzer(final GreenEdgeAnalyzer edgeAnalyzer) {
 		edgeAnalyzers.add(edgeAnalyzer);
 	}
 
@@ -494,7 +497,7 @@ public class GreenSettings {
 	 *            the {@link EdgeAnalyzer} to add, at the specified index in the
 	 *            list.
 	 */
-	public void addEdgeAnalyzer(final int index, final EdgeAnalyzer edgeAnalyzer) {
+	public void addEdgeAnalyzer(final int index, final GreenEdgeAnalyzer edgeAnalyzer) {
 		edgeAnalyzers.add(index, edgeAnalyzer);
 	}
 
@@ -506,7 +509,7 @@ public class GreenSettings {
 	 * @return true if the specified {@link EdgeAnalyzer} was in the list and was
 	 *         removed.
 	 */
-	public boolean removeEdgeAnalyzer(final EdgeAnalyzer edgeAnalyzer) {
+	public boolean removeEdgeAnalyzer(final GreenEdgeAnalyzer edgeAnalyzer) {
 		return edgeAnalyzers.remove(edgeAnalyzer);
 	}
 
@@ -529,7 +532,7 @@ public class GreenSettings {
 	 *
 	 * @return the list of {@link TrackAnalyzer}s.
 	 */
-	public List<TrackAnalyzer> getTrackAnalyzers() {
+	public List<GreenTrackAnalyzer> getTrackAnalyzers() {
 		return new ArrayList<>(trackAnalyzers);
 	}
 
@@ -540,7 +543,7 @@ public class GreenSettings {
 	 * @param trackAnalyzer
 	 *            the {@link TrackAnalyzer} to add, at the end of the list.
 	 */
-	public void addTrackAnalyzer(final TrackAnalyzer trackAnalyzer) {
+	public void addTrackAnalyzer(final GreenTrackAnalyzer trackAnalyzer) {
 		trackAnalyzers.add(trackAnalyzer);
 	}
 
@@ -555,7 +558,7 @@ public class GreenSettings {
 	 *            the {@link TrackAnalyzer} to add, at the specified index in the
 	 *            list.
 	 */
-	public void addTrackAnalyzer(final int index, final TrackAnalyzer trackAnalyzer) {
+	public void addTrackAnalyzer(final int index, final GreenTrackAnalyzer trackAnalyzer) {
 		trackAnalyzers.add(index, trackAnalyzer);
 	}
 
@@ -567,7 +570,7 @@ public class GreenSettings {
 	 * @return true if the specified {@link TrackAnalyzer} was in the list and was
 	 *         removed.
 	 */
-	public boolean removeTrackAnalyzer(final TrackAnalyzer trackAnalyzer) {
+	public boolean removeTrackAnalyzer(final GreenTrackAnalyzer trackAnalyzer) {
 		return trackAnalyzers.remove(trackAnalyzer);
 	}
 
@@ -633,9 +636,9 @@ public class GreenSettings {
 	 * PRIVATE METHODS
 	 */
 
-	private final void prettyPrintFeatureAnalyzer(final List<? extends FeatureAnalyzer> analyzers,
+	private final void prettyPrintFeatureAnalyzer(final List<? extends GreenFeatureAnalyzer> analyzers,
 			final StringBuilder str) {
-		for (final FeatureAnalyzer analyzer : analyzers) {
+		for (final GreenFeatureAnalyzer analyzer : analyzers) {
 			str.append(" - " + analyzer.getName() + " provides: ");
 			for (final String feature : analyzer.getFeatures()) {
 				str.append(analyzer.getFeatureShortNames().get(feature) + ", ");

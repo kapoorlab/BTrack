@@ -78,7 +78,7 @@ public class GreenobjectFeatureCalculator extends MultiThreadedBenchmarkAlgorith
 			final Collection<String> features = factory.getFeatures();
 			final Map<String, String> featureNames = factory.getFeatureNames();
 			final Map<String, String> featureShortNames = factory.getFeatureShortNames();
-			final Map<String, GREENDimension> featureDimensions = factory.getGreenFeatureDimensions();
+			final Map<String, GREENDimension> featureDimensions = factory.getFeatureDimensions();
 			final Map<String, Boolean> isIntFeature = factory.getIsIntFeature();
 			model.getFeatureModel().declareGreenobjectFeatures(features, featureNames, featureShortNames,
 					featureDimensions, isIntFeature);

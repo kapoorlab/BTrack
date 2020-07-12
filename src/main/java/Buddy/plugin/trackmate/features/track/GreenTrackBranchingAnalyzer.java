@@ -17,13 +17,14 @@ import tracker.GREENDimension;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Dimension;
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
+import greenDetector.Greenobject;
 
 @SuppressWarnings("deprecation")
 @Plugin(type = TrackAnalyzer.class)
-public class TrackBranchingAnalyzer implements TrackAnalyzer {
+public class GreenTrackBranchingAnalyzer implements GreenTrackAnalyzer {
 
 	/*
 	 * CONSTANTS
@@ -40,7 +41,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 
 	public static final String NUMBER_COMPLEX = "NUMBER_COMPLEX";
 
-	public static final String NUMBER_BCellobjectS = "NUMBER_BCellobjectS";
+	public static final String NUMBER_GreenobjectS = "NUMBER_GreenobjectS";
 
 	public static final List<String> FEATURES = new ArrayList<>(5);
 
@@ -48,40 +49,40 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 
 	public static final Map<String, String> FEATURE_SHORT_NAMES = new HashMap<>(5);
 
-	public static final Map<String, Dimension> FEATURE_DIMENSIONS = new HashMap<>(5);
+	public static final Map<String, GREENDimension> FEATURE_DIMENSIONS = new HashMap<>(5);
 
 	public static final Map<String, Boolean> IS_INT = new HashMap<>(5);
 
 	static {
-		FEATURES.add(NUMBER_BCellobjectS);
+		FEATURES.add(NUMBER_GreenobjectS);
 		FEATURES.add(NUMBER_GAPS);
 		FEATURES.add(LONGEST_GAP);
 		FEATURES.add(NUMBER_SPLITS);
 		FEATURES.add(NUMBER_MERGES);
 		FEATURES.add(NUMBER_COMPLEX);
 
-		FEATURE_NAMES.put(NUMBER_BCellobjectS, "Number of BCellobjects in track");
+		FEATURE_NAMES.put(NUMBER_GreenobjectS, "Number of Greenobjects in track");
 		FEATURE_NAMES.put(NUMBER_GAPS, "Number of gaps");
 		FEATURE_NAMES.put(LONGEST_GAP, "Longest gap");
 		FEATURE_NAMES.put(NUMBER_SPLITS, "Number of split events");
 		FEATURE_NAMES.put(NUMBER_MERGES, "Number of merge events");
 		FEATURE_NAMES.put(NUMBER_COMPLEX, "Complex points");
 
-		FEATURE_SHORT_NAMES.put(NUMBER_BCellobjectS, "N BCellobjects");
+		FEATURE_SHORT_NAMES.put(NUMBER_GreenobjectS, "N Greenobjects");
 		FEATURE_SHORT_NAMES.put(NUMBER_GAPS, "Gaps");
 		FEATURE_SHORT_NAMES.put(LONGEST_GAP, "Longest gap");
 		FEATURE_SHORT_NAMES.put(NUMBER_SPLITS, "Splits");
 		FEATURE_SHORT_NAMES.put(NUMBER_MERGES, "Merges");
 		FEATURE_SHORT_NAMES.put(NUMBER_COMPLEX, "Complex");
 
-		FEATURE_DIMENSIONS.put(NUMBER_BCellobjectS, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_GAPS, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(LONGEST_GAP, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_SPLITS, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_MERGES, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_COMPLEX, Dimension.NONE);
+		FEATURE_DIMENSIONS.put(NUMBER_GreenobjectS, GREENDimension.NONE);
+		FEATURE_DIMENSIONS.put(NUMBER_GAPS, GREENDimension.NONE);
+		FEATURE_DIMENSIONS.put(LONGEST_GAP, GREENDimension.NONE);
+		FEATURE_DIMENSIONS.put(NUMBER_SPLITS, GREENDimension.NONE);
+		FEATURE_DIMENSIONS.put(NUMBER_MERGES, GREENDimension.NONE);
+		FEATURE_DIMENSIONS.put(NUMBER_COMPLEX, GREENDimension.NONE);
 
-		IS_INT.put(NUMBER_BCellobjectS, Boolean.TRUE);
+		IS_INT.put(NUMBER_GreenobjectS, Boolean.TRUE);
 		IS_INT.put(NUMBER_GAPS, Boolean.TRUE);
 		IS_INT.put(LONGEST_GAP, Boolean.TRUE);
 		IS_INT.put(NUMBER_SPLITS, Boolean.TRUE);
@@ -93,7 +94,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 
 	private long processingTime;
 
-	public TrackBranchingAnalyzer() {
+	public GreenTrackBranchingAnalyzer() {
 		setNumThreads();
 	}
 
@@ -103,7 +104,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 	}
 
 	@Override
-	public void process(final Collection<Integer> trackIDs, final Model model) {
+	public void process(final Collection<Integer> trackIDs, final GreenModel model) {
 
 		if (trackIDs.isEmpty()) {
 			return;
@@ -119,39 +120,39 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 					Integer trackID;
 					while ((trackID = queue.poll()) != null) {
 
-						final Set<BCellobject> track = model.getTrackModel().trackBCellobjects(trackID);
+						final Set<Greenobject> track = model.getTrackModel().trackGreenobjects(trackID);
 
 						int nmerges = 0;
 						int nsplits = 0;
 						int ncomplex = 0;
-						for (final BCellobject BCellobject : track) {
-							final Set<DefaultWeightedEdge> edges = model.getTrackModel().edgesOf(BCellobject);
+						for (final Greenobject Greenobject : track) {
+							final Set<DefaultWeightedEdge> edges = model.getTrackModel().edgesOf(Greenobject);
 
 							// get neighbors
-							final Set<BCellobject> neighbors = new HashSet<>();
+							final Set<Greenobject> neighbors = new HashSet<>();
 							for (final DefaultWeightedEdge edge : edges) {
 								neighbors.add(model.getTrackModel().getEdgeSource(edge));
 								neighbors.add(model.getTrackModel().getEdgeTarget(edge));
 							}
-							neighbors.remove(BCellobject);
+							neighbors.remove(Greenobject);
 
 							// inspect neighbors relative time position
 							int earlier = 0;
 							int later = 0;
-							for (final BCellobject neighbor : neighbors) {
-								if (BCellobject.diffTo(neighbor, BCellobject.POSITION_T) > 0) {
+							for (final Greenobject neighbor : neighbors) {
+								if (Greenobject.diffTo(neighbor, Greenobject.POSITION_T) > 0) {
 									earlier++; // neighbor is before in time
 								} else {
 									later++;
 								}
 							}
 
-							// Test for classical BCellobject
+							// Test for classical Greenobject
 							if (earlier == 1 && later == 1) {
 								continue;
 							}
 
-							// classify BCellobject
+							// classify Greenobject
 							if (earlier <= 1 && later > 1) {
 								nsplits++;
 							} else if (later <= 1 && earlier > 1) {
@@ -163,9 +164,9 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 
 						int ngaps = 0, longestgap = 0;
 						for (final DefaultWeightedEdge edge : model.getTrackModel().trackEdges(trackID)) {
-							final BCellobject source = model.getTrackModel().getEdgeSource(edge);
-							final BCellobject target = model.getTrackModel().getEdgeTarget(edge);
-							final int gaplength = (int) Math.abs(target.diffTo(source, BCellobject.POSITION_T)) - 1;
+							final Greenobject source = model.getTrackModel().getEdgeSource(edge);
+							final Greenobject target = model.getTrackModel().getEdgeTarget(edge);
+							final int gaplength = (int) Math.abs(target.diffTo(source, Greenobject.POSITION_T)) - 1;
 							if (gaplength > 0) {
 								ngaps++;
 								if (longestgap < gaplength) {
@@ -180,7 +181,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 						model.getFeatureModel().putTrackFeature(trackID, NUMBER_SPLITS, Double.valueOf(nsplits));
 						model.getFeatureModel().putTrackFeature(trackID, NUMBER_MERGES, Double.valueOf(nmerges));
 						model.getFeatureModel().putTrackFeature(trackID, NUMBER_COMPLEX, Double.valueOf(ncomplex));
-						model.getFeatureModel().putTrackFeature(trackID, NUMBER_BCellobjectS,
+						model.getFeatureModel().putTrackFeature(trackID, NUMBER_GreenobjectS,
 								Double.valueOf(track.size()));
 
 					}
@@ -232,7 +233,7 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 	}
 
 	@Override
-	public Map<String, Dimension> getFeatureDimensions() {
+	public Map<String, GREENDimension> getFeatureDimensions() {
 		return FEATURE_DIMENSIONS;
 	}
 

@@ -3,6 +3,7 @@ package Buddy.plugin.trackmate.features.spot;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.features.FeatureAnalyzer;
+import Buddy.plugin.trackmate.features.GreenFeatureAnalyzer;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -22,7 +23,7 @@ import net.imglib2.type.numeric.RealType;
  *
  * @author Jean-Yves Tinevez - 2012
  */
-public interface GreenobjectAnalyzerFactory<T extends RealType<T> & NativeType<T>> extends FeatureAnalyzer {
+public interface GreenobjectAnalyzerFactory<T extends RealType<T> & NativeType<T>> extends GreenFeatureAnalyzer {
 
 	/**
 	 * Returns a configured {@link BCellobjectAnalyzer} ready to operate on the
