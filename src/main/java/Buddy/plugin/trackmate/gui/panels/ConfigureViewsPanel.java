@@ -69,6 +69,7 @@ import Buddy.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFea
 import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.util.NumberParser;
+import greenDetector.Greenobject;
 
 /**
  * A configuration panel used to tune the aspect of BCellobjects and tracks in
@@ -146,12 +147,17 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private FeatureColorGenerator<BCellobject> BCellobjectColorGenerator;
 
+	private FeatureColorGenerator<Greenobject> GreenobjectColorGenerator;
+	
 	private ManualBCellobjectColorGenerator manualBCellobjectColorGenerator;
+	
 
 	private ManualEdgeColorGenerator manualEdgeColorGenerator;
 
 	private FeatureColorGenerator<BCellobject> BCellobjectColorGeneratorPerTrackFeature;
 
+	private FeatureColorGenerator<Greenobject> GreenobjectColorGeneratorPerTrackFeature;
+	
 	private JNumericTextField textFieldDrawingDepth;
 
 	private JPanel jpanelDrawingDepth;
@@ -273,6 +279,25 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 		}
 		this.BCellobjectColorGeneratorPerTrackFeature = BCellobjectColorGeneratorPerTrackFeature;
 	}
+	
+
+	
+	public void setGreenobjectColorGenerator(final FeatureColorGenerator<Greenobject> GreenobjectColorGenerator) {
+		if (null != this.GreenobjectColorGenerator) {
+			this.GreenobjectColorGenerator.terminate();
+		}
+		this.GreenobjectColorGenerator = GreenobjectColorGenerator;
+	}
+
+	public void setGreenobjectColorGeneratorPerTrackFeature(
+			final FeatureColorGenerator<Greenobject> GreenobjectColorGeneratorPerTrackFeature) {
+		if (null != this.GreenobjectColorGeneratorPerTrackFeature) {
+			this.GreenobjectColorGeneratorPerTrackFeature.terminate();
+		}
+		this.GreenobjectColorGeneratorPerTrackFeature = GreenobjectColorGeneratorPerTrackFeature;
+	}
+	
+	
 
 	public void refreshColorFeatures() {
 		if ((displaySettings.get(KEY_BCellobject_COLORING) instanceof BCellobjectColorGenerator)) {
@@ -976,4 +1001,6 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 			button.setPreferredSize(size);
 		}
 	}
+
+	
 }

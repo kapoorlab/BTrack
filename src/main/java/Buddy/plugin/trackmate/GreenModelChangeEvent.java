@@ -6,60 +6,59 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import budDetector.BCellobject;
 import greenDetector.Greenobject;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class ModelChangeEvent extends EventObject {
+public class GreenModelChangeEvent extends EventObject {
 
 	private static final long serialVersionUID = -1L;
-	/** Indicate that a BCellobject was added to the model. */
-	public static final int FLAG_BCellobject_ADDED = 0;
+	/** Indicate that a Greenobject was added to the model. */
+	public static final int FLAG_Greenobject_ADDED = 0;
 	
-	/** Indicate that a BCellobject was removed from the model. */
-	public static final int FLAG_BCellobject_REMOVED = 1;
+	/** Indicate that a Greenobject was removed from the model. */
+	public static final int FLAG_Greenobject_REMOVED = 1;
 	/**
-	 * Indicate a modification of the features of a BCellobject. It may have changed
+	 * Indicate a modification of the features of a Greenobject. It may have changed
 	 * of position and feature, but not of frame.
 	 */
-	public static final int FLAG_BCellobject_MODIFIED = 2;
+	public static final int FLAG_Greenobject_MODIFIED = 2;
 	/**
-	 * Indicate that a BCellobject has changed of frame, and possible of position,
+	 * Indicate that a Greenobject has changed of frame, and possible of position,
 	 * features, etc.. .
 	 */
-	public static final int FLAG_BCellobject_FRAME_CHANGED = 3;
+	public static final int FLAG_Greenobject_FRAME_CHANGED = 3;
 	/** Indicate that an edge was added to the model. */
 	public static final int FLAG_EDGE_ADDED = 4;
 	/** Indicate that an edge was removed from the model. */
 	public static final int FLAG_EDGE_REMOVED = 5;
 	/**
 	 * Indicate that an edge has been modified. Edge modifications occur when the
-	 * target or source BCellobject are modified, or when the weight of the edge has
+	 * target or source Greenobject are modified, or when the weight of the edge has
 	 * been modified.
 	 */
 	public static final int FLAG_EDGE_MODIFIED = 6;
 
 	public static final Map<Integer, String> flagsToString = new HashMap<>(7);
 	static {
-		flagsToString.put(FLAG_BCellobject_ADDED, "BCellobject added");
-		flagsToString.put(FLAG_BCellobject_FRAME_CHANGED, "BCellobject frame changed");
-		flagsToString.put(FLAG_BCellobject_MODIFIED, "BCellobject modified");
-		flagsToString.put(FLAG_BCellobject_REMOVED, "BCellobject removed");
+		flagsToString.put(FLAG_Greenobject_ADDED, "Greenobject added");
+		flagsToString.put(FLAG_Greenobject_FRAME_CHANGED, "Greenobject frame changed");
+		flagsToString.put(FLAG_Greenobject_MODIFIED, "Greenobject modified");
+		flagsToString.put(FLAG_Greenobject_REMOVED, "Greenobject removed");
 		flagsToString.put(FLAG_EDGE_ADDED, "Edge added");
 		flagsToString.put(FLAG_EDGE_MODIFIED, "Edge modified");
 		flagsToString.put(FLAG_EDGE_REMOVED, "Edge removed");
 	}
 
 	/**
-	 * Event type indicating that the BCellobject of the model were computed, and
-	 * are now accessible through {@link Model#getBCellobject()}.
+	 * Event type indicating that the Greenobject of the model were computed, and
+	 * are now accessible through {@link Model#getGreenobject()}.
 	 */
-	public static final int BCellobject_COMPUTED = 4;
+	public static final int Greenobject_COMPUTED = 4;
 	/**
-	 * Event type indicating that the BCellobject of the model were filtered.
+	 * Event type indicating that the Greenobject of the model were filtered.
 	 */
-	public static final int BCellobject_FILTERED = 5;
+	public static final int Greenobject_FILTERED = 5;
 	/**
 	 * Event type indicating that the tracks of the model were computed.
 	 */
@@ -72,30 +71,30 @@ public class ModelChangeEvent extends EventObject {
 
 	/**
 	 * Event type indicating that model was modified, by adding, removing or
-	 * changing the feature of some BCellobject, and/or adding or removing edges in
+	 * changing the feature of some Greenobject, and/or adding or removing edges in
 	 * the tracks. Content of the modification can be accessed by
-	 * {@link #getBCellobject()}, {@link #getBCellobjectFlag(BCellobject)},
-	 * {@link #getFromFrame(BCellobject)} and {@link #getToFrame(BCellobject)}, and
+	 * {@link #getGreenobject()}, {@link #getGreenobjectFlag(Greenobject)},
+	 * {@link #getFromFrame(Greenobject)} and {@link #getToFrame(Greenobject)}, and
 	 * for the tracks: {@link #getEdges()} and
 	 * {@link #getEdgeFlag(DefaultWeightedEdge)} .
 	 */
 	public static final int MODEL_MODIFIED = 8;
 
-	/** BCellobject affected by this event. */
-	private final HashSet<BCellobject> BCellobject = new HashSet<>();
+	/** Greenobject affected by this event. */
+	private final HashSet<Greenobject> Greenobject = new HashSet<>();
 	/** Edges affected by this event. */
 	private final HashSet<DefaultWeightedEdge> edges = new HashSet<>();
 	/**
-	 * For BCellobject removed or moved: frame from which they were removed or
+	 * For Greenobject removed or moved: frame from which they were removed or
 	 * moved.
 	 */
-	private final HashMap<BCellobject, Integer> fromFrame = new HashMap<>();
+	private final HashMap<Greenobject, Integer> fromFrame = new HashMap<>();
 	/**
-	 * For BCellobject removed or added: frame to which they were added or moved.
+	 * For Greenobject removed or added: frame to which they were added or moved.
 	 */
-	private final HashMap<BCellobject, Integer> toFrame = new HashMap<>();
-	/** Modification flag for BCellobject affected by this event. */
-	private final HashMap<BCellobject, Integer> BCellobjectFlags = new HashMap<>();
+	private final HashMap<Greenobject, Integer> toFrame = new HashMap<>();
+	/** Modification flag for Greenobject affected by this event. */
+	private final HashMap<Greenobject, Integer> GreenobjectFlags = new HashMap<>();
 	/** Modification flag for edges affected by this event. */
 	private final HashMap<DefaultWeightedEdge, Integer> edgeFlags = new HashMap<>();
 	/** The event type for this instance. */
@@ -110,7 +109,7 @@ public class ModelChangeEvent extends EventObject {
 	 * @param eventID
 	 *            the evend ID to use for this event.
 	 */
-	public ModelChangeEvent(final Object source, final int eventID) {
+	public GreenModelChangeEvent(final Object source, final int eventID) {
 		super(source);
 		this.eventID = eventID;
 	}
@@ -119,12 +118,12 @@ public class ModelChangeEvent extends EventObject {
 		return this.eventID;
 	}
 
-	public boolean addAllBCellobject(final Collection<BCellobject> lBCellobject) {
-		return this.BCellobject.addAll(lBCellobject);
+	public boolean addAllGreenobject(final Collection<Greenobject> lGreenobject) {
+		return this.Greenobject.addAll(lGreenobject);
 	}
 
-	public boolean addBCellobject(final BCellobject BCellobject) {
-		return this.BCellobject.add(BCellobject);
+	public boolean addGreenobject(final Greenobject Greenobject) {
+		return this.Greenobject.add(Greenobject);
 	}
 
 	public boolean addAllEdges(final Collection<DefaultWeightedEdge> lEdges) {
@@ -139,24 +138,24 @@ public class ModelChangeEvent extends EventObject {
 		return edgeFlags.put(edge, flag);
 	}
 
-	public Integer putBCellobjectFlag(final BCellobject BCellobject, final Integer flag) {
-		return BCellobjectFlags.put(BCellobject, flag);
+	public Integer putGreenobjectFlag(final Greenobject Greenobject, final Integer flag) {
+		return GreenobjectFlags.put(Greenobject, flag);
 	}
 
-	public Integer putFromFrame(final BCellobject BCellobject, final Integer lFromFrame) {
-		return this.fromFrame.put(BCellobject, lFromFrame);
+	public Integer putFromFrame(final Greenobject Greenobject, final Integer lFromFrame) {
+		return this.fromFrame.put(Greenobject, lFromFrame);
 	}
 
-	public Integer putToFrame(final BCellobject BCellobject, final Integer lToFrame) {
-		return this.toFrame.put(BCellobject, lToFrame);
+	public Integer putToFrame(final Greenobject Greenobject, final Integer lToFrame) {
+		return this.toFrame.put(Greenobject, lToFrame);
 	}
 
 	/**
-	 * @return the set of BCellobject that are affected by this event. Is empty if
-	 *         no BCellobject is affected by this event.
+	 * @return the set of Greenobject that are affected by this event. Is empty if
+	 *         no Greenobject is affected by this event.
 	 */
-	public Set<BCellobject> getBCellobject() {
-		return BCellobject;
+	public Set<Greenobject> getGreenobject() {
+		return Greenobject;
 	}
 
 	/**
@@ -168,18 +167,18 @@ public class ModelChangeEvent extends EventObject {
 	}
 
 	/**
-	 * Returns the modification flag for the given BCellobject affected by this
+	 * Returns the modification flag for the given Greenobject affected by this
 	 * event.
 	 * 
-	 * @param BCellobject
-	 *            the BCellobject to query.
+	 * @param Greenobject
+	 *            the Greenobject to query.
 	 * @return the modification flag.
-	 * @see #FLAG_BCellobject_ADDED
-	 * @see #FLAG_BCellobject_MODIFIED
-	 * @see #FLAG_BCellobject_REMOVED
+	 * @see #FLAG_Greenobject_ADDED
+	 * @see #FLAG_Greenobject_MODIFIED
+	 * @see #FLAG_Greenobject_REMOVED
 	 */
-	public Integer getBCellobjectFlag(final BCellobject BCellobject) {
-		return BCellobjectFlags.get(BCellobject);
+	public Integer getGreenobjectFlag(final Greenobject Greenobject) {
+		return GreenobjectFlags.get(Greenobject);
 	}
 
 	/**
@@ -195,12 +194,12 @@ public class ModelChangeEvent extends EventObject {
 		return edgeFlags.get(edge);
 	}
 
-	public Integer getToFrame(final BCellobject BCellobject) {
-		return toFrame.get(BCellobject);
+	public Integer getToFrame(final Greenobject Greenobject) {
+		return toFrame.get(Greenobject);
 	}
 
-	public Integer getFromFrame(final BCellobject BCellobject) {
-		return fromFrame.get(BCellobject);
+	public Integer getFromFrame(final Greenobject Greenobject) {
+		return fromFrame.get(Greenobject);
 	}
 
 	public void setSource(final Object source) {
@@ -213,11 +212,11 @@ public class ModelChangeEvent extends EventObject {
 		str.append(" - source: " + source.getClass() + "_" + source.hashCode() + "\n");
 		str.append(" - event type: ");
 		switch (eventID) {
-		case BCellobject_COMPUTED:
-			str.append("BCellobject computed\n");
+		case Greenobject_COMPUTED:
+			str.append("Greenobject computed\n");
 			break;
-		case BCellobject_FILTERED:
-			str.append("BCellobject filtered\n");
+		case Greenobject_FILTERED:
+			str.append("Greenobject filtered\n");
 			break;
 		case TRACKS_COMPUTED:
 			str.append("Tracks computed\n");
@@ -227,9 +226,9 @@ public class ModelChangeEvent extends EventObject {
 			break;
 		case MODEL_MODIFIED:
 			str.append("Model modified, with:\n");
-			str.append("\t- BCellobject modified: " + (BCellobject != null ? BCellobject.size() : 0) + "\n");
-			for (final BCellobject BCellobject : BCellobject) {
-				str.append("\t\t" + BCellobject + ": " + flagsToString.get(BCellobjectFlags.get(BCellobject)) + "\n");
+			str.append("\t- Greenobject modified: " + (Greenobject != null ? Greenobject.size() : 0) + "\n");
+			for (final Greenobject Greenobject : Greenobject) {
+				str.append("\t\t" + Greenobject + ": " + flagsToString.get(GreenobjectFlags.get(Greenobject)) + "\n");
 			}
 			str.append("\t- edges modified: " + (edges != null ? edges.size() : 0) + "\n");
 			for (final DefaultWeightedEdge edge : edges) {

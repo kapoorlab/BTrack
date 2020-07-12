@@ -1,5 +1,6 @@
 package Buddy.plugin.trackmate.visualization;
 
+import Buddy.plugin.trackmate.GreenModelChangeEvent;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;
@@ -189,5 +190,41 @@ public class PerEdgeFeatureColorGenerator implements ModelChangeListener, TrackC
 		if (!minMaxAdjustable.isAutoMinMaxMode()) {
 			setMinMax(minMaxAdjustable.getMin(), minMaxAdjustable.getMax());
 		}
+	}
+
+	@Override
+	public void modelChanged(GreenModelChangeEvent event) {
+		
+		
+		if (!autoMinMax || event.getEventID() != GreenModelChangeEvent.MODEL_MODIFIED || event.getEdges().size() == 0) {
+			return;
+		}
+
+		for (final DefaultWeightedEdge edge : event.getEdges()) {
+
+			if (event.getEdgeFlag(edge) == GreenModelChangeEvent.FLAG_EDGE_ADDED
+					|| event.getEdgeFlag(edge) == GreenModelChangeEvent.FLAG_EDGE_MODIFIED) {
+
+				if (edge.equals(edgeMax) || edge.equals(edgeMin)) {
+					resetMinAndMax();
+					return;
+				}
+
+				final double val = model.getFeatureModel().getEdgeFeature(edge, feature).doubleValue();
+				if (val > max || val < min) {
+					resetMinAndMax();
+					return;
+				}
+
+			} else if (event.getEdgeFlag(edge) == GreenModelChangeEvent.FLAG_EDGE_REMOVED) {
+
+				if (edge.equals(edgeMax) || edge.equals(edgeMin)) {
+					resetMinAndMax();
+					return;
+				}
+
+			}
+		}
+		
 	}
 }

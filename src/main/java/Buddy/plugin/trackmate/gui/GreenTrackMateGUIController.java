@@ -73,6 +73,8 @@ import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
+import Buddy.plugin.trackmate.visualization.GreenobjectColorGenerator;
+import Buddy.plugin.trackmate.visualization.GreenobjectColorGeneratorPerTrackFeature;
 import greenDetector.Greenobject;
 import ij.IJ;
 import ij.Prefs;
@@ -314,7 +316,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 				} else {
 					gui.setPreviousButtonEnabled(true);
 				}
-				descriptor.displayingPanel(parent);
+				descriptor.displayingGreenPanel(parent);
 				return;
 
 			}

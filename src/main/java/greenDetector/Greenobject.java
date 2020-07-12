@@ -20,7 +20,9 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 	
 	public final double Greenperimeter;
 	
-	public final int t;
+	public  int time;
+	
+	public double Radius;
 	
 	private String name;
 	
@@ -28,7 +30,7 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 	
 	private final ConcurrentHashMap< String, Double > features = new ConcurrentHashMap< String, Double >();
 	
-	public Greenobject(final RealLocalizable Greencenter, final double Greenarea, final double Greenperimeter, final int ID, final int t) {
+	public Greenobject(final RealLocalizable Greencenter, final double Greenarea, final double Greenperimeter, final double Radius, final int ID, final int time) {
 		
 		super(3);
 		
@@ -36,9 +38,11 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 		this.Greenarea = Greenarea;
 		
+		this.Radius = Math.sqrt(Greenarea);
+		
 		this.Greenperimeter = Greenperimeter;
 		
-		this.t = t;
+		this.time = time;
 		
 		this.ID = ID;
 	}
@@ -48,6 +52,7 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 	public static final String XPOSITION = "XPOSITION";
 	public static final String YPOSITION = "XPOSITION";
 	public static final String ZPOSITION = "ZPOSITION";
+	public static final String RADIUS = "RADIUS";
 	public static final String TIME = "TIME";
 	
 	
@@ -64,13 +69,16 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 	/** The name of the spot Y position feature. */
 	public static final String Velocity = "Velocity";
 	
+	/** The name of the spot Y position feature. */
+	public static final String Size = "Size";
+	
 	/** The name of the spot T position feature. */
 	public static final String POSITION_T = "POSITION_T";
 
 
 	/** The position features. */
 	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y , POSITION_Z};
-	static int numfeatures = 5;
+	static int numfeatures = 6;
 	public final static Collection<String> FEATURES = new ArrayList<>(numfeatures);
 
 	/** The 7 privileged spot feature names. */
@@ -90,24 +98,28 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURES.add(POSITION_Y);
 		FEATURES.add(POSITION_Z);
 		FEATURES.add(Velocity);
+		FEATURES.add(Size);
 		FEATURES.add(POSITION_T);
 
 		FEATURE_NAMES.put(POSITION_X, "X");
 		FEATURE_NAMES.put(POSITION_Y, "Y");
 		FEATURE_NAMES.put(POSITION_Z, "Z");
 		FEATURE_NAMES.put(Velocity, "V");
+		FEATURE_NAMES.put(Size, "R");
 		FEATURE_NAMES.put(POSITION_T, "T");
 
 		FEATURE_SHORT_NAMES.put(POSITION_X, "X");
 		FEATURE_SHORT_NAMES.put(POSITION_Y, "Y");
 		FEATURE_SHORT_NAMES.put(POSITION_Z, "Z");
 		FEATURE_SHORT_NAMES.put(Velocity, "V");
+		FEATURE_SHORT_NAMES.put(Size, "R");
 		FEATURE_SHORT_NAMES.put(POSITION_T, "T");
 
 		FEATURE_GREENDIMENSIONS.put(POSITION_X, GREENDimension.POSITION);
 		FEATURE_GREENDIMENSIONS.put(POSITION_Y, GREENDimension.POSITION);
 		FEATURE_GREENDIMENSIONS.put(POSITION_Z, GREENDimension.POSITION);
 		FEATURE_GREENDIMENSIONS.put(Velocity, GREENDimension.POSITION);
+		FEATURE_GREENDIMENSIONS.put(Size, GREENDimension.POSITION);
 		FEATURE_GREENDIMENSIONS.put(POSITION_T, GREENDimension.TIME);
 
 		IS_INT.put(POSITION_X, Boolean.FALSE);
@@ -115,6 +127,7 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 		IS_INT.put(POSITION_Z, Boolean.FALSE);
 		IS_INT.put(Velocity, Boolean.FALSE);
 		IS_INT.put(POSITION_T, Boolean.FALSE);
+		IS_INT.put(Size, Boolean.FALSE);
 	}
 
 	
@@ -133,6 +146,12 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 		return features.get(feature);
 	}
+	
+	public final void putFeature( final String feature, final Double value )
+	{
+		features.put( feature, value );
+	}
+	
 	
 	/**
 	 * Returns the difference between the location of two clouds, this operation

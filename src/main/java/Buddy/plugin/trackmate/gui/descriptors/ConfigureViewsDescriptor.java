@@ -1,7 +1,9 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
 import budDetector.BCellobject;
+import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.TrackMate;
+import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.panels.ConfigureViewsPanel;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
@@ -10,6 +12,7 @@ import Buddy.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 
@@ -18,6 +21,8 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 	private final ConfigureViewsPanel panel;
 
 	private final TrackMateGUIController controller;
+	
+	private final GreenTrackMateGUIController greencontroller;
 
 	public ConfigureViewsDescriptor(final TrackMate trackmate,
 			final FeatureColorGenerator<BCellobject> BCellobjectColorGenerator,
@@ -27,6 +32,7 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 			final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator,
 			final ManualEdgeColorGenerator manualEdgeColorGenerator, final TrackMateGUIController controller) {
 		this.controller = controller;
+		this.greencontroller = null;
 		this.panel = new ConfigureViewsPanel(trackmate.getModel());
 		panel.setBCellobjectColorGenerator(BCellobjectColorGenerator);
 		panel.setEdgeColorGenerator(edgeColorGenerator);
@@ -34,6 +40,24 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 		panel.setManualBCellobjectColorGenerator(manualBCellobjectColorGenerator);
 		panel.setManualEdgeColorGenerator(manualEdgeColorGenerator);
 		panel.setBCellobjectColorGeneratorPerTrackFeature(BCellobjectColorGeneratorPerTrackFeature);
+	}
+	
+	public ConfigureViewsDescriptor(final TrackMate trackmate,
+			final FeatureColorGenerator<Greenobject> GreenobjectColorGenerator,
+			final PerEdgeFeatureColorGenerator edgeColorGenerator,
+			final PerTrackFeatureColorGenerator trackColorGenerator,
+			final FeatureColorGenerator<Greenobject> GreenobjectColorGeneratorPerTrackFeature,
+			final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator,
+			final ManualEdgeColorGenerator manualEdgeColorGenerator, final GreenTrackMateGUIController greencontroller) {
+		this.controller = null;
+		this.greencontroller = greencontroller;
+		this.panel = new ConfigureViewsPanel(trackmate.getModel());
+		panel.setGreenobjectColorGenerator(GreenobjectColorGenerator);
+		panel.setEdgeColorGenerator(edgeColorGenerator);
+		panel.setTrackColorGenerator(trackColorGenerator);
+		panel.setManualBCellobjectColorGenerator(manualBCellobjectColorGenerator);
+		panel.setManualEdgeColorGenerator(manualEdgeColorGenerator);
+		panel.setGreenobjectColorGeneratorPerTrackFeature(GreenobjectColorGeneratorPerTrackFeature);
 	}
 
 	@Override
@@ -65,5 +89,11 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 	@Override
 	public String getKey() {
 		return KEY;
+	}
+
+	@Override
+	public void displayingGreenPanel(InteractiveGreen parent) {
+		panel.refreshColorFeatures();
+		
 	}
 }

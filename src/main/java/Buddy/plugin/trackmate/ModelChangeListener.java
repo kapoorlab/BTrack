@@ -18,5 +18,5 @@ public interface ModelChangeListener extends EventListener {
 	 *            the {@link ModelChangeEvent}.
 	 */
 	public void modelChanged(final ModelChangeEvent event);
-
+	public void modelChanged(final GreenModelChangeEvent event);
 }

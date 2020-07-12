@@ -13,6 +13,7 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import Buddy.plugin.trackmate.FeatureModel;
+import Buddy.plugin.trackmate.GreenModelChangeEvent;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;
@@ -228,5 +229,20 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 			autoMinMax();
 		}
 		refreshColorMap();
+	}
+
+	@Override
+	public void modelChanged(GreenModelChangeEvent event) {
+		
+		if (!autoMode) {
+			return;
+		}
+		if (event.getEventID() == GreenModelChangeEvent.MODEL_MODIFIED) {
+			final Set<DefaultWeightedEdge> edges = event.getEdges();
+			if (edges.size() > 0)
+				refreshColorMap();
+		}
+		
+		
 	}
 }

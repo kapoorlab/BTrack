@@ -161,7 +161,7 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 			trackmate.computeTrackFeatures(true);
 		}
 
-		final File tmpFile = IOUtils.askForFileForSaving(file, controller.getGUI(), logger);
+		final File tmpFile = IOUtils.askForFileForSaving(file, greencontroller.getGUI(), logger);
 		if (null == tmpFile) {
 			return;
 		}
@@ -176,7 +176,7 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 		writer.appendLog(logPanel.getTextContent());
 		writer.appendModel(trackmate.getModel());
 		writer.appendSettings(trackmate.getSettings());
-		writer.appendGUIState(controller.getGuimodel());
+		writer.appendGUIState(greencontroller.getGuimodel());
 
 		try {
 			writer.writeToFile();

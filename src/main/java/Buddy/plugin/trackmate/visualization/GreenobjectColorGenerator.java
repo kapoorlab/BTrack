@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Set;
 
 import budDetector.BCellobject;
+import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.GreenModelChangeEvent;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
@@ -11,7 +12,7 @@ import Buddy.plugin.trackmate.ModelChangeListener;
 import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
 
-public class BCellobjectColorGenerator implements FeatureColorGenerator<BCellobject>, ModelChangeListener {
+public class GreenobjectColorGenerator implements FeatureColorGenerator<Greenobject>, ModelChangeListener {
 
 	private final Model model;
 
@@ -25,14 +26,14 @@ public class BCellobjectColorGenerator implements FeatureColorGenerator<BCellobj
 
 	private final InterpolatePaintScale generator;
 
-	public BCellobjectColorGenerator(final Model model) {
+	public GreenobjectColorGenerator(final Model model) {
 		this.model = model;
 		model.addModelChangeListener(this);
 		generator = TrackMateOptionUtils.getOptions().getPaintScale();
 	}
 
 	@Override
-	public Color color(final BCellobject BCellobject) {
+	public Color color(final Greenobject BCellobject) {
 		if (null == feature)
 			return TrackMateModelView.DEFAULT_BCellobject_COLOR;
 
@@ -63,12 +64,12 @@ public class BCellobjectColorGenerator implements FeatureColorGenerator<BCellobj
 	}
 
 	@Override
-	public void modelChanged(final ModelChangeEvent event) {
+	public void modelChanged(final GreenModelChangeEvent event) {
 		if (!autoMode || null == feature) {
 			return;
 		}
-		if (event.getEventID() == ModelChangeEvent.MODEL_MODIFIED) {
-			final Set<BCellobject> BCellobjects = event.getBCellobject();
+		if (event.getEventID() == GreenModelChangeEvent.MODEL_MODIFIED) {
+			final Set<Greenobject> BCellobjects = event.getGreenobject();
 			if (BCellobjects.size() > 0)
 				computeBCellobjectColors();
 
@@ -173,7 +174,8 @@ public class BCellobjectColorGenerator implements FeatureColorGenerator<BCellobj
 	}
 
 	@Override
-	public void modelChanged(GreenModelChangeEvent event) {
+	public void modelChanged(ModelChangeEvent event) {
+		
 		return;
 		
 	}
