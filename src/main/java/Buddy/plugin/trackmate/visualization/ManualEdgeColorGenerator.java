@@ -1,5 +1,6 @@
 package Buddy.plugin.trackmate.visualization;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
 import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
@@ -9,19 +10,45 @@ import java.awt.Color;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class ManualEdgeColorGenerator implements TrackColorGenerator {
+	
 	private final Model model;
 
+	private final GreenModel greenmodel;
+	
+	
 	public ManualEdgeColorGenerator(final Model model) {
 		this.model = model;
+		this.greenmodel = null;
+	}
+	
+	public ManualEdgeColorGenerator(final GreenModel greenmodel) {
+		this.greenmodel = greenmodel;
+		this.model = null;
 	}
 
 	@Override
 	public Color color(final DefaultWeightedEdge edge) {
+		
+		if(model!=null) {
 		final Double val = model.getFeatureModel().getEdgeFeature(edge, ManualEdgeColorAnalyzer.FEATURE);
 		if (null == val) {
 			return TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
 		}
 		return new Color(val.intValue());
+		
+		}
+		
+		
+		else  {
+			
+			final Double val = greenmodel.getFeatureModel().getEdgeFeature(edge, ManualEdgeColorAnalyzer.FEATURE);
+			if (null == val) {
+				return TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
+			}
+			return new Color(val.intValue());
+			
+			
+		}
 	}
 
 	@Override

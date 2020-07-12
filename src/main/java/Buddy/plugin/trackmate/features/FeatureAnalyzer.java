@@ -2,6 +2,7 @@ package Buddy.plugin.trackmate.features;
 
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.TrackMateModule;
+import tracker.GREENDimension;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public interface FeatureAnalyzer extends TrackMateModule {
 	 */
 	public Map<String, Dimension> getFeatureDimensions();
 
+	public Map<String, GREENDimension> getGreenFeatureDimensions();
 	/**
 	 * Returns the map that states whether the key feature is a feature that returns
 	 * integers. If <code>true</code>, then special treatment is applied when

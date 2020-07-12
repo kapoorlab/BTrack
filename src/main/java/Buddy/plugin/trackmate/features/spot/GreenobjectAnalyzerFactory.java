@@ -1,5 +1,6 @@
 package Buddy.plugin.trackmate.features.spot;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.features.FeatureAnalyzer;
 import net.imagej.ImgPlus;
@@ -38,6 +39,6 @@ public interface GreenobjectAnalyzerFactory<T extends RealType<T> & NativeType<T
 	 * @param channel
 	 *            the target channel to operate on.
 	 */
-	public GreenobjectAnalyzer<T> getAnalyzer(final Model model, ImgPlus<T> img, int frame, int channel);
+	public GreenobjectAnalyzer<T> getAnalyzer(final GreenModel model, ImgPlus<T> img, int frame, int channel);
 
 }

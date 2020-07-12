@@ -21,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.gui.panels.components.JNumericTextField;
@@ -71,7 +72,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 
 	private boolean impValid = false;
 
-	public StartDialogPanel(InteractiveBud parent) {
+	public StartDialogPanel() {
 		this.setPreferredSize(new java.awt.Dimension(266, 476));
 		final GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
@@ -373,6 +374,37 @@ public class StartDialogPanel extends ActionListenablePanel {
 		}
 
 	}
+	
+	
+	public void updateTo(final GreenModel model, final Settings settings) {
+		settings.imp = imp;
+		// Crop cube
+		settings.tstart = NumberParser.parseInteger(jTextFieldTStart.getText());
+		settings.tend = NumberParser.parseInteger(jTextFieldTEnd.getText());
+		// Image info
+		settings.dx = NumberParser.parseDouble(jTextFieldPixelWidth.getText());
+		settings.dy = NumberParser.parseDouble(jTextFieldPixelHeight.getText());
+		settings.dz = NumberParser.parseDouble(jTextFieldVoxelDepth.getText());
+		settings.dt = NumberParser.parseDouble(jTextFieldTimeInterval.getText());
+		settings.width = imp.getWidth();
+		settings.height = imp.getHeight();
+		settings.nslices = imp.getNSlices();
+		settings.nframes = imp.getNFrames();
+		// Units
+		model.setPhysicalUnits(jLabelUnits1.getText(), jLabelUnits4.getText());
+		// Roi
+		final Roi roi = imp.getRoi();
+		if (null != roi) {
+			settings.roi = roi;
+			settings.polygon = roi.getPolygon();
+		}
+		// File info
+		if (null != imp.getOriginalFileInfo()) {
+			settings.imageFileName = imp.getOriginalFileInfo().fileName;
+			settings.imageFolder = imp.getOriginalFileInfo().directory;
+		}
+
+	}
 
 	/*
 	 * PRIVATE METHODS
@@ -395,6 +427,21 @@ public class StartDialogPanel extends ActionListenablePanel {
 		jTextFieldTStart.setText("" + settings.tstart);
 		jTextFieldTEnd.setText("" + settings.tend);
 	}
+	
+	public void echoSettings(final GreenModel model, final Settings settings) {
+		jLabelImageName.setText(settings.imp.getTitle());
+		jTextFieldPixelWidth.setText("" + settings.dx);
+		jTextFieldPixelHeight.setText("" + settings.dy);
+		jTextFieldVoxelDepth.setText("" + settings.dz);
+		jTextFieldTimeInterval.setText("" + settings.dt);
+		jLabelUnits1.setText("pixel");
+		jLabelUnits2.setText("pixel");
+		jLabelUnits3.setText("pixel");
+		jLabelUnits4.setText("pixel");
+		jTextFieldTStart.setText("" + settings.tstart);
+		jTextFieldTEnd.setText("" + settings.tend);
+	}
+	
 
 	/**
 	 * Fill the text fields with parameters grabbed from specified ImagePlus.
@@ -432,4 +479,6 @@ public class StartDialogPanel extends ActionListenablePanel {
 
 		impValid = true;
 	}
+
+	
 }

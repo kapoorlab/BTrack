@@ -21,6 +21,7 @@ import javax.swing.SpringLayout;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.action.TrackMateAction;
+import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
@@ -48,6 +49,8 @@ public class ActionChooserPanel {
 	private SpringLayout layout;
 
 	private final TrackMateGUIController controller;
+	
+	private final GreenTrackMateGUIController greencontroller;
 
 	private final TrackMate trackmate;
 
@@ -74,8 +77,33 @@ public class ActionChooserPanel {
 		this.logPanel = new LogPanel();
 		this.logger = logPanel.getLogger();
 		this.actionProvider = actionProvider;
+		this.greencontroller = null;
 		init();
 	}
+	
+	public ActionChooserPanel(final ActionProvider actionProvider, final TrackMate trackmate,
+			final GreenTrackMateGUIController greencontroller) {
+
+		this.trackmate = trackmate;
+		final List<String> actionKeys = actionProvider.getVisibleKeys();
+		final List<String> names = new ArrayList<>(actionKeys.size());
+		final List<String> infoTexts = new ArrayList<>(actionKeys.size());
+		icons = new ArrayList<>(actionKeys.size());
+		for (final String key : actionKeys) {
+			infoTexts.add(actionProvider.getFactory(key).getInfoText());
+			icons.add(actionProvider.getFactory(key).getIcon());
+			names.add(actionProvider.getFactory(key).getName());
+		}
+
+		this.panel = new ListChooserPanel(names, infoTexts, "action");
+		this.logPanel = new LogPanel();
+		this.logger = logPanel.getLogger();
+		this.actionProvider = actionProvider;
+		this.greencontroller = greencontroller;
+		this.controller = null;
+		init();
+	}
+
 
 	/*
 	 * PUBLIC METHODS

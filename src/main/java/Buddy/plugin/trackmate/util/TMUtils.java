@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import budDetector.BCellobject;
+import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.Settings;
 import ij.ImagePlus;
@@ -207,6 +208,22 @@ public class TMUtils {
 		}
 	}
 
+	public static void translateGreenobjects(final Collection<Greenobject> Greenobjects, final double dx,
+			final double dy, final double dz) {
+		final double[] dval = new double[] { dx, dy, dz };
+		final String[] features = new String[] { Greenobject.POSITION_X, Greenobject.POSITION_Y, Greenobject.POSITION_Z };
+		Double val;
+		for (final Greenobject Greenobject : Greenobjects) {
+			for (int i = 0; i < features.length; i++) {
+				val = Greenobject.getFeature(features[i]);
+				if (null != val) {
+					Greenobject.putFeature(features[i], val + dval[i]);
+				}
+			}
+		}
+	}
+	
+	
 	/*
 	 * ImgPlus & calibration & axes
 	 */

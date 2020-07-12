@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
@@ -14,6 +15,7 @@ import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
 import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
+import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.panels.StartDialogPanel;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
@@ -24,6 +26,7 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 public class StartDialogDescriptor implements WizardPanelDescriptor {
 
@@ -34,7 +37,9 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 	private final ArrayList<ActionListener> actionListeners = new ArrayList<>();
 
 	private final TrackMateGUIController controller;
-	public InteractiveBud parent;
+	
+	private final GreenTrackMateGUIController greencontroller;
+	
 	/**
 	 * The view that is launched immediately when this descriptor leaves. It will be
 	 * used as a central view.
@@ -42,8 +47,21 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 	private HyperStackDisplayer mainView;
 
 	public StartDialogDescriptor(final TrackMateGUIController controller) {
+		this.greencontroller = null;
 		this.controller = controller;
-		this.panel = new StartDialogPanel(parent);
+		this.panel = new StartDialogPanel();
+		panel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent event) {
+				fireAction(event);
+			}
+		});
+	}
+	
+	public StartDialogDescriptor(final GreenTrackMateGUIController greencontroller) {
+		this.greencontroller = greencontroller;
+		this.controller = null;
+		this.panel = new StartDialogPanel();
 		panel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent event) {
@@ -93,12 +111,30 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 		panel.getFrom(imp);
 	}
 
+
+	@Override
+	public void displayingGreenPanel(InteractiveGreen parent) {
+		ImagePlus imp;
+		final TrackMate trackmate = greencontroller.getPlugin();
+		if (null == trackmate.getSettings().imp) {
+			imp = ImageJFunctions.show(parent.originalimg);
+		} else {
+			panel.echoSettings(trackmate.getModel(), trackmate.getSettings());
+			imp = trackmate.getSettings().imp;
+		}
+		panel.getFrom(imp);
+	}
+	
 	@Override
 	public void aboutToHidePanel() {
 		final TrackMate trackmate = controller.getPlugin();
-		final Settings settings = trackmate.getSettings();
+		
 		final Model model = trackmate.getModel();
+		final GreenModel greenmodel = trackmate.getGreenModel();
 
+		if(model !=null) {
+			
+			final Settings settings = trackmate.getSettings();
 		/*
 		 * Get settings and pass them to the trackmate managed by the wizard
 		 */
@@ -160,6 +196,76 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 		}
 		mainView.render();
 		controller.getGUI().setDisplayConfigButtonEnabled(true);
+		
+		}
+		
+		
+		else {
+			
+			
+			/*
+			 * Get settings and pass them to the trackmate managed by the wizard
+			 */
+			panel.updateTo(greenmodel, settings);
+			trackmate.getModel().getLogger().log(settings.toStringImageInfo());
+
+			/*
+			 * Configure settings object with BCellobject, edge and track analyzers as
+			 * specified in the providers.
+			 */
+
+			settings.clearGreenobjectAnalyzerFactories();
+			final GreenobjectAnalyzerProvider GreenobjectAnalyzerProvider = controller.getGreenobjectAnalyzerProvider();
+			final List<String> GreenobjectAnalyzerKeys = GreenobjectAnalyzerProvider.getKeys();
+			for (final String key : GreenobjectAnalyzerKeys) {
+				final GreenobjectAnalyzerFactory<?> GreenobjectFeatureAnalyzer = GreenobjectAnalyzerProvider
+						.getFactory(key);
+				settings.addGreenobjectAnalyzerFactory(GreenobjectFeatureAnalyzer);
+			}
+
+			settings.clearEdgeAnalyzers();
+			final EdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
+			final List<String> edgeAnalyzerKeys = edgeAnalyzerProvider.getKeys();
+			for (final String key : edgeAnalyzerKeys) {
+				final EdgeAnalyzer edgeAnalyzer = edgeAnalyzerProvider.getFactory(key);
+				settings.addEdgeAnalyzer(edgeAnalyzer);
+			}
+
+			settings.clearTrackAnalyzers();
+			final TrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
+			final List<String> trackAnalyzerKeys = trackAnalyzerProvider.getKeys();
+			for (final String key : trackAnalyzerKeys) {
+				final TrackAnalyzer trackAnalyzer = trackAnalyzerProvider.getFactory(key);
+				settings.addTrackAnalyzer(trackAnalyzer);
+			}
+
+			trackmate.getModel().getLogger().log(settings.toStringFeatureAnalyzersInfo());
+			trackmate.computeGreenobjectFeatures(true);
+			trackmate.computeEdgeFeatures(true);
+			trackmate.computeTrackFeatures(true);
+
+			/*
+			 * Launch the ImagePlus view now.
+			 */
+
+			// De-register old one, if any.
+			if (mainView != null) {
+				mainView.clear();
+				model.removeModelChangeListener(mainView);
+			}
+
+			final SelectionModel selectionModel = controller.getSelectionModel();
+			mainView = new HyperStackDisplayer(model, selectionModel, settings.imp);
+			controller.getGuimodel().addView(mainView);
+			final Map<String, Object> displaySettings = controller.getGuimodel().getDisplaySettings();
+			for (final String key : displaySettings.keySet()) {
+				mainView.setDisplaySettings(key, displaySettings.get(key));
+			}
+			mainView.render();
+			controller.getGUI().setDisplayConfigButtonEnabled(true);
+			
+			
+		}
 	}
 
 	@Override
@@ -206,5 +312,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 			l.actionPerformed(e);
 		}
 	}
+
+
 
 }

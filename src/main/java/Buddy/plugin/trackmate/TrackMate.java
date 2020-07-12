@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.util.VersionUtils;
 
 import budDetector.BCellobject;
+import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.features.BCellobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.EdgeFeatureCalculator;
 import Buddy.plugin.trackmate.features.FeatureFilter;
@@ -22,6 +23,7 @@ import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
 import net.imglib2.multithreading.SimpleMultiThreading;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 /**
  * <p>
@@ -50,9 +52,15 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 
 	protected InteractiveBud parent;
 
+	protected InteractiveGreen Greenparent;
+	
 	protected final Model model;
+	
+	protected final GreenModel greenmodel;
 
 	protected final Settings settings;
+	
+	protected final GreenSettings greensettings;
 
 	protected long processingTime;
 
@@ -68,11 +76,34 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 
 		this.parent = parent;
 		final Model model = new Model();
+		
 		model.setBCellobjects(parent.budcells, true);
 
 		this.model = model;
 		this.settings = settings;
+		
+		this.greensettings = null;
+		this.greenmodel = null;
 	}
+	
+	
+	public TrackMate(final InteractiveGreen Greenparent, final GreenSettings greensettings) {
+
+		this.Greenparent = Greenparent;
+		final GreenModel greenmodel = new GreenModel();
+		
+		// Write the Greenobject collection method here
+		greenmodel.setGreenobjects(Greenparent.Greencells, true);
+		
+		this.greensettings = greensettings;
+		this.greenmodel = greenmodel;
+		this.model = null;
+		this.settings = null;
+		
+	}
+	
+	
+	
 
 	/*
 	 * PROTECTED METHODS
@@ -104,29 +135,60 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 
 		// Put them back in the right referential
 		final double[] calibration = TMUtils.getSpatialCalibration(lSettings.imp);
-		TMUtils.translateBCellobjects(BCellobjectsThisFrame, lSettings.xstart * calibration[0],
-				lSettings.ystart * calibration[1], lSettings.zstart * calibration[2]);
+		TMUtils.translateBCellobjects(BCellobjectsThisFrame, lSettings.xstart ,
+				lSettings.ystart , lSettings.zstart );
 		List<BCellobject> prunedBCellobjects;
 		// Prune if outside of ROI
 		if (lSettings.roi instanceof ShapeRoi) {
 			prunedBCellobjects = new ArrayList<>();
 			for (final BCellobject BCellobject : BCellobjectsThisFrame) {
 				if (lSettings.roi.contains(
-						(int) Math.round(BCellobject.getFeature(BCellobject.POSITION_X) / calibration[0]),
-						(int) Math.round(BCellobject.getFeature(BCellobject.POSITION_Y) / calibration[1])))
+						(int) Math.round(BCellobject.getFeature(BCellobject.POSITION_X) ),
+						(int) Math.round(BCellobject.getFeature(BCellobject.POSITION_Y))))
 					prunedBCellobjects.add(BCellobject);
 			}
 		} else if (null != lSettings.polygon) {
 			prunedBCellobjects = new ArrayList<>();
 			for (final BCellobject BCellobject : BCellobjectsThisFrame) {
-				if (lSettings.polygon.contains(BCellobject.getFeature(BCellobject.POSITION_X) / calibration[0],
-						BCellobject.getFeature(BCellobject.POSITION_Y) / calibration[1]))
+				if (lSettings.polygon.contains(BCellobject.getFeature(BCellobject.POSITION_X) ,
+						BCellobject.getFeature(BCellobject.POSITION_Y) ))
 					prunedBCellobjects.add(BCellobject);
 			}
 		} else {
 			prunedBCellobjects = BCellobjectsThisFrame;
 		}
 		return prunedBCellobjects;
+	}
+	
+	
+	protected List<Greenobject> translateAndPruneGreenobjects(final List<Greenobject> GreenobjectsThisFrame,
+			final Settings lSettings) {
+
+		// Put them back in the right referential
+		final double[] calibration = TMUtils.getSpatialCalibration(lSettings.imp);
+		TMUtils.translateGreenobjects(GreenobjectsThisFrame, lSettings.xstart ,
+				lSettings.ystart , lSettings.zstart );
+		List<Greenobject> prunedGreenobjects;
+		// Prune if outside of ROI
+		if (lSettings.roi instanceof ShapeRoi) {
+			prunedGreenobjects = new ArrayList<>();
+			for (final Greenobject Greenobject : GreenobjectsThisFrame) {
+				if (lSettings.roi.contains(
+						(int) Math.round(Greenobject.getFeature(Greenobject.POSITION_X) ),
+						(int) Math.round(Greenobject.getFeature(Greenobject.POSITION_Y))))
+					prunedGreenobjects.add(Greenobject);
+			}
+		} else if (null != lSettings.polygon) {
+			prunedGreenobjects = new ArrayList<>();
+			for (final Greenobject Greenobject : GreenobjectsThisFrame) {
+				if (lSettings.polygon.contains(Greenobject.getFeature(Greenobject.POSITION_X) ,
+						Greenobject.getFeature(Greenobject.POSITION_Y) ))
+					prunedGreenobjects.add(Greenobject);
+			}
+		} else {
+			prunedGreenobjects = GreenobjectsThisFrame;
+		}
+		return prunedGreenobjects;
 	}
 
 	/*
@@ -136,9 +198,17 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	public Model getModel() {
 		return model;
 	}
+	public GreenModel getGreenModel() {
+		
+		return greenmodel;
+	}
 
 	public Settings getSettings() {
 		return settings;
+	}
+	
+	public GreenSettings getGreenSettings() {
+		return greensettings;
 	}
 
 	/*
@@ -173,6 +243,22 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 		return false;
 	}
 
+	
+	public boolean computeGreenobjectFeatures(final boolean doLogIt) {
+		final Logger logger = greenmodel.getLogger();
+		logger.log("Computing Greenobject features.\n");
+		final GreenobjectFeatureCalculator calculator = new GreenobjectFeatureCalculator(greenmodel, greensettings);
+		calculator.setNumThreads(numThreads);
+		if (calculator.checkInput() && calculator.process()) {
+			if (doLogIt)
+				logger.log("Computation done in " + calculator.getProcessingTime() + " ms.\n");
+			return true;
+		}
+
+		errorMessage = "BCellobject features calculation failed:\n" + calculator.getErrorMessage();
+		return false;
+	}
+	
 	/**
 	 * Calculate all features for all detected BCellobjects.
 	 * <p>

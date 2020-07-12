@@ -13,7 +13,9 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import Buddy.plugin.trackmate.FeatureModel;
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenModelChangeEvent;
+import Buddy.plugin.trackmate.GreenTrackModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;
@@ -36,6 +38,8 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 	private Map<Integer, Color> colorMap;
 
 	private final Model model;
+	
+	private final GreenModel greenmodel;
 
 	private String feature;
 
@@ -49,7 +53,16 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 
 	public PerTrackFeatureColorGenerator(final Model model, final String feature) {
 		this.model = model;
+		this.greenmodel = null;
 		model.addModelChangeListener(this);
+		generator = TrackMateOptionUtils.getOptions().getPaintScale();
+		setFeature(feature);
+	}
+	
+	public PerTrackFeatureColorGenerator(final GreenModel greenmodel, final String feature) {
+		this.greenmodel = greenmodel;
+		this.model = null;
+		greenmodel.addModelChangeListener(this);
 		generator = TrackMateOptionUtils.getOptions().getPaintScale();
 		setFeature(feature);
 	}
@@ -91,45 +104,98 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 	}
 
 	private void refreshColorMap() {
-		final TrackModel trackModel = model.getTrackModel();
-		final Set<Integer> trackIDs = trackModel.trackIDs(true);
+		TrackModel trackModel = null;
+		GreenTrackModel greentrackModel = null;
+		if (model!=null) {
+			trackModel = model.getTrackModel();
+			
+			final Set<Integer> trackIDs = trackModel.trackIDs(true);
 
-		if (null == feature) {
+			if (null == feature) {
 
-			// Create value->color map
-			colorMap = new HashMap<>(trackIDs.size());
-			for (final Integer trackID : trackIDs)
-				colorMap.put(trackID, DEFAULT_TRACK_COLOR);
-		} else if (feature.equals(TrackIndexAnalyzer.TRACK_INDEX)) {
-			// Create value->color map
-			colorMap = new HashMap<>(trackIDs.size());
-			int index = 0;
-			for (final Integer trackID : trackIDs) {
-				final Color lColor = generator.getPaint((double) index++ / (trackIDs.size() - 1));
-				colorMap.put(trackID, lColor);
+				// Create value->color map
+				colorMap = new HashMap<>(trackIDs.size());
+				for (final Integer trackID : trackIDs)
+					colorMap.put(trackID, DEFAULT_TRACK_COLOR);
+			} else if (feature.equals(TrackIndexAnalyzer.TRACK_INDEX)) {
+				// Create value->color map
+				colorMap = new HashMap<>(trackIDs.size());
+				int index = 0;
+				for (final Integer trackID : trackIDs) {
+					final Color lColor = generator.getPaint((double) index++ / (trackIDs.size() - 1));
+					colorMap.put(trackID, lColor);
+				}
+			} else {
+				// Get min & max & all values
+				if (autoMode)
+					autoMinMax();
+
+				// Create value->color map
+				final FeatureModel fm = model.getFeatureModel();
+				colorMap = new HashMap<>(trackIDs.size());
+				for (final Integer trackID : trackIDs) {
+					final Double val = fm.getTrackFeature(trackID, feature);
+					final Color lColor;
+					if (null == val)
+						lColor = TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
+					else if (Double.isNaN(val.doubleValue()))
+						lColor = TrackMateModelView.DEFAULT_UNDEFINED_FEATURE_COLOR;
+					else
+						lColor = generator.getPaint((val - min) / (max - min));
+
+					colorMap.put(trackID, lColor);
+				}
 			}
-		} else {
-			// Get min & max & all values
-			if (autoMode)
-				autoMinMax();
-
-			// Create value->color map
-			final FeatureModel fm = model.getFeatureModel();
-			colorMap = new HashMap<>(trackIDs.size());
-			for (final Integer trackID : trackIDs) {
-				final Double val = fm.getTrackFeature(trackID, feature);
-				final Color lColor;
-				if (null == val)
-					lColor = TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
-				else if (Double.isNaN(val.doubleValue()))
-					lColor = TrackMateModelView.DEFAULT_UNDEFINED_FEATURE_COLOR;
-				else
-					lColor = generator.getPaint((val - min) / (max - min));
-
-				colorMap.put(trackID, lColor);
-			}
+			
 		}
+		if(greenmodel!=null) {
+			greentrackModel = greenmodel.getTrackModel();
+		
+			final Set<Integer> trackIDs = greentrackModel.trackIDs(true);
+
+			if (null == feature) {
+
+				// Create value->color map
+				colorMap = new HashMap<>(trackIDs.size());
+				for (final Integer trackID : trackIDs)
+					colorMap.put(trackID, DEFAULT_TRACK_COLOR);
+			} else if (feature.equals(TrackIndexAnalyzer.TRACK_INDEX)) {
+				// Create value->color map
+				colorMap = new HashMap<>(trackIDs.size());
+				int index = 0;
+				for (final Integer trackID : trackIDs) {
+					final Color lColor = generator.getPaint((double) index++ / (trackIDs.size() - 1));
+					colorMap.put(trackID, lColor);
+				}
+			} else {
+				// Get min & max & all values
+				if (autoMode)
+					autoMinMax();
+
+				// Create value->color map
+				final FeatureModel fm = model.getFeatureModel();
+				colorMap = new HashMap<>(trackIDs.size());
+				for (final Integer trackID : trackIDs) {
+					final Double val = fm.getTrackFeature(trackID, feature);
+					final Color lColor;
+					if (null == val)
+						lColor = TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
+					else if (Double.isNaN(val.doubleValue()))
+						lColor = TrackMateModelView.DEFAULT_UNDEFINED_FEATURE_COLOR;
+					else
+						lColor = generator.getPaint((val - min) / (max - min));
+
+					colorMap.put(trackID, lColor);
+				}
+			}
+			
+			
+		}
+		
 	}
+	
+	
+	
 
 	@Override
 	public Color color(final DefaultWeightedEdge edge) {

@@ -1,28 +1,28 @@
 package Buddy.plugin.trackmate.visualization;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 
 import java.awt.Color;
 
-import budDetector.BCellobject;
 import greenDetector.Greenobject;
 
 public class GreenobjectColorGeneratorPerTrackFeature implements FeatureColorGenerator<Greenobject> {
 
 	private final PerTrackFeatureColorGenerator trackColorGenerator;
 
-	private final Model model;
+	private final GreenModel model;
 
-	public GreenobjectColorGeneratorPerTrackFeature(final Model model, final String feature) {
+	public GreenobjectColorGeneratorPerTrackFeature(final GreenModel model, final String feature) {
 		this.model = model;
 		this.trackColorGenerator = new PerTrackFeatureColorGenerator(model, feature);
 	}
 
 	@Override
-	public Color color(final Greenobject BCellobject) {
-		final Integer trackID = model.getTrackModel().trackIDOf(BCellobject);
+	public Color color(final Greenobject Greenobject) {
+		final Integer trackID = model.getTrackModel().trackIDOf(Greenobject);
 		if (null == trackID)
-			return TrackMateModelView.DEFAULT_BCellobject_COLOR;
+			return TrackMateModelView.DEFAULT_Greenobject_COLOR;
 
 		return trackColorGenerator.colorOf(trackID);
 	}

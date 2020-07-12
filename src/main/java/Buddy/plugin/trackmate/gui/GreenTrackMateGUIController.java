@@ -101,6 +101,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected final TrackMateGUIModel guimodel;
 
+	
 	protected GreenobjectAnalyzerProvider GreenobjectAnalyzerProvider;
 
 	protected EdgeAnalyzerProvider edgeAnalyzerProvider;
@@ -403,12 +404,12 @@ public class GreenTrackMateGUIController implements ActionListener {
 	}
 
 	protected ManualEdgeColorGenerator createManualEdgeColorGenerator() {
-		return new ManualEdgeColorGenerator(trackmate.getModel());
+		return new ManualEdgeColorGenerator(trackmate.getGreenModel());
 	}
 
 	protected FeatureColorGenerator<Greenobject> createGreenobjectColorGeneratorPerTrackFeature() {
 		final FeatureColorGenerator<Greenobject> generator = new GreenobjectColorGeneratorPerTrackFeature(
-				trackmate.getModel(), TrackIndexAnalyzer.TRACK_INDEX);
+				trackmate.getGreenModel(), TrackIndexAnalyzer.TRACK_INDEX);
 		return generator;
 	}
 

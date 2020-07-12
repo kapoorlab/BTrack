@@ -43,6 +43,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import Buddy.plugin.trackmate.BCellobjectCollection;
+import Buddy.plugin.trackmate.GreenobjectCollection;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
@@ -168,7 +169,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public double timecal;
 	public File saveFile;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
-	public BCellobjectCollection budcells = new BCellobjectCollection();
+	public GreenobjectCollection Greencells = new GreenobjectCollection();
 	public HashMap<Integer,Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Budpointobject> Finalresult;
 	
