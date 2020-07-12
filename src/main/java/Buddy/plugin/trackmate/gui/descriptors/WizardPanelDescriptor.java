@@ -3,6 +3,7 @@ package Buddy.plugin.trackmate.gui.descriptors;
 import java.awt.Component;
 
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 /**
  * A base descriptor class used to reference a Component panel for the Wizard,
@@ -64,7 +65,7 @@ public interface WizardPanelDescriptor {
 	 * @param parent
 	 */
 	public void displayingPanel(InteractiveBud parent);
-
+	public void displayingGreenPanel(InteractiveGreen parent);
 	/**
 	 * This method is used to perform functionality just before the panel is to be
 	 * hidden.

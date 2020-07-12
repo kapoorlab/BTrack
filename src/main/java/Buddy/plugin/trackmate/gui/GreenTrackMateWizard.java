@@ -27,7 +27,7 @@ import Buddy.plugin.trackmate.visualization.TrackMateModelView;
  * 
  * @author Jean-Yves Tinevez &lt;tinevez@pasteur.fr&gt; - September 2010 - 2014
  */
-public class TrackMateWizard extends JFrame implements ActionListener {
+public class GreenTrackMateWizard extends JFrame implements ActionListener {
 
 	JButton jButtonSave;
 
@@ -118,13 +118,13 @@ public class TrackMateWizard extends JFrame implements ActionListener {
 
 	private TrackMateModelView displayer;
 
-	private final TrackMateGUIController controller;
+	private final GreenTrackMateGUIController controller;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public TrackMateWizard(final TrackMateGUIController controller) {
+	public GreenTrackMateWizard(final GreenTrackMateGUIController controller) {
 		this.controller = controller;
 		initGUI();
 	}
@@ -137,7 +137,7 @@ public class TrackMateWizard extends JFrame implements ActionListener {
 	 */
 
 	/** Exposes the controller managing this GUI. */
-	public TrackMateGUIController getController() {
+	public GreenTrackMateGUIController getController() {
 		return controller;
 	}
 

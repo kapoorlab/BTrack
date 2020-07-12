@@ -89,6 +89,7 @@ import pluginTools.InteractiveBud.ValueChange;
 import tracker.BUDDYBudTrackModel;
 import tracker.BUDDYCostFunction;
 import tracker.BUDDYTrackModel;
+import tracker.GREENTrackModel;
 
 public class InteractiveGreen  extends JPanel implements PlugIn{
 
@@ -120,6 +121,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public BUDDYCostFunction<Budobject, Budobject> BudUserchosenCostFunction;
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
+	public HashMap<String, Integer> AccountedZ;
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
 	public HashMap<String, Double> TrackMeanVelocitylist;
 	public HashMap<String, Double> TrackMaxVelocitylist;
@@ -141,39 +143,49 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public ArrayList<RealLocalizable> ChosenBudcenter;
 	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
+	public int fourthDimension;
 	public GREENTrackModel Globalmodel;
 	public GREENTrackModel BudGlobalModel;
 	public int thirdDimensionSize;
+	public int fourthDimensionSize;
 	public ImagePlus impA;
 	public int rowchoice;
 	public Frame jFreeChartFrameRate;
 	public int maxframegap = 30;
+	
 	public int thirdDimensionslider = 1;
 	public int thirdDimensionsliderInit = 1;
+	public int fourthDimensionslider = 1;
+	public int fourthDimensionsliderInit = 1;
+	
 	public JProgressBar jpb;
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public ImageJ ij; 
-	public double calibration;
+	public double calibrationX;
+	public double calibrationY;
+	public double calibrationZ;
 	public double timecal;
 	public File saveFile;
-	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	public BCellobjectCollection budcells = new BCellobjectCollection();
 	public HashMap<Integer,Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Budpointobject> Finalresult;
+	
 	// Input Green and its segmentation
 		public InteractiveGreen(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
 				final RandomAccessibleInterval<BitType> Maskimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
+				final String NameA,final double calibrationX, double calibrationY, double calibrationZ, final double timecal, String inputstring) {
 			
 			
 			this.originalimg = originalimg;
 			this.Segoriginalimg = Segoriginalimg;
 			this.Maskimg = Maskimg;
 			this.NameA = NameA;
-			this.calibration = calibration;
+			this.calibrationX = calibrationX;
+			this.calibrationY = calibrationY;
+			this.calibrationZ = calibrationZ;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.inputstring = inputstring;
@@ -187,7 +199,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public JTableHeader header;
 	public static enum ValueChange {
 		
-		THIRDDIMmouse, All;
+		THIRDDIMmouse, FOURTHDIMmouse, All;
 		
 	}
 	
@@ -197,11 +209,23 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		thirdDimension = 1;
 	}
 	
+	public void setZ(final int value) {
+		fourthDimensionslider = value;
+		fourthDimensionsliderInit = 1;
+		fourthDimension = 1;
+	}
+	
 	
 	public int getTimeMax() {
 
 		return thirdDimensionSize;
 	}
+	
+	public int getZMax() {
+
+		return fourthDimensionSize;
+	}
+	
 	@Override
 	public void run(String arg0) {
 
@@ -215,6 +239,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		BudVelocityMap = new HashMap<Integer, HashMap<Integer,Double>>() ;
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
+		AccountedZ = new HashMap<String, Integer>();
 		jpb = new JProgressBar();
 		nf = NumberFormat.getInstance(Locale.ENGLISH);
 		nf.setMaximumFractionDigits(3);
@@ -238,11 +263,30 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 			AutoendTime = thirdDimensionSize;
 			maxframegap = thirdDimensionSize / 4;
 		}
+		
+		if (ndims == 4) {
+
+			thirdDimension = 1;
+
+			thirdDimensionSize = (int) originalimg.dimension(2);
+			AutostartTime = thirdDimension;
+			AutoendTime = thirdDimensionSize;
+			maxframegap = thirdDimensionSize / 4;
+			
+			
+			fourthDimension = 1;
+			fourthDimensionSize =  (int) originalimg.dimension(3);
+			
+		}
+		
+		
 		setTime(thirdDimension);
-		CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
-		CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-		if(SegYelloworiginalimg!=null)
-			CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
+		setZ(fourthDimension);
+		
+		CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+		CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+		if(Maskimg!=null)
+			CurrentViewMaskInt = utility.BudSlicer.getCurrentBudView(Maskimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
 		imp = ImageJFunctions.show(CurrentView, "Original Image");
 		imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 		
@@ -285,13 +329,13 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
       
 		Segoriginalimg = labeling.getIndexImg();
 		
-		if(SegYelloworiginalimg!=null) {
+		if(Segoriginalimg!=null) {
 			
 			
 			
-			  dims = new long[SegYelloworiginalimg.numDimensions()];
+			  dims = new long[Segoriginalimg.numDimensions()];
 		        // get image dimension
-			  SegYelloworiginalimg.dimensions(dims);
+			  Segoriginalimg.dimensions(dims);
 		        // create labeling index image
 		         indexImg = ArrayImgs.ints(dims);
 		        labeling = new ImgLabeling<>(indexImg);
@@ -316,9 +360,9 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		            {}
 		        };
 		        
-		        ConnectedComponents.labelAllConnectedComponents(SegYelloworiginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
+		        ConnectedComponents.labelAllConnectedComponents(Segoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
 		        
-		        SegYelloworiginalimg = labeling.getIndexImg();
+		        Segoriginalimg = labeling.getIndexImg();
 			
 		}
 		
@@ -360,43 +404,6 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 			
 		}
 		
-		if(SegRedoriginalimg!=null) {
-			
-			
-			
-			  dims = new long[SegRedoriginalimg.numDimensions()];
-		        // get image dimension
-			  SegRedoriginalimg.dimensions(dims);
-		        // create labeling index image
-		         indexImg = ArrayImgs.ints(dims);
-		        labeling = new ImgLabeling<>(indexImg);
-		        labels = new Iterator<Integer>()
-		        {
-		            private int i = 1;
-
-		            @Override
-		            public boolean hasNext()
-		            {
-		                return true;
-		            }
-
-		            @Override
-		            public Integer next()
-		            {
-		                return i++;
-		            }
-
-		            @Override
-		            public void remove()
-		            {}
-		        };
-		        
-		        ConnectedComponents.labelAllConnectedComponents(SegRedoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
-		        
-		        SegRedoriginalimg = labeling.getIndexImg();
-			
-		}
-		
 		
 		
 		
@@ -419,13 +426,15 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		
 		if (change == ValueChange.THIRDDIMmouse)
 		{
-			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
+			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension + " " + "z point : "  + fourthDimension);
 			String TID = Integer.toString( thirdDimension);
+			String ZID = Integer.toString( fourthDimension);
 			AccountedT.put(TID,  thirdDimension);
-			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
-			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-			if(SegYelloworiginalimg!=null)
-				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
+			AccountedZ.put(ZID,  fourthDimension);
+			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+			if(Maskimg!=null)
+				CurrentViewMaskInt = utility.BudSlicer.getCurrentBudView(Maskimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
 		repaintView(CurrentView);
 		
 		
@@ -506,25 +515,25 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	int SizeX = 400;
 	int SizeY = 200;
 	public Border selectfile = new CompoundBorder(new TitledBorder("Select Track"), new EmptyBorder(c.insets));
-	public Label autoTstart, autoTend;
-	public TextField startT, endT;
+	public Label autoTstart, autoTend, autoZstart, autoZend;
+	public TextField startT, endT, startZ, endZ;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
+	public Label zText = new Label("Current Z = " + 1, Label.CENTER);
 	
-	
-	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
-	public Label fourthexplain = new Label("Click Skeletonize buddies after selection" , Label.CENTER);
 	public String timestring = "Current T";
+	public String Zstring = "Current Z";
 	int textwidth = 5;
 	public int AutostartTime, AutoendTime;
-	public TextField inputFieldT;
+	public TextField inputFieldT, inputFieldZ;
 	public JScrollBar timeslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
+			scrollbarSize + 10);
+	public JScrollBar Zslider = new JScrollBar(Scrollbar.HORIZONTAL, fourthDimensionsliderInit, 10, 0,
 			scrollbarSize + 10);
 	public JButton Savebutton = new JButton("Save Track");
 	public JButton Cellbutton = new JButton("Enter BTrackmate");
 	public JButton Restartbutton = new JButton("Restart");
-	public JButton Batchbutton = new JButton("Save Parameters for batch mode and exit");
 	public JButton SaveAllbutton = new JButton("Save All Tracks");
-	public Border timeborder = new CompoundBorder(new TitledBorder("Select time"), new EmptyBorder(c.insets));
+	public Border timeborder = new CompoundBorder(new TitledBorder("Select time and Z"), new EmptyBorder(c.insets));
 	public Label inputtrackLabel;
 	public TextField inputtrackField;
 	public Border selectcell = new CompoundBorder(new TitledBorder("Select Cell"), new EmptyBorder(c.insets));
@@ -551,54 +560,10 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 
 		panelCont.add(panelFirst, "1");
 		
-		inputtrackLabel = new Label("Enter trackID to save");
-		inputtrackField = new TextField(textwidth);
 		
-		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Growth Rate" };
-
-		Object[][] rowvalues = new Object[0][colnames.length];
-		if (Finalresult != null && Finalresult.size() > 0) {
-
-			rowvalues = new Object[Finalresult.size()][colnames.length];
-
-		}
-		/*if (Tracklist != null && Tracklist.size() > 0) {
-			rowvalues = new Object[Tracklist.size()][colnames.length];
-		}
-		*/
-		
-		table = new JTable(rowvalues, colnames);
-		header  = table.getTableHeader();
-		table.setFillsViewportHeight(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		autoTend = new Label("End time for tracking");
-		endT = new TextField(textwidth);
-		endT.setText(Integer.toString(AutoendTime));
-		
-		
-		
-		scrollPane = new JScrollPane(table);
 		Original.setLayout(layout);
-		scrollPane.getViewport().add(table);
-		scrollPane.setAutoscrolls(true);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		PanelSelectFile.add(scrollPane, BorderLayout.CENTER);
 
 		PanelSelectFile.setBorder(selectfile);
-		int size = 100;
-		table.getColumnModel().getColumn(0).setPreferredWidth(size);
-		table.getColumnModel().getColumn(1).setPreferredWidth(size);
-		table.getColumnModel().getColumn(2).setPreferredWidth(size);
-		table.getColumnModel().getColumn(3).setPreferredWidth(size);
-		table.getColumnModel().getColumn(4).setPreferredWidth(size);
-		table.setPreferredScrollableViewportSize(table.getPreferredSize());
-		table.setFillsViewportHeight(true);
-		table.isOpaque();
-		scrollPane.setMinimumSize(new Dimension(300, 200));
-		scrollPane.setPreferredSize(new Dimension(300, 200));
-		
 		panelFirst.setLayout(layout);
 		overlay = imp.getOverlay();
 		if (overlay == null) {
@@ -620,6 +585,18 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		inputFieldT = new TextField(textwidth);
 		inputFieldT.setText(Integer.toString(thirdDimension));
 		
+
+		autoZstart = new Label("Start Z for object linking");
+		startZ = new TextField(textwidth);
+		startZ.setText(Integer.toString(AutostartZ));
+
+		autoZend = new Label("End Z for linking");
+		endZ = new TextField(textwidth);
+		endZ.setText(Integer.toString(AutoendZ));
+		
+		Zselect.setLayout(layout);
+		inputFieldZ = new TextField(textwidth);
+		inputFieldZ.setText(Integer.toString(fourthDimension));
 		
 		// Put time slider
 
@@ -635,6 +612,22 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Timeselect.add(endT, new GridBagConstraints(2, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		// Put Z slider
+
+		Zselect.add(ZText, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		Zselect.add(Zslider, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		Zselect.add(inputFieldZ, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Zselect.add(autZend, new GridBagConstraints(3, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		Zselect.add(endZ, new GridBagConstraints(3, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
 		
 		
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));

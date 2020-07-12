@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Map;
 
 import budDetector.BCellobject;
+import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
 
@@ -61,26 +62,27 @@ public interface TrackMateModelView {
 	 * <code>false</code>, BCellobjects are not visible.
 	 */
 	public static final String KEY_BCellobjectS_VISIBLE = "BCellobjectsVisible";
-
+	public static final String KEY_GreenobjectS_VISIBLE = "GreenobjectsVisible";
 	/**
 	 * Defines the key for the BCellobject name display. Values are boolean. If
 	 * <code>false</code>, BCellobject names are not visible.
 	 */
 	public static final String KEY_DISPLAY_BCellobject_NAMES = "DisplayBCellobjectNames";
-
+	public static final String KEY_DISPLAY_Greenobject_NAMES = "DisplayGreenobjectNames";
 	/**
 	 * Defines the key for the BCellobject radius ratio. Value should be a positive
 	 * {@link Double} object. BCellobjects will be rendered with a radius equals to
 	 * their actual radius multiplied by this ratio.
 	 */
 	public static final String KEY_BCellobject_RADIUS_RATIO = "BCellobjectRadiusRatio";
+	public static final String KEY_Greenobject_RADIUS_RATIO = "GreenobjectRadiusRatio";
 
 	/**
 	 * Defines the key for the BCellobject coloring method. Accepted values are
 	 * implementation of {@link FeatureColorGenerator}
 	 */
 	public static final String KEY_BCellobject_COLORING = "BCellobjectColoring";
-
+	public static final String KEY_Greenobject_COLORING = "GreenobjectColoring";
 	/**
 	 * Defines the key for the color map to use for painting overlay. Acceptable
 	 * values are {@link InterpolatePaintScale}s, the default is
@@ -178,7 +180,7 @@ public interface TrackMateModelView {
 	 * The default color for BCellobjects.
 	 */
 	public static final Color DEFAULT_BCellobject_COLOR = new Color(1f, 0, 1f);
-
+	public static final Color DEFAULT_Greenobject_COLOR = new Color(1f, 0, 1f);
 	/**
 	 * The default track color.
 	 */
@@ -260,7 +262,7 @@ public interface TrackMateModelView {
 	 * Centers the view on the given BCellobject.
 	 */
 	public void centerViewOn(final BCellobject BCellobject);
-
+	public void centerViewOn(final Greenobject BCellobject);
 	/**
 	 * Returns the current display settings map.
 	 */

@@ -2,6 +2,7 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.gui.LogPanel;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 import java.awt.Component;
 import java.io.File;
@@ -38,6 +39,9 @@ public abstract class SomeDialogDescriptor implements WizardPanelDescriptor {
 
 	@Override
 	public abstract void displayingPanel(InteractiveBud parent);
+	
+	@Override
+	public abstract void displayingGreenPanel(InteractiveGreen parent);
 
 	@Override
 	public void aboutToHidePanel() {

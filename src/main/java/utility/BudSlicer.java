@@ -36,22 +36,29 @@ public class BudSlicer {
 	}
 
 	public static  < T extends NumericType< T > & NativeType< T > > RandomAccessibleInterval<T> getCurrentBudView(RandomAccessibleInterval<T> originalimg,
-			int thirdDimension, int thirdDimensionSize) {
+			int thirdDimension, int thirdDimensionSize, int fourthDimension, int fourthDimensionSize) {
 
 		final T type = originalimg.randomAccess().get().createVariable();
 		long[] dim = { originalimg.dimension(0), originalimg.dimension(1) };
+		long[] tdim = { originalimg.dimension(0), originalimg.dimension(1),originalimg.dimension(2)  };
 		final ImgFactory<T> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
 		RandomAccessibleInterval<T> totalimg = factory.create(dim, type);
-
+		RandomAccessibleInterval<T> Tsliceimg = factory.create(tdim, type);
 		if (thirdDimensionSize == 0) {
 
 			totalimg = originalimg;
 		}
 
-		if (thirdDimensionSize > 1) {
+		if (thirdDimensionSize > 1 && fourthDimensionSize <=1 ) {
 
 			totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
 
+		}
+		
+		if (thirdDimensionSize > 1 && fourthDimensionSize > 1 ) {
+
+			Tsliceimg = Views.hyperSlice(originalimg, 3, fourthDimension - 1);
+			totalimg = Views.hyperSlice(Tsliceimg, 2, thirdDimension - 1);
 		}
 
 		

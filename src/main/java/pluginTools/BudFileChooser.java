@@ -282,14 +282,14 @@ public class BudFileChooser extends JPanel {
 				impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName, new IntType());
 
 		if (imageOrig.numDimensions() > 3)
-			switch (JOptionPane.showConfirmDialog(null,
-					"Oh Claudia, Did you forget to split the channels again? Just 2D + t image, also for segmentations"))
-
+			switch(JOptionPane.showConfirmDialog(null, "Please upload only XYT image"))
+			
 			{
-
+			
 			case JOptionPane.YES_NO_CANCEL_OPTION:
-
-				return;
+				
+				break;
+			
 
 			}
 

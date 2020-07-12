@@ -31,7 +31,6 @@ import fileListeners.ChooseGreenSegMap;
 import ij.ImagePlus;
 import ij.WindowManager;
 import io.scif.img.ImgIOException;
-import listeners.BTrackGoGreenListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoRedFLListener;
@@ -51,8 +50,8 @@ public class RedGreenFileChooser extends JPanel {
 		private static final long serialVersionUID = 1L;
 		  public JFrame Cardframe = new JFrame("Red and Green Cell Tracker");
 		  public JPanel panelCont = new JPanel();
-		  public ImagePlus impOrigRed, impOrigGreen, impSegGreen, impSegRed, impMask;
-		  public File impOrigRedfile, impOrigGreenfile;
+		  public ImagePlus  impOrigGreen, impSegGreen,  impMask;
+		  public File impOrigGreenfile;
 		  public JPanel panelFirst = new JPanel();
 		  public JPanel Panelfile = new JPanel();
 		  public JPanel Panelsuperfile = new JPanel();
@@ -68,7 +67,6 @@ public class RedGreenFileChooser extends JPanel {
 		  public JComboBox<String> ChooseImage;
 		  public JComboBox<String> ChoosesuperImage;
 		  public JComboBox<String> ChooseoriginalImage;
-		  public JComboBox<String> ChooseRGBImage;
 		  public JButton Done =  new JButton("Finished choosing files, start BTrack");
 		
 		  public boolean twochannel = false;
@@ -84,18 +82,13 @@ public class RedGreenFileChooser extends JPanel {
 		  public String chooseMaskstring = "The XYT mask"; 
 		  public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskstring),
 					new EmptyBorder(c.insets));
-		  
-		  public String chooseRedSegstring = "Segmentation Image for Green and Red"; 
-		  public Border chooseRedSeg = new CompoundBorder(new TitledBorder(chooseRedSegstring),
-					new EmptyBorder(c.insets));
+
 		  
 		  public String chooseoriginalGreenfilestring = "We analyze only Greens";
 		  public Border chooseoriginalGreenfile = new CompoundBorder(new TitledBorder(chooseoriginalGreenfilestring),
 					new EmptyBorder(c.insets));
 		  
-		  public String chooseoriginalRedfilestring = "We analyze Red and Greens";
-		  public Border chooseoriginalRedfile = new CompoundBorder(new TitledBorder(chooseoriginalRedfilestring),
-					new EmptyBorder(c.insets));
+	
 		  
 		  
 		  
@@ -145,13 +138,9 @@ public class RedGreenFileChooser extends JPanel {
 				
 				ChooseImage = new JComboBox<String>(blankimageNames);
 				ChooseoriginalImage = new JComboBox<String>(blankimageNames);
-				ChooseRGBImage = new JComboBox<String>(blankimageNames);
 				ChoosesuperImage = new JComboBox<String>(blankimageNames);
 				
 				
-				
-			//	panelFirst.add(GoGreen, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-			//			GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
 				CovistoOneChFileLoader original = new CovistoOneChFileLoader(chooseoriginalGreenfilestring, blankimageNames);
@@ -206,7 +195,6 @@ public class RedGreenFileChooser extends JPanel {
 				
 				// Listeneres 
 				
-				GoGreen.addItemListener(new BTrackGoGreenListener(this));
 				
 				segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(this, segmentation.ChooseImage));
 				
@@ -301,21 +289,9 @@ public class RedGreenFileChooser extends JPanel {
 				System.out.println("CalibrationX:" + calibration);
 				System.out.println("CalibrationT:" + FrameInterval);
 				
-				if(imageOrigGreen.numDimensions() == 4 && imageMask.numDimensions() == 3)
 				
 					new InteractiveGreen( imageOrigGreen, imageSegA, imageMask, impOrigGreen.getOriginalFileInfo().fileName, calibration, FrameInterval,name    ).run(null);
 				
-				else
-					switch(JOptionPane.showConfirmDialog(null, "Oh Claudia, Did you forget to split the channels again? The red and the green split, also the segmentations"))
-					
-					{
-					
-					case JOptionPane.YES_NO_CANCEL_OPTION:
-						
-						return;
-					
-					
-					}
 				
 				
 				
