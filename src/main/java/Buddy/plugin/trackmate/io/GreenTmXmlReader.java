@@ -3,75 +3,76 @@ package Buddy.plugin.trackmate.io;
 import static Buddy.plugin.trackmate.io.IOUtils.readBooleanAttribute;
 import static Buddy.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static Buddy.plugin.trackmate.io.IOUtils.readIntAttribute;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.ANALYSER_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.ANALYSER_KEY_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.ANALYZER_COLLECTION_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_TEND_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_TSTART_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_XEND_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_XSTART_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_YEND_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_YSTART_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_ZEND_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.CROP_ZSTART_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.DETECTOR_SETTINGS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.EDGE_ANALYSERS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.EDGE_FEATURES_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_DECLARATIONS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_DIMENSION_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_ISINT_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_NAME_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FEATURE_SHORT_NAME_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FILTERED_TRACK_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FILTER_ABOVE_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FILTER_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FILTER_FEATURE_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FILTER_VALUE_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.FRAME_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.GUI_STATE_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.GUI_STATE_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.GUI_VIEW_ATTRIBUTE;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.GUI_VIEW_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_FILENAME_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_FOLDER_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_HEIGHT_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_NFRAMES_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_NSLICES_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_PIXEL_HEIGHT_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_PIXEL_WIDTH_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_TIME_INTERVAL_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_VOXEL_DEPTH_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.IMAGE_WIDTH_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.ANALYSER_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.ANALYSER_KEY_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.ANALYZER_COLLECTION_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_TEND_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_TSTART_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_XEND_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_XSTART_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_YEND_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_YSTART_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_ZEND_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.CROP_ZSTART_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.DETECTOR_SETTINGS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.EDGE_ANALYSERS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.EDGE_FEATURES_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_DECLARATIONS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_DIMENSION_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_ISINT_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_NAME_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FEATURE_SHORT_NAME_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FILTERED_TRACK_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FILTER_ABOVE_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FILTER_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FILTER_FEATURE_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FILTER_VALUE_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.FRAME_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.GUI_STATE_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.GUI_STATE_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.GUI_VIEW_ATTRIBUTE;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.GUI_VIEW_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_FILENAME_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_FOLDER_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_HEIGHT_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_NFRAMES_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_NSLICES_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_PIXEL_HEIGHT_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_PIXEL_WIDTH_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_TIME_INTERVAL_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_VOXEL_DEPTH_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.IMAGE_WIDTH_ATTRIBUTE_NAME;
 
-import static Buddy.plugin.trackmate.io.TmXmlKeys.INITIAL_BCellobject_FILTER_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.LOG_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.MODEL_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.PLUGIN_VERSION_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.SETTINGS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.SPATIAL_UNITS_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_ANALYSERS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_COLLECTION_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_FEATURES_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_FILTER_COLLECTION_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_FRAME_COLLECTION_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_ID_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.BCellobject_NAME_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TIME_UNITS_ATTRIBUTE_NAME;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACKER_SETTINGS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_ANALYSERS_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_COLLECTION_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_EDGE_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_FEATURES_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_FILTER_COLLECTION_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_ID_ELEMENT_KEY;
-import static Buddy.plugin.trackmate.io.TmXmlKeys.TRACK_NAME_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.INITIAL_Greenobject_FILTER_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.INITIAL_Greenobject_FILTER_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.LOG_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.MODEL_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.PLUGIN_VERSION_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.SETTINGS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.SPATIAL_UNITS_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_ANALYSERS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_COLLECTION_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_COLLECTION_NGreenobjectS_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_FEATURES_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_FILTER_COLLECTION_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_FRAME_COLLECTION_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_ID_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.Greenobject_NAME_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TIME_UNITS_ATTRIBUTE_NAME;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACKER_SETTINGS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_ANALYSERS_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_COLLECTION_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_EDGE_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_FEATURES_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_FILTER_COLLECTION_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_ID_ELEMENT_KEY;
+import static Buddy.plugin.trackmate.io.GreenTmXmlKeys.TRACK_NAME_ATTRIBUTE_NAME;
 import static Buddy.plugin.trackmate.tracking.TrackerKeys.XML_ATTRIBUTE_TRACKER_NAME;
 
 import java.io.File;
@@ -95,9 +96,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import budDetector.BCellobject;
 import greenDetector.Greenobject;
-import Buddy.plugin.trackmate.BCellobjectCollection;
+import Buddy.plugin.trackmate.GreenobjectCollection;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.FeatureModel;
 import Buddy.plugin.trackmate.GreenFeatureModel;
@@ -112,19 +112,23 @@ import Buddy.plugin.trackmate.features.FeatureFilter;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.edges.GreenEdgeAnalyzer;
-import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.edges.GreenEdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.track.GreenTrackAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
-import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
-import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import Buddy.plugin.trackmate.tracking.GreenobjectTrackerFactory;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
@@ -132,7 +136,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import tracker.GREENDimension;
 
-public class TmXmlReader {
+public class GreenTmXmlReader {
 
 	protected static final boolean DEBUG = true;
 
@@ -141,15 +145,15 @@ public class TmXmlReader {
 	protected final File file;
 
 	/**
-	 * A map of all BCellobjects loaded. We need this for performance, since we need
-	 * to recreate both the filtered BCellobject collection and the tracks graph
-	 * from the same BCellobject objects that the main BCellobject collection.. In
-	 * the file, they are referenced by their {@link BCellobject#ID()}, and parsing
+	 * A map of all Greenobjects loaded. We need this for performance, since we need
+	 * to recreate both the filtered Greenobject collection and the tracks graph
+	 * from the same Greenobject objects that the main Greenobject collection.. In
+	 * the file, they are referenced by their {@link Greenobject#ID()}, and parsing
 	 * them all to retrieve the one with the right ID is a drag. We made this cache
 	 * a {@link ConcurrentHashMap} because we hope to load large data in a
 	 * multi-threaded way.
 	 */
-	protected ConcurrentHashMap<Integer, BCellobject> cache;
+	protected ConcurrentHashMap<Integer, Greenobject> cache;
 
 	protected StringBuilderLogger logger = new StringBuilderLogger();
 
@@ -173,7 +177,7 @@ public class TmXmlReader {
 	/**
 	 * Initialize this reader to read the file given in argument.
 	 */
-	public TmXmlReader(final File file) {
+	public GreenTmXmlReader(final File file) {
 		this.file = file;
 		final SAXBuilder sb = new SAXBuilder();
 		Element r = null;
@@ -295,12 +299,12 @@ public class TmXmlReader {
 	 *
 	 * @return a new {@link Model}.
 	 */
-	public Model getModel() {
+	public GreenModel getModel() {
 		final Element modelElement = root.getChild(MODEL_ELEMENT_KEY);
 		if (null == modelElement)
 			return null;
 
-		final Model model = createModel();
+		final GreenModel model = createModel();
 
 		// Physical units
 		final String spaceUnits = modelElement.getAttributeValue(SPATIAL_UNITS_ATTRIBUTE_NAME);
@@ -310,9 +314,9 @@ public class TmXmlReader {
 		// Feature declarations
 		readFeatureDeclarations(modelElement, model);
 
-		// BCellobjects
-		final BCellobjectCollection BCellobjects = getBCellobjects(modelElement);
-		model.setBCellobjects(BCellobjects, false);
+		// Greenobjects
+		final GreenobjectCollection Greenobjects = getGreenobjects(modelElement);
+		model.setGreenobjects(Greenobjects, false);
 
 		// Tracks
 		if (!readTracks(modelElement, model))
@@ -347,8 +351,8 @@ public class TmXmlReader {
 	 *
 	 * @return a new {@link Model} instance.
 	 */
-	protected Model createModel() {
-		return new Model();
+	protected GreenModel createModel() {
+		return new GreenModel();
 	}
 	
 
@@ -362,16 +366,16 @@ public class TmXmlReader {
 	 *            the {@link Settings} object to flesh out.
 	 * @param detectorProvider
 	 *            the detector provider, required to configure the settings with a
-	 *            correct {@link BCellobjectDetectorFactory}. If <code>null</code>,
+	 *            correct {@link GreenobjectDetectorFactory}. If <code>null</code>,
 	 *            will skip reading detector parameters.
 	 * @param trackerProvider
 	 *            the tracker provider, required to configure the settings with a
-	 *            correct {@link Buddy.plugin.trackmate.tracking.BCellobjectTracker}.
+	 *            correct {@link Buddy.plugin.trackmate.tracking.GreenobjectTracker}.
 	 *            If <code>null</code>, will skip reading tracker parameters.
-	 * @param BCellobjectAnalyzerProvider
-	 *            the BCellobject analyzer provider, required to instantiates the
-	 *            saved {@link BCellobjectAnalyzerFactory}s. If <code>null</code>,
-	 *            will skip reading BCellobject analyzers.
+	 * @param GreenobjectAnalyzerProvider
+	 *            the Greenobject analyzer provider, required to instantiates the
+	 *            saved {@link GreenobjectAnalyzerFactory}s. If <code>null</code>,
+	 *            will skip reading Greenobject analyzers.
 	 * @param edgeAnalyzerProvider
 	 *            the edge analyzer provider, required to instantiates the saved
 	 *            {@link EdgeAnalyzer}s. If <code>null</code>, will skip reading
@@ -381,9 +385,9 @@ public class TmXmlReader {
 	 *            {@link TrackAnalyzer}s. If <code>null</code>, will skip reading
 	 *            track analyzers.
 	 */
-	public void readSettings(final Settings settings, final TrackerProvider trackerProvider,
-			final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
-			final EdgeAnalyzerProvider edgeAnalyzerProvider, final TrackAnalyzerProvider trackAnalyzerProvider) {
+	public void readSettings(final GreenSettings settings, final GreenTrackerProvider trackerProvider,
+			final GreenobjectAnalyzerProvider GreenobjectAnalyzerProvider,
+			final GreenEdgeAnalyzerProvider edgeAnalyzerProvider, final GreenTrackAnalyzerProvider trackAnalyzerProvider) {
 		final Element settingsElement = root.getChild(SETTINGS_ELEMENT_KEY);
 		if (null == settingsElement)
 			return;
@@ -398,20 +402,20 @@ public class TmXmlReader {
 		if (null != trackerProvider)
 			getTrackerSettings(settingsElement, settings, trackerProvider);
 
-		// BCellobject Filters
+		// Greenobject Filters
 		final FeatureFilter initialFilter = getInitialFilter(settingsElement);
 		if (null != initialFilter)
-			settings.initialBCellobjectFilterValue = initialFilter.value;
+			settings.initialGreenobjectFilterValue = initialFilter.value;
 
-		final List<FeatureFilter> BCellobjectFilters = getBCellobjectFeatureFilters(settingsElement);
-		settings.setBCellobjectFilters(BCellobjectFilters);
+		final List<FeatureFilter> GreenobjectFilters = getGreenobjectFeatureFilters(settingsElement);
+		settings.setGreenobjectFilters(GreenobjectFilters);
 
 		// Track Filters
 		final List<FeatureFilter> trackFilters = getTrackFeatureFilters(settingsElement);
 		settings.setTrackFilters(trackFilters);
 
 		// Features analyzers
-		readAnalyzers(settingsElement, settings, BCellobjectAnalyzerProvider, edgeAnalyzerProvider,
+		readAnalyzers(settingsElement, settings, GreenobjectAnalyzerProvider, edgeAnalyzerProvider,
 				trackAnalyzerProvider);
 	}
 
@@ -539,7 +543,7 @@ public class TmXmlReader {
 	 * @return the initial filter, as a {@link FeatureFilter}.
 	 */
 	private FeatureFilter getInitialFilter(final Element settingsElement) {
-		final Element itEl = settingsElement.getChild(INITIAL_BCellobject_FILTER_ELEMENT_KEY);
+		final Element itEl = settingsElement.getChild(INITIAL_Greenobject_FILTER_ELEMENT_KEY);
 		final String feature = itEl.getAttributeValue(FILTER_FEATURE_ATTRIBUTE_NAME);
 		final Double value = readDoubleAttribute(itEl, FILTER_VALUE_ATTRIBUTE_NAME, logger);
 		final boolean isAbove = readBooleanAttribute(itEl, FILTER_ABOVE_ATTRIBUTE_NAME, logger);
@@ -548,16 +552,16 @@ public class TmXmlReader {
 	}
 
 	/**
-	 * Return the list of {@link FeatureFilter} for BCellobjects stored in this
+	 * Return the list of {@link FeatureFilter} for Greenobjects stored in this
 	 * file.
 	 *
 	 * @param settingsElement
 	 *            the settings {@link Element} to read from.
 	 * @return a list of {@link FeatureFilter}s.
 	 */
-	private List<FeatureFilter> getBCellobjectFeatureFilters(final Element settingsElement) {
+	private List<FeatureFilter> getGreenobjectFeatureFilters(final Element settingsElement) {
 		final List<FeatureFilter> featureThresholds = new ArrayList<>();
-		final Element ftCollectionEl = settingsElement.getChild(BCellobject_FILTER_COLLECTION_ELEMENT_KEY);
+		final Element ftCollectionEl = settingsElement.getChild(Greenobject_FILTER_COLLECTION_ELEMENT_KEY);
 		final List<Element> ftEls = ftCollectionEl.getChildren(FILTER_ELEMENT_KEY);
 		for (final Element ftEl : ftEls) {
 			final String feature = ftEl.getAttributeValue(FILTER_FEATURE_ATTRIBUTE_NAME);
@@ -599,7 +603,7 @@ public class TmXmlReader {
 	 * @param settings
 	 *            the {@link Settings} to feed/
 	 */
-	private void getBaseSettings(final Element settingsElement, final Settings settings) {
+	private void getBaseSettings(final Element settingsElement, final GreenSettings settings) {
 		// Basic settings
 		final Element settingsEl = settingsElement.getChild(CROP_ELEMENT_KEY);
 		if (null != settingsEl) {
@@ -632,7 +636,7 @@ public class TmXmlReader {
 
 	/**
 	 * Update the given {@link Settings} object with the
-	 * {@link BCellobjectDetectorFactory} and settings map fields named
+	 * {@link GreenobjectDetectorFactory} and settings map fields named
 	 * {@link Settings#detectorFactory} and {@link Settings#detectorSettings} read
 	 * within the XML file this reader is initialized with.
 	 *
@@ -645,7 +649,7 @@ public class TmXmlReader {
 	 */
 
 	/**
-	 * Update the given {@link Settings} object with {@link BCellobjectTracker}
+	 * Update the given {@link Settings} object with {@link GreenobjectTracker}
 	 * proper settings map fields named {@link Settings#trackerSettings} and
 	 * {@link Settings#trackerFactory} read within the XML file this reader is
 	 * initialized with.
@@ -662,8 +666,8 @@ public class TmXmlReader {
 	 *            the {@link TrackerProvider}, required to read the tracker
 	 *            parameters.
 	 */
-	private void getTrackerSettings(final Element settingsElement, final Settings settings,
-			final TrackerProvider provider) {
+	private void getTrackerSettings(final Element settingsElement, final GreenSettings settings,
+			final GreenTrackerProvider provider) {
 		final Element element = settingsElement.getChild(TRACKER_SETTINGS_ELEMENT_KEY);
 		if (null == element) {
 			logger.error("Could not find the tracker element in file.\n");
@@ -681,7 +685,7 @@ public class TmXmlReader {
 			return;
 		}
 
-		final BCellobjectTrackerFactory factory = provider.getFactory(trackerKey);
+		final GreenobjectTrackerFactory factory = provider.getFactory(trackerKey);
 		if (null == factory) {
 			logger.error("The tracker identified by the key " + trackerKey + " is unknown to TrackMate.\n");
 			this.ok = false;
@@ -696,7 +700,7 @@ public class TmXmlReader {
 	}
 
 	/**
-	 * Read the list of all BCellobjects stored in this file.
+	 * Read the list of all Greenobjects stored in this file.
 	 * <p>
 	 * Internally, this methods also builds the cache field, which will be required
 	 * by the other methods.
@@ -707,43 +711,43 @@ public class TmXmlReader {
 	 *
 	 * @param modelElement
 	 *            the {@link Element} in which the model content was written.
-	 * @return a new {@link BCellobjectCollection}.
+	 * @return a new {@link GreenobjectCollection}.
 	 */
-	private BCellobjectCollection getBCellobjects(final Element modelElement) {
+	private GreenobjectCollection getGreenobjects(final Element modelElement) {
 		// Root element for collection
-		final Element bCellobjectCollection = modelElement.getChild(BCellobject_COLLECTION_ELEMENT_KEY);
+		final Element GobjectCollection = modelElement.getChild(Greenobject_COLLECTION_ELEMENT_KEY);
 
 		// Retrieve children elements for each frame
-		final List<Element> frameContent = bCellobjectCollection.getChildren(BCellobject_FRAME_COLLECTION_ELEMENT_KEY);
+		final List<Element> frameContent = GobjectCollection.getChildren(Greenobject_FRAME_COLLECTION_ELEMENT_KEY);
 
-		// Determine total number of BCellobjects
-		int nBCellobjects = readIntAttribute(bCellobjectCollection, BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME,
+		// Determine total number of Greenobjects
+		int nGreenobjects = readIntAttribute(GobjectCollection, Greenobject_COLLECTION_NGreenobjectS_ATTRIBUTE_NAME,
 				Logger.VOID_LOGGER);
-		if (nBCellobjects == 0) {
+		if (nGreenobjects == 0) {
 			/*
 			 * Could not find it or read it. Determine it by quick sweeping through children
 			 * element.
 			 */
 			for (final Element currentFrameContent : frameContent)
-				nBCellobjects += currentFrameContent.getChildren(BCellobject_ELEMENT_KEY).size();
+				nGreenobjects += currentFrameContent.getChildren(Greenobject_ELEMENT_KEY).size();
 		}
 
 		// Instantiate cache
-		cache = new ConcurrentHashMap<>(nBCellobjects);
+		cache = new ConcurrentHashMap<>(nGreenobjects);
 
 		// Load collection and build cache
 		int currentFrame = 0;
-		final Map<Integer, Set<BCellobject>> content = new HashMap<>(frameContent.size());
+		final Map<Integer, Set<Greenobject>> content = new HashMap<>(frameContent.size());
 		for (final Element currentFrameContent : frameContent) {
 
 			currentFrame = readIntAttribute(currentFrameContent, FRAME_ATTRIBUTE_NAME, logger);
-			final List<Element> BCellobjectContent = currentFrameContent.getChildren(BCellobject_ELEMENT_KEY);
-			final Set<BCellobject> BCellobjectSet = new HashSet<>(BCellobjectContent.size());
+			final List<Element> GreenobjectContent = currentFrameContent.getChildren(Greenobject_ELEMENT_KEY);
+			final Set<Greenobject> GreenobjectSet = new HashSet<>(GreenobjectContent.size());
 
-			content.put(currentFrame, BCellobjectSet);
+			content.put(currentFrame, GreenobjectSet);
 		}
-		final BCellobjectCollection allBCellobjects = BCellobjectCollection.fromMap(content);
-		return allBCellobjects;
+		final GreenobjectCollection allGreenobjects = GreenobjectCollection.fromMap(content);
+		return allGreenobjects;
 	}
 
 	/**
@@ -753,20 +757,20 @@ public class TmXmlReader {
 	 *
 	 * @return true if reading tracks was successful, false otherwise.
 	 */
-	protected boolean readTracks(final Element modelElement, final Model model) {
+	protected boolean readTracks(final Element modelElement, final GreenModel model) {
 
 		final Element allTracksElement = modelElement.getChild(TRACK_COLLECTION_ELEMENT_KEY);
 		final List<Element> trackElements = allTracksElement.getChildren(TRACK_ELEMENT_KEY);
 
 		// What we have to flesh out from the file
-		final SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(
+		final SimpleWeightedGraph<Greenobject, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(
 				DefaultWeightedEdge.class);
-		final Map<Integer, Set<BCellobject>> connectedVertexSet = new HashMap<>(trackElements.size());
+		final Map<Integer, Set<Greenobject>> connectedVertexSet = new HashMap<>(trackElements.size());
 		final Map<Integer, Set<DefaultWeightedEdge>> connectedEdgeSet = new HashMap<>(trackElements.size());
 		final Map<Integer, String> savedTrackNames = new HashMap<>(trackElements.size());
 
 		// The list of edge features. that we will set.
-		final FeatureModel fm = model.getFeatureModel();
+		final GreenFeatureModel fm = model.getFeatureModel();
 		final Collection<String> edgeFeatures = fm.getEdgeFeatures();
 		final Map<String, Boolean> edgeFeatureIsInt = fm.getEdgeFeatureIsInt();
 
@@ -778,20 +782,20 @@ public class TmXmlReader {
 			if (null == trackName)
 				trackName = "Unnamed";
 
-			// Iterate over edges & BCellobjects
+			// Iterate over edges & Greenobjects
 			final List<Element> edgeElements = trackElement.getChildren(TRACK_EDGE_ELEMENT_KEY);
 			final Set<DefaultWeightedEdge> edges = new HashSet<>(edgeElements.size());
-			final Set<BCellobject> BCellobjects = new HashSet<>(edgeElements.size());
+			final Set<Greenobject> Greenobjects = new HashSet<>(edgeElements.size());
 
 			for (final Element edgeElement : edgeElements) {
 
 				// Get source and target ID for this edge
-				final int sourceID = readIntAttribute(edgeElement, EdgeTargetAnalyzer.BCellobject_SOURCE_ID, logger);
-				final int targetID = readIntAttribute(edgeElement, EdgeTargetAnalyzer.BCellobject_TARGET_ID, logger);
+				final int sourceID = readIntAttribute(edgeElement, GreenEdgeTargetAnalyzer.Greenobject_SOURCE_ID, logger);
+				final int targetID = readIntAttribute(edgeElement, GreenEdgeTargetAnalyzer.Greenobject_TARGET_ID, logger);
 
-				// Get matching BCellobjects from the cache
-				final BCellobject sourceBCellobject = cache.get(sourceID);
-				final BCellobject targetBCellobject = cache.get(targetID);
+				// Get matching Greenobjects from the cache
+				final Greenobject sourceGreenobject = cache.get(sourceID);
+				final Greenobject targetGreenobject = cache.get(targetID);
 
 				// Get weight
 				double weight = 0;
@@ -799,31 +803,31 @@ public class TmXmlReader {
 					weight = readDoubleAttribute(edgeElement, EdgeTargetAnalyzer.EDGE_COST, logger);
 
 				// Error check
-				if (null == sourceBCellobject) {
-					logger.error("Unknown BCellobject ID: " + sourceID + "\n");
+				if (null == sourceGreenobject) {
+					logger.error("Unknown Greenobject ID: " + sourceID + "\n");
 					return false;
 				}
-				if (null == targetBCellobject) {
-					logger.error("Unknown BCellobject ID: " + targetID + "\n");
+				if (null == targetGreenobject) {
+					logger.error("Unknown Greenobject ID: " + targetID + "\n");
 					return false;
 				}
 
-				if (sourceBCellobject.equals(targetBCellobject)) {
+				if (sourceGreenobject.equals(targetGreenobject)) {
 					logger.error("Bad link for track " + trackID + ". Source = Target with ID: " + sourceID + "\n");
 					return false;
 				}
 
 				/*
-				 * Add BCellobjects to connected set. We might add the same BCellobject twice
+				 * Add Greenobjects to connected set. We might add the same Greenobject twice
 				 * (because we iterate over edges) but this is fine for we use a set.
 				 */
-				BCellobjects.add(sourceBCellobject);
-				BCellobjects.add(targetBCellobject);
+				Greenobjects.add(sourceGreenobject);
+				Greenobjects.add(targetGreenobject);
 
-				// Add BCellobjects to graph and build edge
-				graph.addVertex(sourceBCellobject);
-				graph.addVertex(targetBCellobject);
-				final DefaultWeightedEdge edge = graph.addEdge(sourceBCellobject, targetBCellobject);
+				// Add Greenobjects to graph and build edge
+				graph.addVertex(sourceGreenobject);
+				graph.addVertex(targetGreenobject);
+				final DefaultWeightedEdge edge = graph.addEdge(sourceGreenobject, targetGreenobject);
 
 				if (edge == null) {
 					logger.error("Bad edge found for track " + trackID + "\n");
@@ -851,8 +855,8 @@ public class TmXmlReader {
 
 			} // Finished parsing over the edges of the track
 
-			// Store one of the BCellobject in the saved trackID key map
-			connectedVertexSet.put(trackID, BCellobjects);
+			// Store one of the Greenobject in the saved trackID key map
+			connectedVertexSet.put(trackID, Greenobjects);
 			connectedEdgeSet.put(trackID, edges);
 			savedTrackNames.put(trackID, trackName);
 		}
@@ -938,9 +942,9 @@ public class TmXmlReader {
 		attributes.removeAll(toRemove);
 	}
 
-	private void readFeatureDeclarations(final Element modelElement, final Model model) {
+	private void readFeatureDeclarations(final Element modelElement, final GreenModel model) {
 
-		final FeatureModel fm = model.getFeatureModel();
+		final GreenFeatureModel fm = model.getFeatureModel();
 		final Element featuresElement = modelElement.getChild(FEATURE_DECLARATIONS_ELEMENT_KEY);
 		if (null == featuresElement) {
 			logger.error("Could not find feature declarations in file.\n");
@@ -948,25 +952,25 @@ public class TmXmlReader {
 			return;
 		}
 
-		// BCellobjects
-		final Element BCellobjectFeaturesElement = featuresElement.getChild(BCellobject_FEATURES_ELEMENT_KEY);
-		if (null == BCellobjectFeaturesElement) {
-			logger.error("Could not find BCellobject feature declarations in file.\n");
+		// Greenobjects
+		final Element GreenobjectFeaturesElement = featuresElement.getChild(Greenobject_FEATURES_ELEMENT_KEY);
+		if (null == GreenobjectFeaturesElement) {
+			logger.error("Could not find Greenobject feature declarations in file.\n");
 			ok = false;
 
 		} else {
 
-			final List<Element> children = BCellobjectFeaturesElement.getChildren(FEATURE_ELEMENT_KEY);
+			final List<Element> children = GreenobjectFeaturesElement.getChildren(FEATURE_ELEMENT_KEY);
 			final Collection<String> features = new ArrayList<>(children.size());
 			final Map<String, String> featureNames = new HashMap<>(children.size());
 			final Map<String, String> featureShortNames = new HashMap<>(children.size());
-			final Map<String, Dimension> featureDimensions = new HashMap<>(children.size());
+			final Map<String, GREENDimension> featureDimensions = new HashMap<>(children.size());
 			final Map<String, Boolean> isIntFeature = new HashMap<>();
 			for (final Element child : children)
 				readSingleFeatureDeclaration(child, features, featureNames, featureShortNames, featureDimensions,
 						isIntFeature);
 
-			fm.declareBCellobjectFeatures(features, featureNames, featureShortNames, featureDimensions, isIntFeature);
+			fm.declareGreenobjectFeatures(features, featureNames, featureShortNames, featureDimensions, isIntFeature);
 		}
 
 		// Edges
@@ -981,7 +985,7 @@ public class TmXmlReader {
 			final Collection<String> features = new ArrayList<>(children.size());
 			final Map<String, String> featureNames = new HashMap<>(children.size());
 			final Map<String, String> featureShortNames = new HashMap<>(children.size());
-			final Map<String, Dimension> featureDimensions = new HashMap<>(children.size());
+			final Map<String, GREENDimension> featureDimensions = new HashMap<>(children.size());
 			final Map<String, Boolean> isIntFeature = new HashMap<>(children.size());
 			for (final Element child : children)
 				readSingleFeatureDeclaration(child, features, featureNames, featureShortNames, featureDimensions,
@@ -1002,7 +1006,7 @@ public class TmXmlReader {
 			final Collection<String> features = new ArrayList<>(children.size());
 			final Map<String, String> featureNames = new HashMap<>(children.size());
 			final Map<String, String> featureShortNames = new HashMap<>(children.size());
-			final Map<String, Dimension> featureDimensions = new HashMap<>(children.size());
+			final Map<String, GREENDimension> featureDimensions = new HashMap<>(children.size());
 			final Map<String, Boolean> isIntFeature = new HashMap<>();
 			for (final Element child : children)
 				readSingleFeatureDeclaration(child, features, featureNames, featureShortNames, featureDimensions,
@@ -1012,9 +1016,9 @@ public class TmXmlReader {
 		}
 	}
 
-	private void readAnalyzers(final Element settingsElement, final Settings settings,
-			final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider,
-			final EdgeAnalyzerProvider edgeAnalyzerProvider, final TrackAnalyzerProvider trackAnalyzerProvider) {
+	private void readAnalyzers(final Element settingsElement, final GreenSettings settings,
+			final GreenobjectAnalyzerProvider GreenobjectAnalyzerProvider,
+			final GreenEdgeAnalyzerProvider edgeAnalyzerProvider, final GreenTrackAnalyzerProvider trackAnalyzerProvider) {
 
 		final Element analyzersEl = settingsElement.getChild(ANALYZER_COLLECTION_ELEMENT_KEY);
 		if (null == analyzersEl) {
@@ -1023,22 +1027,22 @@ public class TmXmlReader {
 			return;
 		}
 
-		// BCellobject analyzers
-		if (null != BCellobjectAnalyzerProvider) {
-			final Element BCellobjectAnalyzerEl = analyzersEl.getChild(BCellobject_ANALYSERS_ELEMENT_KEY);
-			if (null == BCellobjectAnalyzerEl) {
-				logger.error("Could not find the BCellobject analyzer element.\n");
+		// Greenobject analyzers
+		if (null != GreenobjectAnalyzerProvider) {
+			final Element GreenobjectAnalyzerEl = analyzersEl.getChild(Greenobject_ANALYSERS_ELEMENT_KEY);
+			if (null == GreenobjectAnalyzerEl) {
+				logger.error("Could not find the Greenobject analyzer element.\n");
 				ok = false;
 
 			} else {
 
 				if (settings.imp == null) {
-					logger.error("The source image is not loaded; cannot instantiates BCellobject analyzers.\n");
+					logger.error("The source image is not loaded; cannot instantiates Greenobject analyzers.\n");
 					ok = false;
 
 				} else {
 
-					final List<Element> children = BCellobjectAnalyzerEl.getChildren(ANALYSER_ELEMENT_KEY);
+					final List<Element> children = GreenobjectAnalyzerEl.getChildren(ANALYSER_ELEMENT_KEY);
 					for (final Element child : children) {
 
 						final String key = child.getAttributeValue(ANALYSER_KEY_ATTRIBUTE);
@@ -1048,14 +1052,14 @@ public class TmXmlReader {
 							continue;
 						}
 
-						final BCellobjectAnalyzerFactory<?> BCellobjectAnalyzer = BCellobjectAnalyzerProvider
+						final GreenobjectAnalyzerFactory<?> GreenobjectAnalyzer = GreenobjectAnalyzerProvider
 								.getFactory(key);
-						if (null == BCellobjectAnalyzer) {
-							logger.error("Unknown BCellobject analyzer key: " + key + ".\n");
+						if (null == GreenobjectAnalyzer) {
+							logger.error("Unknown Greenobject analyzer key: " + key + ".\n");
 							ok = false;
 
 						} else {
-							settings.addBCellobjectAnalyzerFactory(BCellobjectAnalyzer);
+							settings.addGreenobjectAnalyzerFactory(GreenobjectAnalyzer);
 						}
 					}
 				}
@@ -1081,7 +1085,7 @@ public class TmXmlReader {
 						continue;
 					}
 
-					final EdgeAnalyzer edgeAnalyzer = edgeAnalyzerProvider.getFactory(key);
+					final GreenEdgeAnalyzer edgeAnalyzer = edgeAnalyzerProvider.getFactory(key);
 					if (null == edgeAnalyzer) {
 						logger.error("Unknown edge analyzer key: " + key + ".\n");
 						ok = false;
@@ -1111,7 +1115,7 @@ public class TmXmlReader {
 						continue;
 					}
 
-					final TrackAnalyzer trackAnalyzer = trackAnalyzerProvider.getFactory(key);
+					final GreenTrackAnalyzer trackAnalyzer = trackAnalyzerProvider.getFactory(key);
 					if (null == trackAnalyzer) {
 						logger.error("Unknown track analyzer key: " + key + ".\n");
 						ok = false;
@@ -1125,7 +1129,7 @@ public class TmXmlReader {
 
 	private void readSingleFeatureDeclaration(final Element child, final Collection<String> features,
 			final Map<String, String> featureNames, final Map<String, String> featureShortNames,
-			final Map<String, Dimension> featureDimensions, final Map<String, Boolean> isIntFeature) {
+			final Map<String, GREENDimension> featureDimensions, final Map<String, Boolean> isIntFeature) {
 
 		final String feature = child.getAttributeValue(FEATURE_ATTRIBUTE);
 		if (null == feature) {
@@ -1145,7 +1149,7 @@ public class TmXmlReader {
 			ok = false;
 			return;
 		}
-		final Dimension featureDimension = Dimension.valueOf(child.getAttributeValue(FEATURE_DIMENSION_ATTRIBUTE));
+		final GREENDimension featureDimension = GREENDimension.valueOf(child.getAttributeValue(FEATURE_DIMENSION_ATTRIBUTE));
 		if (null == featureDimension) {
 			logger.error("Could not find dimension for feature " + feature + ".\n");
 			ok = false;

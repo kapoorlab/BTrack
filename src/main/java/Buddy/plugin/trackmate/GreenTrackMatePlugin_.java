@@ -1,6 +1,7 @@
 package Buddy.plugin.trackmate;
 
-	import Buddy.plugin.trackmate.gui.GuiUtils;
+	import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
+import Buddy.plugin.trackmate.gui.GuiUtils;
 	import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 	import ij.IJ;
 	import ij.ImageJ;
@@ -11,7 +12,7 @@ package Buddy.plugin.trackmate;
 	import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 import pluginTools.RedGreenFileChooser;
-public class GreenTrackMatePlugin_ {
+public class GreenTrackMatePlugin_ implements PlugIn {
 
 	
 	
@@ -22,9 +23,9 @@ public class GreenTrackMatePlugin_ {
 
 		protected InteractiveGreen parent;
 
-		protected Settings settings;
+		protected GreenSettings settings;
 
-		protected Model model;
+		protected GreenModel model;
 
 		public GreenTrackMatePlugin_(final InteractiveGreen parent) {
 
@@ -67,14 +68,14 @@ public class GreenTrackMatePlugin_ {
 
 			settings = createSettings(imp);
 			model = createModel();
-			model.setBCellobjects(parent.budcells, true);
+			model.setGreenobjects(parent.Greencells, true);
 			trackmate = createTrackMate();
 
 			/*
 			 * Launch GUI.
 			 */
 
-			final TrackMateGUIController controller = new TrackMateGUIController(parent, trackmate);
+			final GreenTrackMateGUIController controller = new GreenTrackMateGUIController(parent, trackmate);
 			GuiUtils.positionWindow(controller.getGUI(), imp.getWindow());
 		}
 
@@ -90,13 +91,13 @@ public class GreenTrackMatePlugin_ {
 		 * @return a new {@link Model} instance.
 		 */
 
-		public InteractiveBud inputparent() {
+		public InteractiveGreen inputparent() {
 
 			return parent;
 		}
 
-		protected Model createModel() {
-			return new Model();
+		protected GreenModel createModel() {
+			return new GreenModel();
 		}
 
 		/**
@@ -109,8 +110,8 @@ public class GreenTrackMatePlugin_ {
 		 *            the {@link ImagePlus} to operate on.
 		 * @return a new {@link Settings} instance.
 		 */
-		protected Settings createSettings(final ImagePlus imp) {
-			final Settings lSettings = new Settings();
+		protected GreenSettings createSettings(final ImagePlus imp) {
+			final GreenSettings lSettings = new GreenSettings();
 			lSettings.setFrom(imp);
 			return lSettings;
 		}
@@ -142,4 +143,3 @@ public class GreenTrackMatePlugin_ {
 	}
 
 	
-}

@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import Buddy.plugin.trackmate.features.FeatureFilter;
+import Buddy.plugin.trackmate.visualization.GreenobjectColorGenerator;
 import greenDetector.Greenobject;
 
 /**
@@ -799,5 +800,7 @@ public class GreenModel {
 		}
 
 	}
+
+	
 
 }

@@ -17,6 +17,9 @@ import org.jdom2.input.SAXBuilder;
 
 import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
+import Buddy.plugin.trackmate.features.edges.GreenEdgeTargetAnalyzer;
+import Buddy.plugin.trackmate.features.edges.GreenEdgeVelocityAnalyzer;
+import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.GuiUtils;
 import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
@@ -28,6 +31,7 @@ import Buddy.plugin.trackmate.io.TmXmlReader_v12;
 import Buddy.plugin.trackmate.io.TmXmlReader_v20;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
@@ -41,6 +45,7 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn {
 
@@ -48,11 +53,20 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 
 	protected InteractiveBud parent;
 
+	protected InteractiveGreen greenparent;
+	
 	protected Model model;
 
 	protected Settings settings;
+	
+	protected GreenModel greenmodel;
+	
+	protected GreenSettings greensettings;
+	
 
 	private TrackMateGUIController controller;
+	
+	private GreenTrackMateGUIController greencontroller;
 
 	private static final String KEY = "LoadPlugin";
 
@@ -138,6 +152,9 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 
 		// Log
 		final String logText = reader.getLog() + '\n';
+		
+		if (model!=null) {
+		
 		// Model
 		model = reader.getModel();
 		if (!reader.isReadingOk()) {
@@ -228,6 +245,107 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 		// Text
 		controller.getGUI().getLogPanel().setTextContent(logText);
 		model.getLogger().log("File loaded on " + TMUtils.getCurrentTimeString() + '\n', Logger.BLUE_COLOR);
+		
+		
+		}
+		
+		
+		else {
+			
+			// Model
+			greenmodel = reader.getGreenModel();
+			if (!reader.isReadingOk()) {
+				logger.error("Problem reading the model:\n" + reader.getErrorMessage());
+			}
+
+			// Settings -> empty for now.
+			greensettings = createGreenSettings();
+
+			// With this we can create a new controller from the provided one:
+			final TrackMate trackmate = createGreenTrackMate();
+
+			// Tune model and settings to be usable in the GUI even with old
+			// versions
+			if (version.compareTo(new Version("2.0.0")) < 0) {
+				greensettings.addEdgeAnalyzer(new GreenEdgeTargetAnalyzer());
+				greensettings.addEdgeAnalyzer(new GreenEdgeVelocityAnalyzer());
+				greenmodel.setLogger(Logger.IJ_LOGGER);
+				trackmate.computeEdgeFeatures(true);
+			} else if (version.compareTo(new Version("2.1.0")) < 0) {
+				model.setLogger(Logger.IJ_LOGGER);
+				// trackmate.computeTrackFeatures(true);
+			}
+
+			greencontroller = new GreenTrackMateGUIController(greenparent, trackmate);
+
+			// We feed then the reader with the providers taken from the NEW
+			// controller.
+			final TrackerProvider trackerProvider = greencontroller.getTrackerProvider();
+			final GreenobjectAnalyzerProvider spotAnalyzerProvider = greencontroller.getGreenobjectAnalyzerProvider();
+			final EdgeAnalyzerProvider edgeAnalyzerProvider = greencontroller.getEdgeAnalyzerProvider();
+			final TrackAnalyzerProvider trackAnalyzerProvider = greencontroller.getTrackAnalyzerProvider();
+
+			if (null == greensettings.imp) {
+				greensettings.imp = ViewUtils.makeEmpytImagePlus(greenmodel);
+			}
+
+			// Hook actions
+			postRead(trackmate);
+
+			// GUI position
+			GuiUtils.positionWindow(greencontroller.getGUI(), greensettings.imp.getWindow());
+
+			// GUI state
+			String guiState = reader.getGUIState();
+
+			// Views
+			final ViewProvider viewProvider = greencontroller.getViewProvider();
+			final Collection<TrackMateModelView> views = reader.getViews(viewProvider, greenmodel, greensettings,
+					greencontroller.getSelectionModel());
+			for (final TrackMateModelView view : views) {
+				if (view instanceof TrackScheme) {
+					// final TrackScheme trackscheme = ( TrackScheme ) view;
+					// trackscheme.setSpotImageUpdater( new SpotImageUpdater( settings ) );
+					continue;
+					// Don't relaunch TrackScheme.
+				}
+			}
+
+			if (!reader.isReadingOk()) {
+				final Logger newlogger = greencontroller.getGUI().getLogger();
+				newlogger.error("Some errors occured while reading file:\n");
+				newlogger.error(reader.getErrorMessage());
+			}
+
+			if (null == guiState) {
+				guiState = ConfigureViewsDescriptor.KEY;
+			}
+			controller.setGUIStateString(guiState);
+
+			// Setup and render views
+			if (views.isEmpty()) { // at least one view.
+				views.add(new HyperStackDisplayer(model, controller.getSelectionModel(), settings.imp));
+			}
+			final Map<String, Object> displaySettings = controller.getGuimodel().getDisplaySettings();
+			for (final TrackMateModelView view : views) {
+				if (view instanceof TrackScheme) {
+					continue;
+					// Don't relaunch TrackScheme.
+				}
+				controller.getGuimodel().addView(view);
+				for (final String key : displaySettings.keySet()) {
+					view.setDisplaySettings(key, displaySettings.get(key));
+				}
+				view.render();
+			}
+
+			// Text
+			controller.getGUI().getLogPanel().setTextContent(logText);
+			model.getLogger().log("File loaded on " + TMUtils.getCurrentTimeString() + '\n', Logger.BLUE_COLOR);
+			
+			
+			
+		}
 	}
 
 	public Model getModel() {
@@ -241,6 +359,20 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	public TrackMateGUIController getController() {
 		return controller;
 	}
+	
+
+	public GreenModel getGreenModel() {
+		return greenmodel;
+	}
+
+	public GreenSettings getGreenSettings() {
+		return greensettings;
+	}
+
+	public GreenTrackMateGUIController getGreenController() {
+		return greencontroller;
+	}
+
 
 	/**
 	 * Returns <code>true</code> is the specified file is an ICY track XML file.
@@ -268,6 +400,15 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 
 	@Override
 	public void displayingPanel(InteractiveBud parent) {
+		frame = new JFrame();
+		frame.getContentPane().add(logPanel);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
+	@Override
+	public void displayingGreenPanel(InteractiveGreen parent) {
 		frame = new JFrame();
 		frame.getContentPane().add(logPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -304,6 +445,11 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	protected TrackMate createTrackMate() {
 		return new TrackMate(parent, settings);
 	}
+	
+	protected TrackMate createGreenTrackMate() {
+		return new TrackMate(greenparent, greensettings);
+	}
+
 
 	/**
 	 * Hook for subclassers: <br>
@@ -326,6 +472,11 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	 */
 	protected Settings createSettings() {
 		return new Settings();
+	}
+	
+	 
+	protected GreenSettings createGreenSettings() {
+		return new GreenSettings();
 	}
 
 	/*

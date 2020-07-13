@@ -5,15 +5,15 @@ package Buddy.plugin.trackmate.io;
  * 
  * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; 2010-2011
  */
-public class TmXmlKeys {
+public class GreenTmXmlKeys {
 
 	/*
 	 * GENERIC ATTRIBUTES
 	 */
 
 	public static final String FRAME_ATTRIBUTE_NAME = "frame";
-	public static final String BCellobject_ID_ATTRIBUTE_NAME = "ID";
-	public static final String BCellobject_NAME_ATTRIBUTE_NAME = "name";
+	public static final String Greenobject_ID_ATTRIBUTE_NAME = "ID";
+	public static final String Greenobject_NAME_ATTRIBUTE_NAME = "name";
 	
 
 	/*
@@ -79,27 +79,27 @@ public class TmXmlKeys {
 	public static final String IMAGE_NFRAMES_ATTRIBUTE_NAME = "nframes";
 
 	/*
-	 * ALL BCellobjectS element
+	 * ALL GreenobjectS element
 	 */
 
-	public static final String BCellobject_COLLECTION_ELEMENT_KEY = "AllBCellobjects";
-	public static final String BCellobject_COLLECTION_NBCellobjectS_ATTRIBUTE_NAME = "nBCellobjects";
-	public static final String BCellobject_FRAME_COLLECTION_ELEMENT_KEY = "BCellobjectsInFrame";
-	public static final String BCellobject_ELEMENT_KEY = "BCellobject";
+	public static final String Greenobject_COLLECTION_ELEMENT_KEY = "AllGreenobjects";
+	public static final String Greenobject_COLLECTION_NGreenobjectS_ATTRIBUTE_NAME = "nGreenobjects";
+	public static final String Greenobject_FRAME_COLLECTION_ELEMENT_KEY = "GreenobjectsInFrame";
+	public static final String Greenobject_ELEMENT_KEY = "Greenobject";
 	
 
 
 	/*
-	 * INITIAL BCellobject FILTER element
+	 * INITIAL Greenobject FILTER element
 	 */
 
-	public static final String INITIAL_BCellobject_FILTER_ELEMENT_KEY = "InitialBCellobjectFilter";
+	public static final String INITIAL_Greenobject_FILTER_ELEMENT_KEY = "InitialGreenobjectFilter";
 
 	/*
-	 * FILTERS element for BCellobjectS and TRACKS
+	 * FILTERS element for GreenobjectS and TRACKS
 	 */
 
-	public static final String BCellobject_FILTER_COLLECTION_ELEMENT_KEY = "BCellobjectFilterCollection";
+	public static final String Greenobject_FILTER_COLLECTION_ELEMENT_KEY = "GreenobjectFilterCollection";
 	public static final String TRACK_FILTER_COLLECTION_ELEMENT_KEY = "TrackFilterCollection";
 	public static final String FILTER_ELEMENT_KEY = "Filter";
 	public static final String FILTER_FEATURE_ATTRIBUTE_NAME = "feature";
@@ -132,7 +132,7 @@ public class TmXmlKeys {
 	 */
 
 	public static final String FEATURE_DECLARATIONS_ELEMENT_KEY = "FeatureDeclarations";
-	public static final String BCellobject_FEATURES_ELEMENT_KEY = "BCellobjectFeatures";
+	public static final String Greenobject_FEATURES_ELEMENT_KEY = "GreenobjectFeatures";
 	public static final String EDGE_FEATURES_ELEMENT_KEY = "EdgeFeatures";
 	public static final String TRACK_FEATURES_ELEMENT_KEY = "TrackFeatures";
 	public static final String FEATURE_ELEMENT_KEY = "Feature";
@@ -143,11 +143,11 @@ public class TmXmlKeys {
 	public static final String FEATURE_ISINT_ATTRIBUTE = "isint";
 
 	/*
-	 * BCellobject< EDGE AND TRACK FEATURE ANALYZERS elements
+	 * Greenobject< EDGE AND TRACK FEATURE ANALYZERS elements
 	 */
 
 	public static final String ANALYZER_COLLECTION_ELEMENT_KEY = "AnalyzerCollection";
-	public static final String BCellobject_ANALYSERS_ELEMENT_KEY = "BCellobjectAnalyzers";
+	public static final String Greenobject_ANALYSERS_ELEMENT_KEY = "GreenobjectAnalyzers";
 	public static final String EDGE_ANALYSERS_ELEMENT_KEY = "EdgeAnalyzers";
 	public static final String TRACK_ANALYSERS_ELEMENT_KEY = "TrackAnalyzers";
 	public static final String ANALYSER_ELEMENT_KEY = "Analyzer";

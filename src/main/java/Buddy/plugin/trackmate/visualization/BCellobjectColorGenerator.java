@@ -172,9 +172,5 @@ public class BCellobjectColorGenerator implements FeatureColorGenerator<BCellobj
 			setMinMax(minMaxAdjustable.getMin(), minMaxAdjustable.getMax());
 	}
 
-	@Override
-	public void modelChanged(GreenModelChangeEvent event) {
-		return;
-		
-	}
+
 }

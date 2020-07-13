@@ -1,6 +1,8 @@
 package Buddy.plugin.trackmate.visualization;
 
 import budDetector.BCellobject;
+import greenDetector.Greenobject;
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import ij.ImagePlus;
 import net.imglib2.FinalInterval;
@@ -88,5 +90,52 @@ public class ViewUtils {
 		imp.getCalibration().setTimeUnit(model.getTimeUnits());
 		return imp;
 	}
+	
+	public static final ImagePlus makeEmpytImagePlus(final GreenModel model) {
+
+		double maxX = 0;
+		double maxY = 0;
+		double maxZ = 0;
+		int nframes = 0;
+
+		for (final Greenobject BCellobject : model.getGreenobjects().iterable(true)) {
+			final double r = BCellobject.getFeature(BCellobject.RADIUS);
+			final double x = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_X));
+			final double y = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_Y));
+			final int t = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+
+			if (x > maxX) {
+				maxX = x;
+			}
+			if (y > maxY) {
+				maxY = y;
+			}
+
+			if (t > nframes) {
+				nframes = t;
+			}
+		}
+
+		final double calX = maxX / TARGET_X_IMAGE_SIZE;
+		final double calY = maxY / TARGET_X_IMAGE_SIZE;
+		final double calxy = Math.max(calX, calY);
+		final double calZ = maxZ / TARGET_Z_IMAGE_SIZE;
+
+		final int width = (int) Math.ceil(maxX / calxy);
+		final int height = (int) Math.ceil(maxY / calxy);
+		int nslices;
+		if (maxZ == 0) {
+			nslices = 1;
+		} else {
+			nslices = (int) Math.ceil(maxZ / calZ);
+		}
+		final double[] calibration = new double[] { calxy, calxy, calZ };
+
+		final ImagePlus imp = makeEmptyImagePlus(width, height, nslices, nframes + 1, calibration);
+		imp.getCalibration().setUnit(model.getSpaceUnits());
+		imp.getCalibration().setTimeUnit(model.getTimeUnits());
+		return imp;
+	}
+
 
 }

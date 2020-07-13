@@ -51,6 +51,7 @@ import javax.swing.border.LineBorder;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import budDetector.BCellobject;
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.gui.DisplaySettingsEvent;
 import Buddy.plugin.trackmate.gui.DisplaySettingsListener;
@@ -62,6 +63,7 @@ import Buddy.plugin.trackmate.gui.panels.components.SetColorScaleDialog;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
+import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.BCellobjectColorGenerator;
@@ -132,6 +134,12 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 	private ColorByFeatureGUIPanel jPanelBCellobjectColor;
 
 	private JNumericTextField jTextFieldBCellobjectRadius;
+	
+	private ColorByFeatureGUIPanel jPanelGreenobjectColor;
+
+	private JNumericTextField jTextFieldGreenobjectRadius;
+	
+	
 
 	private JCheckBox jCheckBoxDisplayNames;
 
@@ -140,6 +148,8 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 	private final Collection<DisplaySettingsListener> listeners = new HashSet<>();
 
 	private final Model model;
+	
+	private final GreenModel greenmodel;
 
 	private PerTrackFeatureColorGenerator trackColorGenerator;
 
@@ -151,6 +161,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 	
 	private ManualBCellobjectColorGenerator manualBCellobjectColorGenerator;
 	
+	private ManualGreenobjectColorGenerator manualGreenobjectColorGenerator;
 
 	private ManualEdgeColorGenerator manualEdgeColorGenerator;
 
@@ -174,11 +185,23 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	public ConfigureViewsPanel(final Model model) {
 		this.model = model;
+		this.greenmodel = null;
 		initGUI();
 		refreshGUI();
 		resizeButtons();
 	}
+	
+	public ConfigureViewsPanel(final GreenModel greenmodel) {
+		this.model = null;
+		this.greenmodel = greenmodel;
+		initGreenGUI();
+		refreshGreenGUI();
+		resizeGreenButtons();
+	}
 
+
+	
+	
 	/*
 	 * PUBLIC METHODS
 	 */
@@ -313,6 +336,22 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 			trackColorGUI.setColorFeature(trackColorGenerator.getFeature());
 		}
 	}
+	
+
+	public void refreshGreenColorFeatures() {
+		if ((displaySettings.get(KEY_BCellobject_COLORING) instanceof BCellobjectColorGenerator)) {
+			jPanelGreenobjectColor.setColorFeature(GreenobjectColorGenerator.getFeature());
+		} else if ((displaySettings.get(KEY_Greenobject_COLORING) instanceof ManualGreenobjectColorGenerator)) {
+			jPanelGreenobjectColor.setColorFeature(ColorByFeatureGUIPanel.MANUAL_KEY);
+		} else if (((displaySettings
+				.get(KEY_Greenobject_COLORING) instanceof GreenobjectColorGeneratorPerTrackFeature))) {
+			jPanelGreenobjectColor.setColorFeature(GreenobjectColorGeneratorPerTrackFeature.getFeature());
+		}
+
+		if (!(displaySettings.get(KEY_TRACK_COLORING) instanceof ManualEdgeColorGenerator)) {
+			trackColorGUI.setColorFeature(trackColorGenerator.getFeature());
+		}
+	}
 
 	public void setManualBCellobjectColorGenerator(
 			final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator) {
@@ -321,6 +360,15 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 		}
 		this.manualBCellobjectColorGenerator = manualBCellobjectColorGenerator;
 	}
+	
+	public void setManualGreenobjectColorGenerator(
+			final ManualGreenobjectColorGenerator manualGreenobjectColorGenerator) {
+		if (null != this.manualGreenobjectColorGenerator) {
+			this.manualGreenobjectColorGenerator.terminate();
+		}
+		this.manualGreenobjectColorGenerator = manualGreenobjectColorGenerator;
+	}
+
 
 	public void setManualEdgeColorGenerator(final ManualEdgeColorGenerator manualEdgeColorGenerator) {
 		if (null != this.manualEdgeColorGenerator) {

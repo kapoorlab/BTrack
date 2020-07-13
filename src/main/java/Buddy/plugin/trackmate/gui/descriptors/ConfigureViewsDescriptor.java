@@ -8,6 +8,7 @@ import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.panels.ConfigureViewsPanel;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
+import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
@@ -47,15 +48,15 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 			final PerEdgeFeatureColorGenerator edgeColorGenerator,
 			final PerTrackFeatureColorGenerator trackColorGenerator,
 			final FeatureColorGenerator<Greenobject> GreenobjectColorGeneratorPerTrackFeature,
-			final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator,
+			final ManualGreenobjectColorGenerator manualGreenobjectColorGenerator,
 			final ManualEdgeColorGenerator manualEdgeColorGenerator, final GreenTrackMateGUIController greencontroller) {
 		this.controller = null;
 		this.greencontroller = greencontroller;
-		this.panel = new ConfigureViewsPanel(trackmate.getModel());
+		this.panel = new ConfigureViewsPanel(trackmate.getGreenModel());
 		panel.setGreenobjectColorGenerator(GreenobjectColorGenerator);
 		panel.setEdgeColorGenerator(edgeColorGenerator);
 		panel.setTrackColorGenerator(trackColorGenerator);
-		panel.setManualBCellobjectColorGenerator(manualBCellobjectColorGenerator);
+		panel.setManualGreenobjectColorGenerator(manualGreenobjectColorGenerator);
 		panel.setManualEdgeColorGenerator(manualEdgeColorGenerator);
 		panel.setGreenobjectColorGeneratorPerTrackFeature(GreenobjectColorGeneratorPerTrackFeature);
 	}
@@ -68,11 +69,18 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 	@Override
 	public void aboutToDisplayPanel() {
 		panel.refreshGUI();
+		if (controller!=null)
 		controller.getGUI().setNextButtonEnabled(true);
+		else
+			greencontroller.getGUI().setNextButtonEnabled(true);		
 	}
 
 	@Override
 	public void displayingPanel(InteractiveBud parent) {
+		panel.refreshColorFeatures();
+	}
+	@Override
+	public void displayingGreenPanel(InteractiveGreen parent) {
 		panel.refreshColorFeatures();
 	}
 
@@ -91,9 +99,4 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 		return KEY;
 	}
 
-	@Override
-	public void displayingGreenPanel(InteractiveGreen parent) {
-		panel.refreshColorFeatures();
-		
-	}
 }

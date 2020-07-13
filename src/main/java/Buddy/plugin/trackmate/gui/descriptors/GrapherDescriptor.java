@@ -2,6 +2,7 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GrapherPanel;
+import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import pluginTools.InteractiveBud;
 
@@ -14,11 +15,21 @@ public class GrapherDescriptor implements WizardPanelDescriptor {
 	private final GrapherPanel panel;
 
 	private final TrackMateGUIController controller;
+	
+	private final GreenTrackMateGUIController greencontroller;
 
 	public GrapherDescriptor(final TrackMate trackmate, final TrackMateGUIController controller) {
 		this.panel = new GrapherPanel(trackmate);
 		this.controller = controller;
+		this.greencontroller = null;
 	}
+	
+	public GrapherDescriptor(final TrackMate trackmate, final GreenTrackMateGUIController greencontroller) {
+		this.panel = new GrapherPanel(trackmate);
+		this.controller = null;
+		this.greencontroller = greencontroller;
+	}
+
 
 	@Override
 	public Component getComponent() {
@@ -34,7 +45,13 @@ public class GrapherDescriptor implements WizardPanelDescriptor {
 	public void displayingPanel(InteractiveBud parent) {
 		controller.getGUI().setNextButtonEnabled(true);
 	}
+	
+	@Override
+	public void displayingGreenPanel(InteractiveBud parent) {
+		controller.getGUI().setNextButtonEnabled(true);
+	}
 
+	
 	@Override
 	public void aboutToHidePanel() {
 	}
