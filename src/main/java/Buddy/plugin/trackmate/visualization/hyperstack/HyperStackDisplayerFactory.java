@@ -1,5 +1,8 @@
 package Buddy.plugin.trackmate.visualization.hyperstack;
 
+import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSelectionModel;
+import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
@@ -48,6 +51,16 @@ public class HyperStackDisplayerFactory implements ViewFactory {
 		return new HyperStackDisplayer(model, selectionModel, imp);
 	}
 
+	
+	public GreenTrackMateModelView create(final GreenModel model, final GreenSettings settings, final GreenSelectionModel selectionModel) {
+		final ImagePlus imp;
+		if (settings == null) {
+			imp = null;
+		} else {
+			imp = settings.imp;
+		}
+		return new HyperStackDisplayer(model, selectionModel, imp);
+	}
 	@Override
 	public String getInfoText() {
 		return INFO_TEXT;

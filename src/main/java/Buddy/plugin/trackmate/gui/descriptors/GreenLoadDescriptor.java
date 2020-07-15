@@ -11,11 +11,11 @@ import Buddy.plugin.trackmate.gui.GuiUtils;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.io.GreenTmXmlReader;
 import Buddy.plugin.trackmate.io.IOUtils;
-import Buddy.plugin.trackmate.io.TmXmlReader;
-import Buddy.plugin.trackmate.io.TmXmlReader_v12;
-import Buddy.plugin.trackmate.io.TmXmlReader_v20;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
@@ -23,6 +23,7 @@ import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.util.TMUtils;
 import Buddy.plugin.trackmate.util.Version;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
+import Buddy.plugin.trackmate.visualization.hyperstack.GreenHyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import Buddy.plugin.trackmate.visualization.trackscheme.GreenobjectImageUpdater;
@@ -34,19 +35,18 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-public class LoadDescriptor extends SomeDialogDescriptor {
+public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 
-	protected InteractiveBud parent;
+	protected InteractiveGreen parent;
 	
-
 	private static final String KEY = "Loading";
 
 	private final TrackMate trackmate;
 
-	private final TrackMateGUIController controller;
+	private final GreenTrackMateGUIController controller;
 	
 
-	public LoadDescriptor(final InteractiveBud parent, final TrackMateGUIController controller) {
+	public GreenLoadDescriptor(final InteractiveGreen parent, final GreenTrackMateGUIController controller) {
 		super(controller.getGUI().getLogPanel());
 		this.parent = parent;
 		this.controller = controller;
@@ -56,7 +56,7 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel(InteractiveGreen parent) {
 
 		if (null == file) {
 			try {
@@ -78,15 +78,9 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 		file = tmpFile;
 
 		// Read the file content
-		TmXmlReader reader = new TmXmlReader(file);
+		GreenTmXmlReader reader = new GreenTmXmlReader(file);
 		final Version version = new Version(reader.getVersion());
-		if (version.compareTo(new Version("2.0.0")) < 0) {
-			logger.log("Detecting a file version " + version + ". Using the right reader.\n", Logger.GREEN_COLOR);
-			reader = new TmXmlReader_v12(file);
-		} else if (version.compareTo(new Version("2.1.0")) < 0) {
-			logger.log("Detecting a file version " + version + ". Using the right reader.\n", Logger.GREEN_COLOR);
-			reader = new TmXmlReader_v20(file);
-		}
+	
 		if (!reader.isReadingOk()) {
 			logger.error(reader.getErrorMessage());
 			logger.error("Aborting.\n"); // If I cannot even open the xml
@@ -97,20 +91,20 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 		// Log
 		final String logText = reader.getLog() + '\n';
 		// Model
-		final Model model = reader.getModel();
+		final GreenModel model = reader.getModel();
 		// Settings -> empty for now.
-		final Settings settings = new Settings();
+		final GreenSettings settings = new GreenSettings();
 
 		// With this we can create a new controller from the provided one:
 		final TrackMate lTrackmate = new TrackMate(parent, settings);
-		final TrackMateGUIController newcontroller = controller.createOn(parent, lTrackmate);
+		final GreenTrackMateGUIController newcontroller = controller.createOn(parent, lTrackmate);
 
 		// We feed then the reader with the providers taken from the NEW
 		// controller.
 		final TrackerProvider trackerProvider = newcontroller.getTrackerProvider();
-		final BCellobjectAnalyzerProvider spotAnalyzerProvider = newcontroller.getBCellobjectAnalyzerProvider();
-		final EdgeAnalyzerProvider edgeAnalyzerProvider = newcontroller.getEdgeAnalyzerProvider();
-		final TrackAnalyzerProvider trackAnalyzerProvider = newcontroller.getTrackAnalyzerProvider();
+		final GreenobjectAnalyzerProvider spotAnalyzerProvider = newcontroller.getGreenobjectAnalyzerProvider();
+		final GreenEdgeAnalyzerProvider edgeAnalyzerProvider = newcontroller.getEdgeAnalyzerProvider();
+		final GreenTrackAnalyzerProvider trackAnalyzerProvider = newcontroller.getTrackAnalyzerProvider();
 
 		// GUI position
 		GuiUtils.positionWindow(newcontroller.getGUI(), settings.imp.getWindow());
@@ -119,13 +113,13 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 		final String guiState = reader.getGUIState();
 
 		// Views
-		final ViewProvider viewProvider = newcontroller.getViewProvider();
+		final GreenViewProvider viewProvider = newcontroller.getViewProvider();
 		final Collection<TrackMateModelView> views = reader.getViews(viewProvider, model, settings,
 				newcontroller.getSelectionModel());
 		for (final TrackMateModelView view : views) {
 			if (view instanceof TrackScheme) {
 				final TrackScheme trackscheme = (TrackScheme) view;
-				trackscheme.setBCellobjectImageUpdater(new BCellobjectImageUpdater(settings));
+				trackscheme.setGreenobjectImageUpdater(new GreenobjectImageUpdater(settings));
 			}
 		}
 
@@ -138,7 +132,7 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 
 		// Setup and render views
 		if (views.isEmpty()) { // at least one view.
-			views.add(new HyperStackDisplayer(model, newcontroller.getSelectionModel(), settings.imp));
+			views.add(new GreenHyperStackDisplayer(model, newcontroller.getSelectionModel(), settings.imp));
 		}
 		final Map<String, Object> displaySettings = newcontroller.getGuimodel().getDisplaySettings();
 		for (final TrackMateModelView view : views) {

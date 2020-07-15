@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.gui.panels.components.JNumericTextField;
@@ -376,7 +377,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 	}
 	
 	
-	public void updateTo(final GreenModel model, final Settings settings) {
+	public void updateTo(final GreenModel model, final GreenSettings settings) {
 		settings.imp = imp;
 		// Crop cube
 		settings.tstart = NumberParser.parseInteger(jTextFieldTStart.getText());
@@ -479,6 +480,8 @@ public class StartDialogPanel extends ActionListenablePanel {
 
 		impValid = true;
 	}
+
+	
 
 	
 }

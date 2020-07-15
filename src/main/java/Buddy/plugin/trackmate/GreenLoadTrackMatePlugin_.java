@@ -50,30 +50,25 @@ import ij.plugin.PlugIn;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 
-public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn {
+public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn {
 
 	private JFrame frame;
 
-	protected InteractiveBud parent;
 
 	protected InteractiveGreen greenparent;
 	
-	protected Model model;
-
-	protected Settings settings;
 	
 	protected GreenModel greenmodel;
 	
 	protected GreenSettings greensettings;
 	
 
-	private TrackMateGUIController controller;
 	
 	private GreenTrackMateGUIController greencontroller;
 
 	private static final String KEY = "LoadPlugin";
 
-	public LoadTrackMatePlugIn_() {
+	public GreenLoadTrackMatePlugIn_() {
 		super(new LogPanel());
 	}
 

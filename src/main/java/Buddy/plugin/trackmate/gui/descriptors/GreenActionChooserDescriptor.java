@@ -2,28 +2,23 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.panels.ActionChooserPanel;
 import Buddy.plugin.trackmate.gui.panels.ListChooserPanel;
 import Buddy.plugin.trackmate.providers.ActionProvider;
-import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 
-public class ActionChooserDescriptor implements WizardPanelDescriptor {
+public class GreenActionChooserDescriptor implements GreenWizardPanelDescriptor {
 
 	private static final String KEY = "Actions";
 
 	private final ActionChooserPanel panel;
 
-	public ActionChooserDescriptor(final ActionProvider actionProvider, final TrackMate trackmate,
-			final TrackMateGUIController controller) {
-		this.panel = new ActionChooserPanel(actionProvider, trackmate, controller);
-	}
-
-	public ActionChooserDescriptor(final ActionProvider actionProvider, final TrackMate trackmate,
+	public GreenActionChooserDescriptor(final ActionProvider actionProvider, final TrackMate trackmate,
 			final GreenTrackMateGUIController controller) {
 		this.panel = new ActionChooserPanel(actionProvider, trackmate, controller);
 	}
+
+
 	
 	@Override
 	public ListChooserPanel getComponent() {
@@ -35,7 +30,7 @@ public class ActionChooserDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel(InteractiveGreen parent) {
 	}
 
 	@Override

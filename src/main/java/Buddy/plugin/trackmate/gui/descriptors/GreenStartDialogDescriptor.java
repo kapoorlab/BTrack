@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
@@ -15,13 +16,13 @@ import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
 import Buddy.plugin.trackmate.features.edges.GreenEdgeAnalyzer;
-import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.panels.StartDialogPanel;
-import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
@@ -33,7 +34,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 
-public class StartDialogDescriptor implements WizardPanelDescriptor {
+public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 
 	private static final String KEY = "Start";
 
@@ -41,7 +42,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 
 	private final ArrayList<ActionListener> actionListeners = new ArrayList<>();
 
-	private final TrackMateGUIController controller;
+	private final GreenTrackMateGUIController controller;
 	
 	private final GreenTrackMateGUIController greencontroller;
 	
@@ -51,7 +52,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 	 */
 	private HyperStackDisplayer mainView;
 
-	public StartDialogDescriptor(final TrackMateGUIController controller) {
+	public GreenStartDialogDescriptor(final GreenTrackMateGUIController controller) {
 		this.greencontroller = null;
 		this.controller = controller;
 		this.panel = new StartDialogPanel();
@@ -63,17 +64,6 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 		});
 	}
 	
-	public StartDialogDescriptor(final GreenTrackMateGUIController greencontroller) {
-		this.greencontroller = greencontroller;
-		this.controller = null;
-		this.panel = new StartDialogPanel();
-		panel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent event) {
-				fireAction(event);
-			}
-		});
-	}
 
 	/*
 	 * METHODS
@@ -108,7 +98,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel(InteractiveGreen parent) {
 		ImagePlus imp;
 		final TrackMate trackmate = controller.getPlugin();
 		if (null == trackmate.getSettings().imp) {
@@ -144,17 +134,17 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 		trackmate.getModel().getLogger().log(settings.toStringImageInfo());
 
 		/*
-		 * Configure settings object with BCellobject, edge and track analyzers as
+		 * Configure settings object with Greenobject, edge and track analyzers as
 		 * specified in the providers.
 		 */
 
-		settings.clearBCellobjectAnalyzerFactories();
-		final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
-		final List<String> BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
-		for (final String key : BCellobjectAnalyzerKeys) {
-			final BCellobjectAnalyzerFactory<?> BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider
+		settings.clearGreenobjectAnalyzerFactories();
+		final GreenobjectAnalyzerProvider GreenobjectAnalyzerProvider = controller.getGreenobjectAnalyzerProvider();
+		final List<String> GreenobjectAnalyzerKeys = GreenobjectAnalyzerProvider.getKeys();
+		for (final String key : GreenobjectAnalyzerKeys) {
+			final GreenobjectAnalyzerFactory<?> GreenobjectFeatureAnalyzer = GreenobjectAnalyzerProvider
 					.getFactory(key);
-			settings.addBCellobjectAnalyzerFactory(BCellobjectFeatureAnalyzer);
+			settings.addGreenobjectAnalyzerFactory(GreenobjectFeatureAnalyzer);
 		}
 
 		settings.clearEdgeAnalyzers();
@@ -174,7 +164,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 		}
 
 		trackmate.getModel().getLogger().log(settings.toStringFeatureAnalyzersInfo());
-		trackmate.computeBCellobjectFeatures(true);
+		trackmate.computeGreenobjectFeatures(true);
 		trackmate.computeEdgeFeatures(true);
 		trackmate.computeTrackFeatures(true);
 
@@ -188,8 +178,8 @@ public class StartDialogDescriptor implements WizardPanelDescriptor {
 			model.removeModelChangeListener(mainView);
 		}
 
-		final SelectionModel selectionModel = controller.getSelectionModel();
-		mainView = new HyperStackDisplayer(model, selectionModel, settings.imp);
+		final GreenSelectionModel selectionModel = controller.getSelectionModel();
+		mainView = new GreenHyperStackDisplayer(model, selectionModel, settings.imp);
 		controller.getGuimodel().addView(mainView);
 		final Map<String, Object> displaySettings = controller.getGuimodel().getDisplaySettings();
 		for (final String key : displaySettings.keySet()) {

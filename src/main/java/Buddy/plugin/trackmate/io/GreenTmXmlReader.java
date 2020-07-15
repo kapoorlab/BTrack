@@ -251,8 +251,8 @@ public class GreenTmXmlReader {
 	 * @return the collection of views.
 	 * @see TrackMateModelView#render()
 	 */
-	public Collection<TrackMateModelView> getViews(final ViewProvider provider, final Model model,
-			final Settings settings, final SelectionModel selectionModel) {
+	public Collection<TrackMateModelView> getViews(final ViewProvider provider, final GreenModel model,
+			final GreenSettings settings, final SelectionModel selectionModel) {
 		final Element guiel = root.getChild(GUI_STATE_ELEMENT_KEY);
 		if (null != guiel) {
 

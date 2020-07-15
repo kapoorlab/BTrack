@@ -1,20 +1,20 @@
 package Buddy.plugin.trackmate.gui;
 
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_Greenobject_COLOR;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_TRACK_DISPLAY_MODE;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_COLOR;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_COLORMAP;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_Greenobject_NAMES;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_HIGHLIGHT_COLOR;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_GreenobjectS_VISIBLE;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_Greenobject_COLORING;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_Greenobject_RADIUS_RATIO;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACKS_VISIBLE;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_COLORING;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_MODE;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.DEFAULT_Greenobject_COLOR;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.DEFAULT_TRACK_DISPLAY_MODE;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_COLOR;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_COLORMAP;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_DISPLAY_Greenobject_NAMES;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_HIGHLIGHT_COLOR;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_GreenobjectS_VISIBLE;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_Greenobject_COLORING;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_Greenobject_RADIUS_RATIO;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_TRACKS_VISIBLE;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_TRACK_COLORING;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.KEY_TRACK_DISPLAY_MODE;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +32,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
@@ -45,6 +47,7 @@ import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import Buddy.plugin.trackmate.gui.descriptors.ActionChooserDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.GrapherDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenWizardPanelDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.LoadDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.LogPanelDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.SaveDescriptor;
@@ -60,6 +63,8 @@ import Buddy.plugin.trackmate.gui.panels.tracker.JPanelTrackerSettingsMain;
 import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
 import Buddy.plugin.trackmate.providers.ActionProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
@@ -71,7 +76,9 @@ import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import Buddy.plugin.trackmate.visualization.TrackMateModelView;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
+import Buddy.plugin.trackmate.visualization.trackscheme.GreenTrackScheme;
+import Buddy.plugin.trackmate.visualization.trackscheme.GreenobjectImageUpdater;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import Buddy.plugin.trackmate.visualization.GreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.GreenobjectColorGeneratorPerTrackFeature;
@@ -99,14 +106,14 @@ public class GreenTrackMateGUIController implements ActionListener {
 	/** The GUI controlled by this controller. */
 	protected final GreenTrackMateWizard gui;
 
-	protected final TrackMateGUIModel guimodel;
+	protected final GreenTrackMateGUIModel guimodel;
 
 	
 	protected GreenobjectAnalyzerProvider GreenobjectAnalyzerProvider;
 
-	protected EdgeAnalyzerProvider edgeAnalyzerProvider;
+	protected GreenEdgeAnalyzerProvider edgeAnalyzerProvider;
 
-	protected TrackAnalyzerProvider trackAnalyzerProvider;
+	protected GreenTrackAnalyzerProvider trackAnalyzerProvider;
 
 	protected ViewProvider viewProvider;
 
@@ -114,33 +121,33 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected ActionProvider actionProvider;
 
-	protected StartDialogDescriptor startDialoDescriptor;
+	protected GreenStartDialogDescriptor startDialoDescriptor;
 
-	protected ViewChoiceDescriptor viewChoiceDescriptor;
+	protected GreenViewChoiceDescriptor viewChoiceDescriptor;
 
-	protected TrackerChoiceDescriptor trackerChoiceDescriptor;
+	protected GreenTrackerChoiceDescriptor trackerChoiceDescriptor;
 
-	protected TrackerConfigurationDescriptor trackerConfigurationDescriptor;
+	protected GreenTrackerConfigurationDescriptor trackerConfigurationDescriptor;
 
-	protected TrackingDescriptor trackingDescriptor;
+	protected GreenTrackingDescriptor trackingDescriptor;
 
-	protected GrapherDescriptor grapherDescriptor;
+	protected GreenGrapherDescriptor grapherDescriptor;
 
-	protected TrackFilterDescriptor trackFilterDescriptor;
+	protected GreenTrackFilterDescriptor trackFilterDescriptor;
 
-	protected ConfigureViewsDescriptor configureViewsDescriptor;
+	protected GreenConfigureViewsDescriptor configureViewsDescriptor;
 
-	protected ActionChooserDescriptor actionChooserDescriptor;
+	protected GreenActionChooserDescriptor actionChooserDescriptor;
 
-	protected LogPanelDescriptor logPanelDescriptor;
+	protected GreenLogPanelDescriptor logPanelDescriptor;
 
-	protected SaveDescriptor saveDescriptor;
+	protected GreenSaveDescriptor saveDescriptor;
 
-	protected LoadDescriptor loadDescriptor;
+	protected GreenLoadDescriptor loadDescriptor;
 
-	protected Collection<WizardPanelDescriptor> registeredDescriptors;
+	protected Collection<GreenWizardPanelDescriptor> registeredDescriptors;
 
-	protected SelectionModel selectionModel;
+	protected GreenSelectionModel selectionModel;
 
 	protected PerTrackFeatureColorGenerator trackColorGenerator;
 
@@ -148,10 +155,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected FeatureColorGenerator<Greenobject> GreenobjectColorGenerator;
 
-	protected ManualEdgeColorGenerator manualEdgeColorGenerator;
-
 	protected ManualGreenobjectColorGenerator manualGreenobjectColorGenerator;
-
+	protected ManualEdgeColorGenerator manualEdgeColorGenerator;
 	protected FeatureColorGenerator<Greenobject> GreenobjectColorGeneratorPerTrackFeature;
 
 	/**
@@ -207,13 +212,13 @@ public class GreenTrackMateGUIController implements ActionListener {
 		this.GreenobjectColorGeneratorPerTrackFeature = createGreenobjectColorGeneratorPerTrackFeature();
 
 		// 0.
-		this.guimodel = new TrackMateGUIModel();
-		this.guimodel.setDisplaySettings(createDisplaySettings(trackmate.getModel()));
+		this.guimodel = new GreenTrackMateGUIModel();
+		this.guimodel.setDisplaySettings(createDisplaySettings(trackmate.getGreenModel()));
 		this.displaySettingsListener = new DisplaySettingsListener() {
 			@Override
 			public void displaySettingsChanged(final DisplaySettingsEvent event) {
 				guimodel.getDisplaySettings().put(event.getKey(), event.getNewValue());
-				for (final TrackMateModelView view : guimodel.views) {
+				for (final GreenTrackMateModelView view : guimodel.views) {
 					view.setDisplaySettings(event.getKey(), event.getNewValue());
 					view.refresh();
 				}
@@ -227,7 +232,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 		// 3.
 		registeredDescriptors = createDescriptors();
 
-		trackmate.getModel().setLogger(logger);
+		trackmate.getGreenModel().setLogger(logger);
 		gui.setVisible(true);
 		gui.addActionListener(this);
 
@@ -280,11 +285,11 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *
 	 * @return the {@link SelectionModel}.
 	 */
-	public SelectionModel getSelectionModel() {
+	public GreenSelectionModel getSelectionModel() {
 		return selectionModel;
 	}
 
-	public TrackMateGUIModel getGuimodel() {
+	public GreenTrackMateGUIModel getGuimodel() {
 		return guimodel;
 	}
 
@@ -301,7 +306,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *            the target state string.
 	 */
 	public void setGUIStateString(final String stateKey) {
-		for (final WizardPanelDescriptor descriptor : registeredDescriptors) {
+		for (final GreenWizardPanelDescriptor descriptor : registeredDescriptors) {
 
 			if (stateKey.equals(descriptor.getKey())) {
 
@@ -328,7 +333,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	/**
 	 * Returns the {@link ViewProvider} instance, serving
-	 * {@link TrackMateModelView}s to this GUI
+	 * {@link GreenTrackMateModelView}s to this GUI
 	 *
 	 * @return the view provider.
 	 */
@@ -353,7 +358,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *
 	 * @return the edge analyzer provider.
 	 */
-	public EdgeAnalyzerProvider getEdgeAnalyzerProvider() {
+	public GreenEdgeAnalyzerProvider getEdgeAnalyzerProvider() {
 		return edgeAnalyzerProvider;
 	}
 
@@ -363,7 +368,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *
 	 * @return the track analyzer provider.
 	 */
-	public TrackAnalyzerProvider getTrackAnalyzerProvider() {
+	public GreenTrackAnalyzerProvider getTrackAnalyzerProvider() {
 		return trackAnalyzerProvider;
 	}
 
@@ -382,11 +387,11 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 */
 
 	protected void createSelectionModel() {
-		selectionModel = new SelectionModel(trackmate.getModel());
+		selectionModel = new GreenSelectionModel(trackmate.getGreenModel());
 	}
 
 	protected FeatureColorGenerator<Greenobject> createGreenobjectColorGenerator() {
-		return new GreenobjectColorGenerator(trackmate.getModel());
+		return new GreenobjectColorGenerator(trackmate.getGreenModel());
 	}
 
 	protected PerEdgeFeatureColorGenerator createEdgeColorGenerator() {
@@ -415,8 +420,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected void createProviders() {
 		GreenobjectAnalyzerProvider = new GreenobjectAnalyzerProvider();
-		edgeAnalyzerProvider = new EdgeAnalyzerProvider();
-		trackAnalyzerProvider = new TrackAnalyzerProvider();
+		edgeAnalyzerProvider = new GreenEdgeAnalyzerProvider();
+		trackAnalyzerProvider = new GreenTrackAnalyzerProvider();
 		viewProvider = new ViewProvider();
 		trackerProvider = new TrackerProvider();
 		actionProvider = new ActionProvider();
@@ -445,8 +450,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 			}
 
 			@Override
-			public void displayingPanel(InteractiveGreen parent) {
-				super.displayingPanel(parent);
+			public void displayingGreenPanel(InteractiveGreen parent) {
+				super.displayingGreenPanel(parent);
 				if (startDialoDescriptor.isImpValid()) {
 					// Ensure we reset default save location
 					gui.setNextButtonEnabled(true);
@@ -507,8 +512,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 				} else {
 					trackColorGenerator.setFeature(trackFilterDescriptor.getComponent().getColorFeature());
 				}
-				for (final TrackMateModelView view : guimodel.views) {
-					view.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, trackColorGenerator);
+				for (final GreenTrackMateModelView view : guimodel.views) {
+					view.setDisplaySettings(GreenTrackMateModelView.KEY_TRACK_COLORING, trackColorGenerator);
 					view.refresh();
 				}
 			}
@@ -702,7 +707,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *            display settings.
 	 * @return a map of display settings mappings.
 	 */
-	protected Map<String, Object> createDisplaySettings(final Model model) {
+	protected Map<String, Object> createDisplaySettings(final GreenModel model) {
 		final Map<String, Object> displaySettings = new HashMap<>();
 		displaySettings.put(KEY_COLOR, DEFAULT_Greenobject_COLOR);
 		displaySettings.put(KEY_HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR);
@@ -938,7 +943,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 		new Thread("Launching TrackScheme thread") {
 			@Override
 			public void run() {
-				final TrackScheme trackscheme = new TrackScheme(trackmate.getModel(), selectionModel);
+				final GreenTrackScheme trackscheme = new GreenTrackScheme(trackmate.getGreenModel(), selectionModel);
 				final GreenobjectImageUpdater thumbnailUpdater = new GreenobjectImageUpdater(trackmate.getSettings());
 				trackscheme.setGreenobjectImageUpdater(thumbnailUpdater);
 				for (final String settingKey : guimodel.getDisplaySettings().keySet()) {

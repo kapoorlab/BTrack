@@ -34,7 +34,7 @@ import pluginTools.InteractiveGreen;
  * and is used typically to set up and refresh what is displayed on the
  * descriptor component.
  */
-public interface WizardPanelDescriptor {
+public interface GreenWizardPanelDescriptor {
 
 	/**
 	 * Returns a unique key that identifies the GUI state this descriptor
@@ -64,7 +64,7 @@ public interface WizardPanelDescriptor {
 	 * 
 	 * @param parent
 	 */
-	public void displayingPanel(InteractiveBud parent);
+	public void displayingPanel(InteractiveGreen parent);
 	/**
 	 * This method is used to perform functionality just before the panel is to be
 	 * hidden.

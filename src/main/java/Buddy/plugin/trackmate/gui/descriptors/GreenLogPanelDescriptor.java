@@ -6,13 +6,13 @@ import pluginTools.InteractiveGreen;
 
 import java.awt.Component;
 
-public class LogPanelDescriptor implements WizardPanelDescriptor {
+public class GreenLogPanelDescriptor implements GreenWizardPanelDescriptor {
 
 	public static final String KEY = "LogPanel";
 
 	private final LogPanel logPanel;
 
-	public LogPanelDescriptor(final LogPanel logPanel) {
+	public GreenLogPanelDescriptor(final LogPanel logPanel) {
 		this.logPanel = logPanel;
 	}
 
@@ -26,7 +26,7 @@ public class LogPanelDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel(InteractiveGreen parent) {
 	}
 
 	@Override

@@ -38,6 +38,7 @@ import com.mxgraph.view.mxGraphSelectionModel;
 
 import budDetector.BCellobject;
 import greenDetector.Greenobject;
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.SelectionChangeEvent;
@@ -47,7 +48,7 @@ import Buddy.plugin.trackmate.visualization.AbstractTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import ij.ImagePlus;
 
-public class TrackScheme extends AbstractTrackMateModelView {
+public class GreenTrackScheme extends AbstractTrackMateModelView {
 
 	/*
 	 * CONSTANTS
@@ -160,7 +161,7 @@ public class TrackScheme extends AbstractTrackMateModelView {
 	 * CONSTRUCTORS
 	 */
 
-	public TrackScheme(final Model model, final SelectionModel selectionModel) {
+	public GreenTrackScheme(final GreenModel model, final SelectionModel selectionModel) {
 		super(model, selectionModel);
 		initDisplaySettings();
 		initGUI();

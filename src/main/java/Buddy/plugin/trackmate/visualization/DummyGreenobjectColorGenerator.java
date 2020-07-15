@@ -1,29 +1,27 @@
 package Buddy.plugin.trackmate.visualization;
 
-import Buddy.plugin.trackmate.features.manual.ManualGreenobjectColorAnalyzerFactory;
+import static Buddy.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_Greenobject_COLOR;
 import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
 
 import java.awt.Color;
 
-import budDetector.Greenobject;
+import budDetector.BCellobject;
+import greenDetector.Greenobject;
 
-public class ManualGreenobjectColorGenerator implements FeatureColorGenerator<Greenobject> {
+/**
+ * A dummy BCellobject color generator that always return the default color.
+ *
+ * @author Jean-Yves Tinevez - 2013
+ */
+public class DummyGreenobjectColorGenerator implements FeatureColorGenerator<Greenobject> {
+
 	@Override
-	public Color color(final Greenobject Greenobject) {
-		final Double val = Greenobject.getFeature(ManualGreenobjectColorAnalyzerFactory.FEATURE);
-		if (null == val) {
-			return TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
-		}
-		return new Color(val.intValue());
+	public Color color(final Greenobject obj) {
+		return DEFAULT_Greenobject_COLOR;
 	}
 
 	@Override
 	public void setFeature(final String feature) {
-	}
-
-	@Override
-	public String getFeature() {
-		return ColorByFeatureGUIPanel.MANUAL_KEY;
 	}
 
 	@Override
@@ -32,6 +30,11 @@ public class ManualGreenobjectColorGenerator implements FeatureColorGenerator<Gr
 
 	@Override
 	public void activate() {
+	}
+
+	@Override
+	public String getFeature() {
+		return ColorByFeatureGUIPanel.UNIFORM_KEY;
 	}
 
 	@Override
@@ -64,4 +67,5 @@ public class ManualGreenobjectColorGenerator implements FeatureColorGenerator<Gr
 	@Override
 	public void setFrom(final MinMaxAdjustable minMaxAdjustable) {
 	}
+
 }

@@ -14,7 +14,7 @@ import java.io.File;
  * @author Jean-Yves Tinevez
  *
  */
-public abstract class SomeDialogDescriptor implements WizardPanelDescriptor {
+public abstract class GreenSomeDialogDescriptor implements GreenWizardPanelDescriptor {
 
 	/**
 	 * File that governs saving and loading. We make it a static field so that
@@ -24,7 +24,7 @@ public abstract class SomeDialogDescriptor implements WizardPanelDescriptor {
 
 	protected final LogPanel logPanel;
 
-	public SomeDialogDescriptor(final LogPanel logPanel) {
+	public GreenSomeDialogDescriptor(final LogPanel logPanel) {
 		this.logPanel = logPanel;
 	}
 
@@ -38,7 +38,7 @@ public abstract class SomeDialogDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public abstract void displayingPanel(InteractiveBud parent);
+	public abstract void displayingPanel(InteractiveGreen parent);
 	
 
 	@Override

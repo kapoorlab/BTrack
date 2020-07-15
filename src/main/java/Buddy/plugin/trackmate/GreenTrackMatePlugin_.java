@@ -14,11 +14,6 @@ import pluginTools.InteractiveGreen;
 import pluginTools.RedGreenFileChooser;
 public class GreenTrackMatePlugin_ implements PlugIn {
 
-	
-	
-
-
-
 		protected TrackMate trackmate;
 
 		protected InteractiveGreen parent;
