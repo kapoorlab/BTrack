@@ -41,12 +41,25 @@ import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.action.AbstractTMAction;
 import Buddy.plugin.trackmate.action.ExportStatsToIJAction;
+import Buddy.plugin.trackmate.features.GreenModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.ModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import Buddy.plugin.trackmate.gui.descriptors.ActionChooserDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.GrapherDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenActionChooserDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenConfigureViewsDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenGrapherDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenLoadDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenLogPanelDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenSaveDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenStartDialogDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenTrackFilterDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenTrackerChoiceDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenTrackerConfigurationDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenTrackingDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenViewChoiceDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.GreenWizardPanelDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.LoadDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.LogPanelDescriptor;
@@ -65,9 +78,10 @@ import Buddy.plugin.trackmate.providers.ActionProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
+import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
-import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.tracking.ManualTrackerFactory;
 import Buddy.plugin.trackmate.util.TMUtils;
@@ -115,9 +129,9 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected GreenTrackAnalyzerProvider trackAnalyzerProvider;
 
-	protected ViewProvider viewProvider;
+	protected GreenViewProvider viewProvider;
 
-	protected TrackerProvider trackerProvider;
+	protected GreenTrackerProvider trackerProvider;
 
 	protected ActionProvider actionProvider;
 
@@ -199,8 +213,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 		this.logger = gui.getLogger();
 
 		// Feature updater
-		final ModelFeatureUpdater modelFeatureUpdater = new ModelFeatureUpdater(trackmate.getModel(),
-				trackmate.getSettings());
+		final GreenModelFeatureUpdater modelFeatureUpdater = new GreenModelFeatureUpdater(trackmate.getGreenModel(),
+				trackmate.getGreenSettings());
 		modelFeatureUpdater.setNumThreads(trackmate.getNumThreads());
 
 		// Feature colorers
@@ -337,7 +351,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *
 	 * @return the view provider.
 	 */
-	public ViewProvider getViewProvider() {
+	public GreenViewProvider getViewProvider() {
 		return viewProvider;
 	}
 
@@ -378,7 +392,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *
 	 * @return the tracker provider.
 	 */
-	public TrackerProvider getTrackerProvider() {
+	public GreenTrackerProvider getTrackerProvider() {
 		return trackerProvider;
 	}
 
@@ -422,26 +436,26 @@ public class GreenTrackMateGUIController implements ActionListener {
 		GreenobjectAnalyzerProvider = new GreenobjectAnalyzerProvider();
 		edgeAnalyzerProvider = new GreenEdgeAnalyzerProvider();
 		trackAnalyzerProvider = new GreenTrackAnalyzerProvider();
-		viewProvider = new ViewProvider();
-		trackerProvider = new TrackerProvider();
+		viewProvider = new GreenViewProvider();
+		trackerProvider = new GreenTrackerProvider();
 		actionProvider = new ActionProvider();
 	}
 
 	/**
 	 * Creates the map of next descriptor for each descriptor.
 	 */
-	protected Collection<WizardPanelDescriptor> createDescriptors() {
+	protected Collection<GreenWizardPanelDescriptor> createDescriptors() {
 
 		/*
 		 * Logging panel: receive message, share with the TrackMateModel
 		 */
 		final LogPanel logPanel = gui.getLogPanel();
-		logPanelDescriptor = new LogPanelDescriptor(logPanel);
+		logPanelDescriptor = new GreenLogPanelDescriptor(logPanel);
 
 		/*
 		 * Start panel
 		 */
-		startDialoDescriptor = new StartDialogDescriptor(this) {
+		startDialoDescriptor = new GreenStartDialogDescriptor(this) {
 			@Override
 			public void aboutToHidePanel() {
 				super.aboutToHidePanel();
@@ -450,8 +464,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 			}
 
 			@Override
-			public void displayingGreenPanel(InteractiveGreen parent) {
-				super.displayingGreenPanel(parent);
+			public void displayingPanel(InteractiveGreen parent) {
+				super.displayingPanel(parent);
 				if (startDialoDescriptor.isImpValid()) {
 					// Ensure we reset default save location
 					gui.setNextButtonEnabled(true);
@@ -482,27 +496,27 @@ public class GreenTrackMateGUIController implements ActionListener {
 		 * Select and render a view
 		 */
 		// We need the GUI model to register the created view there.
-		viewChoiceDescriptor = new ViewChoiceDescriptor(viewProvider, guimodel, this);
+		viewChoiceDescriptor = new GreenViewChoiceDescriptor(viewProvider, guimodel, this);
 
 		/*
 		 * Choose a tracker
 		 */
-		trackerChoiceDescriptor = new TrackerChoiceDescriptor(trackerProvider, trackmate, this);
+		trackerChoiceDescriptor = new GreenTrackerChoiceDescriptor(trackerProvider, trackmate, this);
 
 		/*
 		 * Configure chosen tracker
 		 */
-		trackerConfigurationDescriptor = new TrackerConfigurationDescriptor(trackerProvider, trackmate, this);
+		trackerConfigurationDescriptor = new GreenTrackerConfigurationDescriptor(trackerProvider, trackmate, this);
 
 		/*
 		 * Execute tracking
 		 */
-		trackingDescriptor = new TrackingDescriptor(this);
+		trackingDescriptor = new GreenTrackingDescriptor(this);
 
 		/*
 		 * Track filtering
 		 */
-		trackFilterDescriptor = new TrackFilterDescriptor(trackmate, trackColorGenerator, this);
+		trackFilterDescriptor = new GreenTrackFilterDescriptor(trackmate, trackColorGenerator, this);
 		trackFilterDescriptor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent event) {
@@ -531,7 +545,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 		/*
 		 * Finished, let's change the display settings.
 		 */
-		configureViewsDescriptor = new ConfigureViewsDescriptor(trackmate, GreenobjectColorGenerator,
+		configureViewsDescriptor = new GreenConfigureViewsDescriptor(trackmate, GreenobjectColorGenerator,
 				edgeColorGenerator, trackColorGenerator, GreenobjectColorGeneratorPerTrackFeature,
 				manualGreenobjectColorGenerator, manualEdgeColorGenerator, this);
 		configureViewsDescriptor.getComponent().addActionListener(new ActionListener() {
@@ -556,27 +570,27 @@ public class GreenTrackMateGUIController implements ActionListener {
 		/*
 		 * Export and graph features.
 		 */
-		grapherDescriptor = new GrapherDescriptor(trackmate, this);
+		grapherDescriptor = new GreenGrapherDescriptor(trackmate, this);
 
 		/*
 		 * Offer to take some actions on the data.
 		 */
-		actionChooserDescriptor = new ActionChooserDescriptor(actionProvider, trackmate, this);
+		actionChooserDescriptor = new GreenActionChooserDescriptor(actionProvider, trackmate, this);
 
 		/*
 		 * Save descriptor
 		 */
-		saveDescriptor = new SaveDescriptor(this);
+		saveDescriptor = new GreenSaveDescriptor(this);
 
 		/*
 		 * Load descriptor
 		 */
-		loadDescriptor = new LoadDescriptor(parent, this);
+		loadDescriptor = new GreenLoadDescriptor(parent, this);
 
 		/*
 		 * Store created descriptors
 		 */
-		final ArrayList<WizardPanelDescriptor> descriptors = new ArrayList<>(16);
+		final ArrayList<GreenWizardPanelDescriptor> descriptors = new ArrayList<>(16);
 		descriptors.add(actionChooserDescriptor);
 		descriptors.add(configureViewsDescriptor);
 		descriptors.add(grapherDescriptor);
@@ -592,11 +606,11 @@ public class GreenTrackMateGUIController implements ActionListener {
 		return descriptors;
 	}
 
-	protected WizardPanelDescriptor getFirstDescriptor() {
+	protected GreenWizardPanelDescriptor getFirstDescriptor() {
 		return startDialoDescriptor;
 	}
 
-	protected WizardPanelDescriptor nextDescriptor(final WizardPanelDescriptor currentDescriptor) {
+	protected GreenWizardPanelDescriptor nextDescriptor(final GreenWizardPanelDescriptor currentDescriptor) {
 
 		if (currentDescriptor == startDialoDescriptor) {
 

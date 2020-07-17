@@ -8,22 +8,23 @@ import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
+import Buddy.plugin.trackmate.io.GreenTmXmlWriter;
 import Buddy.plugin.trackmate.io.IOUtils;
 import Buddy.plugin.trackmate.io.TmXmlWriter;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 
-public class SaveDescriptor extends SomeDialogDescriptor {
+public class GreenSaveDescriptor extends GreenSomeDialogDescriptor {
 
 	private static final String KEY = "Saving";
 
 	private final TrackMate trackmate;
 
-	private final TrackMateGUIController controller;
+	private final GreenTrackMateGUIController controller;
 	
 	
 
-	public SaveDescriptor(final TrackMateGUIController controller) {
+	public GreenSaveDescriptor(final GreenTrackMateGUIController controller) {
 		super(controller.getGUI().getLogPanel());
 		this.trackmate = controller.getPlugin();
 		this.controller = controller;
@@ -32,7 +33,7 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel(InteractiveGreen parent) {
 
 		final Logger logger = logPanel.getLogger();
 		logger.log("Saving data...\n", Logger.BLUE_COLOR);
@@ -84,11 +85,11 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 		 * Write model, settings and GUI state
 		 */
 
-		final TmXmlWriter writer = new TmXmlWriter(file, logger);
+		final GreenTmXmlWriter writer = new GreenTmXmlWriter(file, logger);
 
 		writer.appendLog(logPanel.getTextContent());
-		writer.appendModel(trackmate.getModel());
-		writer.appendSettings(trackmate.getSettings());
+		writer.appendModel(trackmate.getGreenModel());
+		writer.appendSettings(trackmate.getGreenSettings());
 		writer.appendGUIState(controller.getGuimodel());
 
 		try {

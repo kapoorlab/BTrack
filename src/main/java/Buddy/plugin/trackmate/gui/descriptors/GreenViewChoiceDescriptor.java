@@ -10,6 +10,7 @@ import Buddy.plugin.trackmate.gui.GreenTrackMateGUIModel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIModel;
 import Buddy.plugin.trackmate.gui.panels.ListChooserPanel;
+import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
@@ -30,13 +31,13 @@ public class GreenViewChoiceDescriptor implements GreenWizardPanelDescriptor {
 
 	private final ListChooserPanel component;
 
-	private final ViewProvider viewProvider;
+	private final GreenViewProvider viewProvider;
 
 	private final GreenTrackMateGUIModel guimodel;
 
 	private final GreenTrackMateGUIController controller;
 
-	public GreenViewChoiceDescriptor(final ViewProvider viewProvider, final GreenTrackMateGUIModel guimodel,
+	public GreenViewChoiceDescriptor(final GreenViewProvider viewProvider, final GreenTrackMateGUIModel guimodel,
 			final GreenTrackMateGUIController controller) {
 		this.viewProvider = viewProvider;
 		this.guimodel = guimodel;

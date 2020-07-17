@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import Buddy.plugin.trackmate.util.AlphanumComparator;
 import budDetector.BCellobject;
 import greenDetector.Greenobject;
 import net.imglib2.AbstractEuclideanSpace;
@@ -137,6 +138,11 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 	public void setName(final String name) {
 		
 		this.name = name;
+	}
+	
+	public String getName()
+	{
+		return this.name;
 	}
 	
 	public int ID() {
@@ -280,6 +286,24 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 			return distance;
 	}
 
-	
+	public Map< String, Double > getFeatures()
+	{
+		return features;
+	}
 
+	
+	/**
+	 * A comparator used to sort spots by name. The comparison uses numerical
+	 * natural sorting, So that "Spot_4" comes before "Spot_122".
+	 */
+	public final static Comparator< Greenobject > nameComparator = new Comparator< Greenobject >()
+	{
+		private final AlphanumComparator comparator = AlphanumComparator.instance;
+
+		@Override
+		public int compare( final Greenobject o1, final Greenobject o2 )
+		{
+			return comparator.compare( o1.getName(), o2.getName() );
+		}
+	};
 }

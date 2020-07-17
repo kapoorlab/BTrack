@@ -31,6 +31,7 @@ import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 
 import Buddy.plugin.trackmate.graph.Function1;
+import Buddy.plugin.trackmate.graph.GreenTimeDirectedNeighborIndex;
 import Buddy.plugin.trackmate.graph.SortedDepthFirstIterator;
 import Buddy.plugin.trackmate.graph.TimeDirectedDepthFirstIterator;
 import Buddy.plugin.trackmate.graph.TimeDirectedNeighborIndex;
@@ -729,8 +730,8 @@ public class GreenTrackModel {
 		return new GREENSortedDepthFirstIterator<>(graph, start, comparator);
 	}
 
-	public GREENTimeDirectedNeighborIndex getDirectedNeighborIndex() {
-		return new GREENTimeDirectedNeighborIndex(graph);
+	public GreenTimeDirectedNeighborIndex getDirectedNeighborIndex() {
+		return new GreenTimeDirectedNeighborIndex(graph);
 	}
 
 	/**

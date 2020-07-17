@@ -18,6 +18,7 @@ import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
 import Buddy.plugin.trackmate.features.edges.GreenEdgeAnalyzer;
 import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.track.GreenTrackAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
@@ -25,8 +26,10 @@ import Buddy.plugin.trackmate.gui.panels.StartDialogPanel;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
+import Buddy.plugin.trackmate.visualization.hyperstack.GreenHyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -50,7 +53,7 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 	 * The view that is launched immediately when this descriptor leaves. It will be
 	 * used as a central view.
 	 */
-	private HyperStackDisplayer mainView;
+	private GreenHyperStackDisplayer mainView;
 
 	public GreenStartDialogDescriptor(final GreenTrackMateGUIController controller) {
 		this.greencontroller = null;
@@ -120,12 +123,12 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 		 trackmate = controller.getPlugin();
 		
 		
-		final Model model = trackmate.getModel();
+		final GreenModel model = trackmate.getGreenModel();
 		
 		
 
 			
-			final Settings settings = trackmate.getSettings();
+			final GreenSettings settings = trackmate.getGreenSettings();
 		/*
 		 * Get settings and pass them to the trackmate managed by the wizard
 		 */
@@ -148,18 +151,18 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 		}
 
 		settings.clearEdgeAnalyzers();
-		final EdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
+		final GreenEdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
 		final List<String> edgeAnalyzerKeys = edgeAnalyzerProvider.getKeys();
 		for (final String key : edgeAnalyzerKeys) {
-			final EdgeAnalyzer edgeAnalyzer = edgeAnalyzerProvider.getFactory(key);
+			final GreenEdgeAnalyzer edgeAnalyzer = edgeAnalyzerProvider.getFactory(key);
 			settings.addEdgeAnalyzer(edgeAnalyzer);
 		}
 
 		settings.clearTrackAnalyzers();
-		final TrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
+		final GreenTrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
 		final List<String> trackAnalyzerKeys = trackAnalyzerProvider.getKeys();
 		for (final String key : trackAnalyzerKeys) {
-			final TrackAnalyzer trackAnalyzer = trackAnalyzerProvider.getFactory(key);
+			final GreenTrackAnalyzer trackAnalyzer = trackAnalyzerProvider.getFactory(key);
 			settings.addTrackAnalyzer(trackAnalyzer);
 		}
 

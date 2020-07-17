@@ -102,6 +102,7 @@ import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.FeatureModel;
 import Buddy.plugin.trackmate.GreenFeatureModel;
 import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Logger.StringBuilderLogger;
@@ -124,11 +125,13 @@ import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
+import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.tracking.GreenobjectTrackerFactory;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
@@ -251,13 +254,13 @@ public class GreenTmXmlReader {
 	 * @return the collection of views.
 	 * @see TrackMateModelView#render()
 	 */
-	public Collection<TrackMateModelView> getViews(final ViewProvider provider, final GreenModel model,
-			final GreenSettings settings, final SelectionModel selectionModel) {
+	public Collection<GreenTrackMateModelView> getViews(final GreenViewProvider provider, final GreenModel model,
+			final GreenSettings settings, final GreenSelectionModel selectionModel) {
 		final Element guiel = root.getChild(GUI_STATE_ELEMENT_KEY);
 		if (null != guiel) {
 
 			final List<Element> children = guiel.getChildren(GUI_VIEW_ELEMENT_KEY);
-			final Collection<TrackMateModelView> views = new ArrayList<>(children.size());
+			final Collection<GreenTrackMateModelView> views = new ArrayList<>(children.size());
 
 			for (final Element child : children) {
 				final String viewKey = child.getAttributeValue(GUI_VIEW_ATTRIBUTE);
@@ -276,7 +279,7 @@ public class GreenTmXmlReader {
 						continue;
 					}
 
-					final TrackMateModelView view = factory.create(model, settings, selectionModel);
+					final GreenTrackMateModelView view = factory.create(model, settings, selectionModel);
 					if (null == view) {
 						logger.error("Unknown view for key " + viewKey + ".\n");
 						ok = false;

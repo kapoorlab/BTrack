@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import budDetector.BCellobject;
-import Buddy.plugin.trackmate.Dimension;
+import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.Settings;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
@@ -26,11 +25,12 @@ import net.imglib2.Interval;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.Util;
+import tracker.GREENDimension;
 
 /**
  * List of static utilities for {@link Buddy.plugin.trackmate.TrackMate}.
  */
-public class TMUtils {
+public class GreenTMUtils {
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
 
@@ -185,29 +185,29 @@ public class TMUtils {
 	}
 
 	/**
-	 * Translate each BCellobject of the given collection by the amount specified in
+	 * Translate each Greenobject of the given collection by the amount specified in
 	 * argument. The distances are all understood in physical units.
 	 * <p>
 	 * This is meant to deal with a cropped image. The translation will bring the
-	 * BCellobject coordinates back to the top-left corner of the un-cropped image
+	 * Greenobject coordinates back to the top-left corner of the un-cropped image
 	 * reference.
 	 */
-	public static void translateBCellobjects(final Collection<BCellobject> BCellobjects, final double dx,
+
+
+	public static void translateGreenobjects(final Collection<Greenobject> Greenobjects, final double dx,
 			final double dy, final double dz) {
 		final double[] dval = new double[] { dx, dy, dz };
-		final String[] features = new String[] { BCellobject.POSITION_X, BCellobject.POSITION_Y };
+		final String[] features = new String[] { Greenobject.POSITION_X, Greenobject.POSITION_Y, Greenobject.POSITION_Z };
 		Double val;
-		for (final BCellobject BCellobject : BCellobjects) {
+		for (final Greenobject Greenobject : Greenobjects) {
 			for (int i = 0; i < features.length; i++) {
-				val = BCellobject.getFeature(features[i]);
+				val = Greenobject.getFeature(features[i]);
 				if (null != val) {
-					BCellobject.putFeature(features[i], val + dval[i]);
+					Greenobject.putFeature(features[i], val + dval[i]);
 				}
 			}
 		}
 	}
-
-
 	
 	
 	/*
@@ -330,12 +330,13 @@ public class TMUtils {
 	}
 
 	/**
-	 * Store the x, y, z coordinates of the specified BCellobject in the first 3
+	 * Store the x, y, z coordinates of the specified Greenobject in the first 3
 	 * elements of the specified double array.
 	 */
-	public static final void localize(final BCellobject bCellobject, final double[] coords) {
-		coords[0] = bCellobject.getFeature(BCellobject.POSITION_X).doubleValue();
-		coords[1] = bCellobject.getFeature(BCellobject.POSITION_Y).doubleValue();
+	public static final void localize(final Greenobject Greenobject, final double[] coords) {
+		coords[0] = Greenobject.getFeature(Greenobject.POSITION_X).doubleValue();
+		coords[1] = Greenobject.getFeature(Greenobject.POSITION_Y).doubleValue();
+		coords[2] = Greenobject.getFeature(Greenobject.POSITION_Z).doubleValue();
 	}
 
 	/**
@@ -468,7 +469,7 @@ public class TMUtils {
 	 * taken from the settings field, which contains the spatial and time units.
 	 * Otherwise, default units are used.
 	 */
-	public static final String getUnitsFor(final Dimension dimension, final String spaceUnits, final String timeUnits) {
+	public static final String getUnitsFor(final GREENDimension dimension, final String spaceUnits, final String timeUnits) {
 		String units = "no unit";
 		switch (dimension) {
 		case ANGLE:
@@ -581,6 +582,6 @@ public class TMUtils {
 		return interval;
 	}
 
-	private TMUtils() {
+	private GreenTMUtils() {
 	}
 }

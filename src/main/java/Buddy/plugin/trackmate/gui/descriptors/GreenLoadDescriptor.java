@@ -15,6 +15,7 @@ import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
 import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
@@ -22,10 +23,12 @@ import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.util.TMUtils;
 import Buddy.plugin.trackmate.util.Version;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.hyperstack.GreenHyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
+import Buddy.plugin.trackmate.visualization.trackscheme.GreenTrackScheme;
 import Buddy.plugin.trackmate.visualization.trackscheme.GreenobjectImageUpdater;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import pluginTools.InteractiveBud;
@@ -101,7 +104,7 @@ public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 
 		// We feed then the reader with the providers taken from the NEW
 		// controller.
-		final TrackerProvider trackerProvider = newcontroller.getTrackerProvider();
+		final GreenTrackerProvider trackerProvider = newcontroller.getTrackerProvider();
 		final GreenobjectAnalyzerProvider spotAnalyzerProvider = newcontroller.getGreenobjectAnalyzerProvider();
 		final GreenEdgeAnalyzerProvider edgeAnalyzerProvider = newcontroller.getEdgeAnalyzerProvider();
 		final GreenTrackAnalyzerProvider trackAnalyzerProvider = newcontroller.getTrackAnalyzerProvider();
@@ -114,11 +117,11 @@ public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 
 		// Views
 		final GreenViewProvider viewProvider = newcontroller.getViewProvider();
-		final Collection<TrackMateModelView> views = reader.getViews(viewProvider, model, settings,
+		final Collection<GreenTrackMateModelView> views = reader.getViews(viewProvider, model, settings,
 				newcontroller.getSelectionModel());
-		for (final TrackMateModelView view : views) {
+		for (final GreenTrackMateModelView view : views) {
 			if (view instanceof TrackScheme) {
-				final TrackScheme trackscheme = (TrackScheme) view;
+				final GreenTrackScheme trackscheme = (GreenTrackScheme) view;
 				trackscheme.setGreenobjectImageUpdater(new GreenobjectImageUpdater(settings));
 			}
 		}
@@ -135,7 +138,7 @@ public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 			views.add(new GreenHyperStackDisplayer(model, newcontroller.getSelectionModel(), settings.imp));
 		}
 		final Map<String, Object> displaySettings = newcontroller.getGuimodel().getDisplaySettings();
-		for (final TrackMateModelView view : views) {
+		for (final GreenTrackMateModelView view : views) {
 			for (final String key : displaySettings.keySet()) {
 				newcontroller.getGuimodel().addView(view);
 				view.setDisplaySettings(key, displaySettings.get(key));

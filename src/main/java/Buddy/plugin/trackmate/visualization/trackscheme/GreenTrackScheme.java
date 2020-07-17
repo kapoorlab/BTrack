@@ -36,19 +36,22 @@ import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxStyleUtils;
 import com.mxgraph.view.mxGraphSelectionModel;
 
-import budDetector.BCellobject;
 import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenModelChangeEvent;
+import Buddy.plugin.trackmate.GreenSelectionChangeEvent;
+import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.SelectionChangeEvent;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.visualization.AbstractTrackMateModelView;
+import Buddy.plugin.trackmate.visualization.GreenAbstractTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import ij.ImagePlus;
 
-public class GreenTrackScheme extends AbstractTrackMateModelView {
+public class GreenTrackScheme extends GreenAbstractTrackMateModelView {
 
 	/*
 	 * CONSTANTS
@@ -58,7 +61,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	private static final boolean DEBUG_SELECTION = false;
 
 	public static final String INFO_TEXT = "<html>" + "TrackScheme displays the tracking results as track lanes, <br>"
-			+ "ignoring the BCellobject actual position. " + "<p>"
+			+ "ignoring the Greenobject actual position. " + "<p>"
 			+ "Tracks can be edited through link creation and removal." + "</html>";
 
 	static final int Y_COLUMN_SIZE = 96;
@@ -111,13 +114,13 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 */
 
 	/** The frame in which we display the TrackScheme GUI. */
-	private TrackSchemeFrame gui;
+	private GreenTrackSchemeFrame gui;
 
 	/** The JGraphX object that displays the graph. */
-	private JGraphXAdapter graph;
+	private GreenJGraphXAdapter graph;
 
 	/** The graph layout in charge of re-aligning the cells. */
-	private TrackSchemeGraphLayout graphLayout;
+	private GreenTrackSchemeGraphLayout graphLayout;
 
 	/**
 	 * A flag used to prevent double event firing when setting the selection
@@ -141,15 +144,15 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	/**
 	 * Stores the column index that is the first one after all the track columns.
 	 */
-	private int unlaidBCellobjectColumn = 2;
+	private int unlaidGreenobjectColumn = 2;
 
 	/**
 	 * The instance in charge of generating the string image representation of
-	 * BCellobjects imported in this view. If <code>null</code>, nothing is done.
+	 * Greenobjects imported in this view. If <code>null</code>, nothing is done.
 	 */
-	private BCellobjectImageUpdater BCellobjectImageUpdater;
+	private GreenobjectImageUpdater GreenobjectImageUpdater;
 
-	TrackSchemeStylist stylist;
+	GreenTrackSchemeStylist stylist;
 
 	/**
 	 * If <code>true</code>, thumbnail will be captured and displayed with styles
@@ -161,7 +164,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 * CONSTRUCTORS
 	 */
 
-	public GreenTrackScheme(final GreenModel model, final SelectionModel selectionModel) {
+	public GreenTrackScheme(final GreenModel model, final GreenSelectionModel selectionModel) {
 		super(model, selectionModel);
 		initDisplaySettings();
 		initGUI();
@@ -171,19 +174,19 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 * METHODS
 	 */
 
-	public void setBCellobjectImageUpdater(final BCellobjectImageUpdater BCellobjectImageUpdater) {
-		this.BCellobjectImageUpdater = BCellobjectImageUpdater;
+	public void setGreenobjectImageUpdater(final GreenobjectImageUpdater GreenobjectImageUpdater) {
+		this.GreenobjectImageUpdater = GreenobjectImageUpdater;
 	}
 
-	public SelectionModel getSelectionModel() {
+	public GreenSelectionModel getSelectionModel() {
 		return selectionModel;
 	}
 
 	/**
 	 * @return the column index that is the first one after all the track columns.
 	 */
-	public int getUnlaidBCellobjectColumn() {
-		return unlaidBCellobjectColumn;
+	public int getUnlaidGreenobjectColumn() {
+		return unlaidGreenobjectColumn;
 	}
 
 	/**
@@ -200,7 +203,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	/**
 	 * Returns the GUI frame controlled by this class.
 	 */
-	public TrackSchemeFrame getGUI() {
+	public GreenTrackSchemeFrame getGUI() {
 		return gui;
 	}
 
@@ -208,14 +211,14 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 * Returns the {@link JGraphXAdapter} that serves as a model for the graph
 	 * displayed in this frame.
 	 */
-	public JGraphXAdapter getGraph() {
+	public GreenJGraphXAdapter getGraph() {
 		return graph;
 	}
 
 	/**
 	 * Returns the graph layout in charge of arranging the cells on the graph.
 	 */
-	public TrackSchemeGraphLayout getGraphLayout() {
+	public GreenTrackSchemeGraphLayout getGraphLayout() {
 		return graphLayout;
 	}
 
@@ -227,10 +230,10 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 * Used to instantiate and configure the {@link JGraphXAdapter} that will be
 	 * used for display.
 	 */
-	private JGraphXAdapter createGraph() {
+	private GreenJGraphXAdapter createGraph() {
 		gui.logger.setStatus("Creating graph adapter.");
 
-		final JGraphXAdapter lGraph = new JGraphXAdapter(model);
+		final GreenJGraphXAdapter lGraph = new GreenJGraphXAdapter(model);
 		lGraph.setAllowLoops(false);
 		lGraph.setAllowDanglingEdges(false);
 		lGraph.setCellsCloneable(false);
@@ -252,37 +255,37 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	}
 
 	/**
-	 * Updates or creates a cell for the target BCellobject. Is called after the
-	 * user modified a BCellobject (location, radius, ...) somewhere else.
+	 * Updates or creates a cell for the target Greenobject. Is called after the
+	 * user modified a Greenobject (location, radius, ...) somewhere else.
 	 *
-	 * @param BCellobject
-	 *            the BCellobject that was modified.
+	 * @param Greenobject
+	 *            the Greenobject that was modified.
 	 */
-	private mxICell updateCellOf(final BCellobject BCellobject) {
+	private mxICell updateCellOf(final Greenobject Greenobject) {
 
-		mxICell cell = graph.getCellFor(BCellobject);
+		mxICell cell = graph.getCellFor(Greenobject);
 		graph.getModel().beginUpdate();
 		try {
 			if (DEBUG) {
-				System.out.println("[TrackScheme] modelChanged: updating cell for BCellobject " + BCellobject);
+				System.out.println("[TrackScheme] modelChanged: updating cell for Greenobject " + Greenobject);
 			}
 			if (null == cell) {
 				/*
 				 * mxCell not present in graph. Most likely because the corresponding
-				 * BCellobject belonged to an invisible track, and a cell was not created for it
+				 * Greenobject belonged to an invisible track, and a cell was not created for it
 				 * when TrackScheme was launched. So we create one on the fly now.
 				 */
-				final int row = getUnlaidBCellobjectColumn();
-				cell = insertBCellobjectInGraph(BCellobject, row);
-				final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+				final int row = getUnlaidGreenobjectColumn();
+				cell = insertGreenobjectInGraph(Greenobject, row);
+				final int frame = Greenobject.getFeature(Greenobject.POSITION_T).intValue();
 				rowLengths.put(frame, row + 1);
 			}
 
 			// Update cell look
-			if (BCellobjectImageUpdater != null && doThumbnailCapture) {
+			if (GreenobjectImageUpdater != null && doThumbnailCapture) {
 				String style = cell.getStyle();
-				final double radiusFactor = (Double) displaySettings.get(KEY_BCellobject_RADIUS_RATIO);
-				final String imageStr = BCellobjectImageUpdater.getImageString(BCellobject, radiusFactor);
+				final double radiusFactor = (Double) displaySettings.get(KEY_Greenobject_RADIUS_RATIO);
+				final String imageStr = GreenobjectImageUpdater.getImageString(Greenobject, radiusFactor);
 				style = mxStyleUtils.setStyle(style, mxConstants.STYLE_IMAGE, "data:image/base64," + imageStr);
 				graph.getModel().setStyle(cell, style);
 			}
@@ -293,29 +296,29 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	}
 
 	/**
-	 * Insert a BCellobject in the {@link TrackSchemeFrame}, by creating a
+	 * Insert a Greenobject in the {@link TrackSchemeFrame}, by creating a
 	 * {@link mxCell} in the graph model of this frame and position it according to
 	 * its feature.
 	 */
-	private mxICell insertBCellobjectInGraph(final BCellobject BCellobject, final int targetColumn) {
-		mxICell cellAdded = graph.getCellFor(BCellobject);
+	private mxICell insertGreenobjectInGraph(final Greenobject Greenobject, final int targetColumn) {
+		mxICell cellAdded = graph.getCellFor(Greenobject);
 		if (cellAdded != null) {
-			// cell for BCellobject already exist, do nothing and return original
-			// BCellobject
+			// cell for Greenobject already exist, do nothing and return original
+			// Greenobject
 			return cellAdded;
 		}
 		// Instantiate JGraphX cell
-		cellAdded = graph.addJGraphTVertex(BCellobject);
+		cellAdded = graph.addJGraphTVertex(Greenobject);
 		// Position it
-		final int row = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+		final int row = Greenobject.getFeature(Greenobject.POSITION_T).intValue();
 		final double x = (targetColumn - 1) * X_COLUMN_SIZE - DEFAULT_CELL_WIDTH / 2;
 		final double y = (0.5 + row) * Y_COLUMN_SIZE - DEFAULT_CELL_HEIGHT / 2;
 		final mxGeometry geometry = new mxGeometry(x, y, DEFAULT_CELL_WIDTH, DEFAULT_CELL_HEIGHT);
 		cellAdded.setGeometry(geometry);
 		// Set its style
-		final double radiusFactor = (Double) displaySettings.get(KEY_BCellobject_RADIUS_RATIO);
-		if (null != BCellobjectImageUpdater && doThumbnailCapture) {
-			final String imageStr = BCellobjectImageUpdater.getImageString(BCellobject, radiusFactor);
+		final double radiusFactor = (Double) displaySettings.get(KEY_Greenobject_RADIUS_RATIO);
+		if (null != GreenobjectImageUpdater && doThumbnailCapture) {
+			final String imageStr = GreenobjectImageUpdater.getImageString(Greenobject, radiusFactor);
 			graph.getModel().setStyle(cellAdded, mxConstants.STYLE_IMAGE + "=" + "data:image/base64," + imageStr);
 		}
 		return cellAdded;
@@ -334,13 +337,13 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 			// Flag original track as visible
 			model.setTrackVisibility(trackIndex, true);
 			// Find adequate column
-			final int targetColumn = getUnlaidBCellobjectColumn();
+			final int targetColumn = getUnlaidGreenobjectColumn();
 			// Create cells for track
-			final Set<BCellobject> trackBCellobjects = model.getTrackModel().trackBCellobjects(trackIndex);
-			for (final BCellobject trackBCellobject : trackBCellobjects) {
-				final int frame = trackBCellobject.getFeature(BCellobject.POSITION_T).intValue();
+			final Set<Greenobject> trackGreenobjects = model.getTrackModel().trackGreenobjects(trackIndex);
+			for (final Greenobject trackGreenobject : trackGreenobjects) {
+				final int frame = trackGreenobject.getFeature(Greenobject.POSITION_T).intValue();
 				final int column = Math.max(targetColumn, getNextFreeColumn(frame));
-				insertBCellobjectInGraph(trackBCellobject, column);
+				insertGreenobjectInGraph(trackGreenobject, column);
 				rowLengths.put(frame, column);
 			}
 			final Set<DefaultWeightedEdge> trackEdges = model.getTrackModel().trackEdges(trackIndex);
@@ -355,7 +358,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 
 	/**
 	 * This method is called when the user has created manually an edge in the
-	 * graph, by dragging a link between two BCellobject cells. It checks whether
+	 * graph, by dragging a link between two Greenobject cells. It checks whether
 	 * the matching edge in the model exists, and tune what should be done
 	 * accordingly.
 	 *
@@ -370,24 +373,24 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 			graphModel.beginUpdate();
 			try {
 
-				BCellobject source = graph.getBCellobjectFor(cell.getSource());
-				BCellobject target = graph.getBCellobjectFor(cell.getTarget());
+				Greenobject source = graph.getGreenobjectFor(cell.getSource());
+				Greenobject target = graph.getGreenobjectFor(cell.getTarget());
 
 				if (DEBUG) {
 					System.out.println(
-							"[TrackScheme] #addEdgeManually: edge is between 2 BCellobjects belonging to the same frame. Removing it.");
+							"[TrackScheme] #addEdgeManually: edge is between 2 Greenobjects belonging to the same frame. Removing it.");
 					System.out.println("[TrackScheme] #addEdgeManually: adding edge between source " + source
-							+ " at frame " + source.getFeature(BCellobject.POSITION_T).intValue() + " and target "
-							+ target + " at frame " + target.getFeature(BCellobject.POSITION_T).intValue());
+							+ " at frame " + source.getFeature(Greenobject.POSITION_T).intValue() + " and target "
+							+ target + " at frame " + target.getFeature(Greenobject.POSITION_T).intValue());
 				}
 
-				if (BCellobject.frameComparator.compare(source, target) == 0) {
-					// Prevent adding edges between BCellobjects that belong to the
+				if (Greenobject.frameComparator.compare(source, target) == 0) {
+					// Prevent adding edges between Greenobjects that belong to the
 					// same frame
 
 					if (DEBUG) {
 						System.out.println(
-								"[TrackScheme] addEdgeManually: edge is between 2 BCellobjects belonging to the same frame. Removing it.");
+								"[TrackScheme] addEdgeManually: edge is between 2 Greenobjects belonging to the same frame. Removing it.");
 					}
 					graph.removeCells(new Object[] { cell });
 
@@ -395,15 +398,15 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 					// We can add it to the model
 
 					// Put them right in order: since we use a oriented graph,
-					// we want the source BCellobject to precede in time.
-					if (BCellobject.frameComparator.compare(source, target) > 0) {
+					// we want the source Greenobject to precede in time.
+					if (Greenobject.frameComparator.compare(source, target) > 0) {
 
 						if (DEBUG) {
 							System.out.println("[TrackScheme] #addEdgeManually: Source " + source + " succeed target "
 									+ target + ". Inverting edge direction.");
 						}
 
-						final BCellobject tmp = source;
+						final Greenobject tmp = source;
 						source = target;
 						target = tmp;
 					}
@@ -462,7 +465,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 */
 
 	@Override
-	public void selectionChanged(final SelectionChangeEvent event) {
+	public void selectionChanged(final GreenSelectionChangeEvent event) {
 		if (DEBUG_SELECTION) {
 			System.out.println("[TrackSchemeFrame] selectionChanged: received event " + event.hashCode() + " from "
 					+ event.getSource() + ". Fire flag is " + doFireSelectionChangeEvent);
@@ -474,7 +477,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 
 		{
 			final ArrayList<Object> newSelection = new ArrayList<>(
-					selectionModel.getBCellobjectSelection().size() + selectionModel.getEdgeSelection().size());
+					selectionModel.getGreenobjectSelection().size() + selectionModel.getEdgeSelection().size());
 			final Iterator<DefaultWeightedEdge> edgeIt = selectionModel.getEdgeSelection().iterator();
 			while (edgeIt.hasNext()) {
 				final mxICell cell = graph.getCellFor(edgeIt.next());
@@ -482,9 +485,9 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 					newSelection.add(cell);
 				}
 			}
-			final Iterator<BCellobject> BCellobjectIt = selectionModel.getBCellobjectSelection().iterator();
-			while (BCellobjectIt.hasNext()) {
-				final mxICell cell = graph.getCellFor(BCellobjectIt.next());
+			final Iterator<Greenobject> GreenobjectIt = selectionModel.getGreenobjectSelection().iterator();
+			while (GreenobjectIt.hasNext()) {
+				final mxICell cell = graph.getCellFor(GreenobjectIt.next());
 				if (null != cell) {
 					newSelection.add(cell);
 				}
@@ -493,25 +496,25 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 			mGSmodel.setCells(newSelection.toArray());
 		}
 
-		// Center on selection if we added one BCellobject exactly
-		final Map<BCellobject, Boolean> BCellobjectsAdded = event.getBCellobjects();
-		if (BCellobjectsAdded != null && BCellobjectsAdded.size() == 1) {
-			final boolean added = BCellobjectsAdded.values().iterator().next();
+		// Center on selection if we added one Greenobject exactly
+		final Map<Greenobject, Boolean> GreenobjectsAdded = event.getGreenobjects();
+		if (GreenobjectsAdded != null && GreenobjectsAdded.size() == 1) {
+			final boolean added = GreenobjectsAdded.values().iterator().next();
 			if (added) {
-				final BCellobject BCellobject = BCellobjectsAdded.keySet().iterator().next();
-				centerViewOn(BCellobject);
+				final Greenobject Greenobject = GreenobjectsAdded.keySet().iterator().next();
+				centerViewOn(Greenobject);
 			}
 		}
 		doFireSelectionChangeEvent = true;
 	}
 
 	@Override
-	public void centerViewOn(final BCellobject BCellobject) {
-		gui.centerViewOn(graph.getCellFor(BCellobject));
+	public void centerViewOn(final Greenobject Greenobject) {
+		gui.centerViewOn(graph.getCellFor(Greenobject));
 	}
 
 	/**
-	 * Used to catch BCellobject creation events that occurred elsewhere, for
+	 * Used to catch Greenobject creation events that occurred elsewhere, for
 	 * instance by manual editing in the {@link AbstractTrackMateModelView}.
 	 * <p>
 	 * We have to deal with the graph modification ourselves here, because the
@@ -519,7 +522,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 * made to the model would not be reflected on the graph here.
 	 */
 	@Override
-	public void modelChanged(final ModelChangeEvent event) {
+	public void modelChanged(final GreenModelChangeEvent event) {
 		// Only catch model changes
 		if (event.getEventID() != ModelChangeEvent.MODEL_MODIFIED) {
 			return;
@@ -529,39 +532,39 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 		try {
 			final ArrayList<mxICell> cellsToRemove = new ArrayList<>();
 
-			final int targetColumn = getUnlaidBCellobjectColumn();
+			final int targetColumn = getUnlaidGreenobjectColumn();
 
-			// Deal with BCellobjects
-			if (!event.getBCellobject().isEmpty()) {
+			// Deal with Greenobjects
+			if (!event.getGreenobject().isEmpty()) {
 
-				final Collection<mxCell> BCellobjectsWithStyleToUpdate = new HashSet<>();
+				final Collection<mxCell> GreenobjectsWithStyleToUpdate = new HashSet<>();
 
-				for (final BCellobject BCellobject : event.getBCellobject()) {
+				for (final Greenobject Greenobject : event.getGreenobject()) {
 
-					if (event.getBCellobjectFlag(BCellobject) == ModelChangeEvent.FLAG_BCellobject_ADDED) {
+					if (event.getGreenobjectFlag(Greenobject) == GreenModelChangeEvent.FLAG_Greenobject_ADDED) {
 
-						final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+						final int frame = Greenobject.getFeature(Greenobject.POSITION_T).intValue();
 						// Put in the graph
 						final int column = Math.max(targetColumn, getNextFreeColumn(frame));
-						final mxICell newCell = insertBCellobjectInGraph(BCellobject, column);
+						final mxICell newCell = insertGreenobjectInGraph(Greenobject, column);
 						rowLengths.put(frame, column);
-						BCellobjectsWithStyleToUpdate.add((mxCell) newCell);
+						GreenobjectsWithStyleToUpdate.add((mxCell) newCell);
 
-					} else if (event.getBCellobjectFlag(BCellobject) == ModelChangeEvent.FLAG_BCellobject_MODIFIED) {
+					} else if (event.getGreenobjectFlag(Greenobject) == GreenModelChangeEvent.FLAG_Greenobject_MODIFIED) {
 
 						// Change the look of the cell
-						final mxICell cell = updateCellOf(BCellobject);
-						BCellobjectsWithStyleToUpdate.add((mxCell) cell);
+						final mxICell cell = updateCellOf(Greenobject);
+						GreenobjectsWithStyleToUpdate.add((mxCell) cell);
 
-					} else if (event.getBCellobjectFlag(BCellobject) == ModelChangeEvent.FLAG_BCellobject_REMOVED) {
+					} else if (event.getGreenobjectFlag(Greenobject) == GreenModelChangeEvent.FLAG_Greenobject_REMOVED) {
 
-						final mxICell cell = graph.getCellFor(BCellobject);
+						final mxICell cell = graph.getCellFor(Greenobject);
 						cellsToRemove.add(cell);
 
 					}
 				}
 				graph.removeCells(cellsToRemove.toArray(), true);
-				stylist.updateVertexStyle(BCellobjectsWithStyleToUpdate);
+				stylist.updateVertexStyle(GreenobjectsWithStyleToUpdate);
 			}
 
 		} finally {
@@ -577,11 +580,11 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 				if (event.getEdges().size() > 0) {
 
 					/*
-					 * Here we keep track of the BCellobject and edge cells which style we need to
+					 * Here we keep track of the Greenobject and edge cells which style we need to
 					 * update.
 					 */
 					final Map<Integer, Set<mxCell>> edgesToUpdate = new HashMap<>();
-					final Collection<mxCell> BCellobjectsWithStyleToUpdate = new HashSet<>();
+					final Collection<mxCell> GreenobjectsWithStyleToUpdate = new HashSet<>();
 
 					for (final DefaultWeightedEdge edge : event.getEdges()) {
 
@@ -591,32 +594,32 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 							if (null == edgeCell) {
 
 								// Make sure target & source cells exist
-								final BCellobject source = model.getTrackModel().getEdgeSource(edge);
+								final Greenobject source = model.getTrackModel().getEdgeSource(edge);
 								final mxCell sourceCell = graph.getCellFor(source);
-								final BCellobject target = model.getTrackModel().getEdgeTarget(edge);
+								final Greenobject target = model.getTrackModel().getEdgeTarget(edge);
 								final mxCell targetCell = graph.getCellFor(target);
 
 								if (sourceCell == null || targetCell == null) {
 									/*
 									 * Is this missing cell missing because it belongs to an invisible track? We
-									 * then have to import all the BCellobject and edges.
+									 * then have to import all the Greenobject and edges.
 									 */
 									final Integer trackID = model.getTrackModel().trackIDOf(edge);
-									final Set<BCellobject> trackBCellobjects = model.getTrackModel()
-											.trackBCellobjects(trackID);
-									for (final BCellobject trackBCellobject : trackBCellobjects) {
-										final mxCell BCellobjectCell = graph.getCellFor(trackBCellobject);
-										if (BCellobjectCell == null) {
-											final int frame = trackBCellobject.getFeature(BCellobject.POSITION_T)
+									final Set<Greenobject> trackGreenobjects = model.getTrackModel()
+											.trackGreenobjects(trackID);
+									for (final Greenobject trackGreenobject : trackGreenobjects) {
+										final mxCell GreenobjectCell = graph.getCellFor(trackGreenobject);
+										if (GreenobjectCell == null) {
+											final int frame = trackGreenobject.getFeature(Greenobject.POSITION_T)
 													.intValue();
 											// Put in the graph
-											final int targetColumn = getUnlaidBCellobjectColumn();
+											final int targetColumn = getUnlaidGreenobjectColumn();
 											final int column = Math.max(targetColumn, getNextFreeColumn(frame));
 											// move in right+1 free column
-											final mxCell BCellobjectCellAdded = (mxCell) insertBCellobjectInGraph(
-													trackBCellobject, column);
+											final mxCell GreenobjectCellAdded = (mxCell) insertGreenobjectInGraph(
+													trackGreenobject, column);
 											rowLengths.put(frame, column);
-											BCellobjectsWithStyleToUpdate.add(BCellobjectCellAdded);
+											GreenobjectsWithStyleToUpdate.add(GreenobjectCellAdded);
 										}
 									}
 
@@ -676,7 +679,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 					}
 
 					stylist.execute(edgesToUpdate);
-					stylist.updateVertexStyle(BCellobjectsWithStyleToUpdate);
+					stylist.updateVertexStyle(GreenobjectsWithStyleToUpdate);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
@@ -701,8 +704,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	public void setDisplaySettings(final String key, final Object value) {
 		if (key == KEY_TRACK_COLORING) {
 			if (null != stylist) {
-				// pass the new one to the track overlay - we ignore its BCellobject
-				// coloring and keep the BCellobject coloring
+				// pass the new one to the track overlay - we ignore its Greenobject
+				// coloring and keep the Greenobject coloring
 				final TrackColorGenerator colorGenerator = (TrackColorGenerator) value;
 				stylist.setColorGenerator(colorGenerator);
 				doTrackStyle();
@@ -733,10 +736,10 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 
 				// Init functions that set look and position
 				gui.logger.setStatus("Creating style manager.");
-				TrackScheme.this.stylist = new TrackSchemeStylist(graph,
+				GreenTrackScheme.this.stylist = new GreenTrackSchemeStylist(graph,
 						(TrackColorGenerator) displaySettings.get(KEY_TRACK_COLORING));
 				gui.logger.setStatus("Creating layout manager.");
-				TrackScheme.this.graphLayout = new TrackSchemeGraphLayout(graph, model, gui.graphComponent);
+				GreenTrackScheme.this.graphLayout = new GreenTrackSchemeGraphLayout(graph, model, gui.graphComponent);
 
 				// Execute style and layout
 				gui.logger.setProgress(0.75);
@@ -776,7 +779,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	}
 
 	@Override
-	public Model getModel() {
+	public GreenModel getModel() {
 		return model;
 	}
 
@@ -785,14 +788,14 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	 */
 
 	protected void initDisplaySettings() {
-		displaySettings.put(KEY_BCellobjectS_VISIBLE, true);
-		displaySettings.put(KEY_DISPLAY_BCellobject_NAMES, false);
-		// displaySettings.put(KEY_BCellobject_COLORING, new
-		// BCellobjectColorGenerator(model));
+		displaySettings.put(KEY_GreenobjectS_VISIBLE, true);
+		displaySettings.put(KEY_DISPLAY_Greenobject_NAMES, false);
+		// displaySettings.put(KEY_Greenobject_COLORING, new
+		// GreenobjectColorGenerator(model));
 		// displaySettings.put(KEY_TRACK_COLORING, new
 		// PerTrackFeatureColorGenerator(model,
 		// TrackIndexAnalyzer.TRACK_INDEX));
-		displaySettings.put(KEY_BCellobject_RADIUS_RATIO, 1.0d);
+		displaySettings.put(KEY_Greenobject_RADIUS_RATIO, 1.0d);
 		displaySettings.put(KEY_TRACKS_VISIBLE, true);
 		displaySettings.put(KEY_TRACK_DISPLAY_MODE, DEFAULT_TRACK_DISPLAY_MODE);
 		displaySettings.put(KEY_TRACK_DISPLAY_DEPTH, DEFAULT_TRACK_DISPLAY_DEPTH);
@@ -818,8 +821,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 		if (!doFireSelectionChangeEvent) {
 			return;
 		}
-		final Collection<BCellobject> BCellobjectsToAdd = new ArrayList<>();
-		final Collection<BCellobject> BCellobjectsToRemove = new ArrayList<>();
+		final Collection<Greenobject> GreenobjectsToAdd = new ArrayList<>();
+		final Collection<Greenobject> GreenobjectsToRemove = new ArrayList<>();
 		final Collection<DefaultWeightedEdge> edgesToAdd = new ArrayList<>();
 		final Collection<DefaultWeightedEdge> edgesToRemove = new ArrayList<>();
 
@@ -832,8 +835,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 					for (int i = 0; i < cell.getChildCount(); i++) {
 						final mxICell child = cell.getChildAt(i);
 						if (child.isVertex()) {
-							final BCellobject BCellobject = graph.getBCellobjectFor(child);
-							BCellobjectsToRemove.add(BCellobject);
+							final Greenobject Greenobject = graph.getGreenobjectFor(child);
+							GreenobjectsToRemove.add(Greenobject);
 						} else {
 							final DefaultWeightedEdge edge = graph.getEdgeFor(child);
 							edgesToRemove.add(edge);
@@ -843,8 +846,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 				} else {
 
 					if (cell.isVertex()) {
-						final BCellobject BCellobject = graph.getBCellobjectFor(cell);
-						BCellobjectsToRemove.add(BCellobject);
+						final Greenobject Greenobject = graph.getGreenobjectFor(cell);
+						GreenobjectsToRemove.add(Greenobject);
 					} else {
 						final DefaultWeightedEdge edge = graph.getEdgeFor(cell);
 						edgesToRemove.add(edge);
@@ -862,8 +865,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 					for (int i = 0; i < cell.getChildCount(); i++) {
 						final mxICell child = cell.getChildAt(i);
 						if (child.isVertex()) {
-							final BCellobject BCellobject = graph.getBCellobjectFor(child);
-							BCellobjectsToAdd.add(BCellobject);
+							final Greenobject Greenobject = graph.getGreenobjectFor(child);
+							GreenobjectsToAdd.add(Greenobject);
 						} else {
 							final DefaultWeightedEdge edge = graph.getEdgeFor(child);
 							edgesToAdd.add(edge);
@@ -873,8 +876,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 				} else {
 
 					if (cell.isVertex()) {
-						final BCellobject BCellobject = graph.getBCellobjectFor(cell);
-						BCellobjectsToAdd.add(BCellobject);
+						final Greenobject Greenobject = graph.getGreenobjectFor(cell);
+						GreenobjectsToAdd.add(Greenobject);
 					} else {
 						final DefaultWeightedEdge edge = graph.getEdgeFor(cell);
 						edgesToAdd.add(edge);
@@ -889,27 +892,27 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 		if (!edgesToAdd.isEmpty()) {
 			selectionModel.addEdgeToSelection(edgesToAdd);
 		}
-		if (!BCellobjectsToAdd.isEmpty()) {
-			selectionModel.addBCellobjectToSelection(BCellobjectsToAdd);
+		if (!GreenobjectsToAdd.isEmpty()) {
+			selectionModel.addGreenobjectToSelection(GreenobjectsToAdd);
 		}
 		if (!edgesToRemove.isEmpty()) {
 			selectionModel.removeEdgeFromSelection(edgesToRemove);
 		}
-		if (!BCellobjectsToRemove.isEmpty()) {
-			selectionModel.removeBCellobjectFromSelection(BCellobjectsToRemove);
+		if (!GreenobjectsToRemove.isEmpty()) {
+			selectionModel.removeGreenobjectFromSelection(GreenobjectsToRemove);
 		}
 		doFireSelectionChangeEvent = true;
 	}
 
 	private void initGUI() {
-		this.gui = new TrackSchemeFrame(this);
+		this.gui = new GreenTrackSchemeFrame(this);
 		final String title = "TrackScheme";
 		gui.setTitle(title);
 		gui.setSize(DEFAULT_SIZE);
 		gui.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(final WindowEvent e) {
-				model.removeModelChangeListener(TrackScheme.this);
+				model.removeModelChangeListener(GreenTrackScheme.this);
 			}
 		});
 		gui.setLocationByPlatform(true);
@@ -934,19 +937,19 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 				return;
 			}
 
-			// Separate BCellobjects from edges
+			// Separate Greenobjects from edges
 			final Object[] objects = (Object[]) evt.getProperty("cells");
-			final HashSet<BCellobject> BCellobjectsToRemove = new HashSet<>();
+			final HashSet<Greenobject> GreenobjectsToRemove = new HashSet<>();
 			final ArrayList<DefaultWeightedEdge> edgesToRemove = new ArrayList<>();
 			for (final Object obj : objects) {
 				final mxCell cell = (mxCell) obj;
 				if (null != cell) {
 					if (cell.isVertex()) {
-						// Build list of removed BCellobjects
-						final BCellobject BCellobject = graph.getBCellobjectFor(cell);
-						BCellobjectsToRemove.add(BCellobject);
+						// Build list of removed Greenobjects
+						final Greenobject Greenobject = graph.getGreenobjectFor(cell);
+						GreenobjectsToRemove.add(Greenobject);
 						// Clean maps
-						graph.removeMapping(BCellobject);
+						graph.removeMapping(Greenobject);
 					} else if (cell.isEdge()) {
 						// Build list of removed edges
 						final DefaultWeightedEdge edge = graph.getEdgeFor(cell);
@@ -974,8 +977,8 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 				for (final DefaultWeightedEdge edge : edgesToRemove) {
 					model.removeEdge(edge);
 				}
-				for (final BCellobject BCellobject : BCellobjectsToRemove) {
-					model.removeBCellobject(BCellobject);
+				for (final Greenobject Greenobject : GreenobjectsToRemove) {
+					model.removeGreenobject(Greenobject);
 				}
 
 			} finally {
@@ -1080,35 +1083,35 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 
 	/**
 	 * Captures and stores the thumbnail image that will be displayed in each
-	 * BCellobject cell, when using styles that can display images.
+	 * Greenobject cell, when using styles that can display images.
 	 */
 	private void createThumbnails() {
-		// Group BCellobjects per frame
-		final Set<Integer> frames = model.getBCellobjects().keySet();
-		final HashMap<Integer, HashSet<BCellobject>> BCellobjectPerFrame = new HashMap<>(frames.size());
+		// Group Greenobjects per frame
+		final Set<Integer> frames = model.getGreenobjects().keySet();
+		final HashMap<Integer, HashSet<Greenobject>> GreenobjectPerFrame = new HashMap<>(frames.size());
 		for (final Integer frame : frames) {
-			BCellobjectPerFrame.put(frame, new HashSet<BCellobject>(model.getBCellobjects().getNBCellobjects(frame))); // max
+			GreenobjectPerFrame.put(frame, new HashSet<Greenobject>(model.getGreenobjects().getNGreenobjects(frame))); // max
 			// size
 		}
 		for (final Integer trackID : model.getTrackModel().trackIDs(true)) {
-			for (final BCellobject BCellobject : model.getTrackModel().trackBCellobjects(trackID)) {
-				final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
-				BCellobjectPerFrame.get(frame).add(BCellobject);
+			for (final Greenobject Greenobject : model.getTrackModel().trackGreenobjects(trackID)) {
+				final int frame = Greenobject.getFeature(Greenobject.POSITION_T).intValue();
+				GreenobjectPerFrame.get(frame).add(Greenobject);
 			}
 		}
-		// Set BCellobject image to cell style
-		if (null != BCellobjectImageUpdater) {
-			gui.logger.setStatus("Collecting BCellobject thumbnails.");
-			final double radiusFactor = (Double) displaySettings.get(KEY_BCellobject_RADIUS_RATIO);
+		// Set Greenobject image to cell style
+		if (null != GreenobjectImageUpdater) {
+			gui.logger.setStatus("Collecting Greenobject thumbnails.");
+			final double radiusFactor = (Double) displaySettings.get(KEY_Greenobject_RADIUS_RATIO);
 			int index = 0;
 			try {
 				graph.getModel().beginUpdate();
 
 				// Iterate per frame
 				for (final Integer frame : frames) {
-					for (final BCellobject BCellobject : BCellobjectPerFrame.get(frame)) {
-						final mxICell cell = graph.getCellFor(BCellobject);
-						final String imageStr = BCellobjectImageUpdater.getImageString(BCellobject, radiusFactor);
+					for (final Greenobject Greenobject : GreenobjectPerFrame.get(frame)) {
+						final mxICell cell = graph.getCellFor(Greenobject);
+						final String imageStr = GreenobjectImageUpdater.getImageString(Greenobject, radiusFactor);
 						String style = cell.getStyle();
 						style = mxStyleUtils.setStyle(style, mxConstants.STYLE_IMAGE, "data:image/base64," + imageStr);
 						graph.getModel().setStyle(cell, style);
@@ -1134,7 +1137,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 				maxLength = rowLength;
 			}
 		}
-		unlaidBCellobjectColumn = maxLength;
+		unlaidGreenobjectColumn = maxLength;
 		gui.graphComponent.refresh();
 	}
 
@@ -1166,72 +1169,72 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 	}
 
 	/**
-	 * Create links between all the BCellobjects currently in the {@link Model}
+	 * Create links between all the Greenobjects currently in the {@link Model}
 	 * selection. We update simultaneously the {@link Model} and the
 	 * {@link JGraphXAdapter}.
 	 */
-	public void linkBCellobjects() {
+	public void linkGreenobjects() {
 
-		// Sort BCellobjects by time
-		final TreeMap<Integer, BCellobject> BCellobjectsInTime = new TreeMap<>();
-		for (final BCellobject BCellobject : selectionModel.getBCellobjectSelection()) {
-			BCellobjectsInTime.put(BCellobject.getFeature(BCellobject.POSITION_T).intValue(), BCellobject);
+		// Sort Greenobjects by time
+		final TreeMap<Integer, Greenobject> GreenobjectsInTime = new TreeMap<>();
+		for (final Greenobject Greenobject : selectionModel.getGreenobjectSelection()) {
+			GreenobjectsInTime.put(Greenobject.getFeature(Greenobject.POSITION_T).intValue(), Greenobject);
 		}
 
 		// Find adequate column
-		final int targetColumn = getUnlaidBCellobjectColumn();
+		final int targetColumn = getUnlaidGreenobjectColumn();
 
 		// Then link them in this order
 		model.beginUpdate();
 		graph.getModel().beginUpdate();
 		try {
-			final Iterator<Integer> it = BCellobjectsInTime.keySet().iterator();
+			final Iterator<Integer> it = GreenobjectsInTime.keySet().iterator();
 			final Integer previousTime = it.next();
-			BCellobject previousBCellobject = BCellobjectsInTime.get(previousTime);
-			// If this BCellobject belong to an invisible track, we make it visible
-			Integer ID = model.getTrackModel().trackIDOf(previousBCellobject);
+			Greenobject previousGreenobject = GreenobjectsInTime.get(previousTime);
+			// If this Greenobject belong to an invisible track, we make it visible
+			Integer ID = model.getTrackModel().trackIDOf(previousGreenobject);
 			if (ID != null && !model.getTrackModel().isVisible(ID)) {
 				importTrack(ID);
 			}
 
 			while (it.hasNext()) {
 				final Integer currentTime = it.next();
-				final BCellobject currentBCellobject = BCellobjectsInTime.get(currentTime);
-				// If this BCellobject belong to an invisible track, we make it visible
-				ID = model.getTrackModel().trackIDOf(currentBCellobject);
+				final Greenobject currentGreenobject = GreenobjectsInTime.get(currentTime);
+				// If this Greenobject belong to an invisible track, we make it visible
+				ID = model.getTrackModel().trackIDOf(currentGreenobject);
 				if (ID != null && !model.getTrackModel().isVisible(ID)) {
 					importTrack(ID);
 				}
-				// Check that the cells matching the 2 BCellobjects exist in the graph
-				mxICell currentCell = graph.getCellFor(currentBCellobject);
+				// Check that the cells matching the 2 Greenobjects exist in the graph
+				mxICell currentCell = graph.getCellFor(currentGreenobject);
 				if (null == currentCell) {
-					currentCell = insertBCellobjectInGraph(currentBCellobject, targetColumn);
+					currentCell = insertGreenobjectInGraph(currentGreenobject, targetColumn);
 					if (DEBUG) {
-						System.out.println("[TrackScheme] linkBCellobjects: creating cell " + currentCell
-								+ " for BCellobject " + currentBCellobject);
+						System.out.println("[TrackScheme] linkGreenobjects: creating cell " + currentCell
+								+ " for Greenobject " + currentGreenobject);
 					}
 				}
-				mxICell previousCell = graph.getCellFor(previousBCellobject);
+				mxICell previousCell = graph.getCellFor(previousGreenobject);
 				if (null == previousCell) {
-					final int frame = previousBCellobject.getFeature(BCellobject.POSITION_T).intValue();
+					final int frame = previousGreenobject.getFeature(Greenobject.POSITION_T).intValue();
 					final int column = Math.max(targetColumn, getNextFreeColumn(frame));
 					rowLengths.put(frame, column);
-					previousCell = insertBCellobjectInGraph(previousBCellobject, column);
+					previousCell = insertGreenobjectInGraph(previousGreenobject, column);
 					if (DEBUG) {
-						System.out.println("[TrackScheme] linkBCellobjects: creating cell " + previousCell
-								+ " for BCellobject " + previousBCellobject);
+						System.out.println("[TrackScheme] linkGreenobjects: creating cell " + previousCell
+								+ " for Greenobject " + previousGreenobject);
 					}
 				}
 				// Check if the model does not have already a edge for these 2
-				// BCellobjects (that is
-				// the case if the 2 BCellobject are in an invisible track, which track
+				// Greenobjects (that is
+				// the case if the 2 Greenobject are in an invisible track, which track
 				// scheme does not
 				// know of).
-				DefaultWeightedEdge edge = model.getTrackModel().getEdge(previousBCellobject, currentBCellobject);
+				DefaultWeightedEdge edge = model.getTrackModel().getEdge(previousGreenobject, currentGreenobject);
 				if (null == edge) {
-					// We create a new edge between 2 BCellobjects, and pair it with a
+					// We create a new edge between 2 Greenobjects, and pair it with a
 					// new cell edge.
-					edge = model.addEdge(previousBCellobject, currentBCellobject, -1);
+					edge = model.addEdge(previousGreenobject, currentGreenobject, -1);
 					final mxCell cell = graph.addJGraphTEdge(edge);
 					cell.setValue("New");
 				} else {
@@ -1245,7 +1248,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 						importTrack(ID);
 					}
 				}
-				previousBCellobject = currentBCellobject;
+				previousGreenobject = currentGreenobject;
 			}
 		} finally {
 			graph.getModel().endUpdate();
@@ -1268,18 +1271,18 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 
 	public void selectTrack(final Collection<mxCell> vertices, final Collection<mxCell> edges, final int direction) {
 
-		// Look for BCellobject and edges matching given mxCells
-		final HashSet<BCellobject> inspectionBCellobjects = new HashSet<>(vertices.size());
+		// Look for Greenobject and edges matching given mxCells
+		final HashSet<Greenobject> inspectionGreenobjects = new HashSet<>(vertices.size());
 		for (final mxCell cell : vertices) {
-			final BCellobject BCellobject = graph.getBCellobjectFor(cell);
-			if (null == BCellobject) {
+			final Greenobject Greenobject = graph.getGreenobjectFor(cell);
+			if (null == Greenobject) {
 				if (DEBUG) {
 					System.out.println("[TrackScheme] selectWholeTrack: tried to retrieve cell " + cell
-							+ ", unknown to BCellobject map.");
+							+ ", unknown to Greenobject map.");
 				}
 				continue;
 			}
-			inspectionBCellobjects.add(BCellobject);
+			inspectionGreenobjects.add(Greenobject);
 		}
 		final HashSet<DefaultWeightedEdge> inspectionEdges = new HashSet<>(edges.size());
 		for (final mxCell cell : edges) {
@@ -1294,7 +1297,7 @@ public class GreenTrackScheme extends AbstractTrackMateModelView {
 			inspectionEdges.add(dwe);
 		}
 		// Forward to selection model
-		selectionModel.selectTrack(inspectionBCellobjects, inspectionEdges, direction);
+		selectionModel.selectTrack(inspectionGreenobjects, inspectionEdges, direction);
 	}
 
 	@Override

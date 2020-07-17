@@ -1,5 +1,6 @@
 package Buddy.plugin.trackmate.visualization.trackscheme;
 
+import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.util.TMUtils;
 import greenDetector.Greenobject;
@@ -15,7 +16,7 @@ public class GreenobjectImageUpdater {
 
 	private GreenobjectIconGrabber<?> grabber;
 
-	private final Settings settings;
+	private final GreenSettings settings;
 
 	/**
 	 * Instantiates a new Greenobject image updater.
@@ -24,7 +25,7 @@ public class GreenobjectImageUpdater {
 	 *            the {@link Settings} object from which we read the raw image and
 	 *            the target channel.
 	 */
-	public GreenobjectImageUpdater(final Settings settings) {
+	public GreenobjectImageUpdater(final GreenSettings settings) {
 		this.settings = settings;
 		this.previousFrame = -1;
 		this.previousChannel = -1;

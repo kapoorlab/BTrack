@@ -5,10 +5,12 @@ import java.util.Map;
 import org.jdom2.Element;
 
 import Buddy.plugin.trackmate.Model;
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenobjectCollection;
 import Buddy.plugin.trackmate.TrackMateModule;
 import Buddy.plugin.trackmate.gui.ConfigurationPanel;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 
 public interface GreenobjectTrackerFactory extends TrackMateModule {
 
@@ -24,7 +26,7 @@ public interface GreenobjectTrackerFactory extends TrackMateModule {
 	 *            the settings map configuring the tracker.
 	 * @return a new {@link GreenobjectTracker} instance.
 	 */
-	public GreenobjectTracker create(final InteractiveBud parent, final Map<String, Object> settings);
+	public GreenobjectTracker create(final InteractiveGreen parent, final Map<String, Object> settings);
 
 	/**
 	 * Returns a new GUI panel able to configure the settings suitable for the
@@ -34,7 +36,7 @@ public interface GreenobjectTrackerFactory extends TrackMateModule {
 	 *            the model that will be modified by the target tracker.
 	 * @return a new configuration panel.
 	 */
-	public ConfigurationPanel getTrackerConfigurationPanel(final Model model);
+	public ConfigurationPanel getTrackerConfigurationPanel(final GreenModel model);
 
 	/**
 	 * Marshalls a settings map to a JDom element, ready for saving to XML. The

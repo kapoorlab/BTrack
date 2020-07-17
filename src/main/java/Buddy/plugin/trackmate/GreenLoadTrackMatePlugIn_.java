@@ -24,24 +24,29 @@ import Buddy.plugin.trackmate.gui.GuiUtils;
 import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
+import Buddy.plugin.trackmate.gui.descriptors.GreenSomeDialogDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.SomeDialogDescriptor;
 import Buddy.plugin.trackmate.io.GreenTmXmlReader;
 import Buddy.plugin.trackmate.io.IOUtils;
 import Buddy.plugin.trackmate.io.TmXmlReader;
 import Buddy.plugin.trackmate.io.TmXmlReader_v12;
 import Buddy.plugin.trackmate.io.TmXmlReader_v20;
-import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
+import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.util.TMUtils;
 import Buddy.plugin.trackmate.util.Version;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewUtils;
+import Buddy.plugin.trackmate.visualization.hyperstack.GreenHyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.IJ;
@@ -50,21 +55,18 @@ import ij.plugin.PlugIn;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 
-public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn {
+public class GreenLoadTrackMatePlugIn_ extends GreenSomeDialogDescriptor implements PlugIn {
 
 	private JFrame frame;
 
-
-	protected InteractiveGreen greenparent;
+	protected InteractiveGreen parent;
+	
+	protected GreenModel model;
+	
+	protected GreenSettings settings;
 	
 	
-	protected GreenModel greenmodel;
-	
-	protected GreenSettings greensettings;
-	
-
-	
-	private GreenTrackMateGUIController greencontroller;
+	private GreenTrackMateGUIController controller;
 
 	private static final String KEY = "LoadPlugin";
 
@@ -127,20 +129,13 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 		}
 
 		// Read the file content
-		TmXmlReader reader = createReader(file);
+		GreenTmXmlReader reader = createReader(file);
 		if (!reader.isReadingOk()) {
 			IJ.error(TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, reader.getErrorMessage());
 			return;
 		}
 
-		final Version version = new Version(reader.getVersion());
-		if (version.compareTo(new Version("2.0.0")) < 0) {
-			logger.log("Detecting a file version " + version + ". Using the right reader.\n", Logger.GREEN_COLOR);
-			reader = new TmXmlReader_v12(file);
-		} else if (version.compareTo(new Version("2.1.0")) < 0) {
-			logger.log("Detecting a file version " + version + ". Using the right reader.\n", Logger.GREEN_COLOR);
-			reader = new TmXmlReader_v20(file);
-		}
+
 		if (!reader.isReadingOk()) {
 			logger.error(reader.getErrorMessage());
 			logger.error("Aborting.\n"); // If I cannot even open the xml
@@ -153,7 +148,7 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 		
 
 		// Read the file content
-		GreenTmXmlReader greenreader = creategreenReader(file);
+		GreenTmXmlReader greenreader = createReader(file);
 		if (!greenreader.isReadingOk()) {
 			IJ.error(TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, greenreader.getErrorMessage());
 			return;
@@ -181,26 +176,16 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 		// With this we can create a new controller from the provided one:
 		final TrackMate trackmate = createTrackMate();
 
-		// Tune model and settings to be usable in the GUI even with old
-		// versions
-		if (version.compareTo(new Version("2.0.0")) < 0) {
-			settings.addEdgeAnalyzer(new EdgeTargetAnalyzer());
-			settings.addEdgeAnalyzer(new EdgeVelocityAnalyzer());
-			model.setLogger(Logger.IJ_LOGGER);
-			trackmate.computeEdgeFeatures(true);
-		} else if (version.compareTo(new Version("2.1.0")) < 0) {
-			model.setLogger(Logger.IJ_LOGGER);
-			// trackmate.computeTrackFeatures(true);
-		}
+		
 
-		controller = new TrackMateGUIController(parent, trackmate);
+		controller = new GreenTrackMateGUIController(parent, trackmate);
 
 		// We feed then the reader with the providers taken from the NEW
 		// controller.
-		final TrackerProvider trackerProvider = controller.getTrackerProvider();
-		final BCellobjectAnalyzerProvider spotAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
-		final EdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
-		final TrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
+		final GreenTrackerProvider trackerProvider = controller.getTrackerProvider();
+		final GreenobjectAnalyzerProvider spotAnalyzerProvider = controller.getGreenobjectAnalyzerProvider();
+		final GreenEdgeAnalyzerProvider edgeAnalyzerProvider = controller.getEdgeAnalyzerProvider();
+		final GreenTrackAnalyzerProvider trackAnalyzerProvider = controller.getTrackAnalyzerProvider();
 
 		if (null == settings.imp) {
 			settings.imp = ViewUtils.makeEmpytImagePlus(model);
@@ -216,10 +201,10 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 		String guiState = reader.getGUIState();
 
 		// Views
-		final ViewProvider viewProvider = controller.getViewProvider();
-		final Collection<TrackMateModelView> views = reader.getViews(viewProvider, model, settings,
+		final GreenViewProvider viewProvider = controller.getViewProvider();
+		final Collection<GreenTrackMateModelView> views = reader.getViews(viewProvider, model, settings,
 				controller.getSelectionModel());
-		for (final TrackMateModelView view : views) {
+		for (final GreenTrackMateModelView view : views) {
 			if (view instanceof TrackScheme) {
 				// final TrackScheme trackscheme = ( TrackScheme ) view;
 				// trackscheme.setSpotImageUpdater( new SpotImageUpdater( settings ) );
@@ -241,10 +226,10 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 
 		// Setup and render views
 		if (views.isEmpty()) { // at least one view.
-			views.add(new HyperStackDisplayer(model, controller.getSelectionModel(), settings.imp));
+			views.add(new GreenHyperStackDisplayer(model, controller.getSelectionModel(), settings.imp));
 		}
 		final Map<String, Object> displaySettings = controller.getGuimodel().getDisplaySettings();
-		for (final TrackMateModelView view : views) {
+		for (final GreenTrackMateModelView view : views) {
 			if (view instanceof TrackScheme) {
 				continue;
 				// Don't relaunch TrackScheme.
@@ -267,30 +252,20 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 		
 	}
 
-	public Model getModel() {
+	public GreenModel getModel() {
 		return model;
 	}
 
-	public Settings getSettings() {
+	public GreenSettings getSettings() {
 		return settings;
 	}
 
-	public TrackMateGUIController getController() {
+	public GreenTrackMateGUIController getController() {
 		return controller;
 	}
 	
 
-	public GreenModel getGreenModel() {
-		return greenmodel;
-	}
-
-	public GreenSettings getGreenSettings() {
-		return greensettings;
-	}
-
-	public GreenTrackMateGUIController getGreenController() {
-		return greencontroller;
-	}
+	
 
 
 	/**
@@ -318,7 +293,7 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel(InteractiveGreen parent) {
 		frame = new JFrame();
 		frame.getContentPane().add(logPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -358,9 +333,7 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 		return new TrackMate(parent, settings);
 	}
 	
-	protected TrackMate createGreenTrackMate() {
-		return new TrackMate(greenparent, greensettings);
-	}
+	
 
 
 	/**
@@ -371,13 +344,11 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 	 *            the file to read from.
 	 * @return a new {@link TmXmlReader} instance.
 	 */
-	protected TmXmlReader createReader(final File lFile) {
-		return new TmXmlReader(lFile);
-	}
-	
-	protected GreenTmXmlReader creategreenReader(final File lFile) {
+	protected GreenTmXmlReader createReader(final File lFile) {
 		return new GreenTmXmlReader(lFile);
 	}
+	
+	
 
 	/**
 	 * Hook for subclassers: <br>
@@ -386,14 +357,12 @@ public class GreenLoadTrackMatePlugIn_ extends SomeDialogDescriptor implements P
 	 *
 	 * @return a new {@link Settings} instance.
 	 */
-	protected Settings createSettings() {
-		return new Settings();
+	protected GreenSettings createSettings() {
+		return new GreenSettings();
 	}
 	
 	 
-	protected GreenSettings createGreenSettings() {
-		return new GreenSettings();
-	}
+
 
 	/*
 	 * MAIN METHOD

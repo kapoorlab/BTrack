@@ -27,8 +27,13 @@ import com.mxgraph.swing.handler.mxRubberband;
 
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.util.TrackNavigator;
+import Buddy.plugin.trackmate.visualization.trackscheme.GreenInfoPane;
+import Buddy.plugin.trackmate.visualization.trackscheme.GreenJGraphXAdapter;
+import Buddy.plugin.trackmate.visualization.trackscheme.GreenTrackScheme;
+import Buddy.plugin.trackmate.visualization.trackscheme.InfoPane;
+import Buddy.plugin.trackmate.visualization.trackscheme.TrackSchemeGraphComponent;
 
-public class TrackSchemeFrame extends JFrame {
+public class GreenTrackSchemeFrame extends JFrame {
 
 	/*
 	 * CONSTANTS
@@ -41,11 +46,11 @@ public class TrackSchemeFrame extends JFrame {
 	 */
 
 	/** The side pane in which spot selection info will be displayed. */
-	private InfoPane infoPane;
+	private GreenInfoPane infoPane;
 
-	private JGraphXAdapter graph;
+	private GreenJGraphXAdapter graph;
 
-	private final TrackScheme trackScheme;
+	private final GreenTrackScheme trackScheme;
 
 	/** The graph component in charge of painting the graph. */
 	TrackSchemeGraphComponent graphComponent;
@@ -57,7 +62,7 @@ public class TrackSchemeFrame extends JFrame {
 	 * CONSTRUCTORS
 	 */
 
-	public TrackSchemeFrame(final TrackScheme trackScheme) {
+	public GreenTrackSchemeFrame(final GreenTrackScheme trackScheme) {
 		this.trackScheme = trackScheme;
 		this.graph = trackScheme.getGraph();
 
@@ -126,13 +131,13 @@ public class TrackSchemeFrame extends JFrame {
 
 
 
-	public void init(final JGraphXAdapter lGraph) {
+	public void init(final GreenJGraphXAdapter lGraph) {
 		this.graph = lGraph;
 		// GraphComponent
 		graphComponent = createGraphComponent();
 
 		// Add the info pane
-		infoPane = new InfoPane(trackScheme.getModel(), trackScheme.getSelectionModel());
+		infoPane = new GreenInfoPane(trackScheme.getModel(), trackScheme.getSelectionModel());
 
 		// Add the graph outline
 		final mxGraphOutline graphOutline = new mxGraphOutline(graphComponent);
