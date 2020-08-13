@@ -42,7 +42,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import fileListeners.SimplifiedIO;
 
-public class RedGreenFileChooser extends JPanel {
+public class ThreeDTimeCellFileChooser extends JPanel {
 
 	  /**
 		 * 

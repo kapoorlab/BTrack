@@ -6,16 +6,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 import ij.WindowManager;
-import pluginTools.RedGreenFileChooser;
+import pluginTools.ThreeDTimeCellFileChooser;
 
 public class ChooseGreenSegMap implements ActionListener {
 	
 	
-	final RedGreenFileChooser parent;
+	final ThreeDTimeCellFileChooser parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseGreenSegMap(final RedGreenFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseGreenSegMap(final ThreeDTimeCellFileChooser parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;

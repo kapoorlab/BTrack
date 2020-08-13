@@ -6,16 +6,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 import ij.WindowManager;
-import pluginTools.ThreeDTimeCellFileChooser;
+import pluginTools.TwoDTimeCellFileChooser;
 
-public class ChooseMaskSegMap implements ActionListener {
+public class ChooseCellSegAMap implements ActionListener {
 	
 	
-	final ThreeDTimeCellFileChooser parent;
+	final TwoDTimeCellFileChooser parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseMaskSegMap(final ThreeDTimeCellFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseCellSegAMap(final TwoDTimeCellFileChooser parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;
@@ -28,7 +28,10 @@ public class ChooseMaskSegMap implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		String imagename = (String) choice.getSelectedItem();
-      	parent.impMask = WindowManager.getImage(imagename);
+		
+		
+		
+    	parent.impSegA = WindowManager.getImage(imagename);
     	
 
 		

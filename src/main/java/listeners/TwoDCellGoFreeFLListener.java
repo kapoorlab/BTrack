@@ -12,15 +12,16 @@ import fileListeners.ChooseBudSegBMap;
 import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
 import pluginTools.BudFileChooser;
+import pluginTools.TwoDTimeCellFileChooser;
 
 
-public class BTrackGoFreeFlListener implements ItemListener {
+public class TwoDCellGoFreeFLListener implements ItemListener {
 
-	public final BudFileChooser parent;
+	public final TwoDTimeCellFileChooser parent;
 	
 	
 	
-	public BTrackGoFreeFlListener( final BudFileChooser parent) {
+	public TwoDCellGoFreeFLListener( final TwoDTimeCellFileChooser parent) {
 		
 		this.parent = parent;
 	}
@@ -37,9 +38,9 @@ public class BTrackGoFreeFlListener implements ItemListener {
 			parent.panelFirst.repaint();
 			
 			
-			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
+			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseCellSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
-			segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
+			segmentation.ChooseImage.addActionListener(new ChooseCellSegAMap(parent, segmentation.ChooseImage));
 			
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,

@@ -10,17 +10,16 @@ import javax.swing.JComboBox;
 
 import ij.IJ;
 import ij.WindowManager;
-import pluginTools.BudFileChooser;
-import pluginTools.ThreeDTimeCellFileChooser;
+import pluginTools.TwoDTimeCellFileChooser;
 
-public class ChooseGreenOrigMap implements ActionListener {
+public class ChooseCellOrigMap implements ActionListener {
 	
 	
-	final ThreeDTimeCellFileChooser parent;
+	final TwoDTimeCellFileChooser parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseGreenOrigMap(final ThreeDTimeCellFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseCellOrigMap(final TwoDTimeCellFileChooser parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;
@@ -36,11 +35,11 @@ public class ChooseGreenOrigMap implements ActionListener {
 		
 		
 		
-    	parent.impOrigGreen = WindowManager.getImage(imagename);
+    	parent.impOrig = WindowManager.getImage(imagename);
    
-    	if(parent.impOrigGreen!=null) {
-			parent.calibration = parent.impOrigGreen.getCalibration().pixelWidth;
-			parent.FrameInterval = parent.impOrigGreen.getCalibration().frameInterval;
+    	if(parent.impOrig!=null) {
+			parent.calibration = parent.impOrig.getCalibration().pixelWidth;
+			parent.FrameInterval = parent.impOrig.getCalibration().frameInterval;
 			if (parent.FrameInterval == 0)
 				parent.FrameInterval = 1;
 			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
