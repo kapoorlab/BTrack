@@ -44,6 +44,7 @@ import listeners.BTrackGoRedFLListener;
 import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import fileListeners.SimplifiedIO;
@@ -263,6 +264,25 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		String name = impOrig.getOriginalFileInfo().fileName;
 
+		
+		if(DoMask) {
+			
+			System.out.println("Do mask");
+			RandomAccessibleInterval<BitType> imageSegB = SimplifiedIO.openImage(
+					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new BitType());
+		}
+		
+		
+		if(NoMask) {
+			
+			System.out.println("No mask");
+			
+		}
+		
+		
+		
+		
+		
 		WindowManager.closeAllWindows();
 		calibration = Float.parseFloat(inputFieldcalX.getText());
 		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
