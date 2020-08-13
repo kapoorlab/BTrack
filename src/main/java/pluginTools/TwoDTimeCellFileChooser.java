@@ -39,7 +39,9 @@ import ij.WindowManager;
 import io.scif.img.ImgIOException;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
+import listeners.BTrackGoMaskFLListener;
 import listeners.BTrackGoRedFLListener;
+import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
@@ -88,7 +90,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 	
 
-	public String chooseoriginalCellfilestring = "Cells are tracked inside a region or all";
+	public String chooseoriginalCellfilestring = "Cells are tracked inside a defined mask or everywhere";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
 			new EmptyBorder(c.insets));
 
@@ -186,7 +188,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		// Listeneres
 
-		FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
+		FreeMode.addItemListener(new TwoDCellGoFreeFLListener(this));
 		MaskMode.addItemListener(new BTrackGoMaskFLListener(this));
 		// GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
 		// RedMode.addItemListener(new BTrackGoRedFLListener(this));
@@ -257,17 +259,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(
 				impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName, new IntType());
 
-		if (imageOrig.numDimensions() > 3)
-			switch(JOptionPane.showConfirmDialog(null, "Please upload only XYT image"))
-			
-			{
-			
-			case JOptionPane.YES_NO_CANCEL_OPTION:
-				
-				break;
-			
-
-			}
+		
 
 		String name = impOrig.getOriginalFileInfo().fileName;
 
@@ -276,56 +268,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
 		System.out.println("CalibrationX:" + calibration);
 		System.out.println("CalibrationT:" + FrameInterval);
-		if (!DoMask && !DoGreen && !DoRed)
-
-			new InteractiveCell(imageOrig, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,
-					name).run(null);
-
-		if (DoMask) {
-
-			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
-
-			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			new InteractiveCell(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration,
-					FrameInterval, name).run(null);
-
-		}
-
-		if (DoGreen) {
-			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(
-					impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName, new IntType());
-
-			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegC.numDimensions());
-
-			new InteractiveCell(imageOrig, imageSegA, imageSegB, imageSegC, impOrig.getOriginalFileInfo().fileName,
-					calibration, FrameInterval, name).run(null);
-
-		}
-
-		if (DoRed) {
-
-			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(
-					impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(
-					impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName, new IntType());
-
-			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegC.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegD.numDimensions());
-
-			new InteractiveCell(imageOrig, imageSegA, imageSegB, imageSegC, imageSegD,
-					impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval, name).run(null);
-
-		}
+	
 
 		close(parent);
 

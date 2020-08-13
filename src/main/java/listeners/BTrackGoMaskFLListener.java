@@ -1,5 +1,6 @@
 package listeners;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
@@ -10,24 +11,21 @@ import fileListeners.ChooseBudSecOrigMap;
 import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
 import fileListeners.ChooseCellSegAMap;
+import fileListeners.ChooseCellSegBMap;
 import loadfile.CovistoOneChFileLoader;
 import loadfile.CovistoTwoChForceFileLoader;
 import pluginTools.BudFileChooser;
 import pluginTools.TwoDTimeCellFileChooser;
 
 
-public class TwoDCellGoFreeFLListener implements ItemListener {
+public class BTrackGoMaskFLListener implements ItemListener {
 
 	public final TwoDTimeCellFileChooser parent;
 	
-	
-	
-	public TwoDCellGoFreeFLListener( final TwoDTimeCellFileChooser parent) {
+	public BTrackGoMaskFLListener( final TwoDTimeCellFileChooser parent) {
 		
 		this.parent = parent;
 	}
-	
-	
 	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
@@ -39,17 +37,17 @@ public class TwoDCellGoFreeFLListener implements ItemListener {
 			parent.panelFirst.repaint();
 			
 			
-			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseCellSegstring, parent.blankimageNames);
-			parent.Panelfile = segmentation.SingleChannelOption();
-			segmentation.ChooseImage.addActionListener(new ChooseCellSegAMap(parent, segmentation.ChooseImage));
+			
+			CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(parent.chooseMaskSegstring, parent.blankimageNames);
+			parent.Panelfile = segmentation.TwoChannelOption();
 			
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
-			
-			parent.DoMask = false;
-			parent.NoMask = true;
-
+			segmentation.ChooseImage.addActionListener(new ChooseCellSegAMap(parent, segmentation.ChooseImage));
+			segmentation.ChoosesecImage.addActionListener(new ChooseCellSegBMap(parent, segmentation.ChoosesecImage));
+			parent.DoMask = true;
+			parent.NoMask = false;
 		parent.Panelfile.validate();
 		parent.Panelfile.repaint();
 		
@@ -60,7 +58,8 @@ public class TwoDCellGoFreeFLListener implements ItemListener {
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			
-	
+
+			
 			
 		}
 		
