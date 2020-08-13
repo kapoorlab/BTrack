@@ -132,6 +132,7 @@ import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.tracking.GreenobjectTrackerFactory;
 import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
+import Buddy.plugin.trackmate.visualization.GreenViewFactory;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
@@ -272,7 +273,7 @@ public class GreenTmXmlReader {
 					if (viewKey.equals(TrackScheme.KEY))
 						continue;
 
-					final ViewFactory factory = provider.getFactory(viewKey);
+					final GreenViewFactory factory = provider.getFactory(viewKey);
 					if (null == factory) {
 						logger.error("Unknown view factory for key " + viewKey + ".\n");
 						ok = false;

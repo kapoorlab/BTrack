@@ -8,7 +8,7 @@ import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.TrackMateModule;
 
-public interface ViewFactory extends TrackMateModule {
+public interface GreenViewFactory extends TrackMateModule {
 
 	/**
 	 * Returns a new instance of the concrete view.
@@ -22,5 +22,5 @@ public interface ViewFactory extends TrackMateModule {
 	 *            the {@link SelectionModel} model to share in the created view.
 	 * @return a new view of the specified model.
 	 */
-	public TrackMateModelView create(final Model model, final Settings settings, final SelectionModel selectionModel);
+	public GreenTrackMateModelView create(final GreenModel model, final GreenSettings settings, final GreenSelectionModel selectionModel);
 }

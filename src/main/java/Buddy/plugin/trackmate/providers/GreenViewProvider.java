@@ -13,6 +13,7 @@ import org.scijava.log.LogService;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 
+import Buddy.plugin.trackmate.visualization.GreenViewFactory;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 
 public class GreenViewProvider {
@@ -23,7 +24,7 @@ public class GreenViewProvider {
 
 	protected List<String> visibleKeys = new ArrayList<>();
 
-	protected Map<String, ViewFactory> factories = new HashMap<>();
+	protected Map<String, GreenViewFactory> factories = new HashMap<>();
 
 	/*
 	 * BLANK CONSTRUCTOR
@@ -42,7 +43,7 @@ public class GreenViewProvider {
 		registerViews();
 	}
 
-	private void registerView(final String key, final ViewFactory view, final boolean visible) {
+	private void registerView(final String key, final GreenViewFactory view, final boolean visible) {
 		keys.add(key);
 		factories.put(key, view);
 		if (visible) {
@@ -50,7 +51,7 @@ public class GreenViewProvider {
 		}
 	}
 
-	public ViewFactory getFactory(final String key) {
+	public GreenViewFactory getFactory(final String key) {
 		return factories.get(key);
 	}
 
@@ -66,20 +67,20 @@ public class GreenViewProvider {
 		final Context context = new Context(LogService.class, PluginService.class);
 		final LogService log = context.getService(LogService.class);
 		final PluginService pluginService = context.getService(PluginService.class);
-		final List<PluginInfo<ViewFactory>> infos = pluginService.getPluginsOfType(ViewFactory.class);
+		final List<PluginInfo<GreenViewFactory>> infos = pluginService.getPluginsOfType(GreenViewFactory.class);
 
-		final Comparator<PluginInfo<ViewFactory>> priorityComparator = new Comparator<PluginInfo<ViewFactory>>() {
+		final Comparator<PluginInfo<GreenViewFactory>> priorityComparator = new Comparator<PluginInfo<GreenViewFactory>>() {
 			@Override
-			public int compare(final PluginInfo<ViewFactory> o1, final PluginInfo<ViewFactory> o2) {
+			public int compare(final PluginInfo<GreenViewFactory> o1, final PluginInfo<GreenViewFactory> o2) {
 				return o1.getPriority() > o2.getPriority() ? 1 : o1.getPriority() < o2.getPriority() ? -1 : 0;
 			}
 		};
 
 		Collections.sort(infos, priorityComparator);
 
-		for (final PluginInfo<ViewFactory> info : infos) {
+		for (final PluginInfo<GreenViewFactory> info : infos) {
 			try {
-				final ViewFactory view = info.createInstance();
+				final GreenViewFactory view = info.createInstance();
 				registerView(view.getKey(), view, info.isVisible());
 			} catch (final InstantiableException e) {
 				log.error("Could not instantiate " + info.getClassName(), e);

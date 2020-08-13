@@ -13,6 +13,7 @@ import Buddy.plugin.trackmate.gui.panels.ListChooserPanel;
 import Buddy.plugin.trackmate.providers.GreenViewProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
 import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
+import Buddy.plugin.trackmate.visualization.GreenViewFactory;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
@@ -115,7 +116,7 @@ public class GreenViewChoiceDescriptor implements GreenWizardPanelDescriptor {
 					return;
 				}
 
-				final ViewFactory factory = viewProvider.getFactory(viewName);
+				final GreenViewFactory factory = viewProvider.getFactory(viewName);
 				final GreenTrackMateModelView view = factory.create(trackmate.getGreenModel(), trackmate.getGreenSettings(),
 						selectionModel);
 				for (final String settingKey : guimodel.getDisplaySettings().keySet()) {

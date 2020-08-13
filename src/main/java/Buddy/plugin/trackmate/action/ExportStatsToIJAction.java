@@ -15,23 +15,16 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
+import budDetector.BCellobject;
 import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.GreenFeatureModel;
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeTimeLocationAnalyzer;
-import Buddy.plugin.trackmate.features.edges.GreenEdgeTargetAnalyzer;
-import Buddy.plugin.trackmate.features.edges.GreenEdgeTimeLocationAnalyzer;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.util.GreenModelTools;
 import Buddy.plugin.trackmate.util.ModelTools;
-import greenDetector.Greenobject;
 import ij.WindowManager;
 import ij.measure.ResultsTable;
 import ij.text.TextPanel;
@@ -45,13 +38,13 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 
 	public static final String INFO_TEXT = "<html>" + "Compute and export all statistics to 3 ImageJ results table. "
 			+ "Statistisc are separated in features computed for: " + "<ol> "
-			+ "	<li> Greenobjects in filtered tracks; " + "	<li> links between those Greenobjects; "
+			+ "	<li> BCellobjects in filtered tracks; " + "	<li> links between those BCellobjects; "
 			+ "	<li> filtered tracks. " + "</ol> "
 			+ "For tracks and links, they are recalculated prior to exporting. Note "
-			+ "that Greenobjects and links that are not in a filtered tracks are not part " + "of this export."
+			+ "that BCellobjects and links that are not in a filtered tracks are not part " + "of this export."
 			+ "</html>";
 
-	private static final String Greenobject_TABLE_NAME = "Greenobjects in tracks statistics";
+	private static final String BCellobject_TABLE_NAME = "BCellobjects in tracks statistics";
 
 	private static final String EDGE_TABLE_NAME = "Links in tracks statistics";
 
@@ -61,15 +54,15 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 
 	private static final String TRACK_ID_COLUMN = "TRACK_ID";
 
-	private ResultsTable GreenobjectTable;
+	private ResultsTable BCellobjectTable;
 
 	private ResultsTable edgeTable;
 
 	private ResultsTable trackTable;
 
-	private final GreenSelectionModel selectionModel;
+	private final SelectionModel selectionModel;
 
-	public ExportStatsToIJAction(final GreenSelectionModel selectionModel) {
+	public ExportStatsToIJAction(final SelectionModel selectionModel) {
 		this.selectionModel = selectionModel;
 	}
 
@@ -78,37 +71,37 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		logger.log("Exporting statistics.\n");
 
 		// Model
-		final GreenModel model = trackmate.getGreenModel();
-		final GreenFeatureModel fm = model.getFeatureModel();
+		final Model model = trackmate.getModel();
+		final FeatureModel fm = model.getFeatureModel();
 
-		// Export Greenobjects
-		logger.log("  - Exporting Greenobject statistics...");
+		// Export BCellobjects
+		logger.log("  - Exporting BCellobject statistics...");
 		final Set<Integer> trackIDs = model.getTrackModel().trackIDs(true);
-		final Collection<String> GreenobjectFeatures = trackmate.getGreenModel().getFeatureModel().getGreenobjectFeatures();
+		final Collection<String> BCellobjectFeatures = trackmate.getModel().getFeatureModel().getBCellobjectFeatures();
 
-		this.GreenobjectTable = new ResultsTable();
+		this.BCellobjectTable = new ResultsTable();
 
-		// Parse Greenobjects to insert values as objects
+		// Parse BCellobjects to insert values as objects
 		for (final Integer trackID : trackIDs) {
-			final Set<Greenobject> track = model.getTrackModel().trackGreenobjects(trackID);
+			final Set<BCellobject> track = model.getTrackModel().trackBCellobjects(trackID);
 			// Sort by frame
-			final List<Greenobject> sortedTrack = new ArrayList<>(track);
-			Collections.sort(sortedTrack, Greenobject.frameComparator);
+			final List<BCellobject> sortedTrack = new ArrayList<>(track);
+			Collections.sort(sortedTrack, BCellobject.frameComparator);
 
-			for (final Greenobject Greenobject : sortedTrack) {
-				GreenobjectTable.incrementCounter();
-				GreenobjectTable.addLabel(Greenobject.getName());
-				GreenobjectTable.addValue(ID_COLUMN, "" + Greenobject.ID());
-				GreenobjectTable.addValue("TRACK_ID", "" + trackID.intValue());
-				for (final String feature : GreenobjectFeatures) {
-					final Double val = Greenobject.getFeature(feature);
+			for (final BCellobject BCellobject : sortedTrack) {
+				BCellobjectTable.incrementCounter();
+				BCellobjectTable.addLabel(BCellobject.getName());
+				BCellobjectTable.addValue(ID_COLUMN, "" + BCellobject.ID());
+				BCellobjectTable.addValue("TRACK_ID", "" + trackID.intValue());
+				for (final String feature : BCellobjectFeatures) {
+					final Double val = BCellobject.getFeature(feature);
 					if (null == val) {
-						GreenobjectTable.addValue(feature, "None");
+						BCellobjectTable.addValue(feature, "None");
 					} else {
-						if (fm.getGreenobjectFeatureIsInt().get(feature).booleanValue()) {
-							GreenobjectTable.addValue(feature, "" + val.intValue());
+						if (fm.getBCellobjectFeatureIsInt().get(feature).booleanValue()) {
+							BCellobjectTable.addValue(feature, "" + val.intValue());
 						} else {
-							GreenobjectTable.addValue(feature, val.doubleValue());
+							BCellobjectTable.addValue(feature, val.doubleValue());
 						}
 					}
 				}
@@ -126,9 +119,9 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		// Sort by track
 		for (final Integer trackID : trackIDs) {
 			// Comparators
-			final Comparator<DefaultWeightedEdge> edgeTimeComparator = GreenModelTools
-					.featureEdgeComparator(GreenEdgeTimeLocationAnalyzer.TIME, fm);
-			final Comparator<DefaultWeightedEdge> edgeSourceGreenobjectTimeComparator = new EdgeSourceGreenobjectFrameComparator(
+			final Comparator<DefaultWeightedEdge> edgeTimeComparator = ModelTools
+					.featureEdgeComparator(EdgeTimeLocationAnalyzer.TIME, fm);
+			final Comparator<DefaultWeightedEdge> edgeSourceBCellobjectTimeComparator = new EdgeSourceBCellobjectFrameComparator(
 					model);
 
 			final Set<DefaultWeightedEdge> track = model.getTrackModel().trackEdges(trackID);
@@ -141,7 +134,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 			if (model.getFeatureModel().getEdgeFeatures().contains(EdgeTimeLocationAnalyzer.KEY))
 				Collections.sort(sortedTrack, edgeTimeComparator);
 			else
-				Collections.sort(sortedTrack, edgeSourceGreenobjectTimeComparator);
+				Collections.sort(sortedTrack, edgeSourceBCellobjectTimeComparator);
 
 			for (final DefaultWeightedEdge edge : sortedTrack) {
 				edgeTable.incrementCounter();
@@ -197,7 +190,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		logger.log(" Done.\n");
 
 		// Show tables
-		GreenobjectTable.show(Greenobject_TABLE_NAME);
+		BCellobjectTable.show(BCellobject_TABLE_NAME);
 		edgeTable.show(EDGE_TABLE_NAME);
 		trackTable.show(TRACK_TABLE_NAME);
 
@@ -205,32 +198,32 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		if (null != selectionModel) {
 
 			/*
-			 * Greenobject table listener.
+			 * BCellobject table listener.
 			 */
 
-			final TextWindow GreenobjectTableWindow = (TextWindow) WindowManager.getWindow(Greenobject_TABLE_NAME);
-			final TextPanel GreenobjectTableTextPanel = GreenobjectTableWindow.getTextPanel();
-			GreenobjectTableTextPanel.addMouseListener(new MouseAdapter() {
+			final TextWindow BCellobjectTableWindow = (TextWindow) WindowManager.getWindow(BCellobject_TABLE_NAME);
+			final TextPanel BCellobjectTableTextPanel = BCellobjectTableWindow.getTextPanel();
+			BCellobjectTableTextPanel.addMouseListener(new MouseAdapter() {
 
 				@Override
 				public void mouseReleased(final MouseEvent e) {
-					final int selStart = GreenobjectTableTextPanel.getSelectionStart();
-					final int selEnd = GreenobjectTableTextPanel.getSelectionEnd();
+					final int selStart = BCellobjectTableTextPanel.getSelectionStart();
+					final int selEnd = BCellobjectTableTextPanel.getSelectionEnd();
 					if (selStart < 0 || selEnd < 0)
 						return;
 
 					final int minLine = Math.min(selStart, selEnd);
 					final int maxLine = Math.max(selStart, selEnd);
-					final Set<Greenobject> Greenobjects = new HashSet<>();
+					final Set<BCellobject> BCellobjects = new HashSet<>();
 					for (int row = minLine; row <= maxLine; row++) {
-						final int GreenobjectID = Integer
-								.parseInt(GreenobjectTableTextPanel.getResultsTable().getStringValue(ID_COLUMN, row));
-						final Greenobject Greenobject = model.getGreenobjects().search(GreenobjectID);
-						if (null != Greenobject)
-							Greenobjects.add(Greenobject);
+						final int BCellobjectID = Integer
+								.parseInt(BCellobjectTableTextPanel.getResultsTable().getStringValue(ID_COLUMN, row));
+						final BCellobject BCellobject = model.getBCellobjects().search(BCellobjectID);
+						if (null != BCellobject)
+							BCellobjects.add(BCellobject);
 					}
 					selectionModel.clearSelection();
-					selectionModel.addGreenobjectToSelection(Greenobjects);
+					selectionModel.addBCellobjectToSelection(BCellobjects);
 				}
 			});
 
@@ -243,8 +236,8 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 			 * columns.
 			 */
 
-			final int sourceIDColumn = edgeTable.getColumnIndex(GreenEdgeTargetAnalyzer.Greenobject_SOURCE_ID);
-			final int targetIDColumn = edgeTable.getColumnIndex(GreenEdgeTargetAnalyzer.Greenobject_TARGET_ID);
+			final int sourceIDColumn = edgeTable.getColumnIndex(EdgeTargetAnalyzer.BCellobject_SOURCE_ID);
+			final int targetIDColumn = edgeTable.getColumnIndex(EdgeTargetAnalyzer.BCellobject_TARGET_ID);
 			if (sourceIDColumn != ResultsTable.COLUMN_NOT_FOUND && targetIDColumn != ResultsTable.COLUMN_NOT_FOUND) {
 
 				final TextWindow edgeTableWindow = (TextWindow) WindowManager.getWindow(EDGE_TABLE_NAME);
@@ -264,10 +257,10 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 						for (int row = minLine; row <= maxLine; row++) {
 							final int sourceID = Integer
 									.parseInt(edgeTableTextPanel.getResultsTable().getStringValue(sourceIDColumn, row));
-							final Greenobject source = model.getGreenobjects().search(sourceID);
+							final BCellobject source = model.getBCellobjects().search(sourceID);
 							final int targetID = Integer
 									.parseInt(edgeTableTextPanel.getResultsTable().getStringValue(targetIDColumn, row));
-							final Greenobject target = model.getGreenobjects().search(targetID);
+							final BCellobject target = model.getBCellobjects().search(targetID);
 							final DefaultWeightedEdge edge = model.getTrackModel().getEdge(source, target);
 							if (null != edge)
 								edges.add(edge);
@@ -296,15 +289,15 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 					final int minLine = Math.min(selStart, selEnd);
 					final int maxLine = Math.max(selStart, selEnd);
 					final Set<DefaultWeightedEdge> edges = new HashSet<>();
-					final Set<Greenobject> Greenobjects = new HashSet<>();
+					final Set<BCellobject> BCellobjects = new HashSet<>();
 					for (int row = minLine; row <= maxLine; row++) {
 						final int trackID = Integer
 								.parseInt(trackTableTextPanel.getResultsTable().getStringValue(TRACK_ID_COLUMN, row));
-						Greenobjects.addAll(model.getTrackModel().trackGreenobjects(trackID));
+						BCellobjects.addAll(model.getTrackModel().trackBCellobjects(trackID));
 						edges.addAll(model.getTrackModel().trackEdges(trackID));
 					}
 					selectionModel.clearSelection();
-					selectionModel.addGreenobjectToSelection(Greenobjects);
+					selectionModel.addBCellobjectToSelection(BCellobjects);
 					selectionModel.addEdgeToSelection(edges);
 				}
 			});
@@ -312,14 +305,14 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 	}
 
 	/**
-	 * Returns the results table containing the Greenobject statistics, or
+	 * Returns the results table containing the BCellobject statistics, or
 	 * <code>null</code> if the {@link #execute(TrackMate)} method has not been
 	 * called.
 	 *
-	 * @return the results table containing the Greenobject statistics.
+	 * @return the results table containing the BCellobject statistics.
 	 */
-	public ResultsTable getGreenobjectTable() {
-		return GreenobjectTable;
+	public ResultsTable getBCellobjectTable() {
+		return BCellobjectTable;
 	}
 
 	/**
@@ -346,7 +339,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 
 	// Invisible because called on the view config panel.
 	@Plugin(type = TrackMateActionFactory.class, visible = false)
-	public static class Factory implements GreenTrackMateActionFactory {
+	public static class Factory implements TrackMateActionFactory {
 
 		@Override
 		public String getInfoText() {
@@ -359,7 +352,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final GreenTrackMateGUIController controller) {
+		public TrackMateAction create(final TrackMateGUIController controller) {
 			return new ExportStatsToIJAction(controller.getSelectionModel());
 		}
 
@@ -375,18 +368,18 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		}
 	}
 
-	private static final class EdgeSourceGreenobjectFrameComparator implements Comparator<DefaultWeightedEdge> {
+	private static final class EdgeSourceBCellobjectFrameComparator implements Comparator<DefaultWeightedEdge> {
 
-		private final GreenModel model;
+		private final Model model;
 
-		public EdgeSourceGreenobjectFrameComparator(final GreenModel model) {
+		public EdgeSourceBCellobjectFrameComparator(final Model model) {
 			this.model = model;
 		}
 
 		@Override
 		public int compare(final DefaultWeightedEdge e1, final DefaultWeightedEdge e2) {
-			final double t1 = model.getTrackModel().getEdgeSource(e1).getFeature(Greenobject.POSITION_T).doubleValue();
-			final double t2 = model.getTrackModel().getEdgeSource(e2).getFeature(Greenobject.POSITION_T).doubleValue();
+			final double t1 = model.getTrackModel().getEdgeSource(e1).getFeature(BCellobject.POSITION_T).doubleValue();
+			final double t2 = model.getTrackModel().getEdgeSource(e2).getFeature(BCellobject.POSITION_T).doubleValue();
 			if (t1 < t2) {
 				return -1;
 			}

@@ -42,6 +42,7 @@ import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.action.AbstractTMAction;
 import Buddy.plugin.trackmate.action.ExportAllGreenobjectsStatsAction;
 import Buddy.plugin.trackmate.action.ExportStatsToIJAction;
+import Buddy.plugin.trackmate.action.GreenExportStatsToIJAction;
 import Buddy.plugin.trackmate.features.GreenModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.ModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
@@ -993,7 +994,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 					if (showAllGreenobjectStats)
 						action = new ExportAllGreenobjectsStatsAction(selectionModel);
 					else
-						action = new ExportStatsToIJAction(selectionModel);
+						action = new GreenExportStatsToIJAction(selectionModel);
 
 					action.execute(trackmate);
 

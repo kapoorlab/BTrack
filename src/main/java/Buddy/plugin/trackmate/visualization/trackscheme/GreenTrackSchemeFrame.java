@@ -225,14 +225,14 @@ public class GreenTrackSchemeFrame extends JFrame {
 	 * Instantiate the toolbar of the track scheme.
 	 */
 	private JToolBar createToolBar() {
-		return new TrackSchemeToolbar(trackScheme);
+		return new GreenTrackSchemeToolbar(trackScheme);
 	}
 
 	/**
 	 * PopupMenu
 	 */
 	private void displayPopupMenu(final Object cell, final Point point) {
-		final TrackSchemePopupMenu menu = new TrackSchemePopupMenu(trackScheme, cell, point);
+		final GreenTrackSchemePopupMenu menu = new GreenTrackSchemePopupMenu(trackScheme, cell, point);
 		menu.show(graphComponent.getViewport().getView(), (int) point.getX(), (int) point.getY());
 	}
 

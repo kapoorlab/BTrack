@@ -17,6 +17,7 @@ import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
+import Buddy.plugin.trackmate.visualization.GreenViewFactory;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import ij.IJ;
@@ -29,7 +30,7 @@ import ij3d.Image3DUniverse;
 import ij3d.ImageWindow3D;
 
 @Plugin(type = ViewFactory.class, priority = 1d)
-public class BCellobjectDisplayer3DFactory implements ViewFactory {
+public class GreenobjectDisplayer3DFactory implements GreenViewFactory {
 
 	public static final String NAME = "3D Viewer";
 
@@ -49,7 +50,7 @@ public class BCellobjectDisplayer3DFactory implements ViewFactory {
 			+ "</html>";
 
 	@Override
-	public TrackMateModelView create(final Model model, final Settings settings, final SelectionModel selectionModel) {
+	public GreenTrackMateModelView create(final GreenModel model, final GreenSettings settings, final GreenSelectionModel selectionModel) {
 		final Image3DUniverse universe = new Image3DUniverse();
 		final ImageWindow3D win = new ImageWindow3D("TrackMate 3D Viewer", universe);
 		win.setIconImage(TrackMateWizard.TRACKMATE_ICON.getImage());
@@ -88,7 +89,7 @@ public class BCellobjectDisplayer3DFactory implements ViewFactory {
 			}
 		}
 
-		final BCellobjectDisplayer3D view = new BCellobjectDisplayer3D(model, selectionModel, universe);
+		final GreenobjectDisplayer3D view = new GreenobjectDisplayer3D(model, selectionModel, universe);
 
 		// Deregister on window closing.
 		win.addWindowListener(new WindowListener() {
