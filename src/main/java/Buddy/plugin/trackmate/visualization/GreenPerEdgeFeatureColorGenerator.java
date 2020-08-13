@@ -1,6 +1,8 @@
 package Buddy.plugin.trackmate.visualization;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenModelChangeEvent;
+import Buddy.plugin.trackmate.GreenModelChangeListener;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;
@@ -12,11 +14,11 @@ import java.awt.Color;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class PerEdgeFeatureColorGenerator implements ModelChangeListener, TrackColorGenerator {
+public class GreenPerEdgeFeatureColorGenerator implements GreenModelChangeListener, TrackColorGenerator {
 
 	private InterpolatePaintScale generator;
 
-	private final Model model;
+	private final GreenModel model;
 
 	private String feature;
 
@@ -30,7 +32,7 @@ public class PerEdgeFeatureColorGenerator implements ModelChangeListener, TrackC
 
 	private boolean autoMinMax = true;
 
-	public PerEdgeFeatureColorGenerator(final Model model, final String feature) {
+	public GreenPerEdgeFeatureColorGenerator(final GreenModel model, final String feature) {
 		this.model = model;
 		model.addModelChangeListener(this);
 		generator = TrackMateOptionUtils.getOptions().getPaintScale();
@@ -76,7 +78,7 @@ public class PerEdgeFeatureColorGenerator implements ModelChangeListener, TrackC
 	 * some change in the colormap. Rescale it if so.
 	 */
 	@Override
-	public void modelChanged(final ModelChangeEvent event) {
+	public void modelChanged(final GreenModelChangeEvent event) {
 		if (!autoMinMax || event.getEventID() != ModelChangeEvent.MODEL_MODIFIED || event.getEdges().size() == 0) {
 			return;
 		}

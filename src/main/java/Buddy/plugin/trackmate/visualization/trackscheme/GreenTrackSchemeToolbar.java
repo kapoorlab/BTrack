@@ -17,9 +17,10 @@ import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import Buddy.plugin.trackmate.visualization.trackscheme.utils.GreenSearchBar;
 import Buddy.plugin.trackmate.visualization.trackscheme.utils.SearchBar;
 
-public class TrackSchemeToolbar extends JToolBar {
+public class GreenTrackSchemeToolbar extends JToolBar {
 
 	private static final long serialVersionUID = 3442140463984241266L;
 
@@ -49,9 +50,9 @@ public class TrackSchemeToolbar extends JToolBar {
 																		// "resources/application_view_columns.png" ) );
 	private static final ImageIcon SELECT_STYLE_ICON = null; // new ImageIcon( TrackSchemeFrame.class.getResource(
 																// "resources/theme.png" ) );
-	private final TrackScheme trackScheme;
+	private final GreenTrackScheme trackScheme;
 
-	public TrackSchemeToolbar(final TrackScheme trackScheme) {
+	public GreenTrackSchemeToolbar(final GreenTrackScheme trackScheme) {
 		super("Track Scheme toolbar", SwingConstants.HORIZONTAL);
 		this.trackScheme = trackScheme;
 		init();
@@ -68,7 +69,7 @@ public class TrackSchemeToolbar extends JToolBar {
 		 * Toggle Connect Mode
 		 */
 
-		final boolean defaultLinkingEnabled = TrackScheme.DEFAULT_LINKING_ENABLED;
+		final boolean defaultLinkingEnabled = GreenTrackScheme.DEFAULT_LINKING_ENABLED;
 		final Action toggleLinkingAction = new AbstractAction(null,
 				defaultLinkingEnabled ? LINKING_ON_ICON : LINKING_OFF_ICON) {
 			@Override
@@ -89,7 +90,7 @@ public class TrackSchemeToolbar extends JToolBar {
 		/*
 		 * Toggle thumbnail mode
 		 */
-		final boolean defaultThumbnailsEnabled = TrackScheme.DEFAULT_THUMBNAILS_ENABLED;
+		final boolean defaultThumbnailsEnabled = GreenTrackScheme.DEFAULT_THUMBNAILS_ENABLED;
 		final Action toggleThumbnailAction = new AbstractAction(null,
 				defaultThumbnailsEnabled ? THUMBNAIL_ON_ICON : THUMBNAIL_OFF_ICON) {
 			@Override
@@ -174,7 +175,7 @@ public class TrackSchemeToolbar extends JToolBar {
 				trackScheme.captureDecorated();
 			}
 		};
-		final Action saveAction = new SaveAction(trackScheme);
+		final Action saveAction = new GreenSaveAction(trackScheme);
 		final JButton captureUndecoratedButton = new JButton(captureUndecoratedAction);
 		final JButton captureDecoratedButton = new JButton(captureDecoratedAction);
 		final JButton saveButton = new JButton(saveAction);
@@ -223,10 +224,10 @@ public class TrackSchemeToolbar extends JToolBar {
 
 		final JComboBox<String> selectStyleBox;
 		{
-			final Set<String> styleNames = new HashSet<>(TrackSchemeStylist.VERTEX_STYLES.keySet());
+			final Set<String> styleNames = new HashSet<>(GreenTrackSchemeStylist.VERTEX_STYLES.keySet());
 			selectStyleBox = new JComboBox<>(styleNames.toArray(new String[] {}));
 			selectStyleBox.setPreferredSize(new Dimension(80, 20));
-			selectStyleBox.setSelectedItem(TrackSchemeStylist.DEFAULT_STYLE_NAME);
+			selectStyleBox.setSelectedItem(GreenTrackSchemeStylist.DEFAULT_STYLE_NAME);
 			selectStyleBox.setMaximumSize(new Dimension(200, 30));
 			selectStyleBox.setFont(FONT);
 			selectStyleBox.addActionListener(new ActionListener() {
@@ -292,7 +293,7 @@ public class TrackSchemeToolbar extends JToolBar {
 		add(loopDisplayDecorationsButton);
 		// Separator
 		addSeparator();
-		add(new SearchBar(trackScheme.getModel(), trackScheme));
+		add(new GreenSearchBar(trackScheme.getModel(), trackScheme));
 		add(Box.createHorizontalGlue());
 
 		final Dimension dim = new Dimension(100, 30);

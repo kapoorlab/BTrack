@@ -9,10 +9,14 @@ import javax.swing.ImageIcon;
 import org.scijava.plugin.Plugin;
 import org.scijava.vecmath.Color3f;
 
+import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSelectionModel;
+import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import ij.IJ;
@@ -122,6 +126,87 @@ public class BCellobjectDisplayer3DFactory implements ViewFactory {
 
 		return view;
 	}
+	
+	@Override
+	public GreenTrackMateModelView create(final GreenModel model, final GreenSettings settings, final GreenSelectionModel selectionModel) {
+		final Image3DUniverse universe = new Image3DUniverse();
+		final ImageWindow3D win = new ImageWindow3D("TrackMate 3D Viewer", universe);
+		win.setIconImage(TrackMateWizard.TRACKMATE_ICON.getImage());
+		universe.init(win);
+		win.pack();
+		win.setVisible(true);
+
+		if (null != settings && null != settings.imp) {
+			final ImagePlus imp = settings.imp;
+
+			if (imp.getType() == ImagePlus.GRAY8 || imp.getType() == ImagePlus.COLOR_256
+					|| imp.getType() == ImagePlus.COLOR_RGB) {
+				// Everything is fine, we can do that natively.
+				final Content cimp = ContentCreator.createContent(imp.getShortTitle(), imp, 0, 1, 0,
+						new Color3f(Color.WHITE), 0, new boolean[] { true, true, true });
+				universe.addContentLater(cimp);
+
+			} else {
+				// We have to convert. I think it is more honest to prompt the
+				// user for this.
+				if (IJ.showMessageWithCancel("Conversion required.",
+						"We need to duplicate the source image on 8-bit. Do it?")) {
+
+					final ImagePlus duplicate = imp.duplicate();
+					final int s = duplicate.getStackSize();
+					if (s == 1) {
+						new ImageConverter(duplicate).convertToGray8();
+					} else {
+						new StackConverter(duplicate).convertToGray8();
+					}
+
+					final Content cimp = ContentCreator.createContent(imp.getShortTitle(), duplicate, 0, 1, 0,
+							new Color3f(Color.WHITE), 0, new boolean[] { true, true, true });
+					universe.addContentLater(cimp);
+				}
+			}
+		}
+
+		final GreenobjectDisplayer3D view = new GreenobjectDisplayer3D(model, selectionModel, universe);
+
+		// Deregister on window closing.
+		win.addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(final WindowEvent e) {
+			}
+
+			@Override
+			public void windowIconified(final WindowEvent e) {
+			}
+
+			@Override
+			public void windowDeiconified(final WindowEvent e) {
+			}
+
+			@Override
+			public void windowDeactivated(final WindowEvent e) {
+			}
+
+			@Override
+			public void windowClosing(final WindowEvent e) {
+				selectionModel.removeSelectionChangeListener(view);
+				model.removeModelChangeListener(view);
+			}
+
+			@Override
+			public void windowClosed(final WindowEvent e) {
+			}
+
+			@Override
+			public void windowActivated(final WindowEvent e) {
+			}
+		});
+
+		return view;
+	}
+	
+	
 
 	@Override
 	public String getName() {

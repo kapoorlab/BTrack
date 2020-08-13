@@ -3,6 +3,7 @@ package Buddy.plugin.trackmate.graph;
 import Buddy.plugin.trackmate.GreenTrackModel;
 import Buddy.plugin.trackmate.TrackModel;
 import greenDetector.Greenobject;
+import tracker.GREENSortedDepthFirstIterator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -119,7 +120,7 @@ public class GreenGraphUtils {
 			/*
 			 * Iterate down the tree
 			 */
-			SortedDepthFirstIterator<Greenobject, DefaultWeightedEdge> iterator = model
+			GREENSortedDepthFirstIterator<Greenobject, DefaultWeightedEdge> iterator = model
 					.getSortedDepthFirstIterator(first, comparator, true);
 			while (iterator.hasNext()) {
 

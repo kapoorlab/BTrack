@@ -9,13 +9,13 @@ import greenDetector.Greenobject;
 
 public class GreenobjectColorGeneratorPerTrackFeature implements FeatureColorGenerator<Greenobject> {
 
-	private final PerTrackFeatureColorGenerator trackColorGenerator;
+	private final GreenPerTrackFeatureColorGenerator trackColorGenerator;
 
 	private final GreenModel model;
 
 	public GreenobjectColorGeneratorPerTrackFeature(final GreenModel model, final String feature) {
 		this.model = model;
-		this.trackColorGenerator = new PerTrackFeatureColorGenerator(model, feature);
+		this.trackColorGenerator = new GreenPerTrackFeatureColorGenerator(model, feature);
 	}
 
 	@Override

@@ -13,8 +13,10 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import Buddy.plugin.trackmate.FeatureModel;
+import Buddy.plugin.trackmate.GreenFeatureModel;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenModelChangeEvent;
+import Buddy.plugin.trackmate.GreenModelChangeListener;
 import Buddy.plugin.trackmate.GreenTrackModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
@@ -31,14 +33,13 @@ import Buddy.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
  * @author Jean-Yves Tinevez
  *
  */
-public class PerTrackFeatureColorGenerator implements TrackColorGenerator, ModelChangeListener {
+public class GreenPerTrackFeatureColorGenerator implements TrackColorGenerator, GreenModelChangeListener {
 
 	private final InterpolatePaintScale generator;
 
 	private Map<Integer, Color> colorMap;
 
-	private final Model model;
-	
+	private final GreenModel model;
 
 	private String feature;
 
@@ -50,7 +51,7 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 
 	private boolean autoMode = true;
 
-	public PerTrackFeatureColorGenerator(final Model model, final String feature) {
+	public GreenPerTrackFeatureColorGenerator(final GreenModel model, final String feature) {
 		this.model = model;
 		model.addModelChangeListener(this);
 		generator = TrackMateOptionUtils.getOptions().getPaintScale();
@@ -84,7 +85,7 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 	}
 
 	@Override
-	public void modelChanged(final ModelChangeEvent event) {
+	public void modelChanged(final GreenModelChangeEvent event) {
 		if (!autoMode) {
 			return;
 		}
@@ -96,7 +97,7 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 	}
 
 	private void refreshColorMap() {
-			TrackModel trackModel = model.getTrackModel();
+		GreenTrackModel trackModel = model.getTrackModel();
 			
 			final Set<Integer> trackIDs = trackModel.trackIDs(true);
 
@@ -120,7 +121,7 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 					autoMinMax();
 
 				// Create value->color map
-				final FeatureModel fm = model.getFeatureModel();
+				final GreenFeatureModel fm = model.getFeatureModel();
 				colorMap = new HashMap<>(trackIDs.size());
 				for (final Integer trackID : trackIDs) {
 					final Double val = fm.getTrackFeature(trackID, feature);
@@ -197,9 +198,9 @@ public class PerTrackFeatureColorGenerator implements TrackColorGenerator, Model
 
 	@Override
 	public void autoMinMax() {
-		final TrackModel trackModel = model.getTrackModel();
+		final GreenTrackModel trackModel = model.getTrackModel();
 		final Set<Integer> trackIDs = trackModel.trackIDs(true);
-		final FeatureModel fm = model.getFeatureModel();
+		final GreenFeatureModel fm = model.getFeatureModel();
 
 		min = Double.POSITIVE_INFINITY;
 		max = Double.NEGATIVE_INFINITY;

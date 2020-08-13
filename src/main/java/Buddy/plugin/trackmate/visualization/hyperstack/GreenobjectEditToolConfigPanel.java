@@ -30,11 +30,13 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.gui.panels.components.JNumericTextField;
+import Buddy.plugin.trackmate.util.GreenModelTools;
 import Buddy.plugin.trackmate.util.ModelTools;
 import ij.ImagePlus;
 
@@ -341,33 +343,33 @@ public class GreenobjectEditToolConfigPanel extends JFrame {
 		final ImagePlus imp = parent.imp;
 		if (imp == null)
 			return;
-		final HyperStackDisplayer displayer = parent.displayers.get(imp);
+		final GreenHyperStackDisplayer displayer = parent.displayers.get(imp);
 		if (null == displayer)
 			return;
-		final SelectionModel selectionModel = displayer.getSelectionModel();
-		ModelTools.selectTrackDownward(selectionModel);
+		final GreenSelectionModel selectionModel = displayer.getSelectionModel();
+		GreenModelTools.selectTrackDownward(selectionModel);
 	}
 
 	private void selectTrackUpward() {
 		final ImagePlus imp = parent.imp;
 		if (imp == null)
 			return;
-		final HyperStackDisplayer displayer = parent.displayers.get(imp);
+		final GreenHyperStackDisplayer displayer = parent.displayers.get(imp);
 		if (null == displayer)
 			return;
-		final SelectionModel selectionModel = displayer.getSelectionModel();
-		ModelTools.selectTrackUpward(selectionModel);
+		final GreenSelectionModel selectionModel = displayer.getSelectionModel();
+		GreenModelTools.selectTrackUpward(selectionModel);
 	}
 
 	private void selectTrack() {
 		final ImagePlus imp = parent.imp;
 		if (imp == null)
 			return;
-		final HyperStackDisplayer displayer = parent.displayers.get(imp);
+		final GreenHyperStackDisplayer displayer = parent.displayers.get(imp);
 		if (null == displayer)
 			return;
-		final SelectionModel selectionModel = displayer.getSelectionModel();
-		ModelTools.selectTrack(selectionModel);
+		final GreenSelectionModel selectionModel = displayer.getSelectionModel();
+		GreenModelTools.selectTrack(selectionModel);
 	}
 
 	/**

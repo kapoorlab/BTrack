@@ -3,12 +3,12 @@ package Buddy.plugin.trackmate.gui.panels;
 import static Buddy.plugin.trackmate.gui.TrackMateWizard.BIG_FONT;
 import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
 import static Buddy.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_BCellobject_NAMES;
+import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_DISPLAY_Greenobject_NAMES;
 import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_DRAWING_DEPTH;
 import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobjectS_VISIBLE;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_COLORING;
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_BCellobject_RADIUS_RATIO;
+import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_GreenobjectS_VISIBLE;
+import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_Greenobject_COLORING;
+import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_Greenobject_RADIUS_RATIO;
 import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACKS_VISIBLE;
 import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_COLORING;
 import static Buddy.plugin.trackmate.visualization.TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH;
@@ -50,38 +50,36 @@ import javax.swing.border.LineBorder;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.gui.DisplaySettingsEvent;
 import Buddy.plugin.trackmate.gui.DisplaySettingsListener;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
-import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel.Category;
+import Buddy.plugin.trackmate.gui.panels.components.GreenColorByFeatureGUIPanel;
+import Buddy.plugin.trackmate.gui.panels.components.GreenColorByFeatureGUIPanel.Category;
 import Buddy.plugin.trackmate.gui.panels.components.JNumericTextField;
 import Buddy.plugin.trackmate.gui.panels.components.SetColorScaleDialog;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
-import Buddy.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
+import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import Buddy.plugin.trackmate.visualization.BCellobjectColorGenerator;
-import Buddy.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
+import Buddy.plugin.trackmate.visualization.GreenobjectColorGenerator;
+import Buddy.plugin.trackmate.visualization.GreenobjectColorGeneratorPerTrackFeature;
 import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import fiji.util.NumberParser;
 import greenDetector.Greenobject;
 
 /**
- * A configuration panel used to tune the aspect of BCellobjects and tracks in
+ * A configuration panel used to tune the aspect of Greenobjects and tracks in
  * multiple
  * {@link Buddy.plugin.trackmate.visualization.AbstractTrackMateModelView}. This
  * GUI takes the role of a controller.
  *
  * @author Jean-Yves Tinevez &lt;tinevez@pasteur.fr&gt; - 2010 - 2011
  */
-public class ConfigureViewsPanel extends ActionListenablePanel {
+public class GreenConfigureViewsPanel extends ActionListenablePanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -97,8 +95,8 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private static final String ANALYSIS_BUTTON_TOOLTIP = "<html>"
 			+ "Export the features of all tracks, edges and all <br>"
-			+ "BCellobjects belonging to a track to ImageJ tables. <br>"
-			+ "With <code>shift</code> pressed, the features <br>" + "of all BCellobject are exported.</html>";
+			+ "Greenobjects belonging to a track to ImageJ tables. <br>"
+			+ "With <code>shift</code> pressed, the features <br>" + "of all Greenobject are exported.</html>";
 
 	private static final String TRACKSCHEME_BUTTON_TOOLTIP = "<html>" + "Launch a new instance of TrackScheme.</html>";
 
@@ -117,9 +115,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private JLabel jLabelDisplayOptions;
 
-	private JPanel jPanelBCellobjectOptions;
+	private JPanel jPanelGreenobjectOptions;
 
-	private JCheckBox jCheckBoxDisplayBCellobjects;
+	private JCheckBox jCheckBoxDisplayGreenobjects;
 
 	private JPanel jPanelTrackOptions;
 
@@ -131,11 +129,9 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private JLabel jLabelFrameDepth;
 
-	private ColorByFeatureGUIPanel jPanelBCellobjectColor;
 
-	private JNumericTextField jTextFieldBCellobjectRadius;
 	
-	private ColorByFeatureGUIPanel jPanelGreenobjectColor;
+	private GreenColorByFeatureGUIPanel jPanelGreenobjectColor;
 
 	private JNumericTextField jTextFieldGreenobjectRadius;
 	
@@ -143,29 +139,22 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private JCheckBox jCheckBoxDisplayNames;
 
-	private ColorByFeatureGUIPanel trackColorGUI;
+	private GreenColorByFeatureGUIPanel trackColorGUI;
 
 	private final Collection<DisplaySettingsListener> listeners = new HashSet<>();
 
-	private final Model model;
 	
-	private final GreenModel greenmodel;
+	private final GreenModel model;
 
 	private PerTrackFeatureColorGenerator trackColorGenerator;
 
 	private PerEdgeFeatureColorGenerator edgeColorGenerator;
 
-	private FeatureColorGenerator<BCellobject> BCellobjectColorGenerator;
-
 	private FeatureColorGenerator<Greenobject> GreenobjectColorGenerator;
-	
-	private ManualBCellobjectColorGenerator manualBCellobjectColorGenerator;
 	
 	private ManualGreenobjectColorGenerator manualGreenobjectColorGenerator;
 
 	private ManualEdgeColorGenerator manualEdgeColorGenerator;
-
-	private FeatureColorGenerator<BCellobject> BCellobjectColorGeneratorPerTrackFeature;
 
 	private FeatureColorGenerator<Greenobject> GreenobjectColorGeneratorPerTrackFeature;
 	
@@ -175,7 +164,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private JLabel lblDrawingDepthUnits;
 
-	private JLabel jLabelBCellobjectRadius;
+	private JLabel jLabelGreenobjectRadius;
 
 	protected JPanel jPanelButtons;
 
@@ -183,9 +172,8 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 	 * CONSTRUCTOR
 	 */
 
-	public ConfigureViewsPanel(final Model model) {
+	public GreenConfigureViewsPanel(final GreenModel model) {
 		this.model = model;
-		this.greenmodel = null;
 		initGUI();
 		refreshGUI();
 		resizeButtons();
@@ -275,29 +263,12 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 	}
 
 	/**
-	 * Overrides the BCellobject color generator configured in this panel, allowing
+	 * Overrides the Greenobject color generator configured in this panel, allowing
 	 * to share instances.
 	 *
-	 * @param BCellobjectColorGenerator
+	 * @param GreenobjectColorGenerator
 	 *            the new color generator.
 	 */
-	public void setBCellobjectColorGenerator(final FeatureColorGenerator<BCellobject> BCellobjectColorGenerator) {
-		if (null != this.BCellobjectColorGenerator) {
-			this.BCellobjectColorGenerator.terminate();
-		}
-		this.BCellobjectColorGenerator = BCellobjectColorGenerator;
-	}
-
-	public void setBCellobjectColorGeneratorPerTrackFeature(
-			final FeatureColorGenerator<BCellobject> BCellobjectColorGeneratorPerTrackFeature) {
-		if (null != this.BCellobjectColorGeneratorPerTrackFeature) {
-			this.BCellobjectColorGeneratorPerTrackFeature.terminate();
-		}
-		this.BCellobjectColorGeneratorPerTrackFeature = BCellobjectColorGeneratorPerTrackFeature;
-	}
-	
-
-	
 	public void setGreenobjectColorGenerator(final FeatureColorGenerator<Greenobject> GreenobjectColorGenerator) {
 		if (null != this.GreenobjectColorGenerator) {
 			this.GreenobjectColorGenerator.terminate();
@@ -313,16 +284,20 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 		this.GreenobjectColorGeneratorPerTrackFeature = GreenobjectColorGeneratorPerTrackFeature;
 	}
 	
+
+	
+
+	
 	
 
 	public void refreshColorFeatures() {
-		if ((displaySettings.get(KEY_BCellobject_COLORING) instanceof BCellobjectColorGenerator)) {
-			jPanelBCellobjectColor.setColorFeature(BCellobjectColorGenerator.getFeature());
-		} else if ((displaySettings.get(KEY_BCellobject_COLORING) instanceof ManualBCellobjectColorGenerator)) {
-			jPanelBCellobjectColor.setColorFeature(ColorByFeatureGUIPanel.MANUAL_KEY);
+		if ((displaySettings.get(KEY_Greenobject_COLORING) instanceof GreenobjectColorGenerator)) {
+			jPanelGreenobjectColor.setColorFeature(GreenobjectColorGenerator.getFeature());
+		} else if ((displaySettings.get(KEY_Greenobject_COLORING) instanceof ManualGreenobjectColorGenerator)) {
+			jPanelGreenobjectColor.setColorFeature(GreenColorByFeatureGUIPanel.MANUAL_KEY);
 		} else if (((displaySettings
-				.get(KEY_BCellobject_COLORING) instanceof BCellobjectColorGeneratorPerTrackFeature))) {
-			jPanelBCellobjectColor.setColorFeature(BCellobjectColorGeneratorPerTrackFeature.getFeature());
+				.get(KEY_Greenobject_COLORING) instanceof GreenobjectColorGeneratorPerTrackFeature))) {
+			jPanelGreenobjectColor.setColorFeature(GreenobjectColorGeneratorPerTrackFeature.getFeature());
 		}
 
 		if (!(displaySettings.get(KEY_TRACK_COLORING) instanceof ManualEdgeColorGenerator)) {
@@ -333,13 +308,6 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 
 
-	public void setManualBCellobjectColorGenerator(
-			final ManualBCellobjectColorGenerator manualBCellobjectColorGenerator) {
-		if (null != this.manualBCellobjectColorGenerator) {
-			this.manualBCellobjectColorGenerator.terminate();
-		}
-		this.manualBCellobjectColorGenerator = manualBCellobjectColorGenerator;
-	}
 	
 	public void setManualGreenobjectColorGenerator(
 			final ManualGreenobjectColorGenerator manualGreenobjectColorGenerator) {
@@ -363,34 +331,34 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 	public void refreshGUI() {
 
 		/*
-		 * BCellobject coloring
+		 * Greenobject coloring
 		 */
 
-		if (null != jPanelBCellobjectColor) {
-			jPanelBCellobjectOptions.remove(jPanelBCellobjectColor);
+		if (null != jPanelGreenobjectColor) {
+			jPanelGreenobjectOptions.remove(jPanelGreenobjectColor);
 		}
-		jPanelBCellobjectColor = new ColorByFeatureGUIPanel(model,
-				Arrays.asList(new Category[] { Category.BCellobject, Category.DEFAULT, Category.TRACKS }));
+		jPanelGreenobjectColor = new GreenColorByFeatureGUIPanel(model,
+				Arrays.asList(new Category[] { Category.Greenobject, Category.DEFAULT, Category.TRACKS }));
 
-		jPanelBCellobjectColor.addMouseListener(new MouseAdapter() {
+		jPanelGreenobjectColor.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					final FeatureColorGenerator<BCellobject> colorGenerator;
-					final Category category = jPanelBCellobjectColor.getColorGeneratorCategory();
+					final FeatureColorGenerator<Greenobject> colorGenerator;
+					final Category category = jPanelGreenobjectColor.getColorGeneratorCategory();
 					switch (category) {
 					case TRACKS:
-						colorGenerator = BCellobjectColorGeneratorPerTrackFeature;
+						colorGenerator = GreenobjectColorGeneratorPerTrackFeature;
 						break;
 
 					default:
-						colorGenerator = BCellobjectColorGenerator;
+						colorGenerator = GreenobjectColorGenerator;
 						break;
 					}
 
-					final JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ConfigureViewsPanel.this);
+					final JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(GreenConfigureViewsPanel.this);
 					final SetColorScaleDialog dialog = new SetColorScaleDialog(topFrame,
-							"Set color scale for BCellobjects", colorGenerator);
+							"Set color scale for Greenobjects", colorGenerator);
 					dialog.setVisible(true);
 					if (!dialog.hasUserPressedOK()) {
 						return;
@@ -399,87 +367,87 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 					if (dialog.isAutoMinMaxMode()) {
 						colorGenerator.autoMinMax();
 					}
-					jPanelBCellobjectColor.setFrom(dialog);
-					jPanelBCellobjectColor.autoMinMax();
+					jPanelGreenobjectColor.setFrom(dialog);
+					jPanelGreenobjectColor.autoMinMax();
 
-					final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
-							KEY_BCellobject_COLORING, colorGenerator, colorGenerator);
+					final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
+							KEY_Greenobject_COLORING, colorGenerator, colorGenerator);
 					fireDisplaySettingsChange(event);
 				}
 
 			}
 		});
 
-		jPanelBCellobjectColor.addActionListener(new ActionListener() {
+		jPanelGreenobjectColor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				@SuppressWarnings("unchecked")
-				final FeatureColorGenerator<BCellobject> oldValue = (FeatureColorGenerator<BCellobject>) displaySettings
-						.get(KEY_BCellobject_COLORING);
-				final FeatureColorGenerator<BCellobject> newValue;
-				final Category category = jPanelBCellobjectColor.getColorGeneratorCategory();
+				final FeatureColorGenerator<Greenobject> oldValue = (FeatureColorGenerator<Greenobject>) displaySettings
+						.get(KEY_Greenobject_COLORING);
+				final FeatureColorGenerator<Greenobject> newValue;
+				final Category category = jPanelGreenobjectColor.getColorGeneratorCategory();
 				switch (category) {
-				case BCellobject:
-					if (null == BCellobjectColorGenerator) {
+				case Greenobject:
+					if (null == GreenobjectColorGenerator) {
 						return;
 					}
-					BCellobjectColorGenerator.setFeature(jPanelBCellobjectColor.getColorFeature());
-					newValue = BCellobjectColorGenerator;
+					GreenobjectColorGenerator.setFeature(jPanelGreenobjectColor.getColorFeature());
+					newValue = GreenobjectColorGenerator;
 					break;
 				case TRACKS:
-					newValue = BCellobjectColorGeneratorPerTrackFeature;
-					BCellobjectColorGeneratorPerTrackFeature.setFeature(jPanelBCellobjectColor.getColorFeature());
+					newValue = GreenobjectColorGeneratorPerTrackFeature;
+					GreenobjectColorGeneratorPerTrackFeature.setFeature(jPanelGreenobjectColor.getColorFeature());
 					break;
 				case DEFAULT:
-					if (jPanelBCellobjectColor.getColorFeature().equals(ColorByFeatureGUIPanel.UNIFORM_KEY)) {
-						BCellobjectColorGenerator.setFeature(null);
-						newValue = BCellobjectColorGenerator;
+					if (jPanelGreenobjectColor.getColorFeature().equals(GreenColorByFeatureGUIPanel.UNIFORM_KEY)) {
+						GreenobjectColorGenerator.setFeature(null);
+						newValue = GreenobjectColorGenerator;
 					} else {
-						newValue = manualBCellobjectColorGenerator;
+						newValue = manualGreenobjectColorGenerator;
 					}
 					break;
 				default:
-					throw new IllegalArgumentException("Unknow BCellobject color generator category: " + category);
+					throw new IllegalArgumentException("Unknow Greenobject color generator category: " + category);
 				}
-				displaySettings.put(KEY_BCellobject_COLORING, newValue);
-				final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
-						KEY_BCellobject_COLORING, newValue, oldValue);
+				displaySettings.put(KEY_Greenobject_COLORING, newValue);
+				final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
+						KEY_Greenobject_COLORING, newValue, oldValue);
 				fireDisplaySettingsChange(event);
 			}
 		});
-		jPanelBCellobjectColor.autoMinMax();
-		final GroupLayout gl_jPanelBCellobjectOptions = new GroupLayout(jPanelBCellobjectOptions);
-		gl_jPanelBCellobjectOptions.setHorizontalGroup(gl_jPanelBCellobjectOptions
+		jPanelGreenobjectColor.autoMinMax();
+		final GroupLayout gl_jPanelGreenobjectOptions = new GroupLayout(jPanelGreenobjectOptions);
+		gl_jPanelGreenobjectOptions.setHorizontalGroup(gl_jPanelGreenobjectOptions
 				.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup().addGap(5)
-						.addGroup(gl_jPanelBCellobjectOptions.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup()
+				.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup().addGap(5)
+						.addGroup(gl_jPanelGreenobjectOptions.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup()
 										.addComponent(jCheckBoxDisplayNames, GroupLayout.DEFAULT_SIZE, 267,
 												Short.MAX_VALUE)
 										.addContainerGap())
-								.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup()
-										.addComponent(jLabelBCellobjectRadius, GroupLayout.DEFAULT_SIZE, 120,
+								.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup()
+										.addComponent(jLabelGreenobjectRadius, GroupLayout.DEFAULT_SIZE, 120,
 												Short.MAX_VALUE)
 										.addGap(5)
-										.addComponent(jTextFieldBCellobjectRadius, GroupLayout.DEFAULT_SIZE, 45,
+										.addComponent(jTextFieldGreenobjectRadius, GroupLayout.DEFAULT_SIZE, 45,
 												Short.MAX_VALUE)
 										.addGap(103))))
-				.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup().addContainerGap()
-						.addComponent(jPanelBCellobjectColor, GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+				.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup().addContainerGap()
+						.addComponent(jPanelGreenobjectColor, GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
 						.addContainerGap()));
-		gl_jPanelBCellobjectOptions.setVerticalGroup(gl_jPanelBCellobjectOptions.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup()
-						.addGroup(gl_jPanelBCellobjectOptions.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup().addGap(8)
-										.addComponent(jLabelBCellobjectRadius))
-								.addGroup(gl_jPanelBCellobjectOptions.createSequentialGroup().addGap(5).addComponent(
-										jTextFieldBCellobjectRadius, GroupLayout.PREFERRED_SIZE,
+		gl_jPanelGreenobjectOptions.setVerticalGroup(gl_jPanelGreenobjectOptions.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup()
+						.addGroup(gl_jPanelGreenobjectOptions.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup().addGap(8)
+										.addComponent(jLabelGreenobjectRadius))
+								.addGroup(gl_jPanelGreenobjectOptions.createSequentialGroup().addGap(5).addComponent(
+										jTextFieldGreenobjectRadius, GroupLayout.PREFERRED_SIZE,
 										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jCheckBoxDisplayNames)
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanelBCellobjectColor, GroupLayout.PREFERRED_SIZE, 51, Short.MAX_VALUE)
+						.addComponent(jPanelGreenobjectColor, GroupLayout.PREFERRED_SIZE, 51, Short.MAX_VALUE)
 						.addContainerGap()));
-		jPanelBCellobjectOptions.setLayout(gl_jPanelBCellobjectOptions);
+		jPanelGreenobjectOptions.setLayout(gl_jPanelGreenobjectOptions);
 
 		/*
 		 * Track coloring
@@ -489,7 +457,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 			jPanelTrackOptions.remove(trackColorGUI);
 		}
 
-		trackColorGUI = new ColorByFeatureGUIPanel(model,
+		trackColorGUI = new GreenColorByFeatureGUIPanel(model,
 				Arrays.asList(new Category[] { Category.TRACKS, Category.EDGES, Category.DEFAULT }));
 		// trackColorGUI.setPreferredSize(new java.awt.Dimension(265, 45));
 
@@ -512,7 +480,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 						break;
 					}
 
-					final JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ConfigureViewsPanel.this);
+					final JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(GreenConfigureViewsPanel.this);
 					final SetColorScaleDialog dialog = new SetColorScaleDialog(topFrame, "Set color scale for " + str,
 							colorGenerator);
 					dialog.setVisible(true);
@@ -525,7 +493,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 					}
 					trackColorGUI.setFrom(dialog);
 					trackColorGUI.autoMinMax();
-					final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+					final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 							KEY_TRACK_COLORING, colorGenerator, colorGenerator);
 					fireDisplaySettingsChange(event);
 				}
@@ -549,7 +517,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 					newValue.setFeature(trackColorGUI.getColorFeature());
 					break;
 				case DEFAULT:
-					if (trackColorGUI.getColorFeature().equals(ColorByFeatureGUIPanel.MANUAL_KEY)) {
+					if (trackColorGUI.getColorFeature().equals(GreenColorByFeatureGUIPanel.MANUAL_KEY)) {
 						newValue = manualEdgeColorGenerator;
 					} else {
 						newValue = trackColorGenerator;
@@ -609,8 +577,8 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 						.addComponent(trackColorGUI, GroupLayout.PREFERRED_SIZE, 49, Short.MAX_VALUE).addGap(9)));
 		jPanelTrackOptions.setLayout(gl_jPanelTrackOptions);
 
-		if (BCellobjectColorGenerator != null) {
-			jPanelBCellobjectColor.setColorFeature(BCellobjectColorGenerator.getFeature());
+		if (GreenobjectColorGenerator != null) {
+			jPanelGreenobjectColor.setColorFeature(GreenobjectColorGenerator.getFeature());
 		}
 		if (trackColorGenerator != null) {
 			trackColorGUI.setColorFeature(trackColorGenerator.getFeature());
@@ -671,7 +639,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 							final Integer newValue = jComboBoxDisplayMode.getSelectedIndex();
 							displaySettings.put(KEY_TRACK_DISPLAY_MODE, newValue);
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+							final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 									KEY_TRACK_DISPLAY_MODE, newValue, oldValue);
 							fireDisplaySettingsChange(event);
 						}
@@ -696,7 +664,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 							final Integer oldValue = (Integer) displaySettings.get(KEY_TRACK_DISPLAY_DEPTH);
 							displaySettings.put(KEY_TRACK_DISPLAY_DEPTH, depth);
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+							final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 									KEY_TRACK_DISPLAY_DEPTH, depth, oldValue);
 							fireDisplaySettingsChange(event);
 						}
@@ -725,7 +693,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 								final Integer depth = NumberParser.parseInteger(jTextFieldFrameDepth.getText());
 								displaySettings.put(KEY_TRACK_DISPLAY_DEPTH, depth);
 
-								final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+								final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 										KEY_TRACK_DISPLAY_DEPTH, depth, oldValue);
 								fireDisplaySettingsChange(event);
 							} catch (final NumberFormatException nfe) {
@@ -747,32 +715,32 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 						final Boolean newValue = jCheckBoxDisplayTracks.isSelected();
 						displaySettings.put(KEY_TRACKS_VISIBLE, newValue);
 
-						final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+						final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 								KEY_TRACKS_VISIBLE, newValue, oldValue);
 						fireDisplaySettingsChange(event);
 					}
 				});
 			}
 			{
-				jCheckBoxDisplayBCellobjects = new JCheckBox();
-				jCheckBoxDisplayBCellobjects.setText("Display BCellobjects");
-				jCheckBoxDisplayBCellobjects.setFont(FONT);
-				jCheckBoxDisplayBCellobjects.setSelected(true);
-				jCheckBoxDisplayBCellobjects.addActionListener(new ActionListener() {
+				jCheckBoxDisplayGreenobjects = new JCheckBox();
+				jCheckBoxDisplayGreenobjects.setText("Display Greenobjects");
+				jCheckBoxDisplayGreenobjects.setFont(FONT);
+				jCheckBoxDisplayGreenobjects.setSelected(true);
+				jCheckBoxDisplayGreenobjects.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
-						final Boolean oldValue = (Boolean) displaySettings.get(KEY_BCellobjectS_VISIBLE);
-						final Boolean newValue = jCheckBoxDisplayBCellobjects.isSelected();
-						displaySettings.put(KEY_BCellobjectS_VISIBLE, newValue);
+						final Boolean oldValue = (Boolean) displaySettings.get(KEY_GreenobjectS_VISIBLE);
+						final Boolean newValue = jCheckBoxDisplayGreenobjects.isSelected();
+						displaySettings.put(KEY_GreenobjectS_VISIBLE, newValue);
 
-						final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
-								KEY_BCellobjectS_VISIBLE, newValue, oldValue);
+						final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
+								KEY_GreenobjectS_VISIBLE, newValue, oldValue);
 						fireDisplaySettingsChange(event);
 					}
 				});
 			}
 			{
-				jPanelBCellobjectOptions = new JPanel() {
+				jPanelGreenobjectOptions = new JPanel() {
 					private static final long serialVersionUID = 1L;
 
 					@Override
@@ -781,37 +749,37 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 							c.setEnabled(enabled);
 					}
 				};
-				jPanelBCellobjectOptions.setBorder(new LineBorder(new java.awt.Color(192, 192, 192), 1, true));
+				jPanelGreenobjectOptions.setBorder(new LineBorder(new java.awt.Color(192, 192, 192), 1, true));
 				{
-					jLabelBCellobjectRadius = new JLabel();
-					jLabelBCellobjectRadius.setText("  BCellobject display radius ratio:");
-					jLabelBCellobjectRadius.setFont(SMALL_FONT);
+					jLabelGreenobjectRadius = new JLabel();
+					jLabelGreenobjectRadius.setText("  Greenobject display radius ratio:");
+					jLabelGreenobjectRadius.setFont(SMALL_FONT);
 
-					jTextFieldBCellobjectRadius = new JNumericTextField("1");
-					jTextFieldBCellobjectRadius.setHorizontalAlignment(SwingConstants.CENTER);
-					jTextFieldBCellobjectRadius.setPreferredSize(new java.awt.Dimension(34, 20));
-					jTextFieldBCellobjectRadius.setFont(SMALL_FONT);
-					jTextFieldBCellobjectRadius.addActionListener(new ActionListener() {
+					jTextFieldGreenobjectRadius = new JNumericTextField("1");
+					jTextFieldGreenobjectRadius.setHorizontalAlignment(SwingConstants.CENTER);
+					jTextFieldGreenobjectRadius.setPreferredSize(new java.awt.Dimension(34, 20));
+					jTextFieldGreenobjectRadius.setFont(SMALL_FONT);
+					jTextFieldGreenobjectRadius.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(final ActionEvent e) {
-							final Double oldValue = (Double) displaySettings.get(KEY_BCellobject_RADIUS_RATIO);
-							final Double newValue = (double) jTextFieldBCellobjectRadius.getValue();
-							displaySettings.put(KEY_BCellobject_RADIUS_RATIO, newValue);
+							final Double oldValue = (Double) displaySettings.get(KEY_Greenobject_RADIUS_RATIO);
+							final Double newValue = (double) jTextFieldGreenobjectRadius.getValue();
+							displaySettings.put(KEY_Greenobject_RADIUS_RATIO, newValue);
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
-									KEY_BCellobject_RADIUS_RATIO, newValue, oldValue);
+							final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
+									KEY_Greenobject_RADIUS_RATIO, newValue, oldValue);
 							fireDisplaySettingsChange(event);
 						}
 					});
-					jTextFieldBCellobjectRadius.addFocusListener(new FocusListener() {
+					jTextFieldGreenobjectRadius.addFocusListener(new FocusListener() {
 						@Override
 						public void focusLost(final FocusEvent e) {
-							final Double oldValue = (Double) displaySettings.get(KEY_BCellobject_RADIUS_RATIO);
-							final Double newValue = (double) jTextFieldBCellobjectRadius.getValue();
-							displaySettings.put(KEY_BCellobject_RADIUS_RATIO, newValue);
+							final Double oldValue = (Double) displaySettings.get(KEY_Greenobject_RADIUS_RATIO);
+							final Double newValue = (double) jTextFieldGreenobjectRadius.getValue();
+							displaySettings.put(KEY_Greenobject_RADIUS_RATIO, newValue);
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
-									KEY_BCellobject_RADIUS_RATIO, newValue, oldValue);
+							final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
+									KEY_Greenobject_RADIUS_RATIO, newValue, oldValue);
 							fireDisplaySettingsChange(event);
 						}
 
@@ -822,18 +790,18 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 				}
 				{
 					jCheckBoxDisplayNames = new JCheckBox();
-					jCheckBoxDisplayNames.setText("Display BCellobject names");
+					jCheckBoxDisplayNames.setText("Display Greenobject names");
 					jCheckBoxDisplayNames.setFont(SMALL_FONT);
 					jCheckBoxDisplayNames.setSelected(false);
 					jCheckBoxDisplayNames.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(final ActionEvent e) {
-							final Boolean oldValue = (Boolean) displaySettings.get(KEY_DISPLAY_BCellobject_NAMES);
+							final Boolean oldValue = (Boolean) displaySettings.get(KEY_DISPLAY_Greenobject_NAMES);
 							final Boolean newValue = jCheckBoxDisplayNames.isSelected();
-							displaySettings.put(KEY_DISPLAY_BCellobject_NAMES, newValue);
+							displaySettings.put(KEY_DISPLAY_Greenobject_NAMES, newValue);
 
-							final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
-									KEY_DISPLAY_BCellobject_NAMES, newValue, oldValue);
+							final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
+									KEY_DISPLAY_Greenobject_NAMES, newValue, oldValue);
 							fireDisplaySettingsChange(event);
 						}
 					});
@@ -872,7 +840,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 						displaySettings.put(KEY_LIMIT_DRAWING_DEPTH, newValue);
 
-						final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+						final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 								KEY_LIMIT_DRAWING_DEPTH, newValue, oldValue);
 						fireDisplaySettingsChange(event);
 					}
@@ -891,7 +859,7 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 						final Double newValue = textFieldDrawingDepth.getValue();
 						displaySettings.put(KEY_DRAWING_DEPTH, newValue);
 
-						final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+						final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 								KEY_DRAWING_DEPTH, newValue, oldValue);
 						fireDisplaySettingsChange(event);
 					}
@@ -899,11 +867,11 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 				textFieldDrawingDepth.addFocusListener(new FocusListener() {
 					@Override
 					public void focusLost(final FocusEvent e) {
-						final Double oldValue = (Double) displaySettings.get(KEY_BCellobject_RADIUS_RATIO);
+						final Double oldValue = (Double) displaySettings.get(KEY_Greenobject_RADIUS_RATIO);
 						final Double newValue = textFieldDrawingDepth.getValue();
 						displaySettings.put(KEY_DRAWING_DEPTH, newValue);
 
-						final DisplaySettingsEvent event = new DisplaySettingsEvent(ConfigureViewsPanel.this,
+						final DisplaySettingsEvent event = new DisplaySettingsEvent(GreenConfigureViewsPanel.this,
 								KEY_DRAWING_DEPTH, newValue, oldValue);
 						fireDisplaySettingsChange(event);
 					}
@@ -969,11 +937,11 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 													Short.MAX_VALUE)
 											.addGap(6))
 									.addGroup(groupLayout.createSequentialGroup().addGap(10)
-											.addComponent(jCheckBoxDisplayBCellobjects, GroupLayout.DEFAULT_SIZE, 280,
+											.addComponent(jCheckBoxDisplayGreenobjects, GroupLayout.DEFAULT_SIZE, 280,
 													Short.MAX_VALUE)
 											.addGap(10))
 									.addGroup(groupLayout.createSequentialGroup().addGap(10)
-											.addComponent(jPanelBCellobjectOptions, GroupLayout.PREFERRED_SIZE, 280,
+											.addComponent(jPanelGreenobjectOptions, GroupLayout.PREFERRED_SIZE, 280,
 													Short.MAX_VALUE)
 											.addGap(10))
 									.addGroup(groupLayout.createSequentialGroup().addGap(10)
@@ -995,8 +963,8 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 			groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
 					.createSequentialGroup().addGap(6)
 					.addComponent(jLabelDisplayOptions, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-					.addGap(4).addComponent(jCheckBoxDisplayBCellobjects).addGap(2)
-					.addComponent(jPanelBCellobjectOptions, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+					.addGap(4).addComponent(jCheckBoxDisplayGreenobjects).addGap(2)
+					.addComponent(jPanelGreenobjectOptions, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
 					.addGap(4).addComponent(jCheckBoxDisplayTracks).addGap(1)
 					.addComponent(jPanelTrackOptions, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)

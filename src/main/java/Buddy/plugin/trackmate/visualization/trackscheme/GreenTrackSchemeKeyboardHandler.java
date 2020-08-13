@@ -16,15 +16,15 @@ import com.mxgraph.swing.util.mxGraphActions;
 import Buddy.plugin.trackmate.util.GreenTrackNavigator;
 import Buddy.plugin.trackmate.util.TrackNavigator;
 
-public class TrackSchemeKeyboardHandler {
+public class GreenTrackSchemeKeyboardHandler {
 
-	private final TrackNavigator navigator;
+	private final GreenTrackNavigator navigator;
 	
 
 
-	private final TrackSchemeGraphComponent graphComponent;
+	private final GreenTrackSchemeGraphComponent graphComponent;
 
-	public TrackSchemeKeyboardHandler(final TrackSchemeGraphComponent graphComponent, final TrackNavigator navigator) {
+	public GreenTrackSchemeKeyboardHandler(final GreenTrackSchemeGraphComponent graphComponent, final GreenTrackNavigator navigator) {
 		this.graphComponent = graphComponent;
 		this.navigator = navigator;
 		
@@ -85,24 +85,24 @@ public class TrackSchemeKeyboardHandler {
 	protected ActionMap createActionMap() {
 		final ActionMap map = (ActionMap) UIManager.get("ScrollPane.actionMap");
 
-		map.put("edit", TrackSchemeActions.getEditAction(graphComponent));
+		map.put("edit", GreenTrackSchemeActions.getEditAction(graphComponent));
 		map.put("delete", mxGraphActions.getDeleteAction());
 
-		map.put("home", TrackSchemeActions.getHomeAction(graphComponent));
-		map.put("end", TrackSchemeActions.getEndAction(graphComponent));
+		map.put("home", GreenTrackSchemeActions.getHomeAction(graphComponent));
+		map.put("end", GreenTrackSchemeActions.getEndAction(graphComponent));
 
-		map.put("zoomIn", TrackSchemeActions.getZoomInAction(graphComponent));
-		map.put("zoomOut", TrackSchemeActions.getZoomOutAction(graphComponent));
-		map.put("resetZoom", TrackSchemeActions.getResetZoomAction(graphComponent));
+		map.put("zoomIn", GreenTrackSchemeActions.getZoomInAction(graphComponent));
+		map.put("zoomOut", GreenTrackSchemeActions.getZoomOutAction(graphComponent));
+		map.put("resetZoom", GreenTrackSchemeActions.getResetZoomAction(graphComponent));
 
-		map.put("panUp", TrackSchemeActions.getPanUpAction(graphComponent));
-		map.put("panDown", TrackSchemeActions.getPanDownAction(graphComponent));
-		map.put("panLeft", TrackSchemeActions.getPanLeftAction(graphComponent));
-		map.put("panRight", TrackSchemeActions.getPanRightAction(graphComponent));
-		map.put("panUpLeft", TrackSchemeActions.getPanUpLeftAction(graphComponent));
-		map.put("panDownLeft", TrackSchemeActions.getPanDownLeftAction(graphComponent));
-		map.put("panUpRight", TrackSchemeActions.getPanUpRightAction(graphComponent));
-		map.put("panDownRight", TrackSchemeActions.getPanDownRightAction(graphComponent));
+		map.put("panUp", GreenTrackSchemeActions.getPanUpAction(graphComponent));
+		map.put("panDown", GreenTrackSchemeActions.getPanDownAction(graphComponent));
+		map.put("panLeft", GreenTrackSchemeActions.getPanLeftAction(graphComponent));
+		map.put("panRight", GreenTrackSchemeActions.getPanRightAction(graphComponent));
+		map.put("panUpLeft", GreenTrackSchemeActions.getPanUpLeftAction(graphComponent));
+		map.put("panDownLeft", GreenTrackSchemeActions.getPanDownLeftAction(graphComponent));
+		map.put("panUpRight", GreenTrackSchemeActions.getPanUpRightAction(graphComponent));
+		map.put("panDownRight", GreenTrackSchemeActions.getPanDownRightAction(graphComponent));
 
 		map.put("selectNone", TrackSchemeActions.getSelectNoneAction());
 		map.put("selectAll", TrackSchemeActions.getSelectAllAction());

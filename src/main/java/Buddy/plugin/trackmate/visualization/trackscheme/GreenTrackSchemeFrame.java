@@ -26,6 +26,7 @@ import com.mxgraph.swing.mxGraphOutline;
 import com.mxgraph.swing.handler.mxRubberband;
 
 import Buddy.plugin.trackmate.Logger;
+import Buddy.plugin.trackmate.util.GreenTrackNavigator;
 import Buddy.plugin.trackmate.util.TrackNavigator;
 import Buddy.plugin.trackmate.visualization.trackscheme.GreenInfoPane;
 import Buddy.plugin.trackmate.visualization.trackscheme.GreenJGraphXAdapter;
@@ -53,7 +54,7 @@ public class GreenTrackSchemeFrame extends JFrame {
 	private final GreenTrackScheme trackScheme;
 
 	/** The graph component in charge of painting the graph. */
-	TrackSchemeGraphComponent graphComponent;
+	GreenTrackSchemeGraphComponent graphComponent;
 
 	/** The {@link Logger} that sends messages to the TrackScheme status bar. */
 	final Logger logger;
@@ -150,8 +151,8 @@ public class GreenTrackSchemeFrame extends JFrame {
 		splitPane.setDividerLocation(170);
 		getContentPane().add(splitPane, BorderLayout.CENTER);
 
-		final TrackSchemeKeyboardHandler keyboardHandler = new TrackSchemeKeyboardHandler(graphComponent,
-				new TrackNavigator(trackScheme.getModel(), trackScheme.getSelectionModel()));
+		final GreenTrackSchemeKeyboardHandler keyboardHandler = new GreenTrackSchemeKeyboardHandler(graphComponent,
+				new GreenTrackNavigator(trackScheme.getModel(), trackScheme.getSelectionModel()));
 		keyboardHandler.installKeyboardActions(graphComponent);
 		keyboardHandler.installKeyboardActions(infoPane);
 	}
@@ -168,8 +169,8 @@ public class GreenTrackSchemeFrame extends JFrame {
 	 * Instantiate the graph component in charge of painting the graph. Hook for
 	 * sub-classers.
 	 */
-	private TrackSchemeGraphComponent createGraphComponent() {
-		final TrackSchemeGraphComponent gc = new TrackSchemeGraphComponent(graph, trackScheme);
+	private GreenTrackSchemeGraphComponent createGraphComponent() {
+		final GreenTrackSchemeGraphComponent gc = new GreenTrackSchemeGraphComponent(graph, trackScheme);
 		gc.getVerticalScrollBar().setUnitIncrement(16);
 		gc.getHorizontalScrollBar().setUnitIncrement(16);
 

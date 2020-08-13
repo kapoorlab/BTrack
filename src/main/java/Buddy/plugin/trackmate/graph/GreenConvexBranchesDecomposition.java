@@ -238,7 +238,7 @@ public class GreenConvexBranchesDecomposition implements Algorithm, Benchmark {
 		links = new ArrayList<>();
 		linksPerTrack = new HashMap<>();
 		for (final Integer trackID : trackIDs) {
-			final TrackBranchDecomposition branchDecomposition = processTrack(trackID, tm, neighborIndex,
+			final GreenTrackBranchDecomposition branchDecomposition = processTrack(trackID, tm, neighborIndex,
 					forbidMiddleLinks, forbidGaps);
 
 			branchesPerTrack.put(trackID, branchDecomposition.branches);
@@ -279,7 +279,7 @@ public class GreenConvexBranchesDecomposition implements Algorithm, Benchmark {
 	 * @return a new {@link TrackBranchDecomposition}.
 	 * @see ConvexBranchesDecomposition
 	 */
-	public static final TrackBranchDecomposition processTrack(final Integer trackID, final GreenTrackModel tm,
+	public static final GreenTrackBranchDecomposition processTrack(final Integer trackID, final GreenTrackModel tm,
 			final GreenTimeDirectedNeighborIndex neighborIndex, final boolean forbidMiddleLinks, final boolean forbidGaps) {
 		final Set<Greenobject> allGreenobjects = tm.trackGreenobjects(trackID);
 		final Set<DefaultWeightedEdge> allEdges = tm.trackEdges(trackID);
@@ -426,7 +426,7 @@ public class GreenConvexBranchesDecomposition implements Algorithm, Benchmark {
 			branches.add(branch);
 		}
 
-		final TrackBranchDecomposition output = new TrackBranchDecomposition();
+		final GreenTrackBranchDecomposition output = new GreenTrackBranchDecomposition();
 		output.branches = branches;
 		output.links = links;
 		return output;
@@ -446,7 +446,7 @@ public class GreenConvexBranchesDecomposition implements Algorithm, Benchmark {
 	 *         a branch as the target, following time.
 	 */
 	public static final SimpleDirectedGraph<List<Greenobject>, DefaultEdge> buildBranchGraph(
-			final TrackBranchDecomposition branchDecomposition) {
+			final GreenTrackBranchDecomposition branchDecomposition) {
 		final SimpleDirectedGraph<List<Greenobject>, DefaultEdge> branchGraph = new SimpleDirectedGraph<>(
 				DefaultEdge.class);
 
@@ -576,7 +576,7 @@ public class GreenConvexBranchesDecomposition implements Algorithm, Benchmark {
 	 * A two public fields class used to return the convex branch decomposition of a
 	 * track.
 	 */
-	public static final class TrackBranchDecomposition {
+	public static final class GreenTrackBranchDecomposition {
 		/**
 		 * Branches are returned as list of Greenobject. It is ensured that the
 		 * Greenobjects are ordered in the list by increasing frame number, and that two

@@ -22,18 +22,20 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
 
-import budDetector.Greenobject;
 import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.graph.ConvexBranchesDecomposition;
 import Buddy.plugin.trackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
 import Buddy.plugin.trackmate.graph.GraphUtils;
+import Buddy.plugin.trackmate.graph.GreenConvexBranchesDecomposition;
+import Buddy.plugin.trackmate.graph.GreenConvexBranchesDecomposition.GreenTrackBranchDecomposition;
 import Buddy.plugin.trackmate.graph.GreenGraphUtils;
 import Buddy.plugin.trackmate.graph.GreenTimeDirectedNeighborIndex;
 import Buddy.plugin.trackmate.graph.SortedDepthFirstIterator;
 import Buddy.plugin.trackmate.graph.TimeDirectedNeighborIndex;
 import net.imglib2.algorithm.Benchmark;
+import tracker.GREENSortedDepthFirstIterator;
 
 /**
  * This {@link mxGraphLayout} arranges cells on a graph in lanes corresponding
@@ -54,7 +56,7 @@ public class GreenTrackSchemeGraphLayout extends mxGraphLayout implements Benchm
 
 	private final GreenJGraphXAdapter graphAdapter;
 
-	private final TrackSchemeGraphComponent component;
+	private final GreenTrackSchemeGraphComponent component;
 
 	/**
 	 * Hold the current row length for each frame. That is, for frame
@@ -71,7 +73,7 @@ public class GreenTrackSchemeGraphLayout extends mxGraphLayout implements Benchm
 	 */
 
 	public GreenTrackSchemeGraphLayout(final GreenJGraphXAdapter graph, final GreenModel model,
-			final TrackSchemeGraphComponent component) {
+			final GreenTrackSchemeGraphComponent component) {
 		super(graph);
 		this.graphAdapter = graph;
 		this.model = model;
@@ -151,7 +153,7 @@ public class GreenTrackSchemeGraphLayout extends mxGraphLayout implements Benchm
 				 * scheme.
 				 */
 
-				final boolean isTree = GraphUtils.isTree(track, neighborCache);
+				final boolean isTree = GreenGraphUtils.isTree(track, neighborCache);
 
 				if (isTree) {
 
@@ -160,7 +162,7 @@ public class GreenTrackSchemeGraphLayout extends mxGraphLayout implements Benchm
 					 */
 
 					// First loop: Loop over Greenobjects in good order
-					final SortedDepthFirstIterator<Greenobject, DefaultWeightedEdge> iterator = model.getTrackModel()
+					final GREENSortedDepthFirstIterator<Greenobject, DefaultWeightedEdge> iterator = model.getTrackModel()
 							.getSortedDepthFirstIterator(first, Greenobject.nameComparator, false);
 
 					while (iterator.hasNext()) {
@@ -200,9 +202,9 @@ public class GreenTrackSchemeGraphLayout extends mxGraphLayout implements Benchm
 					 * Layout in branches for merging tracks
 					 */
 
-					final TrackBranchDecomposition branchDecomposition = ConvexBranchesDecomposition
+					final GreenTrackBranchDecomposition branchDecomposition = GreenConvexBranchesDecomposition
 							.processTrack(trackID, model.getTrackModel(), neighborCache, false, false);
-					final SimpleDirectedGraph<List<Greenobject>, DefaultEdge> branchGraph = ConvexBranchesDecomposition
+					final SimpleDirectedGraph<List<Greenobject>, DefaultEdge> branchGraph = GreenConvexBranchesDecomposition
 							.buildBranchGraph(branchDecomposition);
 					final DepthFirstIterator<List<Greenobject>, DefaultEdge> depthFirstIterator = new DepthFirstIterator<>(
 							branchGraph);

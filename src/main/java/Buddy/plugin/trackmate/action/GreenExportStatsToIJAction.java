@@ -24,9 +24,7 @@ import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeTimeLocationAnalyzer;
-import Buddy.plugin.trackmate.features.edges.GreenEdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.edges.GreenEdgeTimeLocationAnalyzer;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.util.GreenModelTools;
@@ -37,7 +35,7 @@ import ij.measure.ResultsTable;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
 
-public class ExportStatsToIJAction extends AbstractTMAction {
+public class GreenExportStatsToIJAction extends AbstractTMAction {
 
 	public static final String NAME = "Export statistics to tables";
 
@@ -69,7 +67,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 
 	private final GreenSelectionModel selectionModel;
 
-	public ExportStatsToIJAction(final GreenSelectionModel selectionModel) {
+	public GreenExportStatsToIJAction(final GreenSelectionModel selectionModel) {
 		this.selectionModel = selectionModel;
 	}
 
@@ -243,8 +241,8 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 			 * columns.
 			 */
 
-			final int sourceIDColumn = edgeTable.getColumnIndex(GreenEdgeTargetAnalyzer.Greenobject_SOURCE_ID);
-			final int targetIDColumn = edgeTable.getColumnIndex(GreenEdgeTargetAnalyzer.Greenobject_TARGET_ID);
+			final int sourceIDColumn = edgeTable.getColumnIndex(EdgeTargetAnalyzer.Greenobject_SOURCE_ID);
+			final int targetIDColumn = edgeTable.getColumnIndex(EdgeTargetAnalyzer.Greenobject_TARGET_ID);
 			if (sourceIDColumn != ResultsTable.COLUMN_NOT_FOUND && targetIDColumn != ResultsTable.COLUMN_NOT_FOUND) {
 
 				final TextWindow edgeTableWindow = (TextWindow) WindowManager.getWindow(EDGE_TABLE_NAME);
@@ -346,7 +344,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 
 	// Invisible because called on the view config panel.
 	@Plugin(type = TrackMateActionFactory.class, visible = false)
-	public static class Factory implements GreenTrackMateActionFactory {
+	public static class Factory implements TrackMateActionFactory {
 
 		@Override
 		public String getInfoText() {
@@ -359,7 +357,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final GreenTrackMateGUIController controller) {
+		public TrackMateAction create(final TrackMateGUIController controller) {
 			return new ExportStatsToIJAction(controller.getSelectionModel());
 		}
 
@@ -377,9 +375,9 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 
 	private static final class EdgeSourceGreenobjectFrameComparator implements Comparator<DefaultWeightedEdge> {
 
-		private final GreenModel model;
+		private final Model model;
 
-		public EdgeSourceGreenobjectFrameComparator(final GreenModel model) {
+		public EdgeSourceGreenobjectFrameComparator(final Model model) {
 			this.model = model;
 		}
 

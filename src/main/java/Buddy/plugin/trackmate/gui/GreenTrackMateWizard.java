@@ -18,7 +18,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import Buddy.plugin.trackmate.Logger;
+import Buddy.plugin.trackmate.gui.descriptors.GreenWizardPanelDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 
 /**
@@ -116,7 +118,7 @@ public class GreenTrackMateWizard extends JFrame implements ActionListener {
 
 	private LogPanel logPanel;
 
-	private TrackMateModelView displayer;
+	private GreenTrackMateModelView displayer;
 
 	private final GreenTrackMateGUIController controller;
 
@@ -173,14 +175,14 @@ public class GreenTrackMateWizard extends JFrame implements ActionListener {
 	/**
 	 * Returns a reference to the {@link TrackMateModelView} linked to this wizard.
 	 */
-	public TrackMateModelView getDisplayer() {
+	public GreenTrackMateModelView getDisplayer() {
 		return displayer;
 	}
 
 	/**
 	 * Sets the {@link TrackMateModelView} to be linked to this wizard.
 	 */
-	public void setDisplayer(final TrackMateModelView displayer) {
+	public void setDisplayer(final GreenTrackMateModelView displayer) {
 		this.displayer = displayer;
 	}
 
@@ -199,7 +201,7 @@ public class GreenTrackMateWizard extends JFrame implements ActionListener {
 	 * @param descriptor
 	 *            the descriptor to show.
 	 */
-	public void show(final WizardPanelDescriptor descriptor) {
+	public void show(final GreenWizardPanelDescriptor descriptor) {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override

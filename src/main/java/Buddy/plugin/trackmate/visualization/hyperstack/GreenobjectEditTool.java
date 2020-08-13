@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.GreenobjectCollection;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
@@ -209,7 +210,7 @@ public class GreenobjectEditTool extends AbstractTool
 		final GreenModel model = displayer.getModel();
 		Greenobject editedGreenobject = editedGreenobjects.get(lImp);
 
-		final SelectionModel selectionModel = displayer.getSelectionModel();
+		final GreenSelectionModel selectionModel = displayer.getSelectionModel();
 
 		// Check desired behavior
 		switch (e.getClickCount()) {
@@ -317,10 +318,10 @@ public class GreenobjectEditTool extends AbstractTool
 				public void run() {
 					roiedit.mouseReleased(e);
 					final ImagePlus lImp = getImagePlus(e);
-					final HyperStackDisplayer displayer = displayers.get(lImp);
+					final GreenHyperStackDisplayer displayer = displayers.get(lImp);
 					final int frame = displayer.imp.getFrame() - 1;
-					final Model model = displayer.getModel();
-					final SelectionModel selectionModel = displayer.getSelectionModel();
+					final GreenModel model = displayer.getModel();
+					final GreenSelectionModel selectionModel = displayer.getSelectionModel();
 
 					final Iterator<Greenobject> it;
 					it = model.getGreenobjects().iterator(frame);
@@ -366,7 +367,7 @@ public class GreenobjectEditTool extends AbstractTool
 	public void mouseDragged(final MouseEvent e) {
 		final ImagePlus lImp = getImagePlus(e);
 		final double[] calibration = TMUtils.getSpatialCalibration(lImp);
-		final HyperStackDisplayer displayer = displayers.get(lImp);
+		final GreenHyperStackDisplayer displayer = displayers.get(lImp);
 		if (null == displayer)
 			return;
 		final Greenobject editedGreenobject = editedGreenobjects.get(lImp);
@@ -407,7 +408,7 @@ public class GreenobjectEditTool extends AbstractTool
 			return;
 		final ImagePlus lImp = getImagePlus(e);
 		final double[] calibration = TMUtils.getSpatialCalibration(lImp);
-		final HyperStackDisplayer displayer = displayers.get(lImp);
+		final GreenHyperStackDisplayer displayer = displayers.get(lImp);
 		if (null == displayer)
 			return;
 		final Greenobject editedGreenobject = editedGreenobjects.get(lImp);
@@ -433,7 +434,7 @@ public class GreenobjectEditTool extends AbstractTool
 	@Override
 	public void mouseWheelMoved(final MouseWheelEvent e) {
 		final ImagePlus lImp = getImagePlus(e);
-		final HyperStackDisplayer displayer = displayers.get(lImp);
+		final GreenHyperStackDisplayer displayer = displayers.get(lImp);
 		if (null == displayer)
 			return;
 		final Greenobject editedGreenobject = editedGreenobjects.get(lImp);
@@ -474,12 +475,12 @@ public class GreenobjectEditTool extends AbstractTool
 		final ImagePlus lImp = getImagePlus(e);
 		if (lImp == null)
 			return;
-		final HyperStackDisplayer displayer = displayers.get(lImp);
+		final GreenHyperStackDisplayer displayer = displayers.get(lImp);
 		if (null == displayer)
 			return;
 
-		final Model model = displayer.getModel();
-		final SelectionModel selectionModel = displayer.getSelectionModel();
+		final GreenModel model = displayer.getModel();
+		final GreenSelectionModel selectionModel = displayer.getSelectionModel();
 		Greenobject editedGreenobject = editedGreenobjects.get(lImp);
 		final ImageCanvas canvas = getImageCanvas(e);
 
@@ -818,10 +819,10 @@ public class GreenobjectEditTool extends AbstractTool
 			final ImagePlus lImp = getImagePlus(e);
 			if (lImp == null)
 				return;
-			final HyperStackDisplayer displayer = displayers.get(lImp);
+			final GreenHyperStackDisplayer displayer = displayers.get(lImp);
 			if (null == displayer)
 				return;
-			final Model model = displayer.getModel();
+			final GreenModel model = displayer.getModel();
 			model.beginUpdate();
 			try {
 				model.updateFeatures(quickEditedGreenobject);

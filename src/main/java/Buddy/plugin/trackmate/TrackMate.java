@@ -15,6 +15,7 @@ import Buddy.plugin.trackmate.features.FeatureFilter;
 import Buddy.plugin.trackmate.features.GreenobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.TrackFeatureCalculator;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
+import Buddy.plugin.trackmate.util.GreenTMUtils;
 import Buddy.plugin.trackmate.util.TMUtils;
 import ij.gui.ShapeRoi;
 import net.imagej.ImgPlus;
@@ -167,7 +168,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 
 		// Put them back in the right referential
 		final double[] calibration = TMUtils.getSpatialCalibration(lSettings.imp);
-		TMUtils.translateGreenobjects(GreenobjectsThisFrame, lSettings.xstart ,
+		GreenTMUtils.translateGreenobjects(GreenobjectsThisFrame, lSettings.xstart ,
 				lSettings.ystart , lSettings.zstart );
 		List<Greenobject> prunedGreenobjects;
 		// Prune if outside of ROI

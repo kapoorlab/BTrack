@@ -40,6 +40,7 @@ import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.action.AbstractTMAction;
+import Buddy.plugin.trackmate.action.ExportAllGreenobjectsStatsAction;
 import Buddy.plugin.trackmate.action.ExportStatsToIJAction;
 import Buddy.plugin.trackmate.features.GreenModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.ModelFeatureUpdater;
@@ -336,7 +337,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 				} else {
 					gui.setPreviousButtonEnabled(true);
 				}
-				descriptor.displayingGreenPanel(parent);
+				descriptor.displayingPanel(parent);
 				return;
 
 			}
@@ -648,7 +649,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 		}
 	}
 
-	protected WizardPanelDescriptor previousDescriptor(final WizardPanelDescriptor currentDescriptor) {
+	protected GreenWizardPanelDescriptor previousDescriptor(final GreenWizardPanelDescriptor currentDescriptor) {
 
 		if (currentDescriptor == trackerChoiceDescriptor) {
 			return startDialoDescriptor;
@@ -692,7 +693,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 		// Get start panel id
 		gui.setPreviousButtonEnabled(false);
-		final WizardPanelDescriptor panelDescriptor = getFirstDescriptor();
+		final GreenWizardPanelDescriptor panelDescriptor = getFirstDescriptor();
 		guimodel.currentDescriptor = panelDescriptor;
 
 		final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION
@@ -835,13 +836,13 @@ public class GreenTrackMateGUIController implements ActionListener {
 		gui.setNextButtonEnabled(false);
 
 		// Execute leave action of the old panel
-		final WizardPanelDescriptor oldDescriptor = guimodel.currentDescriptor;
+		final GreenWizardPanelDescriptor oldDescriptor = guimodel.currentDescriptor;
 		if (oldDescriptor != null) {
 			oldDescriptor.aboutToHidePanel();
 		}
 
 		// Find and store new one to display
-		final WizardPanelDescriptor panelDescriptor = nextDescriptor(oldDescriptor);
+		final GreenWizardPanelDescriptor panelDescriptor = nextDescriptor(oldDescriptor);
 		guimodel.currentDescriptor = panelDescriptor;
 
 		// Re-enable the previous button, in case it was disabled
@@ -860,8 +861,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 	private void previous() {
 		// Move to previous panel, but do not execute its forward-navigation
 		// actions.
-		final WizardPanelDescriptor olDescriptor = guimodel.currentDescriptor;
-		final WizardPanelDescriptor panelDescriptor = previousDescriptor(olDescriptor);
+		final GreenWizardPanelDescriptor olDescriptor = guimodel.currentDescriptor;
+		final GreenWizardPanelDescriptor panelDescriptor = previousDescriptor(olDescriptor);
 		// Execute its backward-navigation actions.
 		panelDescriptor.comingBackToPanel();
 		// Do whatever we do when the panel is shown.
@@ -958,7 +959,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 			@Override
 			public void run() {
 				final GreenTrackScheme trackscheme = new GreenTrackScheme(trackmate.getGreenModel(), selectionModel);
-				final GreenobjectImageUpdater thumbnailUpdater = new GreenobjectImageUpdater(trackmate.getSettings());
+				final GreenobjectImageUpdater thumbnailUpdater = new GreenobjectImageUpdater(trackmate.getGreenSettings());
 				trackscheme.setGreenobjectImageUpdater(thumbnailUpdater);
 				for (final String settingKey : guimodel.getDisplaySettings().keySet()) {
 					trackscheme.setDisplaySettings(settingKey, guimodel.getDisplaySettings().get(settingKey));
