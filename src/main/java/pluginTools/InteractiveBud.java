@@ -139,6 +139,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public ImagePlus imp;
 	public String selectedID;
 	public boolean mouseremoved = false;
+	public boolean BudAnalysis = true;
 	public int row;
 	public int tablesize;
 	public RealLocalizable Refcord;
@@ -174,7 +175,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	// Input Bud and its segmentation
 		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
+				final String NameA,final double calibration, final double timecal, String inputstring, Boolean BudAnalysis) {
 			
 			
 			this.originalimg = originalimg;
@@ -187,7 +188,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
 			this.jFreeChartFrameRate.setVisible(false);
 			this.inputstring = inputstring;
-			
+			this.BudAnalysis = BudAnalysis;
 			
 		}
 		
@@ -210,6 +211,28 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
 			this.jFreeChartFrameRate.setVisible(false);
 			this.inputstring = inputstring;
+			
+		}
+		
+		// Input Image and one flourescent channel and mask images
+		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+				final RandomAccessibleInterval<IntType> Segoriginalimg,
+				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
+				final String NameA,final double calibration, final double timecal, String inputstring, Boolean BudAnalysis) {
+		
+			
+			this.originalimg = originalimg;
+			this.Segoriginalimg = Segoriginalimg;
+			this.SegYelloworiginalimg = SegYelloworiginalimg;
+			this.NameA = NameA;
+			this.calibration = calibration;
+			this.timecal = timecal;
+			this.ndims = originalimg.numDimensions();
+			this.Velocitydataset = new XYSeriesCollection();
+			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+			this.jFreeChartFrameRate.setVisible(false);
+			this.inputstring = inputstring;
+			this.BudAnalysis = BudAnalysis;
 			
 		}
 		
@@ -480,9 +503,21 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		
 		
+		if(BudAnalysis) {
 		
-		StartDisplayer();
-		Card();
+			StartDisplayer();
+		    Card();
+		
+		}
+		
+		else {
+			
+			System.out.println("Cell collector");
+			CellCollector();
+			
+		}
+		
+		
 	}
 	
 	
@@ -498,6 +533,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			
 		}
 		
+		
 		if (change == ValueChange.THIRDDIMmouse)
 		{
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
@@ -510,15 +546,23 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		repaintView(CurrentView);
 		
 		
-		
+		if(BudAnalysis) {
 		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
 			imp.getOverlay().clear();
 			imp.updateAndDraw();
 			StartDisplayer();
 			
 		}
-		
 		}
+		
+		else {
+			
+			imp.getOverlay().clear();
+			imp.updateAndDraw();
+			
+		}
+		}
+		
 		
 	}
 	
@@ -530,6 +574,14 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		ComputeBorder display = new ComputeBorder(this, jpb);
 		
 		display.execute();
+	}
+	
+	
+	public void CellCollector() {
+		
+		CollectCells display = new CollectCells(this, jpb);
+		display.execute();
+		
 	}
 	
 	public void repaintView( RandomAccessibleInterval<FloatType> Activeimage) {

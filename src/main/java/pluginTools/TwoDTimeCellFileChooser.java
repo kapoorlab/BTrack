@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -43,10 +44,14 @@ import listeners.BTrackGoMaskFLListener;
 import listeners.BTrackGoRedFLListener;
 import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
+import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.view.Views;
 import fileListeners.SimplifiedIO;
 
 
@@ -74,7 +79,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 	public JComboBox<String> ChooseImage;
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
-	public JButton Done = new JButton("Finished choosing files, start BTrack");
+	public JButton Done = new JButton("Collect Cells and Start Tracker");
 
 	public boolean simple = false;
 	public boolean curvesuper = true;
@@ -87,11 +92,11 @@ public class TwoDTimeCellFileChooser extends JPanel {
 	public String chooseMaskSegstring = "Segmentation Image for Cells and Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring),
 			new EmptyBorder(c.insets));
-
+	public JProgressBar jpb = new JProgressBar();
 
 	
 
-	public String chooseoriginalCellfilestring = "Cells are tracked inside a defined mask or everywhere";
+	public String chooseoriginalCellfilestring = "Cells are tracked inside a region";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
 			new EmptyBorder(c.insets));
 
@@ -191,8 +196,6 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		FreeMode.addItemListener(new TwoDCellGoFreeFLListener(this));
 		MaskMode.addItemListener(new BTrackGoMaskFLListener(this));
-		// GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
-		// RedMode.addItemListener(new BTrackGoRedFLListener(this));
 		segmentation.ChooseImage.addActionListener(new ChooseCellSegAMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());
@@ -204,6 +207,10 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		Panelsuperfile.setEnabled(true);
 		ChoosesuperImage.setEnabled(true);
 
+		
+		Cardframe.add(jpb, "Last");
+		
+		
 		Cardframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Cardframe.pack();
 		Cardframe.setVisible(true);
@@ -257,6 +264,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
 				impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
 
+		// Segmentation image for green cells
 		RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(
 				impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName, new IntType());
 
@@ -264,34 +272,87 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		String name = impOrig.getOriginalFileInfo().fileName;
 
-		
+		// Image -> Mask -> Cell Mask
+		Cardframe.remove(jpb);
 		if(DoMask) {
 			
-			System.out.println("Do mask");
-			RandomAccessibleInterval<BitType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new BitType());
+			
+			// Mask image like bud image
+			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
+					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
+			
+			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
+			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
+			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration,
+					FrameInterval, name, false);
+			
+			CellCollection.run(null);
+			jpb = CellCollection.jpb;
 		}
 		
 		
 		if(NoMask) {
 			
-			System.out.println("No mask");
+			RandomAccessibleInterval<IntType> imageSegB = CreateBorderMask(imageOrig);
+			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration,
+					FrameInterval, name, false);
+			
+			CellCollection.run(null);
+			
+			jpb = CellCollection.jpb;
 			
 		}
 		
+		Cardframe.add(jpb, "Last");
+		Cardframe.repaint();
+		Cardframe.validate();
 		
 		
 		
 		
-		WindowManager.closeAllWindows();
+		
 		calibration = Float.parseFloat(inputFieldcalX.getText());
 		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
-		System.out.println("CalibrationX:" + calibration);
-		System.out.println("CalibrationT:" + FrameInterval);
+		
+
+	}
 	
-
-		close(parent);
-
+	@SuppressWarnings("deprecation")
+	protected RandomAccessibleInterval<IntType> CreateBorderMask(RandomAccessibleInterval<FloatType> imageOrig) {
+		
+		RandomAccessibleInterval<IntType> imageSegB = new ArrayImgFactory<IntType>().create(imageOrig, new IntType());
+		
+		
+		RandomAccess<IntType> ranac = imageSegB.randomAccess(); 
+		
+		Cursor<FloatType> cur = Views.iterable(imageOrig).localizingCursor();
+		
+		while(cur.hasNext()) {
+			
+			
+			cur.fwd();
+			
+			if(cur.getDoublePosition(0)<= imageOrig.dimension(0) - 1 && cur.getDoublePosition(0) > 1) {
+				
+				
+				ranac.setPosition(cur);
+				
+				ranac.get().setOne();
+			}
+			
+           if(cur.getDoublePosition(1) <= imageOrig.dimension(1) - 1 && cur.getDoublePosition(1) > 1) {
+				
+				
+				ranac.setPosition(cur);
+				
+				ranac.get().setOne();
+			}
+				
+			
+		}
+		
+		return imageSegB;
+		
 	}
 
 	protected final void close(final Frame parent) {
