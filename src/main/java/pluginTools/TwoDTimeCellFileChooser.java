@@ -261,6 +261,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		// Tracking and Measurement is done with imageA
 
+		Done.setEnabled(false);
 		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
 				impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
 
@@ -271,7 +272,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		
 
 		String name = impOrig.getOriginalFileInfo().fileName;
-
+		WindowManager.closeAllWindows();
 		// Image -> Mask -> Cell Mask
 		Cardframe.remove(jpb);
 		if(DoMask) {

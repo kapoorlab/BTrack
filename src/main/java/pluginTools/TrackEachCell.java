@@ -201,14 +201,9 @@ public class TrackEachCell {
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
 				// Get the center point of each bud
-				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
+				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(truths);
 
 			
-						 parent.ChosenBudcenter.add(centerpoint);
-		
-				
-
-							for (RealLocalizable currentpoint : parent.ChosenBudcenter) {
 
 								RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
 								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
@@ -218,7 +213,7 @@ public class TrackEachCell {
 											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 											// For each bud get the list of points
 											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-											centerpoint = budDetector.Listordering.getMeanCord(truths);
+											RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
@@ -228,7 +223,6 @@ public class TrackEachCell {
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
 
-							}
 
 					}
 
@@ -252,18 +246,7 @@ public class TrackEachCell {
 		OpService ops = parent.ij.op();
 
 		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
-		
-		if (parent.SegYelloworiginalimg != null) 
-	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
-		
-		for (RealLocalizable budpoints : skeletonEndPoints) {
-
-			Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
-					truths.size() * parent.calibration, label,
-					new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
-					parent.thirdDimension, 0);
-
-			Budpointlist.add(Budpoint);
+	
 
 		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
 				truths.size() * parent.calibration);
@@ -271,27 +254,16 @@ public class TrackEachCell {
 		if (parent.SegYelloworiginalimg != null) {
 	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 
-	          // check over this point later
-		//ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud, label);
 		for(Cellobject currentbudcell:celllist) {
 			
-			Localizable centercell = currentbudcell.Location;
-			// For each cell get nearest bud growth point
-			RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(skeletonEndPoints, centercell);
-			// Get distance between the center of cell and bud growth point
-			double closestGrowthPoint = Distance.DistanceSqrt(centercell, closestdynamicskel);
-			// For each cell get nearest bud point
-			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
-			// and the distance
-			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, t);
+			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, 0, 0, t);
             parent.budcells.add(budncell, t);  
 		}
 		
 		
-		}
+		
 		
 		}
 		

@@ -281,14 +281,16 @@ public class BudFileChooser extends JPanel {
 		RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(
 				impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName, new IntType());
 
-
+	
+		
 
 		String name = impOrig.getOriginalFileInfo().fileName;
 
-		
+		WindowManager.closeAllWindows();
 		calibration = Float.parseFloat(inputFieldcalX.getText());
 		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
-		
+		System.out.println("CalibrationX:" + calibration);
+		System.out.println("CalibrationT:" + FrameInterval);
 		if (!DoYellow && !DoGreen && !DoRed)
 
 			new InteractiveBud(imageOrig, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,

@@ -42,7 +42,7 @@ public class CollectCells extends SwingWorker<Void, Void> {
 		parent.jpb.setIndeterminate(false);
 		if(parent.jpb!=null )
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
-					"Collected all cells, starting TrackMate ;) " + parent.thirdDimension);
+					"Collected all cells, starting TrackMate");
 		
 	}
 	

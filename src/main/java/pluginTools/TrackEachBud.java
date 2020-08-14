@@ -207,28 +207,23 @@ public class TrackEachBud {
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
 				// Get the center point of each bud
-				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
+				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(truths);
 
 				if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
-					if(label == maxlabel)
-						 parent.ChosenBudcenter.add(centerpoint);
+					
 					if (parent.jpb != null)
 						utility.BudProgressBar.SetProgressBar(parent.jpb,
 								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
 										+ (parent.pixellist.size() ));
-					Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
+					Common(PairCurrentViewBit, truths,  currentpoint, uniqueID, label);
 
 				}
 
-				int ndims = centerpoint.numDimensions();
+				int ndims = currentpoint.numDimensions();
 				
 
-						if (!CovistoKalmanPanel.Skeletontime.isEnabled()) {
-
-							BudSelectBudsListener.choosebuds(parent, centerpoint);
-
-						}
+					
 
 						if (parent.ChosenBudcenter.size() == 0 && parent.thirdDimension > 1
 								&& !CovistoKalmanPanel.Skeletontime.isEnabled()) {
@@ -240,7 +235,6 @@ public class TrackEachBud {
 
 						}
 
-							for (RealLocalizable currentpoint : parent.ChosenBudcenter) {
 
 								RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
 								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
@@ -250,7 +244,7 @@ public class TrackEachBud {
 											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 											// For each bud get the list of points
 											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-											centerpoint = budDetector.Listordering.getMeanCord(truths);
+											RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
@@ -262,7 +256,6 @@ public class TrackEachBud {
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
 
-							}
 
 					}
 
