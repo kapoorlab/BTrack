@@ -39,16 +39,21 @@ public class ChooseGreenOrigMap implements ActionListener {
     	parent.impOrigGreen = WindowManager.getImage(imagename);
    
     	if(parent.impOrigGreen!=null) {
-			parent.calibration = parent.impOrigGreen.getCalibration().pixelWidth;
+			
+    		    parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;
+			parent.calibrationY = parent.impOrigGreen.getCalibration().pixelHeight;
 			parent.FrameInterval = parent.impOrigGreen.getCalibration().frameInterval;
+			
 			if (parent.FrameInterval == 0)
 				parent.FrameInterval = 1;
 			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
 			otherSymbols.setDecimalSeparator('.');
 			otherSymbols.setGroupingSeparator(','); 
 			DecimalFormat df = new DecimalFormat(("#.###"), otherSymbols);
-			parent.Fieldwavesize.setText(String.valueOf(df.format(parent.FrameInterval))); 
-			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibration)));
+			parent.inputLabelcalT.setText(String.valueOf(df.format(parent.FrameInterval))); 
+			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibrationX)));
+			parent.inputFieldcalY.setText(String.valueOf(df.format(parent.calibrationY)));
+			
 	}
  
 		

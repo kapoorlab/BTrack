@@ -103,10 +103,10 @@ public class TwoDTimeCellFileChooser extends JPanel {
 	public String donestring = "Done Selection";
 	public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring), new EmptyBorder(c.insets));
 
-	public Label inputLabelcalX, wavesize;
-	public double calibration, FrameInterval;
+	  public Label inputLabelcalX, inputLabelcalY, inputLabelcalZ, inputLabelcalT;
+	  public double calibrationX, calibrationY, calibrationZ, FrameInterval;
 
-	public TextField inputFieldcalX, Fieldwavesize;
+	  public TextField inputFieldcalX, inputFieldcalY, inputFieldcalZ, FieldinputLabelcalT;
 	public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"),
 			new EmptyBorder(c.insets));
 
@@ -119,20 +119,26 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 	public TwoDTimeCellFileChooser() {
 
-		inputLabelcalX = new Label("Pixel calibration in X,Y (um)");
-		inputFieldcalX = new TextField(5);
-		inputFieldcalX.setText("1");
+		   inputLabelcalX = new Label("Pixel calibration in X(um)");
+	       inputFieldcalX = new TextField(5);
+		   inputFieldcalX.setText("1");
+		   
 
-		wavesize = new Label("Pixel calibration in T (min)");
-		Fieldwavesize = new TextField(5);
-		Fieldwavesize.setText("1");
+		   inputLabelcalY = new Label("Pixel calibration in Y(um)");
+	       inputFieldcalY = new TextField(5);
+		   inputFieldcalY.setText("1");
+
+		   inputLabelcalT = new Label("Pixel calibration in T (min)");
+		   FieldinputLabelcalT = new TextField(5);
+		   FieldinputLabelcalT.setText("1");
 		panelFirst.setLayout(layout);
 
 		Paneldone.setLayout(layout);
 		Microscope.setLayout(layout);
 		CardLayout cl = new CardLayout();
-		calibration = Float.parseFloat(inputFieldcalX.getText());
-		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
+		calibrationX = Float.parseFloat(inputFieldcalX.getText());
+		calibrationY = Float.parseFloat(inputFieldcalY.getText());
+		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 
 		panelCont.setLayout(cl);
 		panelCont.add(panelFirst, "1");
@@ -181,11 +187,17 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.add(wavesize, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		
+		Microscope.add(inputLabelcalY, new GridBagConstraints(1, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(Fieldwavesize, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputFieldcalY, new GridBagConstraints(1, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.RELATIVE, insets, 0, 0));
+
+		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.setBorder(microborder);
@@ -196,10 +208,12 @@ public class TwoDTimeCellFileChooser extends JPanel {
 
 		FreeMode.addItemListener(new TwoDCellGoFreeFLListener(this));
 		MaskMode.addItemListener(new BTrackGoMaskFLListener(this));
+		
+		
 		segmentation.ChooseImage.addActionListener(new ChooseCellSegAMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());
-		Fieldwavesize.addTextListener(new WaveListener());
+		FieldinputLabelcalT.addTextListener(new CalTListener());
 		Done.addActionListener(new CellDoneListener());
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
@@ -224,12 +238,13 @@ public class TwoDTimeCellFileChooser extends JPanel {
 			String s = tc.getText();
 
 			if (s.length() > 0)
-				calibration = Double.parseDouble(s);
+				calibrationX = Double.parseDouble(s);
 		}
 
 	}
 
-	public class WaveListener implements TextListener {
+	
+	public class CalYListener implements TextListener {
 
 		@Override
 		public void textValueChanged(TextEvent e) {
@@ -237,11 +252,24 @@ public class TwoDTimeCellFileChooser extends JPanel {
 			String s = tc.getText();
 
 			if (s.length() > 0)
-				FrameInterval = Float.parseFloat(s);
-
+				calibrationY = Double.parseDouble(s);
 		}
 
 	}
+	
+	public class CalTListener implements TextListener {
+
+		@Override
+		public void textValueChanged(TextEvent e) {
+			final TextComponent tc = (TextComponent) e.getSource();
+			String s = tc.getText();
+
+			if (s.length() > 0)
+				FrameInterval = Double.parseDouble(s);
+		}
+
+	}
+	
 
 	public class CellDoneListener implements ActionListener {
 
@@ -284,7 +312,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 			
 			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			CellCollection.run(null);
@@ -295,7 +323,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		if(NoMask) {
 			
 			RandomAccessibleInterval<IntType> imageSegB = CreateBorderMask(imageOrig);
-			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			CellCollection.run(null);
@@ -312,8 +340,9 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		
 		
 		
-		calibration = Float.parseFloat(inputFieldcalX.getText());
-		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
+		calibrationX = Float.parseFloat(inputFieldcalX.getText());
+		calibrationY = Float.parseFloat(inputFieldcalY.getText());
+		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 		
 
 	}

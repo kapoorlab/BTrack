@@ -163,7 +163,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public XYSeriesCollection Velocitydataset;
 	public ImageJ ij; 
 	public JFreeChart chartVelocity;
-	public double calibration;
+	public double calibrationX;
+	public double calibrationY;
 	public double timecal;
 	public File saveFile;
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
@@ -175,13 +176,14 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	// Input Bud and its segmentation
 		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring, Boolean BudAnalysis) {
+				final String NameA,final double calibrationX, double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 			
 			
 			this.originalimg = originalimg;
 			this.Segoriginalimg = Segoriginalimg;
 			this.NameA = NameA;
-			this.calibration = calibration;
+			this.calibrationX = calibrationX;
+			this.calibrationY = calibrationY;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -197,14 +199,15 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
 				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
+				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring) {
 		
 			
 			this.originalimg = originalimg;
 			this.Segoriginalimg = Segoriginalimg;
 			this.SegYelloworiginalimg = SegYelloworiginalimg;
 			this.NameA = NameA;
-			this.calibration = calibration;
+			this.calibrationX = calibrationX;
+			this.calibrationY = calibrationY;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -218,14 +221,15 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
 				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring, Boolean BudAnalysis) {
+				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 		
 			
 			this.originalimg = originalimg;
 			this.Segoriginalimg = Segoriginalimg;
 			this.SegYelloworiginalimg = SegYelloworiginalimg;
 			this.NameA = NameA;
-			this.calibration = calibration;
+			this.calibrationX = calibrationX;
+			this.calibrationY = calibrationY;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -241,7 +245,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
 				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
 				final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
+				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring) {
 		
 			
 			this.originalimg = originalimg;
@@ -249,7 +253,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.SegYelloworiginalimg = SegYelloworiginalimg;
 			this.SegGreenoriginalimg = SegGreenoriginalimg;
 			this.NameA = NameA;
-			this.calibration = calibration;
+			this.calibrationX = calibrationX;
+			this.calibrationY = calibrationY;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -266,7 +271,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
 				final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
 				final RandomAccessibleInterval<IntType> SegRedoriginalimg,
-				final String NameA,final double calibration, final double timecal, String inputstring) {
+				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring) {
 		
 			
 			this.originalimg = originalimg;
@@ -275,7 +280,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.SegGreenoriginalimg = SegGreenoriginalimg;
 			this.SegRedoriginalimg = SegRedoriginalimg;
 			this.NameA = NameA;
-			this.calibration = calibration;
+			this.calibrationX = calibrationX;
+			this.calibrationY = calibrationY;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -831,7 +837,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,
 				CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
-		CovistoKalmanPanel.setInitialsearchradius((float) (CovistoKalmanPanel.initialSearchradius/calibration));
+		CovistoKalmanPanel.setInitialsearchradius((float) (CovistoKalmanPanel.initialSearchradius/calibrationX));
 		
 		CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new BudPREIniSearchListener(this,
 				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,

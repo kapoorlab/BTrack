@@ -105,7 +105,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public Color Drawcolor; 
 	public RandomAccessibleInterval<FloatType> originalimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
-	public RandomAccessibleInterval<BitType> Maskimg;
+	public RandomAccessibleInterval<IntType> Maskimg;
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<BitType> CurrentViewMaskInt;
@@ -176,7 +176,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	// Input Green and its segmentation
 		public InteractiveGreen(final RandomAccessibleInterval<FloatType> originalimg,
 				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<BitType> Maskimg,
+				final RandomAccessibleInterval<IntType> Maskimg,
 				final String NameA,final double calibrationX, double calibrationY, double calibrationZ, final double timecal, String inputstring) {
 			
 			
