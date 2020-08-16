@@ -61,7 +61,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JFrame Cardframe = new JFrame("TwoD Cell tracker");
+	public JFrame Cardframe = new JFrame("TwoD + time Cell tracker");
 	public JPanel panelCont = new JPanel();
 	public ImagePlus impOrig, impSegA, impSegB, impSegC;
 	public File impOrigfile,  impSegAfile, impSegBfile, impSegCfile;
@@ -188,16 +188,16 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 		
-		Microscope.add(inputLabelcalY, new GridBagConstraints(1, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalY, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(inputFieldcalY, new GridBagConstraints(1, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputFieldcalY, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.setBorder(microborder);
@@ -213,6 +213,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		segmentation.ChooseImage.addActionListener(new ChooseCellSegAMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());
+		inputFieldcalY.addTextListener(new CalYListener());
 		FieldinputLabelcalT.addTextListener(new CalTListener());
 		Done.addActionListener(new CellDoneListener());
 		panelFirst.setVisible(true);

@@ -38,7 +38,8 @@ public class ChooseBudOrigMap implements ActionListener {
     	parent.impOrig = WindowManager.getImage(imagename);
    
     	if(parent.impOrig!=null) {
-			parent.calibration = parent.impOrig.getCalibration().pixelWidth;
+			parent.calibrationX = parent.impOrig.getCalibration().pixelWidth;
+			parent.calibrationY = parent.impOrig.getCalibration().pixelHeight;
 			parent.FrameInterval = parent.impOrig.getCalibration().frameInterval;
 			if (parent.FrameInterval == 0)
 				parent.FrameInterval = 1;
@@ -46,8 +47,9 @@ public class ChooseBudOrigMap implements ActionListener {
 			otherSymbols.setDecimalSeparator('.');
 			otherSymbols.setGroupingSeparator(','); 
 			DecimalFormat df = new DecimalFormat(("#.###"), otherSymbols);
-			parent.Fieldwavesize.setText(String.valueOf(df.format(parent.FrameInterval))); 
-			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibration)));
+			parent.FieldinputLabelcalT.setText(String.valueOf(df.format(parent.FrameInterval))); 
+			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibrationX)));
+			parent.inputFieldcalY.setText(String.valueOf(df.format(parent.calibrationY)));
 	}
  
 		

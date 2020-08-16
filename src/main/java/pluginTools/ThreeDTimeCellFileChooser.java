@@ -59,7 +59,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		  public JFrame Cardframe = new JFrame("Red and Green Cell Tracker");
+		  public JFrame Cardframe = new JFrame("ThreeD + time Cell Tracker");
 		  public JPanel panelCont = new JPanel();
 		  public ImagePlus  impOrigGreen, impSegGreen,  impMask;
 		  public File impOrigGreenfile;
@@ -168,11 +168,17 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		
 				original.ChooseImage.addActionListener(new ChooseGreenOrigMap(this, original.ChooseImage));
 				
+				
+				panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				panelFirst.add(MaskMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
 				CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseCellSegstring, blankimageNames);
 				Panelfile = segmentation.SingleChannelOption();
 				
 				
-				panelFirst.add(Panelfile, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(Panelfile, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				
@@ -181,7 +187,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 				Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 				Paneldone.setBorder(LoadBtrack);
-				panelFirst.add(Paneldone, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				panelFirst.add(Paneldone, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
 				Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -191,22 +197,30 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 						GridBagConstraints.RELATIVE, insets, 0, 0));
 				
 				
-				Microscope.add(inputLabelcalY, new GridBagConstraints(1, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				Microscope.add(inputLabelcalY, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-				Microscope.add(inputFieldcalY, new GridBagConstraints(1, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+				Microscope.add(inputFieldcalY, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.RELATIVE, insets, 0, 0));
 				
-				Microscope.add(inputLabelcalT, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				Microscope.add(inputLabelcalZ, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.HORIZONTAL, insets, 0, 0));
 				
-				Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+				Microscope.add(inputFieldcalZ, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.RELATIVE, insets, 0, 0));
+				
+				
+				
+				Microscope.add(inputLabelcalT, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+						GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				
+				Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 7, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.RELATIVE, insets, 0, 0));
 				
 		
 				
 				Microscope.setBorder(microborder);
-				panelFirst.add(Microscope, new GridBagConstraints(0, 8, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				panelFirst.add(Microscope, new GridBagConstraints(0, 9, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 				
 				// Listeneres

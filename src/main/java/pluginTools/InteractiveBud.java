@@ -240,57 +240,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			
 		}
 		
-		// Input RGB and two flourescent channel segmentation images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
-				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring) {
-		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.SegGreenoriginalimg = SegGreenoriginalimg;
-			this.NameA = NameA;
-			this.calibrationX = calibrationX;
-			this.calibrationY = calibrationY;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			
-			
-		}
-		
-		// Input RGB and three flourescent channel segmentation images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final RandomAccessibleInterval<IntType> SegGreenoriginalimg,
-				final RandomAccessibleInterval<IntType> SegRedoriginalimg,
-				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring) {
-		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.SegGreenoriginalimg = SegGreenoriginalimg;
-			this.SegRedoriginalimg = SegRedoriginalimg;
-			this.NameA = NameA;
-			this.calibrationX = calibrationX;
-			this.calibrationY = calibrationY;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			
-			
-		}
+
+
 	
 	public ImageStack prestack;
 	public JTable table;
@@ -432,80 +383,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			
 		}
 		
-		
-		if(SegGreenoriginalimg!=null) {
-			
-			
-			
-			  dims = new long[SegGreenoriginalimg.numDimensions()];
-		        // get image dimension
-			  SegGreenoriginalimg.dimensions(dims);
-		        // create labeling index image
-		         indexImg = ArrayImgs.ints(dims);
-		        labeling = new ImgLabeling<>(indexImg);
-		        labels = new Iterator<Integer>()
-		        {
-		            private int i = 1;
-
-		            @Override
-		            public boolean hasNext()
-		            {
-		                return true;
-		            }
-
-		            @Override
-		            public Integer next()
-		            {
-		                return i++;
-		            }
-
-		            @Override
-		            public void remove()
-		            {}
-		        };
-		        
-		        ConnectedComponents.labelAllConnectedComponents(SegGreenoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
-		        
-		        SegGreenoriginalimg = labeling.getIndexImg();
-			
-		}
-		
-		if(SegRedoriginalimg!=null) {
-			
-			
-			
-			  dims = new long[SegRedoriginalimg.numDimensions()];
-		        // get image dimension
-			  SegRedoriginalimg.dimensions(dims);
-		        // create labeling index image
-		         indexImg = ArrayImgs.ints(dims);
-		        labeling = new ImgLabeling<>(indexImg);
-		        labels = new Iterator<Integer>()
-		        {
-		            private int i = 1;
-
-		            @Override
-		            public boolean hasNext()
-		            {
-		                return true;
-		            }
-
-		            @Override
-		            public Integer next()
-		            {
-		                return i++;
-		            }
-
-		            @Override
-		            public void remove()
-		            {}
-		        };
-		        
-		        ConnectedComponents.labelAllConnectedComponents(SegRedoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
-		        
-		        SegRedoriginalimg = labeling.getIndexImg();
-			
-		}
+	
 		
 		
 		

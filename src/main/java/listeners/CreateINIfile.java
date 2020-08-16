@@ -21,8 +21,8 @@ public class CreateINIfile {
 		LocalPrefs.set("MinBudTrack.int", CovistoKalmanPanel.trackduration);
 		LocalPrefs.set("MaxSearch.int", CovistoKalmanPanel.maxSearchradiusInit);
 		LocalPrefs.set("TimeCalibration.double", parent.timecal);
-		LocalPrefs.set("SpaceCalibration.double", parent.calibration);
-	
+		LocalPrefs.set("SpaceCalibrationX.double", parent.calibrationX);
+		LocalPrefs.set("SpaceCalibrationY.double", parent.calibrationY);
 		
 		
 		

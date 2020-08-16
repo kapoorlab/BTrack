@@ -42,6 +42,7 @@ public class ChooseGreenOrigMap implements ActionListener {
 			
     		    parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;
 			parent.calibrationY = parent.impOrigGreen.getCalibration().pixelHeight;
+			parent.calibrationZ = parent.impOrigGreen.getCalibration().pixelDepth;
 			parent.FrameInterval = parent.impOrigGreen.getCalibration().frameInterval;
 			
 			if (parent.FrameInterval == 0)
@@ -53,7 +54,7 @@ public class ChooseGreenOrigMap implements ActionListener {
 			parent.inputLabelcalT.setText(String.valueOf(df.format(parent.FrameInterval))); 
 			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibrationX)));
 			parent.inputFieldcalY.setText(String.valueOf(df.format(parent.calibrationY)));
-			
+			parent.inputFieldcalZ.setText(String.valueOf(df.format(parent.calibrationZ)));
 	}
  
 		

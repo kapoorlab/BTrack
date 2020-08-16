@@ -46,6 +46,9 @@ import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import pluginTools.TwoDTimeCellFileChooser.CalTListener;
+import pluginTools.TwoDTimeCellFileChooser.CalXListener;
+import pluginTools.TwoDTimeCellFileChooser.CalYListener;
 import fileListeners.SimplifiedIO;
 
 
@@ -101,10 +104,10 @@ public class BudFileChooser extends JPanel {
 	public String donestring = "Done Selection";
 	public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring), new EmptyBorder(c.insets));
 
-	public Label inputLabelcalX, wavesize;
-	public double calibration, FrameInterval;
+	  public Label inputLabelcalX, inputLabelcalY, inputLabelcalZ, inputLabelcalT;
+	  public double calibrationX, calibrationY, calibrationZ, FrameInterval;
 
-	public TextField inputFieldcalX, Fieldwavesize;
+	  public TextField inputFieldcalX, inputFieldcalY, inputFieldcalZ, FieldinputLabelcalT;
 	public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"),
 			new EmptyBorder(c.insets));
 	public CheckboxGroup budmode = new CheckboxGroup();
@@ -127,20 +130,26 @@ public class BudFileChooser extends JPanel {
 
 	public BudFileChooser() {
 
-		inputLabelcalX = new Label("Pixel calibration in X,Y (um)");
-		inputFieldcalX = new TextField(5);
-		inputFieldcalX.setText("1");
+		   inputLabelcalX = new Label("Pixel calibration in X(um)");
+	       inputFieldcalX = new TextField(5);
+		   inputFieldcalX.setText("1");
+		   
 
-		wavesize = new Label("Pixel calibration in T (min)");
-		Fieldwavesize = new TextField(5);
-		Fieldwavesize.setText("1");
+		   inputLabelcalY = new Label("Pixel calibration in Y(um)");
+	       inputFieldcalY = new TextField(5);
+		   inputFieldcalY.setText("1");
+
+		   inputLabelcalT = new Label("Pixel calibration in T (min)");
+		   FieldinputLabelcalT = new TextField(5);
+		   FieldinputLabelcalT.setText("1");
 		panelFirst.setLayout(layout);
 
 		Paneldone.setLayout(layout);
 		Microscope.setLayout(layout);
 		CardLayout cl = new CardLayout();
-		calibration = Float.parseFloat(inputFieldcalX.getText());
-		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
+		calibrationX = Float.parseFloat(inputFieldcalX.getText());
+		calibrationY = Float.parseFloat(inputFieldcalY.getText());
+		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 
 		panelCont.setLayout(cl);
 		panelCont.add(panelFirst, "1");
@@ -191,18 +200,24 @@ public class BudFileChooser extends JPanel {
 		panelFirst.add(Paneldone, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
+
 		Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.add(wavesize, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		
+		Microscope.add(inputLabelcalY, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(Fieldwavesize, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputFieldcalY, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
+		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.RELATIVE, insets, 0, 0));
 		Microscope.setBorder(microborder);
 		panelFirst.add(Microscope, new GridBagConstraints(0, 8, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
@@ -217,7 +232,8 @@ public class BudFileChooser extends JPanel {
 		segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());
-		Fieldwavesize.addTextListener(new WaveListener());
+		inputFieldcalY.addTextListener(new CalYListener());
+		FieldinputLabelcalT.addTextListener(new CalTListener());
 		Done.addActionListener(new BudDoneListener());
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
@@ -238,12 +254,13 @@ public class BudFileChooser extends JPanel {
 			String s = tc.getText();
 
 			if (s.length() > 0)
-				calibration = Double.parseDouble(s);
+				calibrationX = Double.parseDouble(s);
 		}
 
 	}
 
-	public class WaveListener implements TextListener {
+	
+	public class CalYListener implements TextListener {
 
 		@Override
 		public void textValueChanged(TextEvent e) {
@@ -251,11 +268,24 @@ public class BudFileChooser extends JPanel {
 			String s = tc.getText();
 
 			if (s.length() > 0)
-				FrameInterval = Float.parseFloat(s);
-
+				calibrationY = Double.parseDouble(s);
 		}
 
 	}
+	
+	public class CalTListener implements TextListener {
+
+		@Override
+		public void textValueChanged(TextEvent e) {
+			final TextComponent tc = (TextComponent) e.getSource();
+			String s = tc.getText();
+
+			if (s.length() > 0)
+				FrameInterval = Double.parseDouble(s);
+		}
+
+	}
+	
 
 	public class BudDoneListener implements ActionListener {
 
@@ -287,13 +317,13 @@ public class BudFileChooser extends JPanel {
 		String name = impOrig.getOriginalFileInfo().fileName;
 
 		WindowManager.closeAllWindows();
-		calibration = Float.parseFloat(inputFieldcalX.getText());
-		FrameInterval = Float.parseFloat(Fieldwavesize.getText());
-		System.out.println("CalibrationX:" + calibration);
-		System.out.println("CalibrationT:" + FrameInterval);
+		
+		calibrationX = Float.parseFloat(inputFieldcalX.getText());
+		calibrationY = Float.parseFloat(inputFieldcalY.getText());
+		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 		if (!DoYellow && !DoGreen && !DoRed)
 
-			new InteractiveBud(imageOrig, imageSegA, impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval,
+			new InteractiveBud(imageOrig, imageSegA, impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
 					name, true).run(null);
 
 		if (DoYellow) {
@@ -303,44 +333,12 @@ public class BudFileChooser extends JPanel {
 
 			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			new InteractiveBud(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibration,
+			new InteractiveBud(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name).run(null);
 
 		}
 
-		if (DoGreen) {
-			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(
-					impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName, new IntType());
-
-			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegC.numDimensions());
-
-			new InteractiveBud(imageOrig, imageSegA, imageSegB, imageSegC, impOrig.getOriginalFileInfo().fileName,
-					calibration, FrameInterval, name).run(null);
-
-		}
-
-		if (DoRed) {
-
-			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageSegC = SimplifiedIO.openImage(
-					impSegC.getOriginalFileInfo().directory + impSegC.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageSegD = SimplifiedIO.openImage(
-					impSegD.getOriginalFileInfo().directory + impSegD.getOriginalFileInfo().fileName, new IntType());
-
-			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegC.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegD.numDimensions());
-
-			new InteractiveBud(imageOrig, imageSegA, imageSegB, imageSegC, imageSegD,
-					impOrig.getOriginalFileInfo().fileName, calibration, FrameInterval, name).run(null);
-
-		}
+		
 
 		close(parent);
 
