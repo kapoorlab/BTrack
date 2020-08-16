@@ -51,8 +51,8 @@ public class GreenCellTrack {
 		ArrayList<Greenobject> Greencelllist = new ArrayList<Greenobject>();
 		
 			
-		   TrackEach3DCell compute = new TrackEach3DCell(parent, Greencelllist, t, percent);
-		    compute.displayCells();
+		   TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
+		   compute.displayCells();
 		
 		
 			parent.AllGreencells.put(Integer.toString(t), Greencelllist);

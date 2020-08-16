@@ -61,14 +61,14 @@ public class TrackEach3DCell {
 
 
 	final InteractiveGreen parent;
-	final int t;
 	int percent;
 	ArrayList<Greenobject> Greencelllist = new ArrayList<Greenobject>();
-	public TrackEach3DCell(final InteractiveGreen parent, final int t,
+	
+	
+	public TrackEach3DCell(final InteractiveGreen parent,
 			final int percent) {
 
 		this.parent = parent;
-		this.t = t;
 		this.percent = percent;
 	}
 	
@@ -120,7 +120,7 @@ public class TrackEach3DCell {
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
 														100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
-														"Collecting Cells = " + t + "/" + parent.thirdDimensionSize );
+														"Collecting Cells = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
 
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
@@ -151,7 +151,7 @@ public class TrackEach3DCell {
 			
 			
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-            parent.Greencells.add(greencell, t);  
+            parent.Greencells.add(greencell, parent.thirdDimension);  
 		}
 		
 		

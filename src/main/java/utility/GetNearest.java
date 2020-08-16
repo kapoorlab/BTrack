@@ -22,6 +22,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
@@ -185,11 +186,11 @@ public static ArrayList<Greenobject> getAllInterior3DCells(InteractiveGreen pare
 			
 		}
 	
-					for (Integer labelyellow : InsideCellList.keySet()) {
-						   Boolean isInterior = InsideCellList.get(labelyellow);
+					for (Integer labelgreen : InsideCellList.keySet()) {
+						   Boolean isInterior = InsideCellList.get(labelgreen);
 						    if(isInterior) {
 							Budregionobject PairCurrentViewBit = TrackEachBud
-									.BudCurrentLabelBinaryImage(GreenCellSeg, labelyellow);
+									.BudCurrentLabelBinaryImage(GreenCellSeg, labelgreen);
 
 							// For each bud get the list of points
 							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
@@ -199,9 +200,9 @@ public static ArrayList<Greenobject> getAllInterior3DCells(InteractiveGreen pare
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
 							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
 							
-							
-							Greenobject insideGreencells = new Greenobject(cellcenterpoint, cellArea, cellPerimeter, Radius, ID, parent.thirdDimension)
-							
+							double[] Extents = radiusXYZ( PairCurrentViewBit.Boundaryimage);
+							Greenobject insideGreencells = new Greenobject(cellcenterpoint, cellArea, cellPerimeter, Extents, intensity, labelgreen, parent.thirdDimension);
+							Allcells.add(insideGreencells);
 						
 							for (RealLocalizable insidetruth : bordercelltruths) {
 
@@ -221,7 +222,15 @@ public static ArrayList<Greenobject> getAllInterior3DCells(InteractiveGreen pare
 		
 	}
 	
-	
+public static < T extends RealType< T > > double[] radiusXYZ( final RandomAccessibleInterval< T > img)
+{
+  
+  double radiusX = img.realMax(0) - img.realMin(0);
+  double radiusY = img.realMax(1) - img.realMin(1);
+  double radiusZ = img.realMax(2) - img.realMin(2);
+  
+  return new double[]{ radiusX, radiusY, radiusZ };
+}
 	
 	public static double getIntensity(InteractiveBud parent, RandomAccessibleInterval<BitType> Regionimage) {
 		

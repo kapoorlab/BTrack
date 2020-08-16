@@ -25,15 +25,17 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 	
 	public  int time;
 	
-	public double Radius;
+	public double[] Radius;
 	
 	private String name;
 	
 	public final int ID;
 	
+	public final double Intensity;
+	
 	private final ConcurrentHashMap< String, Double > features = new ConcurrentHashMap< String, Double >();
 	
-	public Greenobject(final RealLocalizable Greencenter, final double Greenarea, final double Greenperimeter, final double Radius, final int ID, final int time) {
+	public Greenobject(final RealLocalizable Greencenter, final double Greenarea, final double Greenperimeter, final double[] Radius, final double Intensity, final int ID, final int time) {
 		
 		super(3);
 		
@@ -41,11 +43,13 @@ public class Greenobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 		this.Greenarea = Greenarea;
 		
-		this.Radius = Math.sqrt(Greenarea);
+		this.Radius = Radius;
 		
 		this.Greenperimeter = Greenperimeter;
 		
 		this.time = time;
+		
+		this.Intensity = Intensity;
 		
 		this.ID = ID;
 	}

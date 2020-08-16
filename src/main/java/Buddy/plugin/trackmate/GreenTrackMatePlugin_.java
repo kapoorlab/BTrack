@@ -9,9 +9,7 @@ import Buddy.plugin.trackmate.gui.GuiUtils;
 	import ij.WindowManager;
 	import ij.plugin.PlugIn;
 	import net.imglib2.img.display.imagej.ImageJFunctions;
-	import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
-import pluginTools.RedGreenFileChooser;
 public class GreenTrackMatePlugin_ implements PlugIn {
 
 		protected TrackMate trackmate;
