@@ -175,7 +175,7 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 							final double d2 = source.squareDistanceTo( target );
 							final double dt = source.diffTo( target, Budpointobject.POSITION_T );
 							val = Math.sqrt( d2 ) / Math.abs( dt );
-							VelocityList.put((int)source.t, val* (parent.calibration/parent.timecal));
+							VelocityList.put((int)source.t, val* (parent.calibrationX/parent.timecal));
 							
 							// For median, min and max
 							velocities[ n ] = val;

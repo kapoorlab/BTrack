@@ -11,6 +11,7 @@ import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
 import displayBud.DisplayListOverlay;
+import greenDetector.Greenobject;
 import ij.gui.OvalRoi;
 import ij.gui.Roi;
 import net.imglib2.Cursor;
@@ -25,6 +26,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
+import pluginTools.InteractiveGreen;
 import pluginTools.TrackEachBud;
 
 public class GetNearest {
@@ -139,7 +141,7 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 							// For each bud get the list of points
 							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
-							double cellArea = interiorcelltruths.size() * parent.calibration;
+							double cellArea = interiorcelltruths.size() * parent.calibrationX;
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
 							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
 							
@@ -163,7 +165,90 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 	}
 	
 	
+public static ArrayList<Greenobject> getAllInterior3DCells(InteractiveGreen parent, final RandomAccessibleInterval<IntType> Mask, final RandomAccessibleInterval<IntType> GreenCellSeg) {
+		
+		Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
+		ArrayList<Greenobject> Allcells = new ArrayList<Greenobject>();
+		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
+		RandomAccess<IntType> budintran = Mask.randomAccess();
+		// Select all yellow cells
+		
+		while (intcursor.hasNext()) {
+
+			intcursor.fwd();
+			budintran.setPosition(intcursor);
+			int labelyellow = intcursor.get().get();
+			int label = budintran.get().get();
+			InsideCellList.put(labelyellow, false);
+			if(label > 0)
+				InsideCellList.put(labelyellow, true);
+			
+		}
+	
+					for (Integer labelyellow : InsideCellList.keySet()) {
+						   Boolean isInterior = InsideCellList.get(labelyellow);
+						    if(isInterior) {
+							Budregionobject PairCurrentViewBit = TrackEachBud
+									.BudCurrentLabelBinaryImage(GreenCellSeg, labelyellow);
+
+							// For each bud get the list of points
+							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+							double cellArea = interiorcelltruths.size() * parent.calibrationX;
+							double cellPerimeter = bordercelltruths.size() * parent.calibrationX;
+							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
+							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
+							
+							
+							Greenobject insideGreencells = new Greenobject(cellcenterpoint, cellArea, cellPerimeter, Radius, ID, parent.thirdDimension)
+							
+						
+							for (RealLocalizable insidetruth : bordercelltruths) {
+
+								Integer xPts = (int) insidetruth.getFloatPosition(0);
+								Integer yPts = (int) insidetruth.getFloatPosition(1);
+								
+								OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
+								points.setStrokeColor(Color.RED);
+								points.setStrokeWidth(2);
+								parent.overlay.add(points);
+							}
+						    }
+					}
+					
+					parent.imp.updateAndDraw();
+		return Allcells;
+		
+	}
+	
+	
+	
 	public static double getIntensity(InteractiveBud parent, RandomAccessibleInterval<BitType> Regionimage) {
+		
+		double intensity = 0;
+		
+		Cursor<BitType> cursor =  Views.iterable(Regionimage).localizingCursor();
+		
+		RandomAccess<FloatType> intran = parent.CurrentView.randomAccess();
+		
+		while(cursor.hasNext()) {
+			
+			cursor.fwd();
+			
+			if(cursor.get().getInteger() > 0 ) {
+				
+				intensity+=intran.get().get();
+				
+			}
+			
+		}
+		
+		
+		return intensity;		
+		
+	}
+	
+	public static double getIntensity(InteractiveGreen parent, RandomAccessibleInterval<BitType> Regionimage) {
 		
 		double intensity = 0;
 		

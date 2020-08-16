@@ -53,8 +53,8 @@ public class BUDDYTrackingFunctions {
 		}
 
 		
-		BUDDYKFsearch Tsearch = new BUDDYKFsearch(colllist, parent.UserchosenCostFunction,  CovistoKalmanPanel.initialSearchradius/parent.calibration ,
-				CovistoKalmanPanel.initialSearchradius/parent.calibration, 
+		BUDDYKFsearch Tsearch = new BUDDYKFsearch(colllist, parent.UserchosenCostFunction,  CovistoKalmanPanel.initialSearchradius/parent.calibrationX ,
+				CovistoKalmanPanel.initialSearchradius/parent.calibrationX, 
 				CovistoKalmanPanel.maxframegap, parent.AccountedT, parent.jpb);
 		Tsearch.process();
 		SimpleWeightedGraph<Budpointobject, DefaultWeightedEdge> simplegraph = Tsearch.getResult();

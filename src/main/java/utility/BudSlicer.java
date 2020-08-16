@@ -29,12 +29,42 @@ public class BudSlicer {
 		final ImgFactory<FloatType> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
 		RandomAccessibleInterval<FloatType> totalimg = factory.create(dim, type);
 
-		totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+		totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
 		return totalimg;
 
 	}
+	
+	// Returns 3D image XYZ if the input image is XYZT, returned image is 1 dimensional lesser than the original image if the image is 2D it is returned as is
 
+	public static  < T extends NumericType< T > & NativeType< T > > RandomAccessibleInterval<T> getCurrentGreenView(RandomAccessibleInterval<T> originalimg,
+			int thirdDimension, int thirdDimensionSize, int fourthDimension, int fourthDimensionSize) {
+
+		final T type = originalimg.randomAccess().get().createVariable();
+		long[] dim = { originalimg.dimension(0), originalimg.dimension(1) };
+		final ImgFactory<T> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
+		RandomAccessibleInterval<T> totalimg = factory.create(dim, type);
+
+		if (thirdDimensionSize == 0) {
+
+			totalimg = originalimg;
+		}
+		if (thirdDimensionSize > 0 && fourthDimensionSize == 0) {
+
+			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
+		}
+
+		if (fourthDimensionSize > 0) {
+
+			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, fourthDimension - 1);
+
+		}
+
+		return totalimg;
+
+	}
+	
+	
 	public static  < T extends NumericType< T > & NativeType< T > > RandomAccessibleInterval<T> getCurrentBudView(RandomAccessibleInterval<T> originalimg,
 			int thirdDimension, int thirdDimensionSize) {
 
@@ -47,7 +77,7 @@ public class BudSlicer {
 			totalimg = originalimg;
 		}
 		else
-			totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			totalimg = Views.hyperSlice(originalimg,originalimg.numDimensions() - 1 , thirdDimension - 1);
 
 
 		return totalimg;
@@ -68,14 +98,14 @@ public class BudSlicer {
 		}
 		if (thirdDimensionSize > 0 && fourthDimensionSize == 0) {
 
-			totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 		}
 
 		if (fourthDimensionSize > 0) {
 
-			RandomAccessibleInterval<BitType> pretotalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			RandomAccessibleInterval<BitType> pretotalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
-			totalimg = Views.hyperSlice(pretotalimg, 2, fourthDimension - 1);
+			totalimg = Views.hyperSlice(pretotalimg, pretotalimg.numDimensions() - 1, fourthDimension - 1);
 		}
 
 		return totalimg;
@@ -97,15 +127,15 @@ public class BudSlicer {
 
 		if (thirdDimensionSize > 0 && fourthDimensionSize == 0) {
 
-			totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
 		}
 
 		if (fourthDimensionSize > 0) {
 
-			RandomAccessibleInterval<IntType> pretotalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			RandomAccessibleInterval<IntType> pretotalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
-			totalimg = Views.hyperSlice(pretotalimg, 2, fourthDimension - 1);
+			totalimg = Views.hyperSlice(pretotalimg, pretotalimg.numDimensions() - 1, fourthDimension - 1);
 		}
 
 		
@@ -138,15 +168,15 @@ public class BudSlicer {
 
 		if (thirdDimensionSize > 0 && fourthDimensionSize == 0) {
 
-			totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
 		}
 
 		if (fourthDimensionSize > 0) {
 
-			RandomAccessibleInterval<BitType> pretotalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			RandomAccessibleInterval<BitType> pretotalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
-			totalimg = Views.hyperSlice(pretotalimg, 2, fourthDimension - 1);
+			totalimg = Views.hyperSlice(pretotalimg, pretotalimg.numDimensions() - 1, fourthDimension - 1);
 		}
 
 		RandomAccessibleInterval<BitType> view;
@@ -195,15 +225,15 @@ public class BudSlicer {
 
 		if (thirdDimensionSize > 0 && fourthDimensionSize == 0) {
 
-			totalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
 		}
 
 		if (fourthDimensionSize > 0) {
 
-			RandomAccessibleInterval<IntType> pretotalimg = Views.hyperSlice(originalimg, 2, thirdDimension - 1);
+			RandomAccessibleInterval<IntType> pretotalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
 
-			totalimg = Views.hyperSlice(pretotalimg, 2, fourthDimension - 1);
+			totalimg = Views.hyperSlice(pretotalimg, pretotalimg.numDimensions() - 1, fourthDimension - 1);
 		}
 		RandomAccessibleInterval<IntType> view;
 		if (rect != null)

@@ -55,133 +55,53 @@ import net.imglib2.view.Views;
 import skeleton.*;
 import utility.GetNearest;
 import displayBud.DisplayListOverlay;
+import greenDetector.Greenobject;
 
-public class TrackEachCell {
+public class TrackEach3DCell {
 
 
-	final InteractiveBud parent;
+	final InteractiveGreen parent;
 	final int t;
 	int percent;
-	final ArrayList<Budobject> Budlist;
-	final ArrayList<Budpointobject> Budpointlist;
-	final ArrayList<BCellobject> Budcelllist;
-    ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
-    
-	public TrackEachCell(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, 
+	ArrayList<Greenobject> Greencelllist = new ArrayList<Greenobject>();
+	public TrackEach3DCell(final InteractiveGreen parent, final int t,
 			final int percent) {
 
 		this.parent = parent;
 		this.t = t;
 		this.percent = percent;
-		this.Budlist = Budlist;
-		this.Budpointlist = Budpointlist;
-        this.Budcelllist = null;
-	}
-	
-	public TrackEachCell(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist, final int t, 
-			final int percent) {
-
-		this.parent = parent;
-		this.t = t;
-		this.percent = percent;
-		this.Budlist = Budlist;
-		this.Budpointlist = Budpointlist;
-        this.Budcelllist = Budcelllist;
-	}
-
-	public TrackEachCell(final InteractiveBud parent, 
-			final int t,  final int percent) {
-
-		this.parent = parent;
-		this.t = t;
-		this.percent = percent;
-		this.Budlist = null;
-		this.Budpointlist = null;
-        this.Budcelllist = null;
-
 	}
 	
 
+
 	
 	
-	public ArrayList<Budobject> returnBudlist(){
+	public ArrayList<Greenobject> returnGreenlist(){
 		
 		
-		return Budlist;
+		return Greencelllist;
 	}
 	
-    public ArrayList<Budpointobject> returnBudpointlist(){
-		
-		
-		return Budpointlist;
-	}
-	
-    public ArrayList<BCellobject> returnBCellobjectlist(){
-		
-		
-		return Budcelllist;
-	}
+
 	
 	
 	public void displayCells() {
 
-		int sidecutpixel = 1;
-		int nThreads = Runtime.getRuntime().availableProcessors();
-		
 		
 		String uniqueID = Integer.toString(parent.thirdDimension);
 		
 		
 		Iterator<Integer> setiter = parent.pixellist.iterator();
-		Set<Integer> copyList = parent.pixellist;
 		parent.overlay.clear();
-	
+
+
 		while (setiter.hasNext()) {
 
+			percent++;
 			int label = setiter.next();
 
 			if (label > 0) {
 
-				// Input the integer image of bud with the label and output the binary border
-				// for that label
-				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
-						parent.CurrentViewInt, label);
-
-				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-
-				// Get the center point of each bud
-				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-
-				int ndims = centerpoint.numDimensions();
-				for (int d = 0; d < ndims; ++d)
-					if (centerpoint.getDoublePosition(d) > sidecutpixel
-							&& centerpoint.getDoublePosition(d) < parent.CurrentViewInt.dimension(d) - sidecutpixel) {
-						parent.AllBudcenter.add(centerpoint);
-
-						parent.Refcord = centerpoint;
-
-						parent.AllRefcords.put(uniqueID, parent.Refcord);
-
-					}
-			}
-
-		}
-
-		Iterator<Integer> setitersecond = copyList.iterator();
-
-		
-
-
-		while (setitersecond.hasNext()) {
-
-			percent++;
-			int label = setitersecond.next();
-
-			if (label > 0) {
-
 		
 
 				// Input the integer image of bud with the label and output the binary border
@@ -192,18 +112,9 @@ public class TrackEachCell {
 				// For each bud get the list of points
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
-				// Get the center point of each bud
-				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(truths);
 
-			
 
-								RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
-								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
-										(long) currentpoint.getFloatPosition(1) });
-
-											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 											// For each bud get the list of points
-											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 											RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 
 											if (parent.jpb != null)
@@ -233,30 +144,17 @@ public class TrackEachCell {
 			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
 			int label) {
 
-		// Corner points of region
-		OpService ops = parent.ij.op();
-
-		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
 	
+	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewMaskInt, parent.CurrentViewInt);
 
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
-				truths.size() * parent.calibrationX);
-		Budlist.add(Curreentbud);
-		if (parent.SegYelloworiginalimg != null) {
-	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
-
-		for(Cellobject currentbudcell:celllist) {
+		for(Greenobject greencell: Greencelllist) {
 			
 			
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, 0, 0, t);
-            parent.budcells.add(budncell, t);  
+            parent.Greencells.add(greencell, t);  
 		}
 		
 		
-		
-		
-		}
 		
 
 	}

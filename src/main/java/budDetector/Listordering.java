@@ -144,6 +144,28 @@ public static Localizable getIntMeanCord(List<RealLocalizable> truths) {
 
 		return meanCord;
 	}
+
+public static Localizable getIntMean3DCord(List<RealLocalizable> truths) {
+
+	
+	Iterator<RealLocalizable> iter = truths.iterator();
+	
+	double Xmean = 0, Ymean = 0, Zmean = 0;
+	while (iter.hasNext()) {
+
+		RealLocalizable currentpair = iter.next();
+
+		RealLocalizable currentpoint = currentpair;
+
+		Xmean += currentpoint.getDoublePosition(0);
+		Ymean += currentpoint.getDoublePosition(1);
+		Zmean += currentpoint.getDoublePosition(2);
+	}
+	
+	Point meanCord = new Point(new int[] { (int) (Xmean / truths.size()), (int) (Ymean / truths.size()), (int) (Zmean / truths.size()) });
+
+	return meanCord;
+}
 	
 	/**
 	 * 

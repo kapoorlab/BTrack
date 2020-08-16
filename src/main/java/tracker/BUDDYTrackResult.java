@@ -188,7 +188,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 					if(previousbud!=null) { 
 							velocity = Math.sqrt(Distance.DistanceSq(currentbud.Location, previousbud.Location));
 					
-					velocity = velocity * (parent.calibration/parent.timecal);
+					velocity = velocity * (parent.calibrationX/parent.timecal);
 					Budpointobject newbud = new Budpointobject(currentbud.Budcenter, currentbud.linelist, currentbud.dynamiclinelist,currentbud.perimeter, currentbud.label, currentbud.Location, currentbud.t, velocity);
 					
 					
@@ -201,8 +201,8 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				double trackmeanspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MEAN_SPEED);
 				double trackmaxspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MAX_SPEED);
 				
-				parent.TrackMeanVelocitylist.put(ID, trackmeanspeed* (parent.calibration/parent.timecal));
-				parent.TrackMaxVelocitylist.put(ID, trackmaxspeed* (parent.calibration/parent.timecal));
+				parent.TrackMeanVelocitylist.put(ID, trackmeanspeed* (parent.calibrationX/parent.timecal));
+				parent.TrackMaxVelocitylist.put(ID, trackmaxspeed* (parent.calibrationX/parent.timecal));
 				
 			}
 			

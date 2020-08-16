@@ -303,8 +303,8 @@ public class BUDDYDisplaySelectedTrack {
 			
 				
 			double time = Track.getB().t * parent.timecal;
-			double LocationX = Track.getB().Location[0] * parent.calibration;
-			double LocationY = Track.getB().Location[1] * parent.calibration;
+			double LocationX = Track.getB().Location[0] * parent.calibrationX;
+			double LocationY = Track.getB().Location[1] * parent.calibrationY;
 			double Velocity = 0;
 			if(VelocityID.get(Track.getB().t)!=null)
 			 Velocity = VelocityID.get(Track.getB().t);

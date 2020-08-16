@@ -131,68 +131,20 @@ public class TrackEachBud {
 	
 	public void displayBuds() {
 
-		int sidecutpixel = 10;
-		int nThreads = Runtime.getRuntime().availableProcessors();
 		
 		
 		String uniqueID = Integer.toString(parent.thirdDimension);
 		
 		
-		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
-		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		Iterator<Integer> setiter = parent.pixellist.iterator();
-		Set<Integer> copyList = parent.pixellist;
 		parent.overlay.clear();
 	
-		while (setiter.hasNext()) {
-
-			int label = setiter.next();
-
-			if (label > 0) {
-
-			
-
-				// Input the integer image of bud with the label and output the binary border
-				// for that label
-				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
-						parent.CurrentViewInt, label);
-
-				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-
-				// Get the center point of each bud
-				RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-
-				int ndims = centerpoint.numDimensions();
-				for (int d = 0; d < ndims; ++d)
-					if (centerpoint.getDoublePosition(d) > sidecutpixel
-							&& centerpoint.getDoublePosition(d) < parent.CurrentViewInt.dimension(d) - sidecutpixel) {
-						parent.AllBudcenter.add(centerpoint);
-
-						parent.Refcord = centerpoint;
-
-						parent.AllRefcords.put(uniqueID, parent.Refcord);
-
-					}
-			}
-
-		}
-
-		Iterator<Integer> setitersecond = copyList.iterator();
-
 		
 
-		HashMap<Integer, Boolean> LabelCovered = new HashMap<Integer, Boolean>();
-		for (Integer Track : copyList) {
-
-			LabelCovered.put(Track, false);
-
-		}
-
-		while (setitersecond.hasNext()) {
+		while (setiter.hasNext()) {
 
 			percent++;
-			int label = setitersecond.next();
+			int label = setiter.next();
 
 			if (label > 0) {
 
@@ -220,27 +172,11 @@ public class TrackEachBud {
 
 				}
 
-				int ndims = currentpoint.numDimensions();
-				
-
-					
-
-						if (parent.ChosenBudcenter.size() == 0 && parent.thirdDimension > 1
-								&& !CovistoKalmanPanel.Skeletontime.isEnabled()) {
-
-							if (parent.jpb != null)
-								utility.BudProgressBar.SetProgressBar(parent.jpb,
-										100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size() ),
-										"No buddies here! What are you doing?");
-
-						}
-
 
 								RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
 								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
 										(long) currentpoint.getFloatPosition(1) });
 
-											LabelCovered.put(label, true);
 											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 											// For each bud get the list of points
 											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
@@ -267,82 +203,9 @@ public class TrackEachBud {
 	
 	
 
-	public RandomAccessibleInterval<FloatType>  DistanceTransformImage(RandomAccessibleInterval<BitType> inputimg) {
-		int n = inputimg.numDimensions();
-
-		
-		
-		RandomAccessibleInterval<FloatType> outimg = new ArrayImgFactory().create(inputimg, new FloatType());
-		// make an empty list
-		final RealPointSampleList<BitType> list = new RealPointSampleList<BitType>(n);
-
-		// cursor on the binary image
-		final Cursor<BitType> cursor = Views.iterable(inputimg).localizingCursor();
-
-		// for every pixel that is 1, make a new RealPoint at that location
-		while (cursor.hasNext())
-			if (cursor.next().getInteger() == 1)
-				list.add(new RealPoint(cursor), cursor.get());
-
-		// build the KD-Tree from the list of points that == 1
-		final KDTree<BitType> tree = new KDTree<BitType>(list);
-
-		// Instantiate a nearest neighbor search on the tree (does not modifiy
-		// the tree, just uses it)
-		final NearestNeighborSearchOnKDTree<BitType> search = new NearestNeighborSearchOnKDTree<BitType>(tree);
-
-		// randomaccess on the output
-		final RandomAccess<FloatType> ranac = outimg.randomAccess();
-
-		// reset cursor for the input (or make a new one)
-		cursor.reset();
-
-		// for every pixel of the binary image
-		while (cursor.hasNext()) {
-			cursor.fwd();
-
-			// set the randomaccess to the same location
-			ranac.setPosition(cursor);
-
-			// if value == 0, look for the nearest 1-valued pixel
-			if (cursor.get().getInteger() == 0) {
-				// search the nearest 1 to the location of the cursor (the
-				// current 0)
-				search.search(cursor);
-
-				// get the distance (the previous call could return that, this
-				// for generality that it is two calls)
- 
-				
-				ranac.get().setReal(search.getDistance());
-
-			} else {
-				// if value == 1, no need to search
-				ranac.get().setZero();
-			}
-		}
-		
-		return outimg;
-
-	}
-
 	
 	
-	public static < T extends RealType< T > & NativeType< T > >
-	RandomAccessibleInterval< T > createGaussFilteredArrayImg(
-			RandomAccessibleInterval< T > rai,
-			double[] sigmas )
-	{
-		ImgFactory< T > imgFactory = new ArrayImgFactory( rai.randomAccess().get()  );
 
-		RandomAccessibleInterval< T > blurred = imgFactory.create( Intervals.dimensionsAsLongArray( rai ) );
-
-		blurred = Views.translate( blurred, Intervals.minAsLongArray( rai ) );
-
-		Gauss3.gauss( sigmas, Views.extendBorder( rai ), blurred ) ;
-
-		return blurred;
-	}
 	public void Common(Budregionobject  PairCurrentViewBit,
 			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
 			int label) {
@@ -367,7 +230,7 @@ public class TrackEachBud {
 		for (RealLocalizable budpoints : skeletonEndPoints) {
 
 			Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
-					truths.size() * parent.calibration, label,
+					truths.size() * parent.calibrationX, label,
 					new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
 					parent.thirdDimension, 0);
 
@@ -375,7 +238,7 @@ public class TrackEachBud {
 
 		}
 		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
-				truths.size() * parent.calibration);
+				truths.size() * parent.calibrationX);
 		Budlist.add(Curreentbud);
 		if (parent.SegYelloworiginalimg != null) {
 	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
