@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
@@ -18,7 +19,7 @@ public class GreenSaveDescriptor extends GreenSomeDialogDescriptor {
 
 	private static final String KEY = "Saving";
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
 	private final GreenTrackMateGUIController controller;
 	
@@ -39,14 +40,14 @@ public class GreenSaveDescriptor extends GreenSomeDialogDescriptor {
 		logger.log("Saving data...\n", Logger.BLUE_COLOR);
 		if (null == file) {
 			File folder;
-			if (null != trackmate.getSettings().imp && null != trackmate.getSettings().imp.getOriginalFileInfo()
-					&& null != trackmate.getSettings().imp.getOriginalFileInfo().directory) {
-				folder = new File(trackmate.getSettings().imp.getOriginalFileInfo().directory);
+			if (null != trackmate.getGreenSettings().imp && null != trackmate.getGreenSettings().imp.getOriginalFileInfo()
+					&& null != trackmate.getGreenSettings().imp.getOriginalFileInfo().directory) {
+				folder = new File(trackmate.getGreenSettings().imp.getOriginalFileInfo().directory);
 				/*
 				 * Update the settings field with the image file location now, because it's
 				 * valid.
 				 */
-				trackmate.getSettings().imageFolder = trackmate.getSettings().imp.getOriginalFileInfo().directory;
+				trackmate.getGreenSettings().imageFolder = trackmate.getGreenSettings().imp.getOriginalFileInfo().directory;
 			} else {
 				folder = new File(System.getProperty("user.dir"));
 				/*
@@ -56,11 +57,11 @@ public class GreenSaveDescriptor extends GreenSomeDialogDescriptor {
 				logger.error("Warning: The source image does not match a file on the system."
 						+ "TrackMate won't be able to reload it when opening this XML file.\n"
 						+ "To fix this, save the source image to a TIF file before saving the TrackMate session.\n");
-				trackmate.getSettings().imageFolder = "";
+				trackmate.getGreenSettings().imageFolder = "";
 			}
 			try {
 				file = new File(
-						folder.getPath() + File.separator + trackmate.getSettings().imp.getShortTitle() + ".xml");
+						folder.getPath() + File.separator + trackmate.getGreenSettings().imp.getShortTitle() + ".xml");
 			} catch (final NullPointerException npe) {
 				file = new File(folder.getPath() + File.separator + "TrackMateData.xml");
 			}
@@ -70,7 +71,7 @@ public class GreenSaveDescriptor extends GreenSomeDialogDescriptor {
 		 * If we are to save tracks, we better ensures that track and edge features are
 		 * there, even if we have to enforce it.
 		 */
-		if (trackmate.getModel().getTrackModel().nTracks(false) > 0) {
+		if (trackmate.getGreenModel().getTrackModel().nTracks(false) > 0) {
 			trackmate.computeEdgeFeatures(true);
 			trackmate.computeTrackFeatures(true);
 		}

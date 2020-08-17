@@ -123,7 +123,6 @@ public class TrackMatePlugIn_ implements PlugIn {
 
 		model.setPhysicalUnits(spaceUnits, timeUnits);
 
-		System.out.println("Starting trackmate");
 		return new TrackMate(parent, settings);
 	}
 

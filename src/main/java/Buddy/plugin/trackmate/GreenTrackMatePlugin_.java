@@ -12,7 +12,7 @@ import Buddy.plugin.trackmate.gui.GuiUtils;
 import pluginTools.InteractiveGreen;
 public class GreenTrackMatePlugin_ implements PlugIn {
 
-		protected TrackMate trackmate;
+		protected GreenTrackMate trackmate;
 
 		protected InteractiveGreen parent;
 
@@ -115,7 +115,7 @@ public class GreenTrackMatePlugin_ implements PlugIn {
 		 *
 		 * @return a new {@link TrackMate} instance.
 		 */
-		protected TrackMate createTrackMate() {
+		protected GreenTrackMate createTrackMate() {
 			/*
 			 * Since we are now sure that we will be working on this model with this
 			 * settings, we need to pass to the model the units from the settings.
@@ -125,8 +125,7 @@ public class GreenTrackMatePlugin_ implements PlugIn {
 
 			model.setPhysicalUnits(spaceUnits, timeUnits);
 
-			System.out.println("Starting trackmate");
-			return new TrackMate(parent, settings);
+			return new GreenTrackMate(parent, settings);
 		}
 
 		/*

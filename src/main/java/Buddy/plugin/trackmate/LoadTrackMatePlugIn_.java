@@ -363,9 +363,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 		return new TrackMate(parent, settings);
 	}
 	
-	protected TrackMate createGreenTrackMate() {
-		return new TrackMate(greenparent, greensettings);
-	}
+	
 
 
 	/**

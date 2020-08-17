@@ -1,6 +1,8 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
+import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenSelectionModel;
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
@@ -76,11 +78,11 @@ public class GreenViewChoiceDescriptor implements GreenWizardPanelDescriptor {
 		new Thread("TrackMate spot feature calculation thread.") {
 			@Override
 			public void run() {
-				final TrackMate trackmate = controller.getPlugin();
-				final Model model = trackmate.getModel();
+				final GreenTrackMate trackmate = controller.getPlugin();
+				final GreenModel model = trackmate.getGreenModel();
 				final Logger logger = model.getLogger();
-				final int ntotal = model.getBCellobjects().getNBCellobjects();
-				final int nselected = model.getBCellobjects().getNBCellobjects();
+				final int ntotal = model.getGreenobjects().getNGreenobjects();
+				final int nselected = model.getGreenobjects().getNGreenobjects();
 				logger.log(String.format("Retained %d spots out of %d.\n", nselected, ntotal));
 
 				/*
@@ -89,7 +91,7 @@ public class GreenViewChoiceDescriptor implements GreenWizardPanelDescriptor {
 				logger.log("Calculating spot features...\n", Logger.BLUE_COLOR);
 				// Calculate features
 				final long start = System.currentTimeMillis();
-				trackmate.computeBCellobjectFeatures(true);
+				trackmate.computeGreenobjectFeatures(true);
 				final long end = System.currentTimeMillis();
 				logger.log(String.format("Calculating features done in %.1f s.\n", (end - start) / 1e3f),
 						Logger.BLUE_COLOR);
@@ -103,7 +105,7 @@ public class GreenViewChoiceDescriptor implements GreenWizardPanelDescriptor {
 	@Override
 	public void aboutToHidePanel() {
 		final int index = component.getChoice();
-		final TrackMate trackmate = controller.getPlugin();
+		final GreenTrackMate trackmate = controller.getPlugin();
 		final GreenSelectionModel selectionModel = controller.getSelectionModel();
 		new Thread("TrackMate view rendering thread") {
 			@Override

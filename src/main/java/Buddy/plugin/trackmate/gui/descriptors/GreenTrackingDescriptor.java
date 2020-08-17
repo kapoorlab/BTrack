@@ -1,5 +1,6 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
@@ -17,7 +18,7 @@ public class GreenTrackingDescriptor implements GreenWizardPanelDescriptor {
 
 	private final LogPanel logPanel;
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
 	private final GreenTrackMateGUIController controller;
 
@@ -42,7 +43,7 @@ public class GreenTrackingDescriptor implements GreenWizardPanelDescriptor {
 		final GreenobjectTrackerFactory trackerFactory = trackmate.getGreenSettings().trackerFactory;
 		logger.log("Starting tracking using " + trackerFactory.getName() + "\n", Logger.BLUE_COLOR);
 		logger.log("with settings:\n");
-		logger.log(trackerFactory.toString(trackmate.getSettings().trackerSettings));
+		logger.log(trackerFactory.toString(trackmate.getGreenSettings().trackerSettings));
 		controller.disableButtonsAndStoreState();
 
 		new Thread("TrackMate tracking thread") {
@@ -52,7 +53,7 @@ public class GreenTrackingDescriptor implements GreenWizardPanelDescriptor {
 				final boolean trackingOK = trackmate.execTracking();
 				final long end = System.currentTimeMillis();
 				if (trackingOK) {
-					logger.log("Found " + trackmate.getModel().getTrackModel().nTracks(false) + " tracks.\n");
+					logger.log("Found " + trackmate.getGreenModel().getTrackModel().nTracks(false) + " tracks.\n");
 					logger.log(String.format("Tracking done in %.1f s.\n", (end - start) / 1e3f), Logger.BLUE_COLOR);
 				} else {
 					logger.error(trackmate.getErrorMessage() + '\n');

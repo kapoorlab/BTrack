@@ -174,7 +174,7 @@ public class GreenLoadTrackMatePlugIn_ extends GreenSomeDialogDescriptor impleme
 		settings = createSettings();
 
 		// With this we can create a new controller from the provided one:
-		final TrackMate trackmate = createTrackMate();
+		final GreenTrackMate trackmate = createTrackMate();
 
 		
 
@@ -320,7 +320,7 @@ public class GreenLoadTrackMatePlugIn_ extends GreenSomeDialogDescriptor impleme
 	 * @param trackmate
 	 *            the {@link TrackMate} instance that was fledged after loading.
 	 */
-	protected void postRead(final TrackMate trackmate) {
+	protected void postRead(final GreenTrackMate trackmate) {
 	}
 
 	/**
@@ -329,8 +329,8 @@ public class GreenLoadTrackMatePlugIn_ extends GreenSomeDialogDescriptor impleme
 	 *
 	 * @return a new {@link TrackMate} instance.
 	 */
-	protected TrackMate createTrackMate() {
-		return new TrackMate(parent, settings);
+	protected GreenTrackMate createTrackMate() {
+		return new GreenTrackMate(parent, settings);
 	}
 	
 	

@@ -34,6 +34,7 @@ import javax.swing.event.ChangeListener;
 
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenSelectionModel;
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
@@ -42,10 +43,12 @@ import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.action.AbstractTMAction;
 import Buddy.plugin.trackmate.action.ExportAllGreenobjectsStatsAction;
 import Buddy.plugin.trackmate.action.ExportStatsToIJAction;
+import Buddy.plugin.trackmate.action.GreenAbstractTMAction;
 import Buddy.plugin.trackmate.action.GreenExportStatsToIJAction;
 import Buddy.plugin.trackmate.features.GreenModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.ModelFeatureUpdater;
 import Buddy.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
+import Buddy.plugin.trackmate.features.edges.GreenEdgeVelocityAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import Buddy.plugin.trackmate.gui.descriptors.ActionChooserDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
@@ -88,6 +91,8 @@ import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.tracking.ManualTrackerFactory;
 import Buddy.plugin.trackmate.util.TMUtils;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
+import Buddy.plugin.trackmate.visualization.GreenPerEdgeFeatureColorGenerator;
+import Buddy.plugin.trackmate.visualization.GreenPerTrackFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
@@ -115,7 +120,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	protected final Logger logger;
 
 	/** The trackmate piloted here. */
-	protected final TrackMate trackmate;
+	protected final GreenTrackMate trackmate;
 
 	protected final InteractiveGreen parent;
 
@@ -165,9 +170,9 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected GreenSelectionModel selectionModel;
 
-	protected PerTrackFeatureColorGenerator trackColorGenerator;
+	protected GreenPerTrackFeatureColorGenerator trackColorGenerator;
 
-	protected PerEdgeFeatureColorGenerator edgeColorGenerator;
+	protected GreenPerEdgeFeatureColorGenerator edgeColorGenerator;
 
 	protected FeatureColorGenerator<Greenobject> GreenobjectColorGenerator;
 
@@ -185,7 +190,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 * CONSTRUCTOR
 	 */
 
-	public GreenTrackMateGUIController(final InteractiveGreen parent, final TrackMate trackmate) {
+	public GreenTrackMateGUIController(final InteractiveGreen parent, final GreenTrackMate trackmate) {
 
 		// I can't stand the metal look. If this is a problem, contact me
 		// (jeanyves.tinevez@gmail.com)
@@ -269,7 +274,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	 *            the instance that will be piloted by the new controller.
 	 * @return a new instance of the controller.
 	 */
-	public GreenTrackMateGUIController createOn(final InteractiveGreen parent, final TrackMate lTrackmate) {
+	public GreenTrackMateGUIController createOn(final InteractiveGreen parent, final GreenTrackMate lTrackmate) {
 		return new GreenTrackMateGUIController(parent, lTrackmate);
 	}
 
@@ -290,7 +295,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 	/**
 	 * Exposes the {@link TrackMate} trackmate piloted by the wizard.
 	 */
-	public TrackMate getPlugin() {
+	public GreenTrackMate getPlugin() {
 		return trackmate;
 	}
 
@@ -410,12 +415,12 @@ public class GreenTrackMateGUIController implements ActionListener {
 		return new GreenobjectColorGenerator(trackmate.getGreenModel());
 	}
 
-	protected PerEdgeFeatureColorGenerator createEdgeColorGenerator() {
-		return new PerEdgeFeatureColorGenerator(trackmate.getModel(), EdgeVelocityAnalyzer.VELOCITY);
+	protected GreenPerEdgeFeatureColorGenerator createEdgeColorGenerator() {
+		return new GreenPerEdgeFeatureColorGenerator(trackmate.getGreenModel(), GreenEdgeVelocityAnalyzer.VELOCITY);
 	}
 
-	protected PerTrackFeatureColorGenerator createTrackColorGenerator() {
-		final PerTrackFeatureColorGenerator generator = new PerTrackFeatureColorGenerator(trackmate.getModel(),
+	protected GreenPerTrackFeatureColorGenerator createTrackColorGenerator() {
+		final GreenPerTrackFeatureColorGenerator generator = new GreenPerTrackFeatureColorGenerator(trackmate.getGreenModel(),
 				TrackIndexAnalyzer.TRACK_INDEX);
 		return generator;
 	}
@@ -539,7 +544,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 			public void stateChanged(final ChangeEvent event) {
 				// We set the thresholds field of the model but do not touch its
 				// selected Greenobject field yet.
-				trackmate.getSettings().setTrackFilters(trackFilterDescriptor.getComponent().getFeatureFilters());
+				trackmate.getGreenSettings().setTrackFilters(trackFilterDescriptor.getComponent().getFeatureFilters());
 				trackmate.execTrackFiltering(false);
 			}
 		});
@@ -621,8 +626,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 		}
 
 		if (currentDescriptor == trackerChoiceDescriptor) {
-			if (null == trackmate.getSettings().trackerFactory
-					|| trackmate.getSettings().trackerFactory.getKey().equals(ManualTrackerFactory.TRACKER_KEY))
+			if (null == trackmate.getGreenSettings().trackerFactory
+					|| trackmate.getGreenSettings().trackerFactory.getKey().equals(ManualTrackerFactory.TRACKER_KEY))
 				return trackFilterDescriptor;
 
 			return trackerConfigurationDescriptor;
@@ -664,8 +669,8 @@ public class GreenTrackMateGUIController implements ActionListener {
 			return trackerConfigurationDescriptor;
 
 		} else if (currentDescriptor == trackFilterDescriptor) {
-			if (null == trackmate.getSettings().trackerFactory
-					|| trackmate.getSettings().trackerFactory.getKey().equals(ManualTrackerFactory.TRACKER_KEY))
+			if (null == trackmate.getGreenSettings().trackerFactory
+					|| trackmate.getGreenSettings().trackerFactory.getKey().equals(ManualTrackerFactory.TRACKER_KEY))
 				return trackerChoiceDescriptor;
 
 			return trackerConfigurationDescriptor;
@@ -990,7 +995,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 			@Override
 			public void run() {
 				try {
-					AbstractTMAction action;
+					GreenAbstractTMAction action;
 					if (showAllGreenobjectStats)
 						action = new ExportAllGreenobjectsStatsAction(selectionModel);
 					else

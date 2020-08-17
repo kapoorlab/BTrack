@@ -1,7 +1,9 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GrapherPanel;
+import Buddy.plugin.trackmate.gui.GreenGrapherPanel;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import pluginTools.InteractiveGreen;
 
@@ -11,13 +13,13 @@ public class GreenGrapherDescriptor implements GreenWizardPanelDescriptor {
 
 	private static final String KEY = "GraphFeatures";
 
-	private final GrapherPanel panel;
+	private final GreenGrapherPanel panel;
 
 	private final GreenTrackMateGUIController controller;
 	
 
-	public GreenGrapherDescriptor(final TrackMate trackmate, final GreenTrackMateGUIController controller) {
-		this.panel = new GrapherPanel(trackmate);
+	public GreenGrapherDescriptor(final GreenTrackMate trackmate, final GreenTrackMateGUIController controller) {
+		this.panel = new GreenGrapherPanel(trackmate);
 		this.controller = controller;
 	}
 

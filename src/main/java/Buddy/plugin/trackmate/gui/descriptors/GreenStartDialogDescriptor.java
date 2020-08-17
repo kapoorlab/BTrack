@@ -10,6 +10,7 @@ import java.util.Map;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.GreenSettings;
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
@@ -103,12 +104,12 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 	@Override
 	public void displayingPanel(InteractiveGreen parent) {
 		ImagePlus imp;
-		final TrackMate trackmate = controller.getPlugin();
-		if (null == trackmate.getSettings().imp) {
+		final GreenTrackMate trackmate = controller.getPlugin();
+		if (null == trackmate.getGreenSettings().imp) {
 			imp = ImageJFunctions.show(parent.originalimg);
 		} else {
-			panel.echoSettings(trackmate.getModel(), trackmate.getSettings());
-			imp = trackmate.getSettings().imp;
+			panel.echoSettings(trackmate.getGreenModel(), trackmate.getGreenSettings());
+			imp = trackmate.getGreenSettings().imp;
 		}
 		panel.getFrom(imp);
 	}
@@ -119,7 +120,7 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 	@Override
 	public void aboutToHidePanel() {
 		
-		TrackMate trackmate = null;
+		GreenTrackMate trackmate = null;
 		 trackmate = controller.getPlugin();
 		
 		
@@ -134,7 +135,7 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 		 */
 
 		panel.updateTo(model, settings);
-		trackmate.getModel().getLogger().log(settings.toStringImageInfo());
+		trackmate.getGreenModel().getLogger().log(settings.toStringImageInfo());
 
 		/*
 		 * Configure settings object with Greenobject, edge and track analyzers as
@@ -166,7 +167,7 @@ public class GreenStartDialogDescriptor implements GreenWizardPanelDescriptor {
 			settings.addTrackAnalyzer(trackAnalyzer);
 		}
 
-		trackmate.getModel().getLogger().log(settings.toStringFeatureAnalyzersInfo());
+		trackmate.getGreenModel().getLogger().log(settings.toStringFeatureAnalyzersInfo());
 		trackmate.computeGreenobjectFeatures(true);
 		trackmate.computeEdgeFeatures(true);
 		trackmate.computeTrackFeatures(true);

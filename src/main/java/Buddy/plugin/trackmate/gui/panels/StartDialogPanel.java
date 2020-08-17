@@ -429,7 +429,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 		jTextFieldTEnd.setText("" + settings.tend);
 	}
 	
-	public void echoSettings(final GreenModel model, final Settings settings) {
+	public void echoSettings(final GreenModel model, final GreenSettings settings) {
 		jLabelImageName.setText(settings.imp.getTitle());
 		jTextFieldPixelWidth.setText("" + settings.dx);
 		jTextFieldPixelHeight.setText("" + settings.dy);

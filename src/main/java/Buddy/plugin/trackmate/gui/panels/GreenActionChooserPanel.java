@@ -18,8 +18,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SpringLayout;
 
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
+import Buddy.plugin.trackmate.action.GreenTrackMateAction;
 import Buddy.plugin.trackmate.action.TrackMateAction;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.LogPanel;
@@ -52,13 +54,13 @@ public class GreenActionChooserPanel {
 	private final GreenTrackMateGUIController controller;
 	
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
 	/*
 	 * CONSTRUCTORS
 	 */
 
-	public GreenActionChooserPanel(final GreenActionProvider actionProvider, final TrackMate trackmate,
+	public GreenActionChooserPanel(final GreenActionProvider actionProvider, final GreenTrackMate trackmate,
 			final GreenTrackMateGUIController controller) {
 
 		this.controller = controller;
@@ -114,7 +116,7 @@ public class GreenActionChooserPanel {
 							panel.fireAction(ACTION_STARTED);
 							final int actionIndex = panel.getChoice();
 							final String actionKey = actionProvider.getVisibleKeys().get(actionIndex);
-							final TrackMateAction action = actionProvider.getFactory(actionKey).create(controller);
+							final GreenTrackMateAction action = actionProvider.getFactory(actionKey).create(controller);
 							if (null == action) {
 								logger.error("Unknown action: " + actionKey + ".\n");
 							} else {

@@ -14,6 +14,7 @@ import Buddy.plugin.trackmate.FeatureModel;
 import Buddy.plugin.trackmate.GreenFeatureModel;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenSelectionModel;
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.TrackMate;
@@ -27,7 +28,7 @@ import ij.measure.ResultsTable;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
 
-public class ExportAllGreenobjectsStatsAction extends AbstractTMAction {
+public class ExportAllGreenobjectsStatsAction extends GreenAbstractTMAction {
 
 	public static final ImageIcon ICON = new ImageIcon(GreenTrackMateWizard.class.getResource("images/calculator.png"));
 
@@ -53,7 +54,7 @@ public class ExportAllGreenobjectsStatsAction extends AbstractTMAction {
 	}
 
 	@Override
-	public void execute(final TrackMate trackmate) {
+	public void execute(final GreenTrackMate trackmate) {
 		logger.log("Exporting all Greenobjects statistics.\n");
 
 		// Model
@@ -156,7 +157,7 @@ public class ExportAllGreenobjectsStatsAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final GreenTrackMateGUIController controller) {
+		public GreenTrackMateAction create(final GreenTrackMateGUIController controller) {
 			return new ExportAllGreenobjectsStatsAction(controller.getSelectionModel());
 		}
 

@@ -59,6 +59,8 @@ import Buddy.plugin.trackmate.gui.panels.components.GreenColorByFeatureGUIPanel.
 import Buddy.plugin.trackmate.gui.panels.components.JNumericTextField;
 import Buddy.plugin.trackmate.gui.panels.components.SetColorScaleDialog;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
+import Buddy.plugin.trackmate.visualization.GreenPerEdgeFeatureColorGenerator;
+import Buddy.plugin.trackmate.visualization.GreenPerTrackFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualGreenobjectColorGenerator;
@@ -146,9 +148,9 @@ public class GreenConfigureViewsPanel extends ActionListenablePanel {
 	
 	private final GreenModel model;
 
-	private PerTrackFeatureColorGenerator trackColorGenerator;
+	private GreenPerTrackFeatureColorGenerator trackColorGenerator;
 
-	private PerEdgeFeatureColorGenerator edgeColorGenerator;
+	private GreenPerEdgeFeatureColorGenerator edgeColorGenerator;
 
 	private FeatureColorGenerator<Greenobject> GreenobjectColorGenerator;
 	
@@ -241,7 +243,7 @@ public class GreenConfigureViewsPanel extends ActionListenablePanel {
 	 * @param trackColorGenerator
 	 *            the new color generator. The previous one will be terminated.
 	 */
-	public void setTrackColorGenerator(final PerTrackFeatureColorGenerator trackColorGenerator) {
+	public void setGreenTrackColorGenerator(final GreenPerTrackFeatureColorGenerator trackColorGenerator) {
 		if (null != this.trackColorGenerator) {
 			this.trackColorGenerator.terminate();
 		}
@@ -255,7 +257,7 @@ public class GreenConfigureViewsPanel extends ActionListenablePanel {
 	 * @param edgeColorGenerator
 	 *            the new color generator. The previous one will be terminated.
 	 */
-	public void setEdgeColorGenerator(final PerEdgeFeatureColorGenerator edgeColorGenerator) {
+	public void setGreenEdgeColorGenerator(final GreenPerEdgeFeatureColorGenerator edgeColorGenerator) {
 		if (null != this.edgeColorGenerator) {
 			this.edgeColorGenerator.terminate();
 		}

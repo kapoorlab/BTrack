@@ -1,16 +1,14 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
+import Buddy.plugin.trackmate.GreenModel;
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.features.FeatureFilter;
 import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel.Category;
-import Buddy.plugin.trackmate.gui.panels.components.FilterGuiPanel;
-import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import pluginTools.InteractiveBud;
+import Buddy.plugin.trackmate.gui.panels.components.GreenColorByFeatureGUIPanel.Category;
+import Buddy.plugin.trackmate.gui.panels.components.GreenFilterGuiPanel;
+import Buddy.plugin.trackmate.visualization.GreenPerTrackFeatureColorGenerator;
 import pluginTools.InteractiveGreen;
 
 import java.awt.event.ActionEvent;
@@ -31,29 +29,29 @@ public class GreenTrackFilterDescriptor implements GreenWizardPanelDescriptor {
 
 	private static final String KEY = "FilterTracks";
 
-	private FilterGuiPanel component;
+	private GreenFilterGuiPanel component;
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
-	private final PerTrackFeatureColorGenerator trackColorGenerator;
+	private final GreenPerTrackFeatureColorGenerator trackColorGenerator;
 
 	private final GreenTrackMateGUIController controller;
 
-	public GreenTrackFilterDescriptor(final TrackMate trackmate, final PerTrackFeatureColorGenerator trackColorGenerator,
+	public GreenTrackFilterDescriptor(final GreenTrackMate trackmate2, final GreenPerTrackFeatureColorGenerator trackColorGenerator2,
 			final GreenTrackMateGUIController controller) {
-		this.trackmate = trackmate;
-		this.trackColorGenerator = trackColorGenerator;
+		this.trackmate = trackmate2;
+		this.trackColorGenerator = trackColorGenerator2;
 		this.controller = controller;
 	}
 
 	@Override
-	public FilterGuiPanel getComponent() {
+	public GreenFilterGuiPanel getComponent() {
 		return component;
 	}
 
 	@Override
 	public void aboutToDisplayPanel() {
-		component = new FilterGuiPanel(trackmate.getModel(),
+		component = new GreenFilterGuiPanel(trackmate.getGreenModel(),
 				Arrays.asList(new Category[] { Category.TRACKS, Category.DEFAULT }));
 		component.setColorFeature(TrackIndexAnalyzer.TRACK_INDEX);
 		component.addActionListener(new ActionListener() {
@@ -84,11 +82,11 @@ public class GreenTrackFilterDescriptor implements GreenWizardPanelDescriptor {
 
 	@Override
 	public void aboutToHidePanel() {
-		final Logger logger = trackmate.getModel().getLogger();
+		final Logger logger = trackmate.getGreenModel().getLogger();
 		logger.log("Performing track filtering on the following features:\n", Logger.BLUE_COLOR);
 		final List<FeatureFilter> featureFilters = component.getFeatureFilters();
-		final Model model = trackmate.getModel();
-		trackmate.getSettings().setTrackFilters(featureFilters);
+		final GreenModel model = trackmate.getGreenModel();
+		trackmate.getGreenSettings().setTrackFilters(featureFilters);
 		trackmate.execTrackFiltering(true);
 
 		if (featureFilters == null || featureFilters.isEmpty()) {

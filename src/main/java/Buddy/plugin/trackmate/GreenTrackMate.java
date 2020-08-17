@@ -7,14 +7,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.scijava.util.VersionUtils;
 
-import budDetector.BCellobject;
 import greenDetector.Greenobject;
-import Buddy.plugin.trackmate.features.BCellobjectFeatureCalculator;
+import Buddy.plugin.trackmate.features.GreenobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.EdgeFeatureCalculator;
 import Buddy.plugin.trackmate.features.FeatureFilter;
+import Buddy.plugin.trackmate.features.GreenEdgeFeatureCalculator;
+import Buddy.plugin.trackmate.features.GreenTrackFeatureCalculator;
 import Buddy.plugin.trackmate.features.GreenobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.TrackFeatureCalculator;
-import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
+import Buddy.plugin.trackmate.tracking.GreenobjectTracker;
 import Buddy.plugin.trackmate.util.GreenTMUtils;
 import Buddy.plugin.trackmate.util.TMUtils;
 import ij.gui.ShapeRoi;
@@ -30,7 +31,7 @@ import pluginTools.InteractiveGreen;
 /**
  * <p>
  * The TrackMate_ class runs on the currently active time-lapse image (2D or 3D)
- * and both identifies and tracks bright BCellobjects over time.
+ * and both identifies and tracks bright Greenobjects over time.
  * </p>
  *
  * <p>
@@ -42,23 +43,23 @@ import pluginTools.InteractiveGreen;
  * @author Jean-Yves Tinevez - Institut Pasteur - July 2010 - 2018
  */
 @SuppressWarnings("deprecation")
-public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
+public class GreenTrackMate implements Benchmark, MultiThreaded, Algorithm {
 
 	public static final String PLUGIN_NAME_STR = "BTrackMate";
 
-	public static final String PLUGIN_NAME_VERSION = VersionUtils.getVersion(TrackMate.class);
+	public static final String PLUGIN_NAME_VERSION = VersionUtils.getVersion(GreenTrackMate.class);
 
 	/**
 	 * The model this trackmate will shape.
 	 */
 
-	protected InteractiveBud parent;
+	protected InteractiveGreen parent;
 
 	
-	protected final Model model;
+	protected final GreenModel model;
 	
 
-	protected final Settings settings;
+	protected final GreenSettings settings;
 	
 
 	protected long processingTime;
@@ -71,12 +72,12 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 * CONSTRUCTORS
 	 */
 
-	public TrackMate(final InteractiveBud parent, final Settings settings) {
+	public GreenTrackMate(final InteractiveGreen parent, final GreenSettings settings) {
 
 		this.parent = parent;
-		final Model model = new Model();
+		final GreenModel model = new GreenModel();
 		
-		model.setBCellobjects(parent.budcells, true);
+		model.setGreenobjects(parent.Greencells, true);
 
 		this.model = model;
 		this.settings = settings;
@@ -96,51 +97,51 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 * This method exists for the following reason:
 	 * <p>
 	 * The detector receives at each frame a cropped image to operate on, depending
-	 * on the user specifying a ROI. It therefore returns BCellobjects whose
+	 * on the user specifying a ROI. It therefore returns Greenobjects whose
 	 * coordinates are with respect to the top-left corner of the ROI, not of the
 	 * original image.
 	 * <p>
-	 * This method modifies the given BCellobjects to put them back in the image
+	 * This method modifies the given Greenobjects to put them back in the image
 	 * coordinate system. Additionally, is a non-square ROI was specified (e.g. a
-	 * polygon), it prunes the BCellobjects that are not within the polygon of the
+	 * polygon), it prunes the Greenobjects that are not within the polygon of the
 	 * ROI.
 	 *
-	 * @param BCellobjectsThisFrame
-	 *            the BCellobject list to inspect
+	 * @param GreenobjectsThisFrame
+	 *            the Greenobject list to inspect
 	 * @param lSettings
 	 *            the {@link Settings} object that will be used to retrieve the
 	 *            image ROI and cropping information
-	 * @return a list of BCellobject. Depending on the presence of a polygon ROI, it
+	 * @return a list of Greenobject. Depending on the presence of a polygon ROI, it
 	 *         might be a new, pruned list. Or not.
 	 */
-	protected List<BCellobject> translateAndPruneBCellobjects(final List<BCellobject> BCellobjectsThisFrame,
-			final Settings lSettings) {
+	protected List<Greenobject> translateAndPruneGreenobjects(final List<Greenobject> GreenobjectsThisFrame,
+			final GreenSettings lSettings) {
 
 		// Put them back in the right referential
 		final double[] calibration = TMUtils.getSpatialCalibration(lSettings.imp);
-		TMUtils.translateBCellobjects(BCellobjectsThisFrame, lSettings.xstart ,
+		GreenTMUtils.translateGreenobjects(GreenobjectsThisFrame, lSettings.xstart ,
 				lSettings.ystart , lSettings.zstart );
-		List<BCellobject> prunedBCellobjects;
+		List<Greenobject> prunedGreenobjects;
 		// Prune if outside of ROI
 		if (lSettings.roi instanceof ShapeRoi) {
-			prunedBCellobjects = new ArrayList<>();
-			for (final BCellobject BCellobject : BCellobjectsThisFrame) {
+			prunedGreenobjects = new ArrayList<>();
+			for (final Greenobject Greenobject : GreenobjectsThisFrame) {
 				if (lSettings.roi.contains(
-						(int) Math.round(BCellobject.getFeature(BCellobject.POSITION_X) ),
-						(int) Math.round(BCellobject.getFeature(BCellobject.POSITION_Y))))
-					prunedBCellobjects.add(BCellobject);
+						(int) Math.round(Greenobject.getFeature(Greenobject.POSITION_X) ),
+						(int) Math.round(Greenobject.getFeature(Greenobject.POSITION_Y))))
+					prunedGreenobjects.add(Greenobject);
 			}
 		} else if (null != lSettings.polygon) {
-			prunedBCellobjects = new ArrayList<>();
-			for (final BCellobject BCellobject : BCellobjectsThisFrame) {
-				if (lSettings.polygon.contains(BCellobject.getFeature(BCellobject.POSITION_X) ,
-						BCellobject.getFeature(BCellobject.POSITION_Y) ))
-					prunedBCellobjects.add(BCellobject);
+			prunedGreenobjects = new ArrayList<>();
+			for (final Greenobject Greenobject : GreenobjectsThisFrame) {
+				if (lSettings.polygon.contains(Greenobject.getFeature(Greenobject.POSITION_X) ,
+						Greenobject.getFeature(Greenobject.POSITION_Y) ))
+					prunedGreenobjects.add(Greenobject);
 			}
 		} else {
-			prunedBCellobjects = BCellobjectsThisFrame;
+			prunedGreenobjects = GreenobjectsThisFrame;
 		}
-		return prunedBCellobjects;
+		return prunedGreenobjects;
 	}
 	
 	
@@ -178,12 +179,12 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 * METHODS
 	 */
 
-	public Model getModel() {
+	public GreenModel getGreenModel() {
 		return model;
 	}
 
 
-	public Settings getSettings() {
+	public GreenSettings getGreenSettings() {
 		return settings;
 	}
 	
@@ -194,9 +195,9 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 */
 
 	/**
-	 * Calculate all features for all detected BCellobjects.
+	 * Calculate all features for all detected Greenobjects.
 	 * <p>
-	 * Features are calculated for each BCellobject, using their location, and the
+	 * Features are calculated for each Greenobject, using their location, and the
 	 * raw image. Features to be calculated and analyzers are taken from the
 	 * settings field of this object.
 	 *
@@ -206,10 +207,10 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 * @return <code>true</code> if the calculation was performed successfully,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean computeBCellobjectFeatures(final boolean doLogIt) {
+	public boolean computeGreenobjectFeatures(final boolean doLogIt) {
 		final Logger logger = model.getLogger();
-		logger.log("Computing BCellobject features.\n");
-		final BCellobjectFeatureCalculator calculator = new BCellobjectFeatureCalculator(model, settings);
+		logger.log("Computing Greenobject features.\n");
+		final GreenobjectFeatureCalculator calculator = new GreenobjectFeatureCalculator(model, settings);
 		calculator.setNumThreads(numThreads);
 		if (calculator.checkInput() && calculator.process()) {
 			if (doLogIt)
@@ -217,7 +218,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 			return true;
 		}
 
-		errorMessage = "BCellobject features calculation failed:\n" + calculator.getErrorMessage();
+		errorMessage = "Greenobject features calculation failed:\n" + calculator.getErrorMessage();
 		return false;
 	}
 
@@ -225,9 +226,9 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 
 	
 	/**
-	 * Calculate all features for all detected BCellobjects.
+	 * Calculate all features for all detected Greenobjects.
 	 * <p>
-	 * Features are calculated for each BCellobject, using their location, and the
+	 * Features are calculated for each Greenobject, using their location, and the
 	 * raw image. Features to be calculated and analyzers are taken from the
 	 * settings field of this object.
 	 *
@@ -239,7 +240,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 */
 	public boolean computeEdgeFeatures(final boolean doLogIt) {
 		final Logger logger = model.getLogger();
-		final EdgeFeatureCalculator calculator = new EdgeFeatureCalculator(model, settings);
+		final GreenEdgeFeatureCalculator calculator = new GreenEdgeFeatureCalculator(model, settings);
 		calculator.setNumThreads(numThreads);
 		if (!calculator.checkInput() || !calculator.process()) {
 			errorMessage = "Edge features calculation failed:\n" + calculator.getErrorMessage();
@@ -260,7 +261,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 */
 	public boolean computeTrackFeatures(final boolean doLogIt) {
 		final Logger logger = model.getLogger();
-		final TrackFeatureCalculator calculator = new TrackFeatureCalculator(model, settings);
+		final GreenTrackFeatureCalculator calculator = new GreenTrackFeatureCalculator(model, settings);
 		calculator.setNumThreads(numThreads);
 		if (calculator.checkInput() && calculator.process()) {
 			if (doLogIt)
@@ -275,10 +276,10 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	/**
 	 * Execute the tracking part.
 	 * <p>
-	 * This method links all the selected BCellobjects from the thresholding part
+	 * This method links all the selected Greenobjects from the thresholding part
 	 * using the selected tracking algorithm. This tracking process will generate a
 	 * graph (more precisely a {@link org.jgrapht.graph.SimpleWeightedGraph}) made
-	 * of the BCellobject election for its vertices, and edges representing the
+	 * of the Greenobject election for its vertices, and edges representing the
 	 * links.
 	 * <p>
 	 * The {@link ModelChangeListener}s of the model will be notified when the
@@ -289,14 +290,14 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	public boolean execTracking() {
 		final Logger logger = model.getLogger();
 		logger.log("Starting tracking process.\n");
-		final BCellobjectTracker tracker = settings.trackerFactory.create(parent, settings.trackerSettings);
+		final GreenobjectTracker tracker = settings.trackerFactory.create(parent, settings.trackerSettings);
 		tracker.setNumThreads(numThreads);
 		tracker.setLogger(logger);
 		if (tracker.checkInput() && tracker.process()) {
 			model.setTracks(tracker.getResult(), true);
 			return true;
 		}
-		System.out.println(parent.budcells.keySet().size() + " Parent and Bud " + model.BCellobjects.keySet().size());
+		System.out.println(parent.Greencells.keySet().size() + " Parent and Green " + model.Greenobjects.keySet().size());
 		errorMessage = "Tracking process failed:\n" + tracker.getErrorMessage();
 		return false;
 	}
@@ -313,71 +314,71 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean execDetection() {
 
-		model.setBCellobjects(parent.budcells, true);
+		model.setGreenobjects(parent.Greencells, true);
 
 		return true;
 	}
 
 	/**
-	 * Execute the initial BCellobject filtering part.
+	 * Execute the initial Greenobject filtering part.
 	 * <p>
 	 * Because of the presence of noise, it is possible that some of the regional
 	 * maxima found in the detection step have identified noise, rather than objects
-	 * of interest. This can generates a very high number of BCellobjects, which is
+	 * of interest. This can generates a very high number of Greenobjects, which is
 	 * inconvenient to deal with when it comes to computing their features, or
 	 * displaying them.
 	 * <p>
-	 * Any {@link BCellobjectDetector} is expected to at least compute the
-	 * {@link BCellobject#QUALITY} value for each BCellobject it creates, so it is
+	 * Any {@link GreenobjectDetector} is expected to at least compute the
+	 * {@link Greenobject#QUALITY} value for each Greenobject it creates, so it is
 	 * possible to set up an initial filtering on this feature, prior to any other
 	 * operation.
 	 * <p>
-	 * This method simply takes all the detected BCellobjects, and discard those
+	 * This method simply takes all the detected Greenobjects, and discard those
 	 * whose quality value is below the threshold set by
-	 * {@link Settings#initialBCellobjectFilterValue}. The BCellobject field is
-	 * overwritten, and discarded BCellobjects can't be recalled.
+	 * {@link Settings#initialGreenobjectFilterValue}. The Greenobject field is
+	 * overwritten, and discarded Greenobjects can't be recalled.
 	 * <p>
 	 * The {@link ModelChangeListener}s of this model will be notified with a
-	 * {@link ModelChangeEvent#BCellobjectS_COMPUTED} event.
+	 * {@link ModelChangeEvent#GreenobjectS_COMPUTED} event.
 	 *
 	 * @return <code>true</code> if the computation completed without errors.
 	 */
-	public boolean execInitialBCellobjectFiltering() {
+	public boolean execInitialGreenobjectFiltering() {
 		final Logger logger = model.getLogger();
 		logger.log("Starting initial filtering process.\n");
 
-		BCellobjectCollection BCellobjects = model.getBCellobjects();
-		BCellobjects = BCellobjects.crop();
+		GreenobjectCollection Greenobjects = model.getGreenobjects();
+		Greenobjects = Greenobjects.crop();
 
-		model.setBCellobjects(BCellobjects, true); // Forget about the previous one
+		model.setGreenobjects(Greenobjects, true); // Forget about the previous one
 		return true;
 	}
 
 	/**
-	 * Execute the BCellobject feature filtering part.
+	 * Execute the Greenobject feature filtering part.
 	 * <p>
 	 * Because of the presence of noise, it is possible that some of the regional
 	 * maxima found in the detection step have identified noise, rather than objects
 	 * of interest. A filtering operation based on the calculated features in this
 	 * step should allow to rule them out.
 	 * <p>
-	 * This method simply takes all the detected BCellobjects, and mark as visible
-	 * the BCellobjects whose features satisfy all of the filters in the
+	 * This method simply takes all the detected Greenobjects, and mark as visible
+	 * the Greenobjects whose features satisfy all of the filters in the
 	 * {@link Settings} object.
 	 * <p>
 	 * The {@link ModelChangeListener}s of this model will be notified with a
-	 * {@link ModelChangeEvent#BCellobjectS_FILTERED} event.
+	 * {@link ModelChangeEvent#GreenobjectS_FILTERED} event.
 	 *
 	 * @param doLogIt
 	 *            if <code>true</code>, will send a message to the model logger.
 	 * @return <code>true</code> if the computation completed without errors.
 	 */
-	public boolean execBCellobjectFiltering(final boolean doLogIt) {
+	public boolean execGreenobjectFiltering(final boolean doLogIt) {
 		if (doLogIt) {
 			final Logger logger = model.getLogger();
-			logger.log("Starting BCellobject filtering process.\n");
+			logger.log("Starting Greenobject filtering process.\n");
 		}
-		model.filterBCellobjects(settings.getBCellobjectFilters(), true);
+		model.filterGreenobjects(settings.getGreenobjectFilters(), true);
 		return true;
 	}
 
@@ -454,15 +455,15 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 			return false;
 		}
 
-		if (!execInitialBCellobjectFiltering()) {
+		if (!execInitialGreenobjectFiltering()) {
 			return false;
 		}
 
-		if (!computeBCellobjectFeatures(true)) {
+		if (!computeGreenobjectFeatures(true)) {
 			return false;
 		}
 
-		if (!execBCellobjectFiltering(true)) {
+		if (!execGreenobjectFiltering(true)) {
 			return false;
 		}
 

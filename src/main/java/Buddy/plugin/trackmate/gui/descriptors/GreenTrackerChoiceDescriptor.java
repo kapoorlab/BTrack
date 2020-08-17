@@ -1,5 +1,6 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
@@ -23,15 +24,15 @@ public class GreenTrackerChoiceDescriptor implements GreenWizardPanelDescriptor 
 
 	private final ListChooserPanel component;
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
 	private final GreenTrackerProvider trackerProvider;
 
 	private final GreenTrackMateGUIController controller;
 
-	public GreenTrackerChoiceDescriptor(final GreenTrackerProvider trackerProvider, final TrackMate trackmate,
+	public GreenTrackerChoiceDescriptor(final GreenTrackerProvider trackerProvider, final GreenTrackMate trackmate2,
 			final GreenTrackMateGUIController controller) {
-		this.trackmate = trackmate;
+		this.trackmate = trackmate2;
 		this.controller = controller;
 		this.trackerProvider = trackerProvider;
 		final List<String> keys = trackerProvider.getVisibleKeys();
@@ -74,7 +75,7 @@ public class GreenTrackerChoiceDescriptor implements GreenWizardPanelDescriptor 
 
 		// Check
 		if (trackerFactory == null) {
-			final Logger logger = trackmate.getModel().getLogger();
+			final Logger logger = trackmate.getGreenModel().getLogger();
 			logger.error("Choice panel returned a tracker unkown to this trackmate: " + key + "\n");
 			return;
 		}
@@ -109,22 +110,22 @@ public class GreenTrackerChoiceDescriptor implements GreenWizardPanelDescriptor 
 		 * because we want the user to be able to visually see the changes a parameter
 		 * tuning cause.
 		 */
-		trackmate.getModel().clearTracks(true);
+		trackmate.getGreenModel().clearTracks(true);
 		controller.getSelectionModel().clearEdgeSelection();
 	}
 
 	private void setCurrentChoiceFromPlugin() {
 
 		String key;
-		if (null != trackmate.getSettings().trackerFactory) {
-			key = trackmate.getSettings().trackerFactory.getKey();
+		if (null != trackmate.getGreenSettings().trackerFactory) {
+			key = trackmate.getGreenSettings().trackerFactory.getKey();
 		} else {
 			key = SimpleSparseLAPTrackerFactory.THIS2_TRACKER_KEY;
 		}
 		final int index = trackerProvider.getVisibleKeys().indexOf(key);
 
 		if (index < 0) {
-			trackmate.getModel().getLogger()
+			trackmate.getGreenModel().getLogger()
 					.error("[TrackerChoiceDescriptor] Cannot find tracker named " + key + " in Trackmate.");
 			return;
 		}

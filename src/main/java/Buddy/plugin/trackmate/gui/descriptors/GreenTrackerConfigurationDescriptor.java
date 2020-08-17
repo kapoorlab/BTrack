@@ -2,22 +2,19 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import java.util.Map;
 
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.ConfigurationPanel;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
-import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.tracking.GreenobjectTrackerFactory;
-import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
 
 public class GreenTrackerConfigurationDescriptor implements GreenWizardPanelDescriptor {
 
 	private static final String KEY = "ConfigureTracker";
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
 	private ConfigurationPanel configPanel;
 
@@ -26,9 +23,9 @@ public class GreenTrackerConfigurationDescriptor implements GreenWizardPanelDesc
 	/**
 	 * @param trackerProvider
 	 */
-	public GreenTrackerConfigurationDescriptor(final GreenTrackerProvider trackerProvider, final TrackMate trackmate,
+	public GreenTrackerConfigurationDescriptor(final GreenTrackerProvider trackerProvider, final GreenTrackMate trackmate2,
 			final GreenTrackMateGUIController controller) {
-		this.trackmate = trackmate;
+		this.trackmate = trackmate2;
 		this.controller = controller;
 	}
 
@@ -48,7 +45,7 @@ public class GreenTrackerConfigurationDescriptor implements GreenWizardPanelDesc
 		// Bulletproof null
 		if (null == settings || !trackerFactory.checkSettingsValidity(settings)) {
 			settings = trackerFactory.getDefaultSettings();
-			trackmate.getSettings().trackerSettings = settings;
+			trackmate.getGreenSettings().trackerSettings = settings;
 		}
 		configPanel.setSettings(settings);
 	}
@@ -81,12 +78,12 @@ public class GreenTrackerConfigurationDescriptor implements GreenWizardPanelDesc
 		Map<String, Object> settings = configPanel.getSettings();
 		final boolean settingsOk = trackerFactory.checkSettingsValidity(settings);
 		if (!settingsOk) {
-			final Logger logger = trackmate.getModel().getLogger();
+			final Logger logger = trackmate.getGreenModel().getLogger();
 			logger.error("Config panel returned bad settings map:\n" + trackerFactory.getErrorMessage()
 					+ "Using defaults settings.\n");
 			settings = trackerFactory.getDefaultSettings();
 		}
-		trackmate.getSettings().trackerSettings = settings;
+		trackmate.getGreenSettings().trackerSettings = settings;
 	}
 
 	@Override

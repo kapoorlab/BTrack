@@ -23,7 +23,7 @@ public class PanelZeroCell {
 		impA.show();
 		
 		ImagePlus impB = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/YellowSeg.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Small_Yellow_Cells.tif");
 		impB.show();
 	
 	

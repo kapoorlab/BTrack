@@ -2,6 +2,7 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenSettings;
+import Buddy.plugin.trackmate.GreenTrackMate;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.Settings;
@@ -44,7 +45,7 @@ public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 	
 	private static final String KEY = "Loading";
 
-	private final TrackMate trackmate;
+	private final GreenTrackMate trackmate;
 
 	private final GreenTrackMateGUIController controller;
 	
@@ -63,9 +64,9 @@ public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 
 		if (null == file) {
 			try {
-				final File folder = new File(trackmate.getSettings().imp.getOriginalFileInfo().directory);
+				final File folder = new File(trackmate.getGreenSettings().imp.getOriginalFileInfo().directory);
 				file = new File(
-						folder.getPath() + File.separator + trackmate.getSettings().imp.getShortTitle() + ".xml");
+						folder.getPath() + File.separator + trackmate.getGreenSettings().imp.getShortTitle() + ".xml");
 			} catch (final NullPointerException npe) {
 				final File folder = new File(System.getProperty("user.dir")).getParentFile().getParentFile();
 				file = new File(folder.getPath() + File.separator + "TrackMateData.xml");
@@ -99,7 +100,7 @@ public class GreenLoadDescriptor extends GreenSomeDialogDescriptor {
 		final GreenSettings settings = new GreenSettings();
 
 		// With this we can create a new controller from the provided one:
-		final TrackMate lTrackmate = new TrackMate(parent, settings);
+		final GreenTrackMate lTrackmate = new GreenTrackMate(parent, settings);
 		final GreenTrackMateGUIController newcontroller = controller.createOn(parent, lTrackmate);
 
 		// We feed then the reader with the providers taken from the NEW
