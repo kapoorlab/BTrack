@@ -12,6 +12,7 @@ import budDetector.Cellobject;
 import budDetector.Distance;
 import displayBud.DisplayListOverlay;
 import greenDetector.Greenobject;
+import ij.IJ;
 import ij.gui.OvalRoi;
 import ij.gui.Roi;
 import net.imglib2.Cursor;
@@ -142,13 +143,7 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 
 							// For each bud get the list of points
 							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
-							double cellArea = interiorcelltruths.size() * parent.calibrationX;
-							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
-							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
 							
-							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea,PairCurrentViewBit.size );
-							Allcells.add(insidecells);
 							for (RealLocalizable insidetruth : bordercelltruths) {
 
 								Integer xPts = (int) insidetruth.getFloatPosition(0);
@@ -157,11 +152,21 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 								points.setStrokeColor(Color.RED);
 								points.setStrokeWidth(2);
 								parent.overlay.add(points);
+								parent.imp.updateAndDraw();
 							}
+							
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+							double cellArea = interiorcelltruths.size() * parent.calibrationX;
+							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
+							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
+							
+							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea,PairCurrentViewBit.size );
+							Allcells.add(insidecells);
+						
 						    }
 					}
 					
-					parent.imp.updateAndDraw();
+					
 		return Allcells;
 		
 	}

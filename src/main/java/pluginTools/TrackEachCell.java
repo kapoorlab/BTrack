@@ -225,8 +225,13 @@ public class TrackEachCell {
 		for(Cellobject currentbudcell:celllist) {
 			
 			
+			Localizable centercell = currentbudcell.Location;
+			
+			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
+			// and the distance
+			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, 0, 0, t);
+			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, t);
             parent.budcells.add(budncell, t);  
 		}
 		
