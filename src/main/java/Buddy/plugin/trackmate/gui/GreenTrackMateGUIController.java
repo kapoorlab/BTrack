@@ -76,8 +76,8 @@ import Buddy.plugin.trackmate.gui.descriptors.ViewChoiceDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
 import Buddy.plugin.trackmate.gui.panels.tracker.JPanelTrackerSettingsMain;
 import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
-import Buddy.plugin.trackmate.providers.ActionProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.GreenActionProvider;
 import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.GreenTrackerProvider;
@@ -135,7 +135,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 
 	protected GreenTrackerProvider trackerProvider;
 
-	protected ActionProvider actionProvider;
+	protected GreenActionProvider actionProvider;
 
 	protected GreenStartDialogDescriptor startDialoDescriptor;
 
@@ -440,7 +440,7 @@ public class GreenTrackMateGUIController implements ActionListener {
 		trackAnalyzerProvider = new GreenTrackAnalyzerProvider();
 		viewProvider = new GreenViewProvider();
 		trackerProvider = new GreenTrackerProvider();
-		actionProvider = new ActionProvider();
+		actionProvider = new GreenActionProvider();
 	}
 
 	/**

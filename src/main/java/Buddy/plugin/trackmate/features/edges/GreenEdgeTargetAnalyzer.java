@@ -23,7 +23,7 @@ import Buddy.plugin.trackmate.Model;
 import greenDetector.Greenobject;
 
 @SuppressWarnings("deprecation")
-@Plugin(type = EdgeAnalyzer.class)
+@Plugin(type = GreenEdgeAnalyzer.class)
 public class GreenEdgeTargetAnalyzer implements GreenEdgeAnalyzer {
 
 	public static final String KEY = "Edge target";

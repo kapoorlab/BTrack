@@ -1,7 +1,6 @@
 package Buddy.plugin.trackmate.visualization;
 
 import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.Model;
 
 import java.awt.Color;
 
@@ -22,7 +21,7 @@ public class GreenobjectColorGeneratorPerTrackFeature implements FeatureColorGen
 	public Color color(final Greenobject Greenobject) {
 		final Integer trackID = model.getTrackModel().trackIDOf(Greenobject);
 		if (null == trackID)
-			return TrackMateModelView.DEFAULT_Greenobject_COLOR;
+			return GreenTrackMateModelView.DEFAULT_Greenobject_COLOR;
 
 		return trackColorGenerator.colorOf(trackID);
 	}

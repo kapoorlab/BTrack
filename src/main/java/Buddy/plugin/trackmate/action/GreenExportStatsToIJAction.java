@@ -345,7 +345,7 @@ public class GreenExportStatsToIJAction extends AbstractTMAction {
 	}
 
 	// Invisible because called on the view config panel.
-	@Plugin(type = TrackMateActionFactory.class, visible = false)
+	@Plugin(type = GreenTrackMateActionFactory.class, visible = false)
 	public static class Factory implements GreenTrackMateActionFactory {
 
 		@Override

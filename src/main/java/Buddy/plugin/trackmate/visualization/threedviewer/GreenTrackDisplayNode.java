@@ -27,11 +27,8 @@ import org.scijava.vecmath.Point3d;
 import org.scijava.vecmath.Tuple3d;
 
 import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.util.GreenTMUtils;
-import Buddy.plugin.trackmate.util.TMUtils;
 import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
-import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import greenDetector.Greenobject;
 import ij3d.ContentNode;
 import ij3d.TimelapseListener;
@@ -44,9 +41,9 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 	/** Hold the color and transparency of all Greenobjects for a given track. */
 	private final HashMap<Integer, Color> colors = new HashMap<>();
 
-	private int displayDepth = TrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
+	private int displayDepth = GreenTrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
 
-	private int displayMode = TrackMateModelView.DEFAULT_TRACK_DISPLAY_MODE;
+	private int displayMode = GreenTrackMateModelView.DEFAULT_TRACK_DISPLAY_MODE;
 
 	private int currentTimePoint = 0;
 
@@ -150,11 +147,11 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 		final Color4f color = new Color4f();
 		switch (displayMode) {
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_WHOLE: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_WHOLE: {
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY: {
 			if (null == edgeSelection)
 				break;
 
@@ -197,7 +194,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_LOCAL: {
 			float tp;
 			int frameDist;
 			for (final int frame : frameIndices.keySet()) {
@@ -220,7 +217,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_QUICK: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_QUICK: {
 			float tp;
 			int frameDist;
 			for (final int frame : frameIndices.keySet()) {
@@ -243,7 +240,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD: {
 			float tp;
 			int frameDist;
 			for (final int frame : frameIndices.keySet()) {
@@ -266,7 +263,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD_QUICK: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD_QUICK: {
 			float tp;
 			int frameDist;
 			for (final int frame : frameIndices.keySet()) {
@@ -292,7 +289,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD: {
 			float tp;
 			int frameDist;
 			for (final int frame : frameIndices.keySet()) {
@@ -318,7 +315,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD_QUICK: {
+		case GreenTrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD_QUICK: {
 			float tp;
 			int frameDist;
 			for (final int frame : frameIndices.keySet()) {
@@ -346,7 +343,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 		}
 
 		// Deal now with selection
-		if ((null != edgeSelection) && (displayMode != TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY)) {
+		if ((null != edgeSelection) && (displayMode != GreenTrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY)) {
 			// Restore previous display settings for previously highlighted
 			// edges
 			if (null != previousEdgeHighlight)
@@ -359,7 +356,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 				previousEdgeHighlight.put(edge, getColor(edge));
 
 			// Change edge color
-			final Color highlightColor = TrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
+			final Color highlightColor = GreenTrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
 			for (final DefaultWeightedEdge edge : edgeSelection)
 				setColor(edge, highlightColor);
 		}
@@ -478,7 +475,7 @@ public class GreenTrackDisplayNode extends ContentNode implements TimelapseListe
 			// Color
 			Color trackColor = colors.get(trackID);
 			if (null == trackColor) {
-				trackColor = TrackMateModelView.DEFAULT_Greenobject_COLOR;
+				trackColor = GreenTrackMateModelView.DEFAULT_Greenobject_COLOR;
 			}
 			final Color4f color = new Color4f(trackColor);
 			color.w = 1f; // opaque edge for now

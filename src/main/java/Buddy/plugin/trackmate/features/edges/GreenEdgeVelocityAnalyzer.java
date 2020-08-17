@@ -24,7 +24,7 @@ import Buddy.plugin.trackmate.Spot;
 import greenDetector.Greenobject;
 
 @SuppressWarnings("deprecation")
-@Plugin(type = EdgeAnalyzer.class)
+@Plugin(type = GreenEdgeAnalyzer.class)
 public class GreenEdgeVelocityAnalyzer implements GreenEdgeAnalyzer {
 
 	public static final String KEY = "Edge velocity";

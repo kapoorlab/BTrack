@@ -12,14 +12,9 @@ import org.scijava.vecmath.Color3f;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenSelectionModel;
 import Buddy.plugin.trackmate.GreenSettings;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.GreenViewFactory;
-import Buddy.plugin.trackmate.visualization.TrackMateModelView;
-import Buddy.plugin.trackmate.visualization.ViewFactory;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
@@ -29,7 +24,7 @@ import ij3d.ContentCreator;
 import ij3d.Image3DUniverse;
 import ij3d.ImageWindow3D;
 
-@Plugin(type = ViewFactory.class, priority = 1d)
+@Plugin(type = GreenViewFactory.class, priority = 1d)
 public class GreenobjectDisplayer3DFactory implements GreenViewFactory {
 
 	public static final String NAME = "3D Viewer";
@@ -138,7 +133,7 @@ public class GreenobjectDisplayer3DFactory implements GreenViewFactory {
 
 	@Override
 	public String getKey() {
-		return BCellobjectDisplayer3D.KEY;
+		return GreenobjectDisplayer3D.KEY;
 	}
 
 	@Override

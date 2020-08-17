@@ -20,10 +20,7 @@ public class ActionChooserDescriptor implements WizardPanelDescriptor {
 		this.panel = new ActionChooserPanel(actionProvider, trackmate, controller);
 	}
 
-	public ActionChooserDescriptor(final ActionProvider actionProvider, final TrackMate trackmate,
-			final GreenTrackMateGUIController controller) {
-		this.panel = new ActionChooserPanel(actionProvider, trackmate, controller);
-	}
+
 	
 	@Override
 	public ListChooserPanel getComponent() {

@@ -3,6 +3,8 @@ package pluginTools;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
+import Buddy.plugin.trackmate.TrackMatePlugIn_;
+
 
 public class CollectCells extends SwingWorker<Void, Void> {
 	
@@ -24,7 +26,6 @@ public class CollectCells extends SwingWorker<Void, Void> {
 		
 		
 		parent.BudOvalRois.clear();
-		parent.ChosenBudcenter.clear();
 		
 	
 		
@@ -44,6 +45,9 @@ public class CollectCells extends SwingWorker<Void, Void> {
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Collected all cells, starting TrackMate");
 		
+		
+		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
+		plugin.run(null);
 	}
 	
 }

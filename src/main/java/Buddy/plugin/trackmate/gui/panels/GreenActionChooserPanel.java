@@ -26,8 +26,9 @@ import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.providers.ActionProvider;
+import Buddy.plugin.trackmate.providers.GreenActionProvider;
 
-public class ActionChooserPanel {
+public class GreenActionChooserPanel {
 
 	private static final Icon EXECUTE_ICON = new ImageIcon(
 			TrackMateWizard.class.getResource("images/control_play_blue.png"));
@@ -44,11 +45,11 @@ public class ActionChooserPanel {
 
 	private final ListChooserPanel panel;
 
-	private final ActionProvider actionProvider;
+	private final GreenActionProvider actionProvider;
 
 	private SpringLayout layout;
 
-	private final TrackMateGUIController controller;
+	private final GreenTrackMateGUIController controller;
 	
 
 	private final TrackMate trackmate;
@@ -57,8 +58,8 @@ public class ActionChooserPanel {
 	 * CONSTRUCTORS
 	 */
 
-	public ActionChooserPanel(final ActionProvider actionProvider, final TrackMate trackmate,
-			final TrackMateGUIController controller) {
+	public GreenActionChooserPanel(final GreenActionProvider actionProvider, final TrackMate trackmate,
+			final GreenTrackMateGUIController controller) {
 
 		this.controller = controller;
 		this.trackmate = trackmate;

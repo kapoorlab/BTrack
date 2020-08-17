@@ -7,9 +7,6 @@ import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.GreenModelChangeEvent;
 import Buddy.plugin.trackmate.GreenModelChangeListener;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.ModelChangeEvent;
-import Buddy.plugin.trackmate.ModelChangeListener;
 import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import Buddy.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
 
@@ -36,15 +33,15 @@ public class GreenobjectColorGenerator implements FeatureColorGenerator<Greenobj
 	@Override
 	public Color color(final Greenobject Greenobject) {
 		if (null == feature)
-			return TrackMateModelView.DEFAULT_Greenobject_COLOR;
+			return GreenTrackMateModelView.DEFAULT_Greenobject_COLOR;
 
 		final Double feat = Greenobject.getFeature(feature);
 		if (null == feat)
-			return TrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
+			return GreenTrackMateModelView.DEFAULT_UNASSIGNED_FEATURE_COLOR;
 
 		final double val = feat.doubleValue();
 		if (Double.isNaN(val))
-			return TrackMateModelView.DEFAULT_UNDEFINED_FEATURE_COLOR;
+			return GreenTrackMateModelView.DEFAULT_UNDEFINED_FEATURE_COLOR;
 
 		return generator.getPaint((val - min) / (max - min));
 	}

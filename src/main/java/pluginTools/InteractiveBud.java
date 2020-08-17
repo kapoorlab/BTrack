@@ -386,7 +386,6 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 		
 		
-		
 		if(BudAnalysis) {
 		
 			StartDisplayer();
@@ -428,6 +427,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			if(SegYelloworiginalimg!=null)
 				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
 		repaintView(CurrentView);
+		
 		
 		
 		if(BudAnalysis) {

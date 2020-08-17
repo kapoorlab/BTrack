@@ -76,9 +76,11 @@ public class BudSlicer {
 
 			totalimg = originalimg;
 		}
-		else
+		else {
 			totalimg = Views.hyperSlice(originalimg,originalimg.numDimensions() - 1 , thirdDimension - 1);
 
+			
+		}
 
 		return totalimg;
 

@@ -2,20 +2,20 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
-import Buddy.plugin.trackmate.gui.panels.ActionChooserPanel;
+import Buddy.plugin.trackmate.gui.panels.GreenActionChooserPanel;
 import Buddy.plugin.trackmate.gui.panels.ListChooserPanel;
-import Buddy.plugin.trackmate.providers.ActionProvider;
+import Buddy.plugin.trackmate.providers.GreenActionProvider;
 import pluginTools.InteractiveGreen;
 
 public class GreenActionChooserDescriptor implements GreenWizardPanelDescriptor {
 
 	private static final String KEY = "Actions";
 
-	private final ActionChooserPanel panel;
+	private final GreenActionChooserPanel panel;
 
-	public GreenActionChooserDescriptor(final ActionProvider actionProvider, final TrackMate trackmate,
+	public GreenActionChooserDescriptor(final GreenActionProvider actionProvider, final TrackMate trackmate,
 			final GreenTrackMateGUIController controller) {
-		this.panel = new ActionChooserPanel(actionProvider, trackmate, controller);
+		this.panel = new GreenActionChooserPanel(actionProvider, trackmate, controller);
 	}
 
 

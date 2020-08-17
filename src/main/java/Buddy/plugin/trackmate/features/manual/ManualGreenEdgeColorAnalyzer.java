@@ -19,7 +19,7 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = EdgeAnalyzer.class)
+@Plugin(type = GreenEdgeAnalyzer.class)
 public class ManualGreenEdgeColorAnalyzer implements GreenEdgeAnalyzer {
 
 	public static final String FEATURE = "MANUAL_COLOR";

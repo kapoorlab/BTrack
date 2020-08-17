@@ -18,6 +18,7 @@ import budDetector.Cellobject;
 import budDetector.Distance;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.OvalRoi;
 import kalmanGUI.CovistoKalmanPanel;
 import listeners.BudSelectBudsListener;
 import net.imagej.ImageJ;
@@ -127,7 +128,6 @@ public class TrackEachCell {
 	
 	public void displayCells() {
 
-		int sidecutpixel = 1;
 		
 		
 		String uniqueID = Integer.toString(parent.thirdDimension);
@@ -152,19 +152,37 @@ public class TrackEachCell {
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
 						parent.CurrentViewInt, label);
-
+                
 				// For each bud get the list of points
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
 
-			
+				
+				Color displayColor; 
+				
+					displayColor = Color.GREEN;
+				
+				
+				for (int i = 0; i < truths.size() ; i += 1) {
+
+					double X = truths.get(i).getDoublePosition(0);
+					double Y = truths.get(i).getDoublePosition(1);
+
+
+					OvalRoi points =  new OvalRoi((int) X, (int) Y,
+							2, 2);
+					points.setStrokeColor(displayColor);
+					parent.overlay.add(points);
+				
+				}
+				parent.imp.updateAndDraw();
 
 
 											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 											// For each bud get the list of points
 											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 											RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-
+                                            
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
 														100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
@@ -337,7 +355,7 @@ public class TrackEachCell {
 
 	
 		Point min = new Point(minVal.length);
-		// Gradient image gives us the bondary points
+		// Gradient image gives us the boundary points
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
 		
 		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);

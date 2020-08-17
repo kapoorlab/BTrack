@@ -1,6 +1,6 @@
 package Buddy.plugin.trackmate.visualization;
 
-import static Buddy.plugin.trackmate.visualization.TrackMateModelView.DEFAULT_Greenobject_COLOR;
+import static Buddy.plugin.trackmate.visualization.GreenTrackMateModelView.DEFAULT_Greenobject_COLOR;
 import Buddy.plugin.trackmate.gui.panels.components.ColorByFeatureGUIPanel;
 
 import java.awt.Color;

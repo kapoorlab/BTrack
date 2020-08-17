@@ -29,6 +29,7 @@ import org.scijava.vecmath.Tuple3d;
 import org.scijava.vecmath.Vector3d;
 
 import customnode.CustomTriangleMesh;
+import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import ij3d.ContentNode;
 
@@ -49,7 +50,7 @@ public class GreenobjectGroupNode<K> extends ContentNode {
 
 	private final LineAttributes lineAttributes = new LineAttributes(1, 1, true);
 
-	private final Color3f color3 = new Color3f(TrackMateModelView.DEFAULT_Greenobject_COLOR);
+	private final Color3f color3 = new Color3f(GreenTrackMateModelView.DEFAULT_Greenobject_COLOR);
 
 	{
 		textAp.setLineAttributes(lineAttributes);
