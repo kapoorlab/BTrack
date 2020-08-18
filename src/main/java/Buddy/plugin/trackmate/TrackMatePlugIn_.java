@@ -37,24 +37,13 @@ public class TrackMatePlugIn_ implements PlugIn {
 	@Override
 	public void run(final String imagePath) {
 		final ImagePlus imp = ImageJFunctions.show(parent.originalimg);
-		int channels;
-		int frames;
-		if (imp.getNChannels() > imp.getNFrames()) {
-			channels = imp.getNFrames();
-			frames = imp.getNChannels();
+		int channels = 1;
+		int frames = (int)parent.originalimg.dimension(2);
 
-		}
-
-		else {
-
-			channels = imp.getNChannels();
-			frames = imp.getNFrames();
-
-		}
 		imp.setC(channels);
 		imp.setT(frames);
-		final int[] dims = imp.getDimensions();
-		imp.setDimensions(channels, dims[4], dims[3]);
+		
+		imp.setDimensions(frames, 1, 1);
 		GuiUtils.userCheckImpDimensions(imp);
 
 		settings = createSettings(imp);

@@ -159,14 +159,12 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame0); iterator
 								.hasNext();) {
 							sources.add(iterator.next());
-							System.out.println("Targets" + sources.size());
 						}
 
 						final List<BCellobject> targets = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame1));
 						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame1); iterator
 								.hasNext();) {
 							targets.add(iterator.next());
-							System.out.println("Targets" + targets.size());
 						}
 
 						if (sources.isEmpty() || targets.isEmpty())

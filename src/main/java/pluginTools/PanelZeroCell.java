@@ -23,7 +23,7 @@ public class PanelZeroCell {
 		impA.show();
 		
 		ImagePlus impB = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells-1.tif");
 		impB.show();
 	
 	
@@ -33,7 +33,7 @@ public class PanelZeroCell {
 		impC.show();
 
 		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA-1.tif");
 		impD.show();
 
 		TwoDTimeCellFileChooser panel = new TwoDTimeCellFileChooser();

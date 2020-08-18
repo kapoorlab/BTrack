@@ -471,10 +471,7 @@ public class StartDialogPanel extends ActionListenablePanel {
 		jLabelUnits1.setText(lImp.getCalibration().getXUnit());
 		jLabelUnits2.setText(lImp.getCalibration().getYUnit());
 		jLabelUnits3.setText(lImp.getCalibration().getZUnit());
-		Roi roi = lImp.getRoi();
-		if (null == roi)
-			roi = new Roi(0, 0, lImp.getWidth(), lImp.getHeight());
-		final Rectangle boundingRect = roi.getBounds();
+		
 		jTextFieldTStart.setText("" + 0);
 		jTextFieldTEnd.setText("" + (lImp.getNFrames() - 1));
 
