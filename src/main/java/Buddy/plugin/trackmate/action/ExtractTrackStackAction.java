@@ -129,7 +129,8 @@ public class ExtractTrackStackAction extends AbstractTMAction {
 		path.add(start);
 		BCellobject previous = start;
 		BCellobject current;
-		double radius = Math.abs(start.getFeature(BCellobject.RADIUS)) * radiusRatio;
+		double radiav = (start.getFeature(BCellobject.RADIUS[0])  +  start.getFeature(BCellobject.RADIUS[1])  +  start.getFeature(BCellobject.RADIUS[2]) )/ 3;
+		double radius = Math.abs(radiav) * radiusRatio;
 		for (final DefaultWeightedEdge edge : edges) {
 			current = model.getTrackModel().getEdgeSource(edge);
 			if (current == previous) {
@@ -137,7 +138,8 @@ public class ExtractTrackStackAction extends AbstractTMAction {
 																		// edges
 			}
 			path.add(current);
-			final double ct = Math.abs(current.getFeature(BCellobject.RADIUS));
+			double radiavct = (current.getFeature(BCellobject.RADIUS[0])  +  current.getFeature(BCellobject.RADIUS[1])  +  current.getFeature(BCellobject.RADIUS[2]) )/ 3;
+			final double ct = Math.abs(radiavct);
 			if (ct > radius) {
 				radius = ct;
 			}

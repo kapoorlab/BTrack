@@ -35,6 +35,7 @@ public class GreenNearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm
 	/*
 	 * FIELDS
 	 */
+	
 	public final InteractiveGreen parent;
 
 	protected final Map<String, Object> settings;
@@ -81,6 +82,8 @@ public class GreenNearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm
 		// Prepare the thread array
 		final AtomicInteger ai = new AtomicInteger(frames.first());
 		final AtomicInteger progress = new AtomicInteger(0);
+		
+		/*
 		for (int ithread = 0; ithread < threads.length; ithread++) {
 
 			threads[ithread] = new Thread("Nearest neighbor tracker thread " + (1 + ithread) + "/" + threads.length) {
@@ -94,21 +97,21 @@ public class GreenNearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm
 						final int sourceFrame = i;
 						final int targetFrame = frames.higher(i);
 
-						final int nTargetGreenobjects = parent.Greencells.getNGreenobjects(targetFrame);
-						if (nTargetGreenobjects < 1) {
+				//		final int nTargetGreenobjects = parent.Greencells.getNGreenobjects(targetFrame);
+				//		if (nTargetGreenobjects < 1) {
 							continue;
-						}
+				//		}
 
 						final List<RealPoint> targetCoords = new ArrayList<>(nTargetGreenobjects);
 						final List<FlagNode<Greenobject>> targetNodes = new ArrayList<>(nTargetGreenobjects);
-						final Iterator<Greenobject> targetIt = parent.Greencells.iterator(targetFrame);
-						while (targetIt.hasNext()) {
-							final double[] coords = new double[3];
-							final Greenobject Greenobject = targetIt.next();
-							GreenTMUtils.localize(Greenobject, coords);
-							targetCoords.add(new RealPoint(coords));
-							targetNodes.add(new FlagNode<>(Greenobject));
-						}
+				//		final Iterator<Greenobject> targetIt = parent.Greencells.iterator(targetFrame);
+				//		while (targetIt.hasNext()) {
+				//			final double[] coords = new double[3];
+				//			final Greenobject Greenobject = targetIt.next();
+				//			GreenTMUtils.localize(Greenobject, coords);
+				//			targetCoords.add(new RealPoint(coords));
+				//			targetNodes.add(new FlagNode<>(Greenobject));
+				//		}
 
 						final KDTree<FlagNode<Greenobject>> tree = new KDTree<>(targetNodes, targetCoords);
 						final NearestNeighborFlagSearchOnKDTree<Greenobject> search = new NearestNeighborFlagSearchOnKDTree<>(
@@ -116,18 +119,18 @@ public class GreenNearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm
 
 						// For each Greenobject in the source frame, find its nearest neighbor in the
 						// target frame
-						final Iterator<Greenobject> sourceIt = parent.Greencells.iterator(sourceFrame);
-						while (sourceIt.hasNext()) {
-							final Greenobject source = sourceIt.next();
-							final double[] coords = new double[3];
-							GreenTMUtils.localize(source, coords);
-							final RealPoint sourceCoords = new RealPoint(coords);
-							search.search(sourceCoords);
+//						final Iterator<Greenobject> sourceIt = parent.Greencells.iterator(sourceFrame);
+//						while (sourceIt.hasNext()) {
+//							final Greenobject source = sourceIt.next();
+//							final double[] coords = new double[3];
+//							GreenTMUtils.localize(source, coords);
+//							final RealPoint sourceCoords = new RealPoint(coords);
+//							search.search(sourceCoords);
 
-							final double squareDist = search.getSquareDistance();
-							final FlagNode<Greenobject> targetNode = search.getSampler().get();
+//							final double squareDist = search.getSquareDistance();
+//							final FlagNode<Greenobject> targetNode = search.getSampler().get();
 
-							if (squareDist > maxDistSquare) {
+//							if (squareDist > maxDistSquare) {
 								// The closest we could find is too far. We skip this source Greenobject and do
 								// not create a link
 								continue;
@@ -161,6 +164,8 @@ public class GreenNearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm
 
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
+		
+		*/
 		return true;
 	}
 
@@ -171,10 +176,10 @@ public class GreenNearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm
 
 	public void reset() {
 		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		final Iterator<Greenobject> it = parent.Greencells.iterator(true);
-		while (it.hasNext()) {
-			graph.addVertex(it.next());
-		}
+	//	final Iterator<Greenobject> it = parent.Greencells.iterator(true);
+	//	while (it.hasNext()) {
+	//		graph.addVertex(it.next());
+	//	}
 	}
 
 	public static boolean checkInput(final Map<String, Object> settings, final StringBuilder errrorHolder) {

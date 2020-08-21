@@ -61,7 +61,6 @@ public class TrackEachCell {
 
 
 	final InteractiveBud parent;
-	final int t;
 	int percent;
 	final ArrayList<Budobject> Budlist;
 	final ArrayList<Budpointobject> Budpointlist;
@@ -69,11 +68,10 @@ public class TrackEachCell {
     ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
     
 	public TrackEachCell(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, 
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, 
 			final int percent) {
 
 		this.parent = parent;
-		this.t = t;
 		this.percent = percent;
 		this.Budlist = Budlist;
 		this.Budpointlist = Budpointlist;
@@ -81,11 +79,10 @@ public class TrackEachCell {
 	}
 	
 	public TrackEachCell(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist, final int t, 
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist,
 			final int percent) {
 
 		this.parent = parent;
-		this.t = t;
 		this.percent = percent;
 		this.Budlist = Budlist;
 		this.Budpointlist = Budpointlist;
@@ -93,10 +90,9 @@ public class TrackEachCell {
 	}
 
 	public TrackEachCell(final InteractiveBud parent, 
-			final int t,  final int percent) {
+			final int percent) {
 
 		this.parent = parent;
-		this.t = t;
 		this.percent = percent;
 		this.Budlist = null;
 		this.Budpointlist = null;
@@ -186,7 +182,7 @@ public class TrackEachCell {
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
 														100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
-														"Collecting Cells = " + t + "/" + parent.thirdDimensionSize );
+														"Collecting Cells = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
 
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
@@ -216,7 +212,7 @@ public class TrackEachCell {
 		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
 	
 
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
+		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
 				truths.size() * parent.calibrationX);
 		Budlist.add(Curreentbud);
 		if (parent.SegYelloworiginalimg != null) {
@@ -231,8 +227,8 @@ public class TrackEachCell {
 			// and the distance
 			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, t);
-            parent.budcells.add(budncell, t);  
+			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
+            parent.budcells.add(budncell, parent.thirdDimension);  
 		}
 		
 		

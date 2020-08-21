@@ -269,7 +269,8 @@ public class BCellobjectCollection implements MultiThreaded {
 		for (final BCellobject s : BCellobjects) {
 
 			d2 = s.squareDistanceTo(location);
-			if (d2 < s.getFeature(BCellobject.RADIUS) * s.getFeature(BCellobject.RADIUS))
+			double size = s.getFeature(BCellobject.RADIUS[0]) * s.getFeature(BCellobject.RADIUS[1]) * s.getFeature(BCellobject.RADIUS[2]);
+			if (d2 < size)
 				distanceToBCellobject.put(d2, s);
 		}
 		if (distanceToBCellobject.isEmpty())

@@ -62,7 +62,7 @@ public class TrackEach3DCell {
 
 	final InteractiveGreen parent;
 	int percent;
-	ArrayList<BCellobject> Greencelllist = new ArrayList<BCellobject>();
+	ArrayList<Cellobject> Greencelllist = new ArrayList<Cellobject>();
 	
 	
 	public TrackEach3DCell(final InteractiveGreen parent,
@@ -76,7 +76,7 @@ public class TrackEach3DCell {
 
 	
 	
-	public ArrayList<BCellobject> returnGreenlist(){
+	public ArrayList<Cellobject> returnGreenlist(){
 		
 		
 		return Greencelllist;
@@ -144,15 +144,33 @@ public class TrackEach3DCell {
 			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
 			int label) {
 
-	
-	      Greencelllist  = GetNearest.getAllInteriorCells(parent, parent.CurrentViewMaskInt, parent.CurrentViewInt);
+		
+		// Corner points of region
+				OpService ops = parent.ij.op();
+				
+		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
+		
 
-		for(Greenobject greencell: Greencelllist) {
+		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
+				truths.size() * parent.calibrationX);
+	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewMaskInt, parent.CurrentViewInt);
+
+     	for(Cellobject currentbudcell:Greencelllist) {
 			
 			
+			Localizable centercell = currentbudcell.Location;
+			
+			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
+			// and the distance
+			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-            parent.Greencells.add(greencell, parent.thirdDimension);  
+			BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
+            parent.Greencells.add(budncell, parent.thirdDimension);  
 		}
+		
+	      
+	      
+		
 		
 		
 		

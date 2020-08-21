@@ -160,9 +160,15 @@ public class KalmanTracker implements BCellobjectTracker, Benchmark {
 		 */
 
 		double meanBCellobjectRadius = 0d;
-		for (final BCellobject BCellobject : orphanBCellobjects)
-			meanBCellobjectRadius += BCellobject.getFeature(BCellobject.RADIUS).doubleValue();
+		
+		
+		for (final BCellobject BCellobject : orphanBCellobjects) {
+		
+			double radiav = (BCellobject.getFeature(BCellobject.RADIUS[0])  +  BCellobject.getFeature(BCellobject.RADIUS[1])  +  BCellobject.getFeature(BCellobject.RADIUS[2]) )/ 3;
+			meanBCellobjectRadius += radiav;
 
+			
+		}
 		meanBCellobjectRadius /= orphanBCellobjects.size();
 		final double positionMeasurementStd = meanBCellobjectRadius / 10d;
 

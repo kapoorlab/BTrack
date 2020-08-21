@@ -77,7 +77,7 @@ public class GreenTrackMate implements Benchmark, MultiThreaded, Algorithm {
 		this.parent = parent;
 		final GreenModel model = new GreenModel();
 		
-		model.setGreenobjects(parent.Greencells, true);
+		//model.setGreenobjects(parent.Greencells, true);
 
 		this.model = model;
 		this.settings = settings;
@@ -314,7 +314,7 @@ public class GreenTrackMate implements Benchmark, MultiThreaded, Algorithm {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean execDetection() {
 
-		model.setGreenobjects(parent.Greencells, true);
+		//model.setGreenobjects(parent.Greencells, true);
 
 		return true;
 	}

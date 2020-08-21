@@ -571,7 +571,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 		double radius;
 		for (final Iterator<BCellobject> it = model.getBCellobjects().iterator(true); it.hasNext();) {
 			final BCellobject BCellobject = it.next();
-			radius = BCellobject.getFeature(BCellobject.RADIUS);
+			radius = BCellobject.getFeature(BCellobject.Size);
 			if (xmax < BCellobject.getFeature(BCellobject.POSITION_X) + radius)
 				xmax = BCellobject.getFeature(BCellobject.POSITION_X) + radius;
 			if (ymax < BCellobject.getFeature(BCellobject.POSITION_Y) + radius)
@@ -591,7 +591,7 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 		double radius;
 		for (final Iterator<BCellobject> it = model.getBCellobjects().iterator(true); it.hasNext();) {
 			final BCellobject BCellobject = it.next();
-			radius = BCellobject.getFeature(BCellobject.RADIUS);
+			radius = BCellobject.getFeature(BCellobject.Size);
 			if (xmin > BCellobject.getFeature(BCellobject.POSITION_X) - radius)
 				xmin = BCellobject.getFeature(BCellobject.POSITION_X) - radius;
 			if (ymin > BCellobject.getFeature(BCellobject.POSITION_Y) - radius)

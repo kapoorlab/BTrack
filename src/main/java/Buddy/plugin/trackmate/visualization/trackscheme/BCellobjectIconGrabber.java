@@ -54,12 +54,11 @@ public class BCellobjectIconGrabber<T extends RealType<T>> {
 	 */
 	public String getImageString(final BCellobject BCellobject, final double radiusFactor) {
 		// Get crop coordinates
-		final double[] calibration = TMUtils.getSpatialCalibration(img);
-		final double radius = BCellobject.getFeature(BCellobject.RADIUS) * radiusFactor;
-		final long x = Math.round((BCellobject.getFeature(BCellobject.POSITION_X) - radius) / calibration[0]);
-		final long y = Math.round((BCellobject.getFeature(BCellobject.POSITION_Y) - radius) / calibration[1]);
-		final long width = Math.max(1, Math.round(2 * radius / calibration[0]));
-		final long height = Math.max(1, Math.round(2 * radius / calibration[1]));
+		final double radius = BCellobject.getFeature(BCellobject.Size) * radiusFactor;
+		final long x = Math.round((BCellobject.getFeature(BCellobject.POSITION_X) - radius));
+		final long y = Math.round((BCellobject.getFeature(BCellobject.POSITION_Y) - radius));
+		final long width = Math.max(1, Math.round(2 * radius));
+		final long height = Math.max(1, Math.round(2 * radius));
 
 		// Copy cropped view
 		long slice = 0;

@@ -34,7 +34,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public int time;
 	private final int ID;
 	
-	/** A user-supplied name for this spot. */
+	/** A user-supplied name for this cell. */
 	private String name;
 	
 	
@@ -50,6 +50,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( Radi_X, Double.valueOf( currentcell.extents[0] ) );
 		putFeature( Radi_Y, Double.valueOf( currentcell.extents[1] ) );
 		putFeature( Radi_Z, Double.valueOf( currentcell.extents[2] ) );
+		putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + Double.valueOf( currentcell.extents[2] ) )/3 );
 		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
 		putFeature( distBud, Double.valueOf( closestBudPoint ) );
@@ -77,6 +78,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( Radi_X, Double.valueOf( currentcell.extents[0] ) );
 		putFeature( Radi_Y, Double.valueOf( currentcell.extents[1] ) );
 		putFeature( Radi_Z, Double.valueOf( currentcell.extents[2] ) );
+		putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + Double.valueOf( currentcell.extents[2] ) )/3 );
 		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
 		putFeature( distBud, Double.valueOf( closestBudPoint ) );
@@ -92,58 +94,61 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	}
 
 	
-	/** The name of the spot X position feature. */
+	/** The name of the cell X position feature. */
 	public static final String distBud = "distclosestBudPoint";
 
-	/** The name of the spot Y position feature. */
+	/** The name of the cell Y position feature. */
 	public static final String distDynamicBud = "distclosestGrowthPoint";
 	
-	/** The name of the spot X position feature. */
+	/** The name of the cell X position feature. */
 	public static final String POSITION_X = "POSITION_X";
 
-	/** The name of the spot Y position feature. */
+	/** The name of the cell Y position feature. */
 	public static final String POSITION_Y = "POSITION_Y";
 	
-	/** The name of the spot Z position feature. */
+	/** The name of the cell Z position feature. */
 	public static final String POSITION_Z = "POSITION_Z";	
 	
-	/** The name of the spot X position feature. */
+	/** The name of the cell X position feature. */
 	public static final String Radi_X = "Radi_X";
 
-	/** The name of the spot Y position feature. */
+	/** The name of the cell Y position feature. */
 	public static final String Radi_Y = "Radi_Y";
 	
-	/** The name of the spot Z position feature. */
+	/** The name of the cell Z position feature. */
 	public static final String Radi_Z = "Radi_Z";	
+	
+	/** The name of the Size position feature. */
+	public static final String Size = "Size";
 
-	/** The name of the spot Radius feature. */
+	/** The name of the cell Radius feature. */
 	public static final String[] RADIUS = new String[] {Radi_X, Radi_Y, Radi_Z};
 	
-	/** The name of the spot Radius feature. */
+	/** The name of the cell Radius feature. */
 	public static final String INTENSITY = "INTENSITY";
 
-	/** The name of the spot T position feature. */
+	/** The name of the cell T position feature. */
 	public static final String POSITION_T = "POSITION_T";
 
 	/** The position features. */
 	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y, POSITION_Z};
 
-	static int totalfeatures = 10;
+	static int totalfeatures = 11;
 	public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
 
-	/** The 4 privileged spot feature names. */
+	/** The 4 privileged cell feature names. */
 	public final static Map< String, String > FEATURE_NAMES = new HashMap< >( totalfeatures );
 
-	/** The 4 privileged spot feature short names. */
+	/** The 4 privileged cell feature short names. */
 	public final static Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( totalfeatures );
 
-	/** The 4 privileged spot feature dimensions. */
+	/** The 4 privileged cell feature dimensions. */
 	public final static Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( totalfeatures );
 
-	/** The 4 privileged spot feature isInt flags. */
+	/** The 4 privileged cell feature isInt flags. */
 	public final static Map< String, Boolean > IS_INT = new HashMap< >( totalfeatures );
 	/**
-	 * @return the name for this Spot.
+	 * @return the name for this cell.
 	 */
 	public String getName()
 	{
@@ -151,7 +156,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	}
 
 	/**
-	 * Set the name of this Spot.
+	 * Set the name of this cell.
 	 * 
 	 * @param name
 	 *            the name to use.
@@ -172,7 +177,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURES.add( INTENSITY );
 		FEATURES.add( distBud );
 		FEATURES.add( distDynamicBud );
-		
+		FEATURES.add( Size );
 		
 		FEATURE_NAMES.put( distBud, "DistBud" );
 		FEATURE_NAMES.put( distDynamicBud, "DistDynamicBud" );
@@ -184,6 +189,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_NAMES.put( Radi_Y, "Radi_Y" );
 		FEATURE_NAMES.put( Radi_Z, "Radi_Z" );
 		FEATURE_NAMES.put( INTENSITY, "Intensity" );
+		FEATURE_NAMES.put( Size, "Size" );
 		
 		FEATURE_SHORT_NAMES.put( distBud, "DistBud" );
 		FEATURE_SHORT_NAMES.put( distDynamicBud, "DistDynamicBud" );
@@ -195,6 +201,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_SHORT_NAMES.put( Radi_Y, "Radi_Y" );
 		FEATURE_SHORT_NAMES.put( Radi_Z, "Radi_Z" );
 		FEATURE_SHORT_NAMES.put( INTENSITY, "I" );
+		FEATURE_SHORT_NAMES.put( Size, "Size" );
 		
 		FEATURE_DIMENSIONS.put( distBud, Dimension.distBud );
 		FEATURE_DIMENSIONS.put( distDynamicBud, Dimension.distDynamicBud );
@@ -205,6 +212,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_DIMENSIONS.put( Radi_X, Dimension.LENGTH );
 		FEATURE_DIMENSIONS.put( Radi_Y, Dimension.LENGTH );
 		FEATURE_DIMENSIONS.put( Radi_Z, Dimension.LENGTH );
+		FEATURE_DIMENSIONS.put( Size, Dimension.LENGTH );
 		FEATURE_DIMENSIONS.put( INTENSITY, Dimension.LENGTH );
 		
 		IS_INT.put( distBud, Boolean.FALSE );
@@ -216,6 +224,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		IS_INT.put( Radi_X, Boolean.FALSE );
 		IS_INT.put( Radi_Y, Boolean.FALSE );
 		IS_INT.put( Radi_Z, Boolean.FALSE );
+		IS_INT.put( Size, Boolean.FALSE );
 		IS_INT.put( INTENSITY, Boolean.FALSE );
 	}
 
@@ -282,15 +291,15 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		return thisBloblocation - targetBloblocation;
 	}
 	/**
-	 * Returns the difference of the feature value for this spot with the one of
-	 * the specified spot. By construction, this operation is anti-symmetric (
+	 * Returns the difference of the feature value for this cell with the one of
+	 * the specified cell. By construction, this operation is anti-symmetric (
 	 * <code>A.diffTo(B) = - B.diffTo(A)</code>).
 	 * <p>
-	 * Will generate a {@link NullPointerException} if one of the spots does not
+	 * Will generate a {@link NullPointerException} if one of the cells does not
 	 * store the named feature.
 	 *
 	 * @param s
-	 *            the spot to compare to.
+	 *            the cell to compare to.
 	 * @param feature
 	 *            the name of the feature to use for calculation.
 	 * @return the difference in feature value.
@@ -329,7 +338,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		};
 		return comparator;
 	}
-	/** A comparator used to sort spots by ascending time frame. */
+	/** A comparator used to sort cells by ascending time frame. */
 	public final static Comparator<BCellobject> frameComparator = featureComparator( POSITION_T );
 	/**
 	 * Returns the squared distance between two clouds.
@@ -371,8 +380,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	}
 
 	/**
-	 * A comparator used to sort spots by name. The comparison uses numerical
-	 * natural sorting, So that "Spot_4" comes before "Spot_122".
+	 * A comparator used to sort cells by name. The comparison uses numerical
+	 * natural sorting, So that "cell_4" comes before "cell_122".
 	 */
 	public final static Comparator< BCellobject > nameComparator = new Comparator< BCellobject >()
 	{
@@ -387,8 +396,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 
 	/**
-	 * Exposes the storage map of features for this spot. Altering the returned
-	 * map will alter the spot.
+	 * Exposes the storage map of features for this cell. Altering the returned
+	 * map will alter the cell.
 	 *
 	 * @return a map of {@link String}s to {@link Double}s.
 	 */

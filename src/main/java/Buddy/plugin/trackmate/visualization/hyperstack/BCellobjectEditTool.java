@@ -294,7 +294,9 @@ public class BCellobjectEditTool extends AbstractTool
 				selectionModel.addBCellobjectToSelection(editedBCellobject);
 
 				// Forget edited BCellobject, but remember its radius
-				previousRadius = editedBCellobject.getFeature(BCellobject.RADIUS);
+				double radiav = (editedBCellobject.getFeature(BCellobject.RADIUS[0])  +  editedBCellobject.getFeature(BCellobject.RADIUS[1])  +  editedBCellobject.getFeature(BCellobject.RADIUS[2]) )/ 3;
+
+				previousRadius = radiav;
 				editedBCellobject = null;
 				displayer.BCellobjectOverlay.editingBCellobject = null;
 			}
@@ -438,7 +440,9 @@ public class BCellobjectEditTool extends AbstractTool
 		final BCellobject editedBCellobject = editedBCellobjects.get(lImp);
 		if (null == editedBCellobject || !e.isAltDown())
 			return;
-		double radius = editedBCellobject.getFeature(BCellobject.RADIUS);
+		double radiav = (editedBCellobject.getFeature(BCellobject.RADIUS[0])  +  editedBCellobject.getFeature(BCellobject.RADIUS[1])  +  editedBCellobject.getFeature(BCellobject.RADIUS[2]) )/ 3;
+
+		double radius = radiav;
 		final double dx = lImp.getCalibration().pixelWidth;
 		if (e.isShiftDown())
 			radius += e.getWheelRotation() * dx * COARSE_STEP;
@@ -450,7 +454,7 @@ public class BCellobjectEditTool extends AbstractTool
 			return;
 		}
 
-		editedBCellobject.putFeature(BCellobject.RADIUS, radius);
+		editedBCellobject.putFeature(BCellobject.Size, radius);
 		displayer.imp.updateAndDraw();
 		e.consume();
 		updateStatusBar(editedBCellobject, lImp.getCalibration().getUnits());
@@ -845,11 +849,11 @@ public class BCellobjectEditTool extends AbstractTool
 		if (null == BCellobject.getName() || BCellobject.getName().equals("")) {
 			statusString = String.format(Locale.US, "BCellobject ID%d, x = %.1f, y = %.1f, z = %.1f, r = %.1f %s",
 					BCellobject.ID(), BCellobject.getFeature(BCellobject.POSITION_X),
-					BCellobject.getFeature(BCellobject.POSITION_Y), BCellobject.getFeature(BCellobject.RADIUS), units);
+					BCellobject.getFeature(BCellobject.POSITION_Y), BCellobject.getFeature(BCellobject.Size), units);
 		} else {
 			statusString = String.format(Locale.US, "BCellobject %s, x = %.1f, y = %.1f, z = %.1f, r = %.1f %s",
 					BCellobject.getName(), BCellobject.getFeature(BCellobject.POSITION_X),
-					BCellobject.getFeature(BCellobject.POSITION_Y), BCellobject.getFeature(BCellobject.RADIUS), units);
+					BCellobject.getFeature(BCellobject.POSITION_Y), BCellobject.getFeature(BCellobject.Size), units);
 		}
 		IJ.showStatus(statusString);
 	}

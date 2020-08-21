@@ -53,7 +53,9 @@ public class ViewUtils {
 		int nframes = 0;
 
 		for (final BCellobject BCellobject : model.getBCellobjects().iterable(true)) {
-			final double r = BCellobject.getFeature(BCellobject.RADIUS);
+			
+			double radiav = (BCellobject.getFeature(BCellobject.RADIUS[0])  +  BCellobject.getFeature(BCellobject.RADIUS[1])  +  BCellobject.getFeature(BCellobject.RADIUS[2]) )/ 3;
+			final double r = radiav;
 			final double x = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_X));
 			final double y = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_Y));
 			final int t = BCellobject.getFeature(BCellobject.POSITION_T).intValue();

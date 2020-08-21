@@ -263,7 +263,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 		for (final Iterator<BCellobject> it = BCellobjects.iterator(frame); it.hasNext();) {
 			final BCellobject BCellobject = it.next();
 			TMUtils.localize(BCellobject, coords);
-			final Double radius = BCellobject.getFeature(BCellobject.RADIUS);
+			final Double radius = BCellobject.getFeature(BCellobject.Size);
 			final double[] pos = new double[] { coords[0], coords[1], coords[2], radius * radiusRatio };
 			centers.put(BCellobject, new Point4d(pos));
 			final Color4f col = new Color4f(BCellobjectColorGenerator.color(BCellobject));
@@ -296,7 +296,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 			final BCellobjectGroupNode<BCellobject> BCellobjectGroup = blobs.get(frame);
 			for (final Iterator<BCellobject> iterator = model.getBCellobjects().iterator(frame); iterator.hasNext();) {
 				final BCellobject BCellobject = iterator.next();
-				BCellobjectGroup.setRadius(BCellobject, radiusRatio * BCellobject.getFeature(BCellobject.RADIUS));
+				BCellobjectGroup.setRadius(BCellobject, radiusRatio * BCellobject.getFeature(BCellobject.Size));
 			}
 		}
 	}

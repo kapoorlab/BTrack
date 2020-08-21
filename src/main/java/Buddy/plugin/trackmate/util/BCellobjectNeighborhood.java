@@ -37,12 +37,12 @@ public class BCellobjectNeighborhood<T extends RealType<T>> implements Neighborh
 		this.center = new long[img.numDimensions()];
 		for (int d = 0; d < center.length; d++) {
 			center[d] = Math
-					.round(BCellobject.getFeature(BCellobject.POSITION_FEATURES[d]).doubleValue() / calibration[d]);
+					.round(BCellobject.getFeature(BCellobject.POSITION_FEATURES[d]).doubleValue());
 		}
 		// Span
 		final long[] span = new long[img.numDimensions()];
 		for (int d = 0; d < span.length; d++) {
-			span[d] = Math.round(BCellobject.getFeature(BCellobject.RADIUS) / calibration[d]);
+			span[d] = Math.round(BCellobject.getFeature(BCellobject.RADIUS[d]));
 		}
 
 		// Neighborhood

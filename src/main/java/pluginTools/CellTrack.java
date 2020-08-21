@@ -57,7 +57,7 @@ public class CellTrack {
 		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
 		
 			
-		    TrackEachCell compute = new TrackEachCell(parent,  Budlist,Budpointlist, Budcelllist, parent.thirdDimension,  percent);
+		    TrackEachCell compute = new TrackEachCell(parent,  Budlist,Budpointlist, Budcelllist,  percent);
 		    compute.displayCells();
 		
 		

@@ -61,7 +61,7 @@ public class GreenTrackMatePlugin_ implements PlugIn {
 
 			settings = createSettings(imp);
 			model = createModel();
-			model.setGreenobjects(parent.Greencells, true);
+			//model.setGreenobjects(parent.Greencells, true);
 			trackmate = createTrackMate();
 
 			/*

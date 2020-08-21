@@ -177,7 +177,7 @@ public class BCellobjectOverlay extends Roi {
 					new float[] { 5f, 5f }, 0));
 			final double x = editingBCellobject.getFeature(BCellobject.POSITION_X);
 			final double y = editingBCellobject.getFeature(BCellobject.POSITION_Y);
-			final double radius = editingBCellobject.getFeature(BCellobject.RADIUS) / calibration[0] * lMag;
+			final double radius = editingBCellobject.getFeature(BCellobject.Size)  * lMag;
 			// In pixel units
 			final double xp = x / calibration[0] + 0.5d;
 			final double yp = y / calibration[1] + 0.5d;
@@ -213,7 +213,7 @@ public class BCellobjectOverlay extends Roi {
 		final double x = BCellobject.getFeature(BCellobject.POSITION_X);
 		final double y = BCellobject.getFeature(BCellobject.POSITION_Y);
 		final double radiusRatio = (Double) displaySettings.get(TrackMateModelView.KEY_BCellobject_RADIUS_RATIO);
-		final double radius = BCellobject.getFeature(BCellobject.RADIUS) * radiusRatio;
+		final double radius = BCellobject.getFeature(BCellobject.Size) * radiusRatio;
 		// In pixel units
 		final double xp = x / calibration[0] + 0.5f;
 		final double yp = y / calibration[1] + 0.5f; // so that BCellobject centers
