@@ -81,7 +81,7 @@ public class TrackFilterDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 		final Logger logger = trackmate.getModel().getLogger();
 		logger.log("Performing track filtering on the following features:\n", Logger.BLUE_COLOR);
 		final List<FeatureFilter> featureFilters = component.getFeatureFilters();

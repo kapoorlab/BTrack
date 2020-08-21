@@ -69,7 +69,7 @@ public interface WizardPanelDescriptor {
 	 * This method is used to perform functionality just before the panel is to be
 	 * hidden.
 	 */
-	public void aboutToHidePanel();
+	public void aboutToHidePanel(InteractiveBud parent);
 
 	/**
 	 * This method is used to perform functionality when the panel is visited by

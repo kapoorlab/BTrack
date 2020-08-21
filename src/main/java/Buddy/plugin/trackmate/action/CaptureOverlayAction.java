@@ -23,6 +23,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.process.ColorProcessor;
+import pluginTools.InteractiveBud;
 
 public class CaptureOverlayAction extends AbstractTMAction {
 
@@ -192,7 +193,7 @@ public class CaptureOverlayAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new CaptureOverlayAction(controller.getGUI());
 		}
 

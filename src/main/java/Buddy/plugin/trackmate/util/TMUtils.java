@@ -26,6 +26,7 @@ import net.imglib2.Interval;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.Util;
+import pluginTools.InteractiveBud;
 
 /**
  * List of static utilities for {@link Buddy.plugin.trackmate.TrackMate}.
@@ -262,10 +263,10 @@ public class TMUtils {
 		return calibration;
 	}
 
-	public static double[] getSpatialCalibration(final ImagePlus imp) {
+	public static double[] getSpatialCalibration(final InteractiveBud parent, final ImagePlus imp) {
 		final double[] calibration = Util.getArrayFromValue(1d, 3);
-		calibration[0] = imp.getCalibration().pixelWidth;
-		calibration[1] = imp.getCalibration().pixelHeight;
+		calibration[0] = parent.calibrationX;
+		calibration[1] = parent.calibrationY;
 
 		return calibration;
 	}

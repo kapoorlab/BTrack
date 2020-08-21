@@ -21,6 +21,7 @@ import ij.WindowManager;
 import ij.measure.ResultsTable;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
+import pluginTools.InteractiveBud;
 
 public class ExportAllBCellobjectsStatsAction extends AbstractTMAction {
 
@@ -41,10 +42,13 @@ public class ExportAllBCellobjectsStatsAction extends AbstractTMAction {
 
 	private final SelectionModel selectionModel;
 
+	public final InteractiveBud parent;
+	
 	private final static String BCellobject_TABLE_NAME = "All BCellobjects statistics";
 
-	public ExportAllBCellobjectsStatsAction(final SelectionModel selectionModel) {
+	public ExportAllBCellobjectsStatsAction(final InteractiveBud parent,final SelectionModel selectionModel) {
 		this.selectionModel = selectionModel;
+		this.parent = parent;
 	}
 
 	@Override
@@ -151,8 +155,8 @@ public class ExportAllBCellobjectsStatsAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
-			return new ExportAllBCellobjectsStatsAction(controller.getSelectionModel());
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
+			return new ExportAllBCellobjectsStatsAction(parent, controller.getSelectionModel());
 		}
 
 		@Override

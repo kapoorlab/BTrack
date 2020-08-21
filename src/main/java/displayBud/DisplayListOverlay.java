@@ -47,7 +47,14 @@ public class DisplayListOverlay {
 			final RealPoint rpos = new RealPoint(posf);
 		
 			if(center.get().getInteger() > 0) {
+				
+				if (ndims == 2)
+					coordinatelist.add(new RealPoint(rpos.getDoublePosition(0), rpos.getDoublePosition(1), 1));
+				else
+					
 				coordinatelist.add(rpos);
+				
+				
 			}
 			
 		}

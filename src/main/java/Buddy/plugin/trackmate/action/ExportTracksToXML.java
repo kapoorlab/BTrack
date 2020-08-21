@@ -25,6 +25,7 @@ import org.jdom2.output.XMLOutputter;
 import org.scijava.plugin.Plugin;
 
 import budDetector.BCellobject;
+import pluginTools.InteractiveBud;
 
 public class ExportTracksToXML extends AbstractTMAction {
 
@@ -209,7 +210,7 @@ public class ExportTracksToXML extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new ExportTracksToXML(controller);
 		}
 

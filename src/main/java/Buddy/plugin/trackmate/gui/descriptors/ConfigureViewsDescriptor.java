@@ -3,7 +3,6 @@ package Buddy.plugin.trackmate.gui.descriptors;
 import budDetector.BCellobject;
 import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.panels.ConfigureViewsPanel;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
@@ -61,7 +60,7 @@ public class ConfigureViewsDescriptor implements WizardPanelDescriptor {
 
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 	}
 
 	@Override

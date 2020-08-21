@@ -1,6 +1,5 @@
 package Buddy.plugin.trackmate.visualization;
 
-import Buddy.plugin.trackmate.GreenModelChangeEvent;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;

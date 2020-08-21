@@ -21,11 +21,11 @@ import javax.swing.SpringLayout;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.action.TrackMateAction;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.providers.ActionProvider;
+import pluginTools.InteractiveBud;
 
 public class ActionChooserPanel {
 
@@ -50,16 +50,17 @@ public class ActionChooserPanel {
 
 	private final TrackMateGUIController controller;
 	
-
+    public final InteractiveBud parent;
 	private final TrackMate trackmate;
 
 	/*
 	 * CONSTRUCTORS
 	 */
 
-	public ActionChooserPanel(final ActionProvider actionProvider, final TrackMate trackmate,
+	public ActionChooserPanel(InteractiveBud parent, final ActionProvider actionProvider, final TrackMate trackmate,
 			final TrackMateGUIController controller) {
 
+		this.parent = parent;
 		this.controller = controller;
 		this.trackmate = trackmate;
 		final List<String> actionKeys = actionProvider.getVisibleKeys();
@@ -113,7 +114,7 @@ public class ActionChooserPanel {
 							panel.fireAction(ACTION_STARTED);
 							final int actionIndex = panel.getChoice();
 							final String actionKey = actionProvider.getVisibleKeys().get(actionIndex);
-							final TrackMateAction action = actionProvider.getFactory(actionKey).create(controller);
+							final TrackMateAction action = actionProvider.getFactory(actionKey).create(parent, controller);
 							if (null == action) {
 								logger.error("Unknown action: " + actionKey + ".\n");
 							} else {

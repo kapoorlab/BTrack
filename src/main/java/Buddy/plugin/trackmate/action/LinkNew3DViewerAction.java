@@ -13,6 +13,7 @@ import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.visualization.threedviewer.BCellobjectDisplayer3D;
 import ij3d.Image3DUniverse;
 import ij3d.ImageWindow3D;
+import pluginTools.InteractiveBud;
 
 public class LinkNew3DViewerAction extends AbstractTMAction {
 
@@ -117,7 +118,7 @@ public class LinkNew3DViewerAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new LinkNew3DViewerAction(controller);
 		}
 

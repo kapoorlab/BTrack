@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import org.scijava.plugin.Plugin;
 
 import budDetector.BCellobject;
+import pluginTools.InteractiveBud;
 
 public class ResetBCellobjectTimeFeatureAction extends AbstractTMAction {
 
@@ -64,7 +65,7 @@ public class ResetBCellobjectTimeFeatureAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new ResetBCellobjectTimeFeatureAction();
 		}
 

@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.io.IOUtils;
 import Buddy.plugin.trackmate.io.TmXmlWriter;
@@ -22,11 +21,12 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 	private final TrackMateGUIController controller;
 	
 	
-
+	
 	public SaveDescriptor(final TrackMateGUIController controller) {
 		super(controller.getGUI().getLogPanel());
 		this.trackmate = controller.getPlugin();
 		this.controller = controller;
+		
 	}
 
 

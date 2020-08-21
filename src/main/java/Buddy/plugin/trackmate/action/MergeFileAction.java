@@ -26,6 +26,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
 import budDetector.BCellobject;
+import pluginTools.InteractiveBud;
 
 public class MergeFileAction extends AbstractTMAction {
 
@@ -166,7 +167,7 @@ public class MergeFileAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new MergeFileAction(controller.getGUI());
 		}
 

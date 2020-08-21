@@ -53,6 +53,7 @@ import Buddy.plugin.trackmate.visualization.threedviewer.BCellobjectDisplayer3DF
 import Buddy.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.ImagePlus;
+import pluginTools.InteractiveBud;
 
 public class CopyOverlayAction extends AbstractTMAction {
 
@@ -88,6 +89,8 @@ public class CopyOverlayAction extends AbstractTMAction {
 	 */
 	private TrackMate trackmate;
 
+	public InteractiveBud parent;
+	
 	@Override
 	public void execute(final TrackMate tm) {
 		this.trackmate = tm;
@@ -110,12 +113,12 @@ public class CopyOverlayAction extends AbstractTMAction {
 							String title;
 							if (null == dest) {
 								logger.log("Copying data and overlay to new 3D viewer\n");
-								newDisplayer = new BCellobjectDisplayer3DFactory().create(tm.getModel(),
+								newDisplayer = new BCellobjectDisplayer3DFactory().create(parent, tm.getModel(),
 										tm.getSettings(), selectionModel);
 								title = "3D viewer overlay";
 							} else {
 								logger.log("Copying overlay to " + dest.getShortTitle() + "\n");
-								newDisplayer = new HyperStackDisplayer(tm.getModel(), selectionModel, dest);
+								newDisplayer = new HyperStackDisplayer(parent, tm.getModel(), selectionModel, dest);
 								title = dest.getShortTitle() + " ctrl";
 							}
 							newDisplayer.render();
@@ -279,7 +282,7 @@ public class CopyOverlayAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new CopyOverlayAction();
 		}
 

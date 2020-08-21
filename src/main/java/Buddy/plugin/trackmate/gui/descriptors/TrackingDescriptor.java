@@ -67,7 +67,7 @@ public class TrackingDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 		final Thread trackFeatureCalculationThread = new Thread("TrackMate track feature calculation thread") {
 			@Override
 			public void run() {

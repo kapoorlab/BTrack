@@ -100,9 +100,6 @@ import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.GreenFeatureModel;
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Logger.StringBuilderLogger;
 import Buddy.plugin.trackmate.Model;
@@ -111,16 +108,12 @@ import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.features.FeatureFilter;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
-import Buddy.plugin.trackmate.features.edges.GreenEdgeAnalyzer;
 import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
-import Buddy.plugin.trackmate.features.spot.GreenobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
-import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
@@ -130,7 +123,7 @@ import Buddy.plugin.trackmate.visualization.ViewFactory;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.IJ;
 import ij.ImagePlus;
-import tracker.GREENDimension;
+import pluginTools.InteractiveBud;
 
 public class TmXmlReader {
 
@@ -247,7 +240,7 @@ public class TmXmlReader {
 	 * @return the collection of views.
 	 * @see TrackMateModelView#render()
 	 */
-	public Collection<TrackMateModelView> getViews(final ViewProvider provider, final Model model,
+	public Collection<TrackMateModelView> getViews(final InteractiveBud parent, final ViewProvider provider, final Model model,
 			final Settings settings, final SelectionModel selectionModel) {
 		final Element guiel = root.getChild(GUI_STATE_ELEMENT_KEY);
 		if (null != guiel) {
@@ -272,7 +265,7 @@ public class TmXmlReader {
 						continue;
 					}
 
-					final TrackMateModelView view = factory.create(model, settings, selectionModel);
+					final TrackMateModelView view = factory.create(parent, model, settings, selectionModel);
 					if (null == view) {
 						logger.error("Unknown view for key " + viewKey + ".\n");
 						ok = false;

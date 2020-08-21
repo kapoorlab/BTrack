@@ -1,22 +1,17 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.GuiUtils;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.io.GreenTmXmlReader;
 import Buddy.plugin.trackmate.io.IOUtils;
 import Buddy.plugin.trackmate.io.TmXmlReader;
 import Buddy.plugin.trackmate.io.TmXmlReader_v12;
 import Buddy.plugin.trackmate.io.TmXmlReader_v20;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
@@ -25,7 +20,6 @@ import Buddy.plugin.trackmate.util.Version;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import Buddy.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
-import Buddy.plugin.trackmate.visualization.trackscheme.GreenobjectImageUpdater;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
@@ -120,7 +114,7 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 
 		// Views
 		final ViewProvider viewProvider = newcontroller.getViewProvider();
-		final Collection<TrackMateModelView> views = reader.getViews(viewProvider, model, settings,
+		final Collection<TrackMateModelView> views = reader.getViews(parent, viewProvider, model, settings,
 				newcontroller.getSelectionModel());
 		for (final TrackMateModelView view : views) {
 			if (view instanceof TrackScheme) {
@@ -138,7 +132,7 @@ public class LoadDescriptor extends SomeDialogDescriptor {
 
 		// Setup and render views
 		if (views.isEmpty()) { // at least one view.
-			views.add(new HyperStackDisplayer(model, newcontroller.getSelectionModel(), settings.imp));
+			views.add(new HyperStackDisplayer(parent, model, newcontroller.getSelectionModel(), settings.imp));
 		}
 		final Map<String, Object> displaySettings = newcontroller.getGuimodel().getDisplaySettings();
 		for (final TrackMateModelView view : views) {

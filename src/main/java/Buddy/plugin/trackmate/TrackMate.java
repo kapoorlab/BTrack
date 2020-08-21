@@ -12,7 +12,6 @@ import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.features.BCellobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.EdgeFeatureCalculator;
 import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.features.GreenobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.TrackFeatureCalculator;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
 import Buddy.plugin.trackmate.util.GreenTMUtils;
@@ -113,11 +112,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 * @return a list of BCellobject. Depending on the presence of a polygon ROI, it
 	 *         might be a new, pruned list. Or not.
 	 */
-	protected List<BCellobject> translateAndPruneBCellobjects(final List<BCellobject> BCellobjectsThisFrame,
+	protected List<BCellobject> translateAndPruneBCellobjects(final InteractiveBud parent, final List<BCellobject> BCellobjectsThisFrame,
 			final Settings lSettings) {
 
 		// Put them back in the right referential
-		final double[] calibration = TMUtils.getSpatialCalibration(lSettings.imp);
+		final double[] calibration = TMUtils.getSpatialCalibration(parent, lSettings.imp);
 		TMUtils.translateBCellobjects(BCellobjectsThisFrame, lSettings.xstart ,
 				lSettings.ystart , lSettings.zstart );
 		List<BCellobject> prunedBCellobjects;

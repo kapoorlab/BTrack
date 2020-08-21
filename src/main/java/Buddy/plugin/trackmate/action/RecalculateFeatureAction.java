@@ -18,6 +18,7 @@ import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
+import pluginTools.InteractiveBud;
 
 public class RecalculateFeatureAction extends AbstractTMAction {
 
@@ -116,7 +117,7 @@ public class RecalculateFeatureAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new RecalculateFeatureAction(controller);
 		}
 

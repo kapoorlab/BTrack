@@ -5,6 +5,7 @@ import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
+import pluginTools.InteractiveBud;
 
 import javax.swing.ImageIcon;
 
@@ -18,7 +19,7 @@ import org.scijava.plugin.Plugin;
 public class TrackSchemeFactory implements ViewFactory {
 
 	@Override
-	public TrackMateModelView create(final Model model, final Settings settings, final SelectionModel selectionModel) {
+	public TrackMateModelView create(final InteractiveBud parent, final Model model, final Settings settings, final SelectionModel selectionModel) {
 		return new TrackScheme(model, selectionModel);
 	}
 

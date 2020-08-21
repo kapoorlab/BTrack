@@ -211,18 +211,17 @@ public class TrackEachCell {
 
 		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
 	
-
+		double perimeter = GetNearest.Volume(PairCurrentViewBit.Boundaryimage);
 		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
-				truths.size() * parent.calibrationX);
+				perimeter);
 		Budlist.add(Curreentbud);
 		if (parent.SegYelloworiginalimg != null) {
 	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 
 		for(Cellobject currentbudcell:celllist) {
 			
-			
+           			
 			Localizable centercell = currentbudcell.Location;
-			
 			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
 			// and the distance
 			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);

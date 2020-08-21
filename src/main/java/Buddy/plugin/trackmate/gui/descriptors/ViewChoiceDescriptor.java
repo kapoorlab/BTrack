@@ -94,7 +94,7 @@ public class ViewChoiceDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 		final int index = component.getChoice();
 		final TrackMate trackmate = controller.getPlugin();
 		final SelectionModel selectionModel = controller.getSelectionModel();
@@ -110,7 +110,7 @@ public class ViewChoiceDescriptor implements WizardPanelDescriptor {
 				}
 
 				final ViewFactory factory = viewProvider.getFactory(viewName);
-				final TrackMateModelView view = factory.create(trackmate.getModel(), trackmate.getSettings(),
+				final TrackMateModelView view = factory.create(parent, trackmate.getModel(), trackmate.getSettings(),
 						selectionModel);
 				for (final String settingKey : guimodel.getDisplaySettings().keySet()) {
 					view.setDisplaySettings(settingKey, guimodel.getDisplaySettings().get(settingKey));

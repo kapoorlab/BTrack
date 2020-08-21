@@ -2,7 +2,6 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GrapherPanel;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveGreen;
@@ -43,7 +42,7 @@ public class GrapherDescriptor implements WizardPanelDescriptor {
 
 	
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 	}
 
 	@Override

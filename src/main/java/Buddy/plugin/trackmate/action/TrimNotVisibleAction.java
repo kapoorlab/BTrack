@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import org.scijava.plugin.Plugin;
 
 import budDetector.BCellobject;
+import pluginTools.InteractiveBud;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.TrackMate;
@@ -79,7 +80,7 @@ public class TrimNotVisibleAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent,final TrackMateGUIController controller) {
 			return new TrimNotVisibleAction();
 		}
 

@@ -42,7 +42,7 @@ public abstract class SomeDialogDescriptor implements WizardPanelDescriptor {
 	
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 	}
 
 	@Override

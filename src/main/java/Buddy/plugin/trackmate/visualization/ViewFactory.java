@@ -1,12 +1,10 @@
 package Buddy.plugin.trackmate.visualization;
 
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenSelectionModel;
-import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.TrackMateModule;
+import pluginTools.InteractiveBud;
 
 public interface ViewFactory extends TrackMateModule {
 
@@ -22,5 +20,5 @@ public interface ViewFactory extends TrackMateModule {
 	 *            the {@link SelectionModel} model to share in the created view.
 	 * @return a new view of the specified model.
 	 */
-	public TrackMateModelView create(final Model model, final Settings settings, final SelectionModel selectionModel);
+	public TrackMateModelView create(final InteractiveBud parent, final Model model, final Settings settings, final SelectionModel selectionModel);
 }

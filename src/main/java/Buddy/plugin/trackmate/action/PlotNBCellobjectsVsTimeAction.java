@@ -21,6 +21,7 @@ import org.jfree.data.xy.DefaultXYDataset;
 import org.scijava.plugin.Plugin;
 
 import budDetector.BCellobject;
+import pluginTools.InteractiveBud;
 
 public class PlotNBCellobjectsVsTimeAction extends AbstractTMAction {
 
@@ -98,7 +99,7 @@ public class PlotNBCellobjectsVsTimeAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent,final TrackMateGUIController controller) {
 			return new PlotNBCellobjectsVsTimeAction();
 		}
 

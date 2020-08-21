@@ -165,6 +165,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public JFreeChart chartVelocity;
 	public double calibrationX;
 	public double calibrationY;
+	public double calibrationZ;
 	public double timecal;
 	public File saveFile;
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
@@ -184,6 +185,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.NameA = NameA;
 			this.calibrationX = calibrationX;
 			this.calibrationY = calibrationY;
+		    this.calibrationZ = 1;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -208,6 +210,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.NameA = NameA;
 			this.calibrationX = calibrationX;
 			this.calibrationY = calibrationY;
+			this.calibrationZ =  1;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();
@@ -230,6 +233,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			this.NameA = NameA;
 			this.calibrationX = calibrationX;
 			this.calibrationY = calibrationY;
+			this.calibrationZ = 1;
 			this.timecal = timecal;
 			this.ndims = originalimg.numDimensions();
 			this.Velocitydataset = new XYSeriesCollection();

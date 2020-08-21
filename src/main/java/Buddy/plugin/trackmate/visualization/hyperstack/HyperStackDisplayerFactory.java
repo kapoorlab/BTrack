@@ -1,15 +1,12 @@
 package Buddy.plugin.trackmate.visualization.hyperstack;
 
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenSelectionModel;
-import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import ij.ImagePlus;
+import pluginTools.InteractiveBud;
 
 import javax.swing.ImageIcon;
 
@@ -42,26 +39,19 @@ public class HyperStackDisplayerFactory implements ViewFactory {
 	private static final String NAME = "HyperStack Displayer";
 
 	@Override
-	public TrackMateModelView create(final Model model, final Settings settings, final SelectionModel selectionModel) {
+	public TrackMateModelView create(final InteractiveBud parent, final Model model, final Settings settings, final SelectionModel selectionModel) {
 		final ImagePlus imp;
 		if (settings == null) {
 			imp = null;
 		} else {
 			imp = settings.imp;
 		}
-		return new HyperStackDisplayer(model, selectionModel, imp);
+		
+		return new HyperStackDisplayer(parent, model, selectionModel, imp);
 	}
 
 	
-	public GreenTrackMateModelView create(final GreenModel model, final GreenSettings settings, final GreenSelectionModel selectionModel) {
-		final ImagePlus imp;
-		if (settings == null) {
-			imp = null;
-		} else {
-			imp = settings.imp;
-		}
-		return new GreenHyperStackDisplayer(model, selectionModel, imp);
-	}
+
 	@Override
 	public String getInfoText() {
 		return INFO_TEXT;

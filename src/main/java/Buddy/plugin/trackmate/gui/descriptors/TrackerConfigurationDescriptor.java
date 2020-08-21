@@ -73,7 +73,7 @@ public class TrackerConfigurationDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 		final BCellobjectTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
 		Map<String, Object> settings = configPanel.getSettings();
 		final boolean settingsOk = trackerFactory.checkSettingsValidity(settings);

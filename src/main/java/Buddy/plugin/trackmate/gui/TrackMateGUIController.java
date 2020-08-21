@@ -436,10 +436,10 @@ public class TrackMateGUIController implements ActionListener {
 		/*
 		 * Start panel
 		 */
-		startDialoDescriptor = new StartDialogDescriptor(this) {
+		startDialoDescriptor = new StartDialogDescriptor(parent, this) {
 			@Override
-			public void aboutToHidePanel() {
-				super.aboutToHidePanel();
+			public void aboutToHidePanel(InteractiveBud parent) {
+				super.aboutToHidePanel(parent);
 				// Reset the default save location.
 				SomeDialogDescriptor.file = null;
 			}
@@ -556,7 +556,7 @@ public class TrackMateGUIController implements ActionListener {
 		/*
 		 * Offer to take some actions on the data.
 		 */
-		actionChooserDescriptor = new ActionChooserDescriptor(actionProvider, trackmate, this);
+		actionChooserDescriptor = new ActionChooserDescriptor(parent, actionProvider, trackmate, this);
 
 		/*
 		 * Save descriptor
@@ -818,7 +818,7 @@ public class TrackMateGUIController implements ActionListener {
 		// Execute leave action of the old panel
 		final WizardPanelDescriptor oldDescriptor = guimodel.currentDescriptor;
 		if (oldDescriptor != null) {
-			oldDescriptor.aboutToHidePanel();
+			oldDescriptor.aboutToHidePanel(parent);
 		}
 
 		// Find and store new one to display
@@ -883,7 +883,7 @@ public class TrackMateGUIController implements ActionListener {
 
 		if (guimodel.currentDescriptor.equals(trackerConfigurationDescriptor)) {
 			// This will flush currently displayed settings to TrackMate.
-			guimodel.currentDescriptor.aboutToHidePanel();
+			guimodel.currentDescriptor.aboutToHidePanel(parent);
 		}
 
 		// Move to save state and execute
@@ -971,7 +971,7 @@ public class TrackMateGUIController implements ActionListener {
 				try {
 					AbstractTMAction action;
 					if (showAllBCellobjectStats)
-						action = new ExportAllBCellobjectsStatsAction(selectionModel);
+						action = new ExportAllBCellobjectsStatsAction(parent, selectionModel);
 					else
 						action = new ExportStatsToIJAction(selectionModel);
 

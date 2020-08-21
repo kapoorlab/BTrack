@@ -29,6 +29,7 @@ import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.meta.view.HyperSliceImgPlus;
 import net.imglib2.view.Views;
+import pluginTools.InteractiveBud;
 
 @SuppressWarnings("deprecation")
 public class ExtractTrackStackAction extends AbstractTMAction {
@@ -61,14 +62,17 @@ public class ExtractTrackStackAction extends AbstractTMAction {
 
 	private final double radiusRatio;
 
+	public final InteractiveBud parent;
 	private final boolean do3d;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public ExtractTrackStackAction(final SelectionModel selectionModel, final double radiusRatio, final boolean do3d) {
+	public ExtractTrackStackAction(final InteractiveBud parent, final SelectionModel selectionModel, final double radiusRatio, final boolean do3d) {
 		this.selectionModel = selectionModel;
+		
+		this.parent = parent;
 		this.radiusRatio = radiusRatio;
 		this.do3d = do3d;
 	}
@@ -154,7 +158,7 @@ public class ExtractTrackStackAction extends AbstractTMAction {
 
 		// Common coordinates
 		final Settings settings = trackmate.getSettings();
-		final double[] calibration = TMUtils.getSpatialCalibration(settings.imp);
+		final double[] calibration = TMUtils.getSpatialCalibration(parent,settings.imp);
 		final int width = (int) Math.ceil(2 * radius * RESIZE_FACTOR / calibration[0]);
 		final int height = (int) Math.ceil(2 * radius * RESIZE_FACTOR / calibration[1]);
 		final int depth;

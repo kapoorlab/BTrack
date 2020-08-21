@@ -417,7 +417,7 @@ public class TrackMateRunner_ extends TrackMatePlugIn_ {
 					final SelectionModel selectionModel = new SelectionModel(model);
 
 					final ViewFactory displayerFactory = new HyperStackDisplayerFactory();
-					final TrackMateModelView view = displayerFactory.create(model, settings, selectionModel);
+					final TrackMateModelView view = displayerFactory.create(parent, model, settings, selectionModel);
 					final PerTrackFeatureColorGenerator trackColor = new PerTrackFeatureColorGenerator(model,
 							TrackIndexAnalyzer.TRACK_INDEX);
 					view.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, trackColor);

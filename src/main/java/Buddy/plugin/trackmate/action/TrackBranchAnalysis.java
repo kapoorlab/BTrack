@@ -4,6 +4,7 @@ import ij.WindowManager;
 import ij.measure.ResultsTable;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
+import pluginTools.InteractiveBud;
 
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
@@ -264,7 +265,7 @@ public class TrackBranchAnalysis extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new TrackBranchAnalysis(controller.getSelectionModel());
 		}
 

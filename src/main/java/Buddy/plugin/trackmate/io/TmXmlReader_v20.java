@@ -93,6 +93,7 @@ import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.IJ;
 import ij.ImagePlus;
+import pluginTools.InteractiveBud;
 
 public class TmXmlReader_v20 extends TmXmlReader {
 
@@ -127,10 +128,10 @@ public class TmXmlReader_v20 extends TmXmlReader {
 	 * We default to the main hyperstack view.
 	 */
 	@Override
-	public Collection<TrackMateModelView> getViews(final ViewProvider provider, final Model model,
+	public Collection<TrackMateModelView> getViews(final InteractiveBud parent,final ViewProvider provider, final Model model,
 			final Settings settings, final SelectionModel selectionModel) {
 		final Collection<TrackMateModelView> views = new ArrayList<>(1);
-		final TrackMateModelView view = provider.getFactory(HyperStackDisplayer.KEY).create(model, settings,
+		final TrackMateModelView view = provider.getFactory(HyperStackDisplayer.KEY).create(parent, model, settings,
 				selectionModel);
 		views.add(view);
 		return views;

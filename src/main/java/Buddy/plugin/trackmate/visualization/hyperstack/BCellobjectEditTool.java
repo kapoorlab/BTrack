@@ -38,12 +38,15 @@ import ij.ImagePlus;
 import ij.gui.FreehandRoi;
 import ij.gui.ImageCanvas;
 import ij.gui.Toolbar;
+import pluginTools.InteractiveBud;
 
 public class BCellobjectEditTool extends AbstractTool
 		implements MouseMotionListener, MouseListener, MouseWheelListener, KeyListener, ToolWithOptions {
 
 	private static final boolean DEBUG = false;
 
+	public final InteractiveBud parent;
+	
 	private static final double COARSE_STEP = 2;
 
 	private static final double FINE_STEP = 0.2f;
@@ -109,16 +112,18 @@ public class BCellobjectEditTool extends AbstractTool
 	/**
 	 * Singleton
 	 */
-	private BCellobjectEditTool() {
+	private BCellobjectEditTool(final InteractiveBud parent) {
+		
+		this.parent = parent;
 	}
 
 	/**
 	 * Return the singleton instance for this tool. If it was not previously
 	 * instantiated, this calls instantiates it.
 	 */
-	public static BCellobjectEditTool getInstance() {
+	public static BCellobjectEditTool getInstance(final InteractiveBud parent) {
 		if (null == instance) {
-			instance = new BCellobjectEditTool();
+			instance = new BCellobjectEditTool(parent);
 			if (DEBUG)
 				System.out.println("[BCellobjectEditTool] Instantiating: " + instance);
 		}
@@ -245,7 +250,7 @@ public class BCellobjectEditTool extends AbstractTool
 				// the current one,
 				// because it is not updated otherwise: there is no way to
 				// listen to slice change
-				final double calibration[] = TMUtils.getSpatialCalibration(lImp);
+				final double calibration[] = TMUtils.getSpatialCalibration(parent,lImp);
 				final Double initFrame = editedBCellobject.getFeature(BCellobject.POSITION_T);
 				// Move it in Z
 				editedBCellobject.putFeature(BCellobject.POSITION_T, frame * lImp.getCalibration().frameInterval);
@@ -327,7 +332,7 @@ public class BCellobjectEditTool extends AbstractTool
 					it = model.getBCellobjects().iterator(frame);
 
 					final Collection<BCellobject> added = new ArrayList<>();
-					final double calibration[] = TMUtils.getSpatialCalibration(lImp);
+					final double calibration[] = TMUtils.getSpatialCalibration(parent,lImp);
 
 					while (it.hasNext()) {
 						final BCellobject BCellobject = it.next();
@@ -366,7 +371,7 @@ public class BCellobjectEditTool extends AbstractTool
 	@Override
 	public void mouseDragged(final MouseEvent e) {
 		final ImagePlus lImp = getImagePlus(e);
-		final double[] calibration = TMUtils.getSpatialCalibration(lImp);
+		final double[] calibration = TMUtils.getSpatialCalibration(parent,lImp);
 		final HyperStackDisplayer displayer = displayers.get(lImp);
 		if (null == displayer)
 			return;
@@ -407,7 +412,7 @@ public class BCellobjectEditTool extends AbstractTool
 		if (quickEditedBCellobject == null)
 			return;
 		final ImagePlus lImp = getImagePlus(e);
-		final double[] calibration = TMUtils.getSpatialCalibration(lImp);
+		final double[] calibration = TMUtils.getSpatialCalibration(parent,lImp);
 		final HyperStackDisplayer displayer = displayers.get(lImp);
 		if (null == displayer)
 			return;

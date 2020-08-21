@@ -13,9 +13,6 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenModelChangeEvent;
-import Buddy.plugin.trackmate.GreenTrackModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;

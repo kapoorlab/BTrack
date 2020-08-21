@@ -9,14 +9,10 @@ import javax.swing.ImageIcon;
 import org.scijava.plugin.Plugin;
 import org.scijava.vecmath.Color3f;
 
-import Buddy.plugin.trackmate.GreenModel;
-import Buddy.plugin.trackmate.GreenSelectionModel;
-import Buddy.plugin.trackmate.GreenSettings;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.visualization.GreenTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewFactory;
 import ij.IJ;
@@ -27,6 +23,7 @@ import ij3d.Content;
 import ij3d.ContentCreator;
 import ij3d.Image3DUniverse;
 import ij3d.ImageWindow3D;
+import pluginTools.InteractiveBud;
 
 @Plugin(type = ViewFactory.class, priority = 1d)
 public class BCellobjectDisplayer3DFactory implements ViewFactory {
@@ -49,7 +46,7 @@ public class BCellobjectDisplayer3DFactory implements ViewFactory {
 			+ "</html>";
 
 	@Override
-	public TrackMateModelView create(final Model model, final Settings settings, final SelectionModel selectionModel) {
+	public TrackMateModelView create(final InteractiveBud parent, final Model model, final Settings settings, final SelectionModel selectionModel) {
 		final Image3DUniverse universe = new Image3DUniverse();
 		final ImageWindow3D win = new ImageWindow3D("TrackMate 3D Viewer", universe);
 		win.setIconImage(TrackMateWizard.TRACKMATE_ICON.getImage());

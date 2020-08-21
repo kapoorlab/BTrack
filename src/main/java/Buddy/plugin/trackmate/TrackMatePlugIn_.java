@@ -107,8 +107,8 @@ public class TrackMatePlugIn_ implements PlugIn {
 		 * Since we are now sure that we will be working on this model with this
 		 * settings, we need to pass to the model the units from the settings.
 		 */
-		final String spaceUnits = settings.imp.getCalibration().getXUnit();
-		final String timeUnits = settings.imp.getCalibration().getTimeUnit();
+		final String spaceUnits = "pixel";
+		final String timeUnits = "pixel";
 
 		model.setPhysicalUnits(spaceUnits, timeUnits);
 

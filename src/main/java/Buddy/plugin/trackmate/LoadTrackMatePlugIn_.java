@@ -17,24 +17,17 @@ import org.jdom2.input.SAXBuilder;
 
 import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
 import Buddy.plugin.trackmate.features.edges.EdgeVelocityAnalyzer;
-import Buddy.plugin.trackmate.features.edges.GreenEdgeTargetAnalyzer;
-import Buddy.plugin.trackmate.features.edges.GreenEdgeVelocityAnalyzer;
-import Buddy.plugin.trackmate.gui.GreenTrackMateGUIController;
 import Buddy.plugin.trackmate.gui.GuiUtils;
 import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.descriptors.ConfigureViewsDescriptor;
 import Buddy.plugin.trackmate.gui.descriptors.SomeDialogDescriptor;
-import Buddy.plugin.trackmate.io.GreenTmXmlReader;
 import Buddy.plugin.trackmate.io.IOUtils;
 import Buddy.plugin.trackmate.io.TmXmlReader;
 import Buddy.plugin.trackmate.io.TmXmlReader_v12;
 import Buddy.plugin.trackmate.io.TmXmlReader_v20;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import Buddy.plugin.trackmate.providers.GreenEdgeAnalyzerProvider;
-import Buddy.plugin.trackmate.providers.GreenTrackAnalyzerProvider;
-import Buddy.plugin.trackmate.providers.GreenobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.providers.ViewProvider;
@@ -56,20 +49,15 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 
 	protected InteractiveBud parent;
 
-	protected InteractiveGreen greenparent;
 	
 	protected Model model;
 
 	protected Settings settings;
 	
-	protected GreenModel greenmodel;
-	
-	protected GreenSettings greensettings;
 	
 
 	private TrackMateGUIController controller;
 	
-	private GreenTrackMateGUIController greencontroller;
 
 	private static final String KEY = "LoadPlugin";
 
@@ -157,20 +145,8 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 		final String logText = reader.getLog() + '\n';
 		
 
-		// Read the file content
-		GreenTmXmlReader greenreader = creategreenReader(file);
-		if (!greenreader.isReadingOk()) {
-			IJ.error(TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, greenreader.getErrorMessage());
-			return;
-		}
-
 		
-		if (!greenreader.isReadingOk()) {
-			logger.error(greenreader.getErrorMessage());
-			logger.error("Aborting.\n"); // If I cannot even open the xml
-			// file, it is not worth going on.
-			return;
-		}
+
 
 		// Log
 		
@@ -222,7 +198,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 
 		// Views
 		final ViewProvider viewProvider = controller.getViewProvider();
-		final Collection<TrackMateModelView> views = reader.getViews(viewProvider, model, settings,
+		final Collection<TrackMateModelView> views = reader.getViews(parent, viewProvider, model, settings,
 				controller.getSelectionModel());
 		for (final TrackMateModelView view : views) {
 			if (view instanceof TrackScheme) {
@@ -246,7 +222,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 
 		// Setup and render views
 		if (views.isEmpty()) { // at least one view.
-			views.add(new HyperStackDisplayer(model, controller.getSelectionModel(), settings.imp));
+			views.add(new HyperStackDisplayer(parent, model, controller.getSelectionModel(), settings.imp));
 		}
 		final Map<String, Object> displaySettings = controller.getGuimodel().getDisplaySettings();
 		for (final TrackMateModelView view : views) {
@@ -285,17 +261,9 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	}
 	
 
-	public GreenModel getGreenModel() {
-		return greenmodel;
-	}
 
-	public GreenSettings getGreenSettings() {
-		return greensettings;
-	}
 
-	public GreenTrackMateGUIController getGreenController() {
-		return greencontroller;
-	}
+
 
 
 	/**
@@ -377,10 +345,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	protected TmXmlReader createReader(final File lFile) {
 		return new TmXmlReader(lFile);
 	}
-	
-	protected GreenTmXmlReader creategreenReader(final File lFile) {
-		return new GreenTmXmlReader(lFile);
-	}
+
 
 	/**
 	 * Hook for subclassers: <br>
@@ -394,9 +359,6 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	}
 	
 	 
-	protected GreenSettings createGreenSettings() {
-		return new GreenSettings();
-	}
 
 	/*
 	 * MAIN METHOD

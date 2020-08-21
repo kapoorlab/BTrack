@@ -62,7 +62,7 @@ public class TrackerChoiceDescriptor implements WizardPanelDescriptor {
 	}
 
 	@Override
-	public void aboutToHidePanel() {
+	public void aboutToHidePanel(InteractiveBud parent) {
 
 		// Configure the detector provider with choice made in panel
 		final int index = component.getChoice();

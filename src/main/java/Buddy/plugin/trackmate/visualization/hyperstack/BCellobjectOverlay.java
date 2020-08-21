@@ -26,6 +26,7 @@ import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import pluginTools.InteractiveBud;
 
 /**
  * The overlay class in charge of drawing the BCellobject images on the
@@ -55,15 +56,17 @@ public class BCellobjectOverlay extends Roi {
 
 	protected final Model model;
 
+	public final InteractiveBud parent;
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public BCellobjectOverlay(final Model model, final ImagePlus imp, final Map<String, Object> displaySettings) {
+	public BCellobjectOverlay( final InteractiveBud parent, final Model model, final ImagePlus imp, final Map<String, Object> displaySettings) {
 		super(0, 0, imp);
 		this.model = model;
 		this.imp = imp;
-		this.calibration = TMUtils.getSpatialCalibration(imp);
+		this.parent = parent;
+		this.calibration = TMUtils.getSpatialCalibration(parent,imp);
 		this.displaySettings = displaySettings;
 	}
 

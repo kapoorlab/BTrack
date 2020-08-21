@@ -16,6 +16,7 @@ import Buddy.plugin.trackmate.visualization.ViewUtils;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.Roi;
+import pluginTools.InteractiveBud;
 
 public class HyperStackDisplayer extends AbstractTrackMateModelView {
 
@@ -32,24 +33,27 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	private Roi initialROI;
 
 	public static final String KEY = "HYPERSTACKDISPLAYER";
+	
+	public final InteractiveBud parent;
 
 	/*
 	 * CONSTRUCTORS
 	 */
 
-	public HyperStackDisplayer(final Model model, final SelectionModel selectionModel, final ImagePlus imp) {
-		super(model, selectionModel);
+	public HyperStackDisplayer(final InteractiveBud parent, final Model model, final SelectionModel selectionModel, final ImagePlus imp) {
+		super( model, selectionModel);
 		if (null != imp) {
 			this.imp = imp;
 		} else {
 			this.imp = ViewUtils.makeEmpytImagePlus(model);
 		}
+		this.parent = parent;
 		this.BCellobjectOverlay = createBCellobjectOverlay();
 		this.trackOverlay = createTrackOverlay();
 	}
 
-	public HyperStackDisplayer(final Model model, final SelectionModel selectionModel) {
-		this(model, selectionModel, null);
+	public HyperStackDisplayer(final InteractiveBud parent, final Model model, final SelectionModel selectionModel) {
+		this(parent, model, selectionModel, null);
 	}
 
 	/*
@@ -63,7 +67,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	 * @return the BCellobject overlay
 	 */
 	protected BCellobjectOverlay createBCellobjectOverlay() {
-		return new BCellobjectOverlay(model, imp, displaySettings);
+		return new BCellobjectOverlay(parent, model, imp, displaySettings);
 	}
 
 	/**
@@ -73,7 +77,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	 * @return the track overlay
 	 */
 	protected TrackOverlay createTrackOverlay() {
-		final TrackOverlay to = new TrackOverlay(model, imp, displaySettings);
+		final TrackOverlay to = new TrackOverlay(parent, model, imp, displaySettings);
 		final TrackColorGenerator colorGenerator = (TrackColorGenerator) displaySettings.get(KEY_TRACK_COLORING);
 		to.setTrackColorGenerator(colorGenerator);
 		return to;
@@ -199,7 +203,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	 */
 
 	private void registerEditTool() {
-		editTool = BCellobjectEditTool.getInstance();
+		editTool = BCellobjectEditTool.getInstance(parent);
 		if (!BCellobjectEditTool.isLaunched()) {
 			editTool.run("");
 		}

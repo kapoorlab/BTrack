@@ -14,6 +14,7 @@ import Buddy.plugin.trackmate.TrackModel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import net.imglib2.RealPoint;
+import pluginTools.InteractiveBud;
 
 /**
  * This action allows to close gaps in tracks by creating new intermediate
@@ -130,7 +131,7 @@ public class CloseGapsByLinearInterpolationAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new CloseGapsByLinearInterpolationAction();
 		}
 

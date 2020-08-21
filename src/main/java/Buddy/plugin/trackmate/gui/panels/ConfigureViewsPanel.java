@@ -51,7 +51,6 @@ import javax.swing.border.LineBorder;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import budDetector.BCellobject;
-import Buddy.plugin.trackmate.GreenModel;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.gui.DisplaySettingsEvent;
 import Buddy.plugin.trackmate.gui.DisplaySettingsListener;
@@ -149,7 +148,6 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	private final Model model;
 	
-	private final GreenModel greenmodel;
 
 	private PerTrackFeatureColorGenerator trackColorGenerator;
 
@@ -185,7 +183,6 @@ public class ConfigureViewsPanel extends ActionListenablePanel {
 
 	public ConfigureViewsPanel(final Model model) {
 		this.model = model;
-		this.greenmodel = null;
 		initGUI();
 		refreshGUI();
 		resizeButtons();

@@ -29,6 +29,7 @@ import ij.WindowManager;
 import ij.measure.ResultsTable;
 import ij.text.TextPanel;
 import ij.text.TextWindow;
+import pluginTools.InteractiveBud;
 
 public class ExportStatsToIJAction extends AbstractTMAction {
 
@@ -352,7 +353,7 @@ public class ExportStatsToIJAction extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent,final TrackMateGUIController controller) {
 			return new ExportStatsToIJAction(controller.getSelectionModel());
 		}
 

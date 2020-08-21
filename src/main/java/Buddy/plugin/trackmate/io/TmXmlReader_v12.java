@@ -122,6 +122,7 @@ import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.util.NumberParser;
 import ij.IJ;
 import ij.ImagePlus;
+import pluginTools.InteractiveBud;
 
 /**
  * A compatibility xml loader than can load TrackMate xml file saved for version
@@ -268,10 +269,10 @@ public class TmXmlReader_v12 extends TmXmlReader {
 	}
 
 	@Override
-	public Collection<TrackMateModelView> getViews(final ViewProvider provider, final Model model,
+	public Collection<TrackMateModelView> getViews(final InteractiveBud parent, final ViewProvider provider, final Model model,
 			final Settings settings, final SelectionModel selectionModel) {
 		final Collection<TrackMateModelView> views = new ArrayList<>(1);
-		views.add(provider.getFactory(HyperStackDisplayer.KEY).create(model, settings, selectionModel));
+		views.add(provider.getFactory(HyperStackDisplayer.KEY).create(parent, model, settings, selectionModel));
 		return views;
 	}
 

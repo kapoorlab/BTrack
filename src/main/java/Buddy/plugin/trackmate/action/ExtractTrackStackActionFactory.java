@@ -10,6 +10,7 @@ import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import ij.gui.GenericDialog;
+import pluginTools.InteractiveBud;
 
 @Plugin(type = TrackMateActionFactory.class)
 public class ExtractTrackStackActionFactory implements TrackMateActionFactory {
@@ -34,7 +35,7 @@ public class ExtractTrackStackActionFactory implements TrackMateActionFactory {
 	}
 
 	@Override
-	public TrackMateAction create(final TrackMateGUIController controller) {
+	public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 		final GenericDialog dialog = new GenericDialog("Extract track stack", controller.getGUI());
 
 		// Radius factor
@@ -63,7 +64,7 @@ public class ExtractTrackStackActionFactory implements TrackMateActionFactory {
 		dimChoice = Arrays.asList(dimChoices).indexOf(dialog.getNextRadioButton());
 		final boolean do3D = dimChoice == 1;
 
-		return new ExtractTrackStackAction(controller.getSelectionModel(), diameterFactor, do3D);
+		return new ExtractTrackStackAction(parent, controller.getSelectionModel(), diameterFactor, do3D);
 	}
 
 	@Override

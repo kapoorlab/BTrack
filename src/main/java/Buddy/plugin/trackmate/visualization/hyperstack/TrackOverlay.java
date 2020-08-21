@@ -23,6 +23,7 @@ import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import pluginTools.InteractiveBud;
 
 /**
  * The overlay class in charge of drawing the tracks on the hyperstack window.
@@ -46,14 +47,17 @@ public class TrackOverlay extends Roi {
 
 	private static final Stroke SELECTION_STROKE = new BasicStroke(4.0f);
 
+	public final InteractiveBud parent;
+	
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public TrackOverlay(final Model model, final ImagePlus imp, final Map<String, Object> displaySettings) {
+	public TrackOverlay(final InteractiveBud parent, final Model model, final ImagePlus imp, final Map<String, Object> displaySettings) {
 		super(0, 0, imp);
 		this.model = model;
-		this.calibration = TMUtils.getSpatialCalibration(imp);
+		this.parent = parent;
+		this.calibration = TMUtils.getSpatialCalibration(parent, imp);
 		this.imp = imp;
 		this.displaySettings = displaySettings;
 	}

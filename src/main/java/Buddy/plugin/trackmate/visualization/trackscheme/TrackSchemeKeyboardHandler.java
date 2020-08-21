@@ -13,7 +13,6 @@ import javax.swing.UIManager;
 
 import com.mxgraph.swing.util.mxGraphActions;
 
-import Buddy.plugin.trackmate.util.GreenTrackNavigator;
 import Buddy.plugin.trackmate.util.TrackNavigator;
 
 public class TrackSchemeKeyboardHandler {

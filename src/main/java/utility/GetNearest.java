@@ -138,6 +138,7 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 	
 					for (Integer labelyellow : InsideCellList.keySet()) {
 						   Boolean isInterior = InsideCellList.get(labelyellow);
+						   
 						    if(isInterior) {
 							Budregionobject PairCurrentViewBit = TrackEachBud
 									.BudCurrentLabelBinaryImage(CurrentViewYellowInt, labelyellow);
@@ -157,11 +158,13 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 							}
 							
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+
 							double cellArea = Volume(PairCurrentViewBit.Interiorimage);
 							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
-							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
+							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
 							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
 							double[] Extents = radiusXY( PairCurrentViewBit.Boundaryimage);
+
 							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents );
 							Allcells.add(insidecells);
 						
@@ -246,7 +249,7 @@ public static < T extends RealType< T > > double[] radiusXY( final RandomAccessi
   double radiusX = img.realMax(0) - img.realMin(0);
   double radiusY = img.realMax(1) - img.realMin(1);
   
-  return new double[]{ radiusX, radiusY };
+  return new double[]{ radiusX, radiusY, 1 };
 }
 
 public static < T extends RealType< T > > double Volume( final RandomAccessibleInterval< T > img)
@@ -257,6 +260,7 @@ public static < T extends RealType< T > > double Volume( final RandomAccessibleI
   
   while(cur.hasNext()) {
 	  
+	  cur.fwd();
 	  if(cur.get().getRealFloat() > 0)
 	       Vol++;
   }

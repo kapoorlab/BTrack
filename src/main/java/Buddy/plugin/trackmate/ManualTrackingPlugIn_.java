@@ -69,7 +69,7 @@ public class ManualTrackingPlugIn_ extends TrackMatePlugIn_ {
 		 * Launch view
 		 */
 
-		final HyperStackDisplayer view = new HyperStackDisplayer(trackmate.getModel(), controller.getSelectionModel(),
+		final HyperStackDisplayer view = new HyperStackDisplayer(parent, trackmate.getModel(), controller.getSelectionModel(),
 				imp);
 		final Map<String, Object> displaySettings = controller.getGuimodel().getDisplaySettings();
 		for (final String key : displaySettings.keySet()) {

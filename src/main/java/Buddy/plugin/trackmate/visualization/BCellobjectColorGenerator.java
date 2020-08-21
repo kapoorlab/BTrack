@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.Set;
 
 import budDetector.BCellobject;
-import Buddy.plugin.trackmate.GreenModelChangeEvent;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.ModelChangeListener;

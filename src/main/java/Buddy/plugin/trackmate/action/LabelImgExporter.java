@@ -32,6 +32,7 @@ import net.imglib2.meta.view.HyperSliceImgPlus;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
+import pluginTools.InteractiveBud;
 
 @SuppressWarnings("deprecation")
 public class LabelImgExporter extends AbstractTMAction {
@@ -398,7 +399,7 @@ public class LabelImgExporter extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create(final TrackMateGUIController controller) {
+		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
 			return new LabelImgExporter(controller.getGUI());
 		}
 
