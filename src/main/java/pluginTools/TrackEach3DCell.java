@@ -62,7 +62,7 @@ public class TrackEach3DCell {
 
 	final InteractiveGreen parent;
 	int percent;
-	ArrayList<Greenobject> Greencelllist = new ArrayList<Greenobject>();
+	ArrayList<BCellobject> Greencelllist = new ArrayList<BCellobject>();
 	
 	
 	public TrackEach3DCell(final InteractiveGreen parent,
@@ -76,7 +76,7 @@ public class TrackEach3DCell {
 
 	
 	
-	public ArrayList<Greenobject> returnGreenlist(){
+	public ArrayList<BCellobject> returnGreenlist(){
 		
 		
 		return Greencelllist;
@@ -145,7 +145,7 @@ public class TrackEach3DCell {
 			int label) {
 
 	
-	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewMaskInt, parent.CurrentViewInt);
+	      Greencelllist  = GetNearest.getAllInteriorCells(parent, parent.CurrentViewMaskInt, parent.CurrentViewInt);
 
 		for(Greenobject greencell: Greencelllist) {
 			

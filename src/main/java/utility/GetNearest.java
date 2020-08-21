@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budregionobject;
 import budDetector.Cellobject;
@@ -156,11 +157,12 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 							}
 							
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
-							double cellArea = interiorcelltruths.size() * parent.calibrationX;
+							double cellArea = Volume(PairCurrentViewBit.Interiorimage);
+							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMeanCord(bordercelltruths);
 							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
-							
-							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea,PairCurrentViewBit.size );
+							double[] Extents = radiusXY( PairCurrentViewBit.Boundaryimage);
+							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents );
 							Allcells.add(insidecells);
 						
 						    }
@@ -172,10 +174,10 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 	}
 	
 	
-public static ArrayList<Greenobject> getAllInterior3DCells(InteractiveGreen parent, final RandomAccessibleInterval<IntType> Mask, final RandomAccessibleInterval<IntType> GreenCellSeg) {
+public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveGreen parent, final RandomAccessibleInterval<IntType> Mask, final RandomAccessibleInterval<IntType> GreenCellSeg) {
 		
 		Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
-		ArrayList<Greenobject> Allcells = new ArrayList<Greenobject>();
+		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 		RandomAccess<IntType> budintran = Mask.randomAccess();
 		// Select all yellow cells
@@ -201,13 +203,13 @@ public static ArrayList<Greenobject> getAllInterior3DCells(InteractiveGreen pare
 							// For each bud get the list of points
 							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
-							double cellArea = interiorcelltruths.size() * parent.calibrationX;
-							double cellPerimeter = bordercelltruths.size() * parent.calibrationX;
+							double cellArea = Volume(PairCurrentViewBit.Interiorimage);
+							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
 							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
-							
 							double[] Extents = radiusXYZ( PairCurrentViewBit.Boundaryimage);
-							Greenobject insideGreencells = new Greenobject(cellcenterpoint, cellArea, cellPerimeter, Extents, intensity, labelgreen, parent.thirdDimension);
+
+							Cellobject insideGreencells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents); 
 							Allcells.add(insideGreencells);
 						
 							for (RealLocalizable insidetruth : bordercelltruths) {
@@ -237,6 +239,34 @@ public static < T extends RealType< T > > double[] radiusXYZ( final RandomAccess
   
   return new double[]{ radiusX, radiusY, radiusZ };
 }
+
+public static < T extends RealType< T > > double[] radiusXY( final RandomAccessibleInterval< T > img)
+{
+  
+  double radiusX = img.realMax(0) - img.realMin(0);
+  double radiusY = img.realMax(1) - img.realMin(1);
+  
+  return new double[]{ radiusX, radiusY };
+}
+
+public static < T extends RealType< T > > double Volume( final RandomAccessibleInterval< T > img)
+{
+	
+  Cursor<T> cur = Views.iterable(img).localizingCursor();
+  double Vol = 0;
+  
+  while(cur.hasNext()) {
+	  
+	  if(cur.get().getRealFloat() > 0)
+	       Vol++;
+  }
+  
+
+  return Vol;
+  
+}
+
+
 	
 	public static double getIntensity(InteractiveBud parent, RandomAccessibleInterval<BitType> Regionimage) {
 		

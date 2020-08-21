@@ -1,18 +1,7 @@
 package pluginTools;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Label;
-import java.awt.Scrollbar;
-import java.awt.TextField;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
@@ -24,55 +13,19 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.XYSeriesCollection;
-
 import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.GreenobjectCollection;
 import budDetector.BCellobject;
-import budDetector.Budobject;
 import budDetector.Budpointobject;
-import fileListeners.BTrackSaveDirectoryListener;
-import greenDetector.Greenobject;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
-import kalmanGUI.CovistoKalmanPanel;
-import listeners.BTrackAutoEndListener;
-import listeners.BTrackFilenameListener;
-import listeners.BudAlphaListener;
-import listeners.BudLinkobjectListener;
-import listeners.BudMastadonListener;
-import listeners.BudPREIniSearchListener;
-import listeners.BudPRELostFrameListener;
-import listeners.BudPREMaxSearchTListener;
-import listeners.BudRestartListener;
-import listeners.BudSaveAllListener;
-import listeners.BudSaveBatchListener;
-import listeners.BudSaveListener;
-import listeners.BudSkeletonListener;
-import listeners.BudSkeletonTrackLengthListener;
-import listeners.BudTimeListener;
-import listeners.BudTlocListener;
-import listeners.BudTrackidListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
@@ -82,15 +35,10 @@ import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.roi.labeling.ImgLabeling;
-import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
-import pluginTools.InteractiveBud.ValueChange;
-import tracker.BUDDYBudTrackModel;
-import tracker.BUDDYCostFunction;
-import tracker.BUDDYTrackModel;
 import tracker.GREENTrackModel;
 
 public class InteractiveGreen  extends JPanel implements PlugIn{
@@ -117,8 +65,8 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public MouseListener tvl;
 	public MouseMotionListener tvml;
 	
-	public ArrayList<ValuePair<String, Greenobject>> GreenTracklist;
-	public HashMap<String, ArrayList<Greenobject>> AllGreencells;
+	public ArrayList<ValuePair<String, BCellobject>> GreenTracklist;
+	public HashMap<String, ArrayList<BCellobject>> AllGreencells;
 	public Overlay overlay;
 	public ImagePlus imp;
 	public String selectedID;
@@ -151,7 +99,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public double timecal;
 	public File saveFile;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
-	public GreenobjectCollection Greencells = new GreenobjectCollection();
+	public BCellobjectCollection Greencells = new BCellobjectCollection();
 	public HashMap<Integer,Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Budpointobject> Finalresult;
 	

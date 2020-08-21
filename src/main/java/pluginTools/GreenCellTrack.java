@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import javax.swing.JProgressBar;
 
+import budDetector.BCellobject;
 import greenDetector.Greenobject;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
@@ -48,7 +49,7 @@ public class GreenCellTrack {
 		GetPixelList(parent.CurrentViewInt);
 		
 		
-		ArrayList<Greenobject> Greencelllist = new ArrayList<Greenobject>();
+		ArrayList<BCellobject> Greencelllist = new ArrayList<BCellobject>();
 		
 			
 		   TrackEach3DCell compute = new TrackEach3DCell(parent, percent);

@@ -23,7 +23,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="MastadonCode"/>
-	<classpathentry kind="lib" path="TrackMateCode"/>
 	<classpathentry kind="src" path="/MasterPanels"/>
 	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/net/imglib2/imglib2-algorithm-gpl/0.2.3/imglib2-algorithm-gpl-0.2.3.jar" sourcepath="/Users/aimachine/.m2/repository/net/imglib2/imglib2-algorithm-gpl/0.2.3/imglib2-algorithm-gpl-0.2.3-sources.jar">
 		<attributes>

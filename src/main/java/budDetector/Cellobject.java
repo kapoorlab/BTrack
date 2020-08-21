@@ -9,21 +9,23 @@ import net.imglib2.RealLocalizable;
 public class Cellobject {
 
 	
-	public double cellArea;
+	public final double cellVolume;
 	
-	public Localizable Location;
+	public final double cellPerimeter;
 	
-	public double size;
+	public final Localizable Location;
 	
-	public double totalIntensity;
+	public final double[] extents;
 	
-	public List<RealLocalizable> boundarylist;
+	public final double totalIntensity;
 	
-	public List<RealLocalizable> interiorlist;
+	public final List<RealLocalizable> boundarylist;
+	
+	public final List<RealLocalizable> interiorlist;
 	
 	
 	
-	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double totalIntensity, double cellArea, double size ) {
+	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
 		
 		this.interiorlist = interiorlist;
 		
@@ -31,9 +33,11 @@ public class Cellobject {
 		
 		this.Location = location;
 		
-		this.cellArea = cellArea;
+		this.cellVolume = cellVolume;
 		
-		this.size = size;
+		this.cellPerimeter = cellPerimeter;
+		
+		this.extents = extents;
 		
 		this.totalIntensity = totalIntensity;
 		

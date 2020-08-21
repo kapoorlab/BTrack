@@ -46,7 +46,10 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		this.ID = IDcounter.incrementAndGet();
 		putFeature( POSITION_X, Double.valueOf( currentcell.Location.getDoublePosition(0) ) );
 		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
-		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
+		putFeature( POSITION_Z, Double.valueOf( currentcell.Location.getDoublePosition(2) ) );
+		putFeature( Radi_X, Double.valueOf( currentcell.extents[0] ) );
+		putFeature( Radi_Y, Double.valueOf( currentcell.extents[1] ) );
+		putFeature( Radi_Z, Double.valueOf( currentcell.extents[2] ) );
 		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
 		putFeature( distBud, Double.valueOf( closestBudPoint ) );
@@ -70,7 +73,10 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		this.ID = IDcounter.incrementAndGet();
 		putFeature( POSITION_X, Double.valueOf( currentcell.Location.getDoublePosition(0) ) );
 		putFeature( POSITION_Y, Double.valueOf( currentcell.Location.getDoublePosition(1) ) );
-		putFeature( RADIUS, Double.valueOf( currentcell.size ) );
+		putFeature( POSITION_Z, Double.valueOf( currentcell.Location.getDoublePosition(2) ) );
+		putFeature( Radi_X, Double.valueOf( currentcell.extents[0] ) );
+		putFeature( Radi_Y, Double.valueOf( currentcell.extents[1] ) );
+		putFeature( Radi_Z, Double.valueOf( currentcell.extents[2] ) );
 		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
 		putFeature( distBud, Double.valueOf( closestBudPoint ) );
@@ -97,9 +103,21 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 	/** The name of the spot Y position feature. */
 	public static final String POSITION_Y = "POSITION_Y";
+	
+	/** The name of the spot Z position feature. */
+	public static final String POSITION_Z = "POSITION_Z";	
+	
+	/** The name of the spot X position feature. */
+	public static final String Radi_X = "Radi_X";
+
+	/** The name of the spot Y position feature. */
+	public static final String Radi_Y = "Radi_Y";
+	
+	/** The name of the spot Z position feature. */
+	public static final String Radi_Z = "Radi_Z";	
 
 	/** The name of the spot Radius feature. */
-	public static final String RADIUS = "RADIUS";
+	public static final String[] RADIUS = new String[] {Radi_X, Radi_Y, Radi_Z};
 	
 	/** The name of the spot Radius feature. */
 	public static final String INTENSITY = "INTENSITY";
@@ -108,9 +126,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	public static final String POSITION_T = "POSITION_T";
 
 	/** The position features. */
-	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y};
+	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y, POSITION_Z};
 
-	static int totalfeatures = 7;
+	static int totalfeatures = 10;
 	public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
 
 	/** The 4 privileged spot feature names. */
@@ -146,8 +164,11 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	{
 		FEATURES.add( POSITION_X );
 		FEATURES.add( POSITION_Y );
+		FEATURES.add( POSITION_Z );
 		FEATURES.add( POSITION_T );
-		FEATURES.add( RADIUS );
+		FEATURES.add( Radi_X );
+		FEATURES.add( Radi_Y );
+		FEATURES.add( Radi_Z );
 		FEATURES.add( INTENSITY );
 		FEATURES.add( distBud );
 		FEATURES.add( distDynamicBud );
@@ -157,32 +178,44 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_NAMES.put( distDynamicBud, "DistDynamicBud" );
 		FEATURE_NAMES.put( POSITION_X, "X" );
 		FEATURE_NAMES.put( POSITION_Y, "Y" );
+		FEATURE_NAMES.put( POSITION_Z, "Z" );
 		FEATURE_NAMES.put( POSITION_T, "T" );
-		FEATURE_NAMES.put( RADIUS, "Radius" );
+		FEATURE_NAMES.put( Radi_X, "Radi_X" );
+		FEATURE_NAMES.put( Radi_Y, "Radi_Y" );
+		FEATURE_NAMES.put( Radi_Z, "Radi_Z" );
 		FEATURE_NAMES.put( INTENSITY, "Intensity" );
 		
 		FEATURE_SHORT_NAMES.put( distBud, "DistBud" );
 		FEATURE_SHORT_NAMES.put( distDynamicBud, "DistDynamicBud" );
 		FEATURE_SHORT_NAMES.put( POSITION_X, "X" );
 		FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
+		FEATURE_SHORT_NAMES.put( POSITION_Z, "Z" );
 		FEATURE_SHORT_NAMES.put( POSITION_T, "T" );
-		FEATURE_SHORT_NAMES.put( RADIUS, "R" );
+		FEATURE_SHORT_NAMES.put( Radi_X, "Radi_X" );
+		FEATURE_SHORT_NAMES.put( Radi_Y, "Radi_Y" );
+		FEATURE_SHORT_NAMES.put( Radi_Z, "Radi_Z" );
 		FEATURE_SHORT_NAMES.put( INTENSITY, "I" );
 		
 		FEATURE_DIMENSIONS.put( distBud, Dimension.distBud );
 		FEATURE_DIMENSIONS.put( distDynamicBud, Dimension.distDynamicBud );
 		FEATURE_DIMENSIONS.put( POSITION_X, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_Y, Dimension.POSITION );
+		FEATURE_DIMENSIONS.put( POSITION_Z, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_T, Dimension.TIME );
-		FEATURE_DIMENSIONS.put( RADIUS, Dimension.LENGTH );
+		FEATURE_DIMENSIONS.put( Radi_X, Dimension.LENGTH );
+		FEATURE_DIMENSIONS.put( Radi_Y, Dimension.LENGTH );
+		FEATURE_DIMENSIONS.put( Radi_Z, Dimension.LENGTH );
 		FEATURE_DIMENSIONS.put( INTENSITY, Dimension.LENGTH );
 		
 		IS_INT.put( distBud, Boolean.FALSE );
 		IS_INT.put( distDynamicBud, Boolean.FALSE );
 		IS_INT.put( POSITION_X, Boolean.FALSE );
 		IS_INT.put( POSITION_Y, Boolean.FALSE );
+		IS_INT.put( POSITION_Z, Boolean.FALSE );
 		IS_INT.put( POSITION_T, Boolean.FALSE );
-		IS_INT.put( RADIUS, Boolean.FALSE );
+		IS_INT.put( Radi_X, Boolean.FALSE );
+		IS_INT.put( Radi_Y, Boolean.FALSE );
+		IS_INT.put( Radi_Z, Boolean.FALSE );
 		IS_INT.put( INTENSITY, Boolean.FALSE );
 	}
 
@@ -327,7 +360,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		final Localizable sourceLocation = currentcell.Location;
 		final Localizable targetLocation = target.currentcell.Location;
 
-		double distance = 1.0E-5;
+		double distance = 0;
 
 		for (int d = 0; d < sourceLocation.numDimensions(); ++d) {
 

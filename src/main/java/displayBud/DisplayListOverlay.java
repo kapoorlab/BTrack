@@ -58,29 +58,8 @@ public class DisplayListOverlay {
 		return coordinatelist;
 	}
 	
-	public static void DisplayList(final InteractiveBud parent, List<RealLocalizable> Skelpoints) {
-		
-		
-		
-	}
-private static boolean Contains(ArrayList<RealLocalizable> Buds, RealLocalizable currentbud) {
-		
-		boolean contains = false;
-		
-		for(RealLocalizable bud: Buds) {
-			
-			
-			double dist = Distance.DistanceSqrt(bud, currentbud);
-			
-			if(dist<=1)
-				contains = true;
-			
-		}
-		
-		
-		return contains;
-		
-	}
+
+
 	
 	// Display the found points as arrows on the bud
 	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
