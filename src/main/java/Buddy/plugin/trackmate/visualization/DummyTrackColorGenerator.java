@@ -12,63 +12,69 @@ import org.jgrapht.graph.DefaultWeightedEdge;
  *
  * @author Jean-Yves Tinevez - 2013
  */
-public class DummyTrackColorGenerator implements TrackColorGenerator {
+public class DummyTrackColorGenerator implements TrackColorGenerator
+{
 
 	@Override
-	public Color color(final DefaultWeightedEdge obj) {
+	public Color color( final DefaultWeightedEdge obj )
+	{
 		return DEFAULT_TRACK_COLOR;
 	}
 
 	@Override
-	public void setFeature(final String feature) {
-	}
+	public void setFeature( final String feature )
+	{}
 
 	@Override
-	public void terminate() {
-	}
+	public void terminate()
+	{}
 
 	@Override
-	public void activate() {
-	}
+	public void activate()
+	{}
 
 	@Override
-	public void setCurrentTrackID(final Integer trackID) {
-	}
+	public void setCurrentTrackID( final Integer trackID )
+	{}
 
 	@Override
-	public String getFeature() {
+	public String getFeature()
+	{
 		return ColorByFeatureGUIPanel.UNIFORM_KEY;
 	}
 
 	@Override
-	public double getMin() {
+	public double getMin()
+	{
 		return Double.NaN;
 	}
 
 	@Override
-	public double getMax() {
+	public double getMax()
+	{
 		return Double.NaN;
 	}
 
 	@Override
-	public void setMinMax(final double min, final double max) {
-	}
+	public void setMinMax( final double min, final double max )
+	{}
 
 	@Override
-	public void autoMinMax() {
-	}
+	public void autoMinMax()
+	{}
 
 	@Override
-	public void setAutoMinMaxMode(final boolean autoMode) {
-	}
+	public void setAutoMinMaxMode( final boolean autoMode )
+	{}
 
 	@Override
-	public boolean isAutoMinMaxMode() {
+	public boolean isAutoMinMaxMode()
+	{
 		return false;
 	}
 
 	@Override
-	public void setFrom(final MinMaxAdjustable minMaxAdjustable) {
-	}
+	public void setFrom( final MinMaxAdjustable minMaxAdjustable )
+	{}
 
 }

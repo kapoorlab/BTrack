@@ -10,6 +10,7 @@ import javax.swing.ScrollPaneConstants;
 
 import Buddy.plugin.trackmate.gui.ConfigurationPanel;
 
+
 public class LAPTrackerSettingsPanel extends ConfigurationPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -23,8 +24,7 @@ public class LAPTrackerSettingsPanel extends ConfigurationPanel {
 	 * CONSTRUCTOR
 	 */
 
-	public LAPTrackerSettingsPanel(final String trackerName, final String spaceUnits, final Collection<String> features,
-			final Map<String, String> featureNames) {
+	public LAPTrackerSettingsPanel(final String trackerName, final String spaceUnits, final Collection<String> features, final Map<String, String> featureNames) {
 		this.trackerName = trackerName;
 		this.spaceUnits = spaceUnits;
 		this.features = features;
@@ -72,7 +72,7 @@ public class LAPTrackerSettingsPanel extends ConfigurationPanel {
 	}
 
 	@Override
-	public void clean() {
-	}
+	public void clean()
+	{}
 
 }

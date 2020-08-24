@@ -14,18 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>
- * Creates the cost matrix described in Figure 1b in the paper.
+ * <p>Creates the cost matrix described in Figure 1b in the paper.
  * 
- * <p>
- * Jaqaman, K. et al. "Robust single-particle tracking in live-cell time-lapse
- * sequences." Nature Methods, 2008.
+ * <p>Jaqaman, K. et al. "Robust single-particle tracking in live-cell time-lapse sequences."
+ * Nature Methods, 2008.
  * 
- * <p>
- * The top left quadrant contains the costs to links objects between frames, the
- * bottom left and top right quadrants correspond to alternative costs for
- * linking (allows no links to be made between objects), and the bottom right
- * corner is mathematically required for solving an LAP.
+ * <p>The top left quadrant contains the costs to links objects between frames,
+ * the bottom left and top right quadrants correspond to alternative costs for linking
+ * (allows no links to be made between objects), and the bottom right corner is mathematically
+ * required for solving an LAP.
  * 
  * @author Nicholas Perry
  *
@@ -43,12 +40,12 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 	 * CONSTRUCTOR
 	 */
 
-	public LinkingCostMatrixCreator(final List<BCellobject> t02, final List<BCellobject> t12,
-			final Map<String, Object> settings) {
+
+	public LinkingCostMatrixCreator(final List<BCellobject> t0, final List<BCellobject> t1, final Map<String, Object> settings) {
 		super(settings);
-		this.t0 = t02;
-		this.t1 = t12;
-		this.numBCellobjects = t02.size() + t12.size();
+		this.t0 = t0;
+		this.t1 = t1;
+		this.numBCellobjects = t0.size() + t1.size();
 		this.costs = new Matrix(numBCellobjects, numBCellobjects);
 	}
 
@@ -71,9 +68,10 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 		return ok;
 	}
 
+
 	@Override
 	public boolean process() {
-
+		
 		long start = System.currentTimeMillis();
 
 		// Deal with special cases:
@@ -83,7 +81,7 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 			costs = new Matrix(0, 0);
 			return true;
 		}
-
+		
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 
 		if (t1.size() == 0) {
@@ -104,10 +102,11 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 			return true;
 		}
 
+
 		// 1 - Fill in quadrants
 		Matrix topLeft = getLinkingCostSubMatrix();
 		final double alternativeObjectLinkingCostFactor = (Double) settings.get(KEY_ALTERNATIVE_LINKING_COST_FACTOR);
-		final double cutoff = alternativeObjectLinkingCostFactor * getMaxScore(topLeft);
+		final double cutoff = alternativeObjectLinkingCostFactor  * getMaxScore(topLeft);
 		Matrix topRight = getAlternativeScores(t0.size(), cutoff);
 		Matrix bottomLeft = getAlternativeScores(t1.size(), cutoff);
 		Matrix bottomRight = getLowerRight(topLeft, cutoff);
@@ -118,7 +117,7 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 		costs.setMatrix(0, t0.size() - 1, t1.size(), costs.getColumnDimension() - 1, topRight);
 		costs.setMatrix(t0.size(), costs.getRowDimension() - 1, 0, t1.size() - 1, bottomLeft);
 
-		// printMatrix(costs, "linking costs");
+		//printMatrix(costs, "linking costs");
 
 		long end = System.currentTimeMillis();
 		processingTime = end - start;
@@ -143,8 +142,7 @@ public class LinkingCostMatrixCreator extends LAPTrackerCostMatrixCreator {
 	}
 
 	/**
-	 * Creates a sub-matrix which holds the linking scores between objects, and
-	 * returns it.
+	 * Creates a sub-matrix which holds the linking scores between objects, and returns it.
 	 */
 	private Matrix getLinkingCostSubMatrix() {
 		LinkingCostFunction linkingCosts = new LinkingCostFunction(settings);

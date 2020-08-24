@@ -17,7 +17,8 @@ import javax.swing.filechooser.FileFilter;
 /**
  * Filter for use in a {@link javax.swing.JFileChooser}.
  */
-public class DefaultFileFilter extends FileFilter {
+public class DefaultFileFilter extends FileFilter
+{
 
 	/**
 	 * Extension of accepted files.
@@ -37,22 +38,24 @@ public class DefaultFileFilter extends FileFilter {
 	 * @param description
 	 *            The description of the file format.
 	 */
-	public DefaultFileFilter(final String extension, final String description) {
+	public DefaultFileFilter( final String extension, final String description )
+	{
 		ext = extension.toLowerCase();
 		desc = description;
 	}
 
 	/**
-	 * Returns true if <code>file</code> is a directory or ends with the specified
-	 * extension.
+	 * Returns true if <code>file</code> is a directory or ends with the
+	 * specified extension.
 	 * 
 	 * @param file
 	 *            The file to be checked.
 	 * @return Returns true if the file is accepted.
 	 */
 	@Override
-	public boolean accept(final File file) {
-		return file.isDirectory() || file.getName().toLowerCase().endsWith(ext);
+	public boolean accept( final File file )
+	{
+		return file.isDirectory() || file.getName().toLowerCase().endsWith( ext );
 	}
 
 	/**
@@ -61,7 +64,8 @@ public class DefaultFileFilter extends FileFilter {
 	 * @return Returns the description.
 	 */
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return desc;
 	}
 
@@ -70,7 +74,8 @@ public class DefaultFileFilter extends FileFilter {
 	 * 
 	 * @return Returns the extension.
 	 */
-	public String getExtension() {
+	public String getExtension()
+	{
 		return ext;
 	}
 
@@ -80,7 +85,8 @@ public class DefaultFileFilter extends FileFilter {
 	 * @param extension
 	 *            The extension to set.
 	 */
-	public void setExtension(final String extension) {
+	public void setExtension( final String extension )
+	{
 		this.ext = extension;
 	}
 
@@ -89,7 +95,8 @@ public class DefaultFileFilter extends FileFilter {
 	 * 
 	 * @see ImageIO#getReaderFormatNames()
 	 */
-	public static class ImageFileFilter extends FileFilter {
+	public static class ImageFileFilter extends FileFilter
+	{
 
 		/**
 		 * Holds the accepted file format extensions for images.
@@ -102,35 +109,35 @@ public class DefaultFileFilter extends FileFilter {
 		protected String desc;
 
 		/**
-		 * Constructs a new file filter for all supported image formats using the
-		 * specified description.
+		 * Constructs a new file filter for all supported image formats using
+		 * the specified description.
 		 * 
 		 * @param description
 		 *            The description to use for the file filter.
 		 */
-		public ImageFileFilter(final String description) {
+		public ImageFileFilter( final String description )
+		{
 			desc = description;
 		}
 
 		/**
-		 * Returns true if the file is a directory or ends with a known image extension.
+		 * Returns true if the file is a directory or ends with a known image
+		 * extension.
 		 * 
 		 * @param file
 		 *            The file to be checked.
 		 * @return Returns true if the file is accepted.
 		 */
 		@Override
-		public boolean accept(final File file) {
-			if (file.isDirectory()) {
-				return true;
-			}
+		public boolean accept( final File file )
+		{
+			if ( file.isDirectory() ) { return true; }
 
 			final String filename = file.toString().toLowerCase();
 
-			for (int j = 0; j < imageFormats.length; j++) {
-				if (filename.endsWith("." + imageFormats[j].toLowerCase())) {
-					return true;
-				}
+			for ( int j = 0; j < imageFormats.length; j++ )
+			{
+				if ( filename.endsWith( "." + imageFormats[ j ].toLowerCase() ) ) { return true; }
 			}
 
 			return false;
@@ -142,7 +149,8 @@ public class DefaultFileFilter extends FileFilter {
 		 * @return Returns the description.
 		 */
 		@Override
-		public String getDescription() {
+		public String getDescription()
+		{
 			return desc;
 		}
 
@@ -154,7 +162,8 @@ public class DefaultFileFilter extends FileFilter {
 	 * 
 	 * @see ImageIO#getReaderFormatNames()
 	 */
-	public static class EditorFileFilter extends FileFilter {
+	public static class EditorFileFilter extends FileFilter
+	{
 
 		/**
 		 * Description of the File format
@@ -167,24 +176,25 @@ public class DefaultFileFilter extends FileFilter {
 		 * @param description
 		 *            The description to use for the filter.
 		 */
-		public EditorFileFilter(final String description) {
+		public EditorFileFilter( final String description )
+		{
 			desc = description;
 		}
 
 		/**
-		 * Returns true if the file is a directory or has a .xml or .xml.gz extension.
+		 * Returns true if the file is a directory or has a .xml or .xml.gz
+		 * extension.
 		 * 
 		 * @return Returns true if the file is accepted.
 		 */
 		@Override
-		public boolean accept(final File file) {
-			if (file.isDirectory()) {
-				return true;
-			}
+		public boolean accept( final File file )
+		{
+			if ( file.isDirectory() ) { return true; }
 
 			final String filename = file.getName().toLowerCase();
 
-			return filename.endsWith(".xml") || filename.endsWith(".xml.gz");
+			return filename.endsWith( ".xml" ) || filename.endsWith( ".xml.gz" );
 		}
 
 		/**
@@ -193,7 +203,8 @@ public class DefaultFileFilter extends FileFilter {
 		 * @return Returns the description.
 		 */
 		@Override
-		public String getDescription() {
+		public String getDescription()
+		{
 			return desc;
 		}
 

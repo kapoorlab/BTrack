@@ -40,7 +40,8 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphView;
 
-public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEventListener {
+public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEventListener
+{
 
 	public static final Color BACKGROUND_COLOR_1 = Color.GRAY;
 
@@ -53,7 +54,7 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	private static final int MAX_DECCORATION_LEVELS = 2;
 
 	/** The width of the columns for each track, from left to right. */
-	int[] columnWidths = new int[0];
+	int[] columnWidths = new int[ 0 ];
 
 	/** The trackID for each column. */
 	Integer[] columnTrackIDs;
@@ -65,50 +66,55 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	/** Flag that states whether the use is holding the space key down. */
 	private boolean spaceDown = false;
 
+
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public TrackSchemeGraphComponent(final JGraphXAdapter graph, final TrackScheme trackScheme) {
-		super(graph);
+	public TrackSchemeGraphComponent( final JGraphXAdapter graph, final TrackScheme trackScheme )
+	{
+		super( graph );
 		this.trackScheme = trackScheme;
 
-		getViewport().setOpaque(true);
-		getViewport().setBackground(BACKGROUND_COLOR_1);
-		setZoomFactor(2.0);
+		getViewport().setOpaque( true );
+		getViewport().setBackground( BACKGROUND_COLOR_1 );
+		setZoomFactor( 2.0 );
 
-		connectionHandler.addListener(mxEvent.CONNECT, this);
+		connectionHandler.addListener( mxEvent.CONNECT, this );
 
 		// Our own cell painter, that displays an image (if any) and a label
 		// next to it.
-		mxGraphics2DCanvas.putShape(mxScaledLabelShape.SHAPE_NAME, new mxScaledLabelShape());
+		mxGraphics2DCanvas.putShape( mxScaledLabelShape.SHAPE_NAME, new mxScaledLabelShape() );
 		// Replace default painter for edge label so that we can draw labels
 		// parallel to edges.
-		mxGraphics2DCanvas.putTextShape(mxGraphics2DCanvas.TEXT_SHAPE_DEFAULT, new mxSideTextShape());
+		mxGraphics2DCanvas.putTextShape( mxGraphics2DCanvas.TEXT_SHAPE_DEFAULT, new mxSideTextShape() );
 
-		setRowHeaderView(new RowHeader());
-		setColumnHeaderView(new ColumnHeader());
-		setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, new TopLeftCorner());
+		setRowHeaderView( new RowHeader() );
+		setColumnHeaderView( new ColumnHeader() );
+		setCorner( ScrollPaneConstants.UPPER_LEFT_CORNER, new TopLeftCorner() );
 
 		// Listen to space key down
-		addKeyListener(new KeyListener() {
+		addKeyListener( new KeyListener()
+		{
 
 			@Override
-			public void keyTyped(final KeyEvent e) {
-			}
+			public void keyTyped( final KeyEvent e )
+			{}
 
 			@Override
-			public void keyReleased(final KeyEvent e) {
-				if (e.getKeyCode() == 32)
+			public void keyReleased( final KeyEvent e )
+			{
+				if ( e.getKeyCode() == 32 )
 					spaceDown = false;
 			}
 
 			@Override
-			public void keyPressed(final KeyEvent e) {
-				if (e.getKeyCode() == 32 && !spaceDown)
+			public void keyPressed( final KeyEvent e )
+			{
+				if ( e.getKeyCode() == 32 && !spaceDown )
 					spaceDown = true;
 			}
-		});
+		} );
 	}
 
 	/*
@@ -116,35 +122,41 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	 */
 
 	@Override
-	public JGraphXAdapter getGraph() {
-		return (JGraphXAdapter) super.getGraph();
+	public JGraphXAdapter getGraph()
+	{
+		return ( JGraphXAdapter ) super.getGraph();
 	}
 
 	@Override
-	public boolean isToggleEvent(final MouseEvent event) {
+	public boolean isToggleEvent( final MouseEvent event )
+	{
 		return event.isShiftDown();
 	}
 
 	@Override
-	public boolean isPanningEvent(final MouseEvent event) {
+	public boolean isPanningEvent( final MouseEvent event )
+	{
 		return spaceDown;
 	}
 
 	/**
-	 * Overridden to customize the look of the editor. We want to hide the image in
-	 * the background.
+	 * Overridden to customize the look of the editor. We want to hide the image
+	 * in the background.
 	 */
 	@Override
-	protected mxICellEditor createCellEditor() {
-		final mxCellEditor editor = new mxCellEditor(this) {
+	protected mxICellEditor createCellEditor()
+	{
+		final mxCellEditor editor = new mxCellEditor( this )
+		{
 			@Override
-			public void startEditing(final Object cell, final EventObject evt) {
-				textArea.setOpaque(true);
-				textArea.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 1));
-				super.startEditing(cell, evt);
+			public void startEditing( final Object cell, final EventObject evt )
+			{
+				textArea.setOpaque( true );
+				textArea.setBorder( BorderFactory.createLineBorder( Color.ORANGE, 1 ) );
+				super.startEditing( cell, evt );
 			}
 		};
-		editor.setShiftEnterSubmitsText(true);
+		editor.setShiftEnterSubmitsText( true );
 		return editor;
 	}
 
@@ -154,27 +166,33 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	 * displaying a popup menu.
 	 */
 	@Override
-	protected mxGraphHandler createGraphHandler() {
-		return new mxGraphHandler(this) {
+	protected mxGraphHandler createGraphHandler()
+	{
+		return new mxGraphHandler( this )
+		{
 
 			@Override
-			public void mousePressed(final MouseEvent e) {
-				if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed()
-						&& !graphComponent.isForceMarqueeEvent(e)) {
-					cell = graphComponent.getCellAt(e.getX(), e.getY(), false);
+			public void mousePressed( final MouseEvent e )
+			{
+				if ( graphComponent.isEnabled() && isEnabled() && !e.isConsumed() && !graphComponent.isForceMarqueeEvent( e ) )
+				{
+					cell = graphComponent.getCellAt( e.getX(), e.getY(), false );
 					initialCell = cell;
 
-					if (cell != null) {
-						if (isSelectEnabled() && !graphComponent.getGraph().isCellSelected(cell)) {
-							graphComponent.selectCellForEvent(cell, e);
+					if ( cell != null )
+					{
+						if ( isSelectEnabled() && !graphComponent.getGraph().isCellSelected( cell ) )
+						{
+							graphComponent.selectCellForEvent( cell, e );
 							cell = null;
 						}
 
 						// Starts move if the cell under the mouse is movable
 						// and/or any
 						// cells of the selection are movable
-						if (isMoveEnabled() && !e.isPopupTrigger()) {
-							start(e);
+						if ( isMoveEnabled() && !e.isPopupTrigger() )
+						{
+							start( e );
 							e.consume();
 						}
 					}
@@ -182,13 +200,16 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 			}
 
 			@Override
-			public void mouseReleased(final MouseEvent e) {
-				if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed()) {
+			public void mouseReleased( final MouseEvent e )
+			{
+				if ( graphComponent.isEnabled() && isEnabled() && !e.isConsumed() )
+				{
 					final mxGraph lGraph = graphComponent.getGraph();
 					double dx = 0;
 					double dy = 0;
 
-					if (first != null && (cellBounds != null || movePreview.isActive())) {
+					if ( first != null && ( cellBounds != null || movePreview.isActive() ) )
+					{
 						final double scale = lGraph.getView().getScale();
 						final mxPoint trans = lGraph.getView().getTranslate();
 
@@ -197,100 +218,122 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 						dx = e.getX() - first.x;
 						dy = e.getY() - first.y;
 
-						if (cellBounds != null) {
-							final double dxg = ((cellBounds.getX() + dx) / scale) - trans.getX();
-							final double dyg = ((cellBounds.getY() + dy) / scale) - trans.getY();
+						if ( cellBounds != null )
+						{
+							final double dxg = ( ( cellBounds.getX() + dx ) / scale ) - trans.getX();
+							final double dyg = ( ( cellBounds.getY() + dy ) / scale ) - trans.getY();
 
-							final double x = ((dxg + trans.getX()) * scale) + (bbox.getX()) - (cellBounds.getX());
-							final double y = ((dyg + trans.getY()) * scale) + (bbox.getY()) - (cellBounds.getY());
+							final double x = ( ( dxg + trans.getX() ) * scale ) + ( bbox.getX() ) - ( cellBounds.getX() );
+							final double y = ( ( dyg + trans.getY() ) * scale ) + ( bbox.getY() ) - ( cellBounds.getY() );
 
-							dx = Math.round((x - bbox.getX()) / scale);
-							dy = Math.round((y - bbox.getY()) / scale);
+							dx = Math.round( ( x - bbox.getX() ) / scale );
+							dy = Math.round( ( y - bbox.getY() ) / scale );
 						}
 					}
 
-					if (first == null || !graphComponent.isSignificant(e.getX() - first.x, e.getY() - first.y)) {
+					if ( first == null || !graphComponent.isSignificant( e.getX() - first.x, e.getY() - first.y ) )
+					{
 						// Delayed handling of selection
-						if (cell != null && !e.isPopupTrigger() && isSelectEnabled()
-								&& (first != null || !isMoveEnabled())) {
-							graphComponent.selectCellForEvent(cell, e);
+						if ( cell != null && !e.isPopupTrigger() && isSelectEnabled() && ( first != null || !isMoveEnabled() ) )
+						{
+							graphComponent.selectCellForEvent( cell, e );
 						}
 
 						// Delayed folding for cell that was initially under the
 						// mouse
-						if (graphComponent.isFoldingEnabled()
-								&& graphComponent.hitFoldingIcon(initialCell, e.getX(), e.getY())) {
-							fold(initialCell);
-						} else {
+						if ( graphComponent.isFoldingEnabled() && graphComponent.hitFoldingIcon( initialCell, e.getX(), e.getY() ) )
+						{
+							fold( initialCell );
+						}
+						else
+						{
 							// Handles selection if no cell was initially under
 							// the mouse
-							final Object tmp = graphComponent.getCellAt(e.getX(), e.getY(),
-									graphComponent.isSwimlaneSelectionEnabled());
+							final Object tmp = graphComponent.getCellAt( e.getX(), e.getY(), graphComponent.isSwimlaneSelectionEnabled() );
 
-							if (cell == null && first == null) {
-								if (tmp == null && e.getButton() == MouseEvent.BUTTON1) {
+							if ( cell == null && first == null )
+							{
+								if ( tmp == null && e.getButton() == MouseEvent.BUTTON1 )
+								{
 									lGraph.clearSelection(); // JYT I did this to
 									// keep selection
 									// even if we
 									// right-click
 									// elsewhere
-								} else if (lGraph.isSwimlane(tmp) && graphComponent.getCanvas().hitSwimlaneContent(
-										graphComponent, lGraph.getView().getState(tmp), e.getX(), e.getY())) {
-									graphComponent.selectCellForEvent(tmp, e);
+								}
+								else if ( lGraph.isSwimlane( tmp ) && graphComponent.getCanvas().hitSwimlaneContent( graphComponent, lGraph.getView().getState( tmp ), e.getX(), e.getY() ) )
+								{
+									graphComponent.selectCellForEvent( tmp, e );
 								}
 							}
 
-							if (graphComponent.isFoldingEnabled()
-									&& graphComponent.hitFoldingIcon(tmp, e.getX(), e.getY())) {
-								fold(tmp);
+							if ( graphComponent.isFoldingEnabled() && graphComponent.hitFoldingIcon( tmp, e.getX(), e.getY() ) )
+							{
+								fold( tmp );
 								e.consume();
 							}
 						}
-					} else if (movePreview.isActive()) {
-						if (graphComponent.isConstrainedEvent(e)) {
-							if (Math.abs(dx) > Math.abs(dy)) {
+					}
+					else if ( movePreview.isActive() )
+					{
+						if ( graphComponent.isConstrainedEvent( e ) )
+						{
+							if ( Math.abs( dx ) > Math.abs( dy ) )
+							{
 								dy = 0;
-							} else {
+							}
+							else
+							{
 								dx = 0;
 							}
 						}
 
 						final mxCellState markedState = marker.getMarkedState();
-						Object target = (markedState != null) ? markedState.getCell() : null;
+						Object target = ( markedState != null ) ? markedState.getCell() : null;
 
 						// FIXME: Cell is null if selection was carried out,
 						// need other variable
 						// trace("cell", cell);
 
-						if (target == null && isRemoveCellsFromParent()
-								&& shouldRemoveCellFromParent(lGraph.getModel().getParent(initialCell), cells, e)) {
+						if ( target == null && isRemoveCellsFromParent() && shouldRemoveCellFromParent( lGraph.getModel().getParent( initialCell ), cells, e ) )
+						{
 							target = lGraph.getDefaultParent();
 						}
 
-						final boolean clone = isCloneEnabled() && graphComponent.isCloneEvent(e);
-						final Object[] result = movePreview.stop(true, e, dx, dy, clone, target);
+						final boolean clone = isCloneEnabled() && graphComponent.isCloneEvent( e );
+						final Object[] result = movePreview.stop( true, e, dx, dy, clone, target );
 
-						if (cells != result) {
-							lGraph.setSelectionCells(result);
+						if ( cells != result )
+						{
+							lGraph.setSelectionCells( result );
 						}
 
 						e.consume();
-					} else if (isVisible()) {
-						if (constrainedEvent) {
-							if (Math.abs(dx) > Math.abs(dy)) {
+					}
+					else if ( isVisible() )
+					{
+						if ( constrainedEvent )
+						{
+							if ( Math.abs( dx ) > Math.abs( dy ) )
+							{
 								dy = 0;
-							} else {
+							}
+							else
+							{
 								dx = 0;
 							}
 						}
 
 						final mxCellState targetState = marker.getValidState();
-						final Object target = (targetState != null) ? targetState.getCell() : null;
+						final Object target = ( targetState != null ) ? targetState.getCell() : null;
 
-						if (lGraph.isSplitEnabled() && lGraph.isSplitTarget(target, cells)) {
-							lGraph.splitEdge(target, cells, dx, dy);
-						} else {
-							moveCells(cells, dx, dy, target, e);
+						if ( lGraph.isSplitEnabled() && lGraph.isSplitTarget( target, cells ) )
+						{
+							lGraph.splitEdge( target, cells, dx, dy );
+						}
+						else
+						{
+							moveCells( cells, dx, dy, target, e );
 						}
 
 						e.consume();
@@ -304,56 +347,62 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	}
 
 	/**
-	 * Override this so as to paint the background with colored rows and columns.
+	 * Override this so as to paint the background with colored rows and
+	 * columns.
 	 */
 	@Override
-	public void paintBackground(final Graphics g) {
-		if (paintDecorationLevel == 0) {
-			return;
-		}
+	public void paintBackground( final Graphics g )
+	{
+		if ( paintDecorationLevel == 0 ) { return; }
 
 		final int width = getViewport().getView().getSize().width;
 		final int height = getViewport().getView().getSize().height;
 		final double scale = graph.getView().getScale();
 
-		final Graphics2D g2d = (Graphics2D) g;
-		g.setFont(FONT.deriveFont((float) (12 * scale)).deriveFont(Font.BOLD));
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		final Graphics2D g2d = ( Graphics2D ) g;
+		g.setFont( FONT.deriveFont( ( float ) ( 12 * scale ) ).deriveFont( Font.BOLD ) );
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 		final Rectangle paintBounds = g.getClipBounds();
 
 		// Scaled sizes
 		final double xcs = TrackScheme.X_COLUMN_SIZE * scale;
 		final double ycs = TrackScheme.Y_COLUMN_SIZE * scale;
 
-		if (paintDecorationLevel > 1) {
+		if ( paintDecorationLevel > 1 )
+		{
 			// Alternating row color
-			g.setColor(BACKGROUND_COLOR_2);
+			g.setColor( BACKGROUND_COLOR_2 );
 			double y = 0;
-			while (y < height) {
-				if (y > paintBounds.y - ycs && y < paintBounds.y + paintBounds.height) {
-					g.fillRect(0, (int) y, width, (int) ycs);
+			while ( y < height )
+			{
+				if ( y > paintBounds.y - ycs && y < paintBounds.y + paintBounds.height )
+				{
+					g.fillRect( 0, ( int ) y, width, ( int ) ycs );
 				}
 				y += 2d * ycs;
 			}
 		}
 
-		if (paintDecorationLevel > 0) {
+		if ( paintDecorationLevel > 0 )
+		{
 			double x = xcs;
 			// Column headers
-			if (null != columnWidths) {
-				g.setColor(LINE_COLOR);
-				for (int i = 0; i < columnWidths.length; i++) {
-					final int cw = columnWidths[i];
+			if ( null != columnWidths )
+			{
+				g.setColor( LINE_COLOR );
+				for ( int i = 0; i < columnWidths.length; i++ )
+				{
+					final int cw = columnWidths[ i ];
 
 					x += cw * xcs;
-					g.drawLine((int) x, 0, (int) x, height);
+					g.drawLine( ( int ) x, 0, ( int ) x, height );
 				}
 			}
 		}
 
 		getColumnHeader().revalidate();
 		getRowHeader().revalidate();
-		getCorner(ScrollPaneConstants.UPPER_LEFT_CORNER).revalidate();
+		getCorner( ScrollPaneConstants.UPPER_LEFT_CORNER ).revalidate();
 
 	}
 
@@ -363,32 +412,39 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	 * underlying {@link Buddy.plugin.trackmate.Model}.
 	 */
 	@Override
-	public void invoke(final Object sender, final mxEventObject evt) {
-		final Map<String, Object> props = evt.getProperties();
-		final Object obj = props.get("cell");
-		final mxCell cell = (mxCell) obj;
-		trackScheme.addEdgeManually(cell);
+	public void invoke( final Object sender, final mxEventObject evt )
+	{
+		final Map< String, Object > props = evt.getProperties();
+		final Object obj = props.get( "cell" );
+		final mxCell cell = ( mxCell ) obj;
+		trackScheme.addEdgeManually( cell );
 		evt.consume();
 	}
 
 	@Override
-	public void zoomTo(final double newScale, final boolean center) {
+	public void zoomTo( final double newScale, final boolean center )
+	{
 		final mxGraphView view = graph.getView();
 		final double scale = view.getScale();
 
-		final mxPoint translate = (pageVisible && centerPage) ? getPageTranslate(newScale) : new mxPoint();
-		graph.getView().scaleAndTranslate(newScale, translate.getX(), translate.getY());
+		final mxPoint translate = ( pageVisible && centerPage ) ? getPageTranslate( newScale ) : new mxPoint();
+		graph.getView().scaleAndTranslate( newScale, translate.getX(), translate.getY() );
 
-		if (keepSelectionVisibleOnZoom && !graph.isSelectionEmpty()) {
-			getGraphControl().scrollRectToVisible(view.getBoundingBox(graph.getSelectionCells()).getRectangle());
-		} else {
-			maintainScrollBar(true, newScale / scale, center);
-			maintainScrollBar(false, newScale / scale, center);
+		if ( keepSelectionVisibleOnZoom && !graph.isSelectionEmpty() )
+		{
+			getGraphControl().scrollRectToVisible( view.getBoundingBox( graph.getSelectionCells() ).getRectangle() );
+		}
+		else
+		{
+			maintainScrollBar( true, newScale / scale, center );
+			maintainScrollBar( false, newScale / scale, center );
 		}
 	}
 
-	public void loopPaintDecorationLevel() {
-		if (paintDecorationLevel++ >= MAX_DECCORATION_LEVELS) {
+	public void loopPaintDecorationLevel()
+	{
+		if ( paintDecorationLevel++ >= MAX_DECCORATION_LEVELS )
+		{
 			paintDecorationLevel = 0;
 		}
 		repaint();
@@ -398,104 +454,113 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	 * INNER CLASSES
 	 */
 
-	private class TopLeftCorner extends JPanel {
+	private class TopLeftCorner extends JPanel
+	{
 		private static final long serialVersionUID = 1L;
 
-		public TopLeftCorner() {
-			setOpaque(true);
-			setBackground(BACKGROUND_COLOR_1);
+		public TopLeftCorner()
+		{
+			setOpaque( true );
+			setBackground( BACKGROUND_COLOR_1 );
 		}
 
 		@Override
-		public void paint(final Graphics g) {
+		public void paint( final Graphics g )
+		{
 			final double scale = graph.getView().getScale();
-			final double xcs = TrackScheme.X_COLUMN_SIZE * Math.min(1d, scale);
-			final double ycs = TrackScheme.Y_COLUMN_SIZE * Math.min(1d, scale);
-			g.setColor(BACKGROUND_COLOR_1);
-			g.fillRect(0, 0, (int) xcs, (int) ycs);
-			g.setColor(LINE_COLOR);
-			g.drawLine(0, (int) ycs, (int) xcs, (int) ycs);
-			g.drawLine((int) xcs, 0, (int) xcs, (int) ycs);
+			final double xcs = TrackScheme.X_COLUMN_SIZE * Math.min( 1d, scale );
+			final double ycs = TrackScheme.Y_COLUMN_SIZE * Math.min( 1d, scale );
+			g.setColor( BACKGROUND_COLOR_1 );
+			g.fillRect( 0, 0, ( int ) xcs, ( int ) ycs );
+			g.setColor( LINE_COLOR );
+			g.drawLine( 0, ( int ) ycs, ( int ) xcs, ( int ) ycs );
+			g.drawLine( ( int ) xcs, 0, ( int ) xcs, ( int ) ycs );
 		}
 
 	}
 
-	private class ColumnHeader extends JPanel {
+	private class ColumnHeader extends JPanel
+	{
 		private static final long serialVersionUID = 1L;
 
-		public ColumnHeader() {
-			setLayout(null);
-			setOpaque(true);
-			setBackground(BACKGROUND_COLOR_1);
-			setToolTipText("Column header tool tip");
-			addMouseListener(new MouseAdapter() {
+		public ColumnHeader()
+		{
+			setLayout( null );
+			setOpaque( true );
+			setBackground( BACKGROUND_COLOR_1 );
+			setToolTipText( "Column header tool tip" );
+			addMouseListener( new MouseAdapter()
+			{
 
 				@Override
-				public void mouseClicked(final MouseEvent event) {
-					if (!(event.getClickCount() == 2)) {
-						return;
-					}
+				public void mouseClicked( final MouseEvent event )
+				{
+					if ( !( event.getClickCount() == 2 ) ) { return; }
 
 					final int x = event.getPoint().x;
-					final float scale = (float) graph.getView().getScale();
+					final float scale = ( float ) graph.getView().getScale();
 
 					// Scaled sizes
-					final int xcs = Math.round(TrackScheme.X_COLUMN_SIZE * scale);
-					final int ycs = Math.min(TrackScheme.Y_COLUMN_SIZE, Math.round(TrackScheme.Y_COLUMN_SIZE * scale));
+					final int xcs = Math.round( TrackScheme.X_COLUMN_SIZE * scale );
+					final int ycs = Math.min( TrackScheme.Y_COLUMN_SIZE, Math.round( TrackScheme.Y_COLUMN_SIZE * scale ) );
 
 					// Look for target column
-					if (null != columnWidths) {
+					if ( null != columnWidths )
+					{
 						int column;
 						int xc = xcs;
-						for (column = 0; column < columnWidths.length; column++) {
-							final int cw = columnWidths[column];
+						for ( column = 0; column < columnWidths.length; column++ )
+						{
+							final int cw = columnWidths[ column ];
 							xc += cw * xcs;
-							if (x < xc) {
+							if ( x < xc )
+							{
 								break;
 							}
 						}
 
-						if (column >= columnWidths.length) {
-							return;
-						}
+						if ( column >= columnWidths.length ) { return; }
 
-						final String oldName = trackScheme.getModel().getTrackModel().name(columnTrackIDs[column]);
-						final Integer trackID = columnTrackIDs[column];
+						final String oldName = trackScheme.getModel().getTrackModel().name( columnTrackIDs[ column ] );
+						final Integer trackID = columnTrackIDs[ column ];
 
-						int cwidth = columnWidths[column] * xcs;
-						if (column == 0) {
+						int cwidth = columnWidths[ column ] * xcs;
+						if ( column == 0 )
+						{
 							// Special case 1st column.
 							cwidth += xcs;
 						}
 
 						final JScrollPane scrollPane = new JScrollPane();
-						scrollPane.getViewport().setOpaque(false);
-						scrollPane.setVisible(false);
-						scrollPane.setOpaque(false);
-						scrollPane.setBounds(xc - cwidth, 0, cwidth, ycs);
-						scrollPane.setVisible(true);
+						scrollPane.getViewport().setOpaque( false );
+						scrollPane.setVisible( false );
+						scrollPane.setOpaque( false );
+						scrollPane.setBounds( xc - cwidth, 0, cwidth, ycs );
+						scrollPane.setVisible( true );
 
 						// Creates the plain text editor
-						final JTextField textArea = new JTextField(oldName);
-						textArea.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
-						textArea.setOpaque(true);
-						textArea.setBackground(BACKGROUND_COLOR_1);
-						textArea.setHorizontalAlignment(SwingConstants.CENTER);
-						textArea.setFont(FONT.deriveFont(12 * scale).deriveFont(Font.BOLD));
-						textArea.addActionListener(new ActionListener() {
+						final JTextField textArea = new JTextField( oldName );
+						textArea.setBorder( BorderFactory.createLineBorder( Color.ORANGE, 2 ) );
+						textArea.setOpaque( true );
+						textArea.setBackground( BACKGROUND_COLOR_1 );
+						textArea.setHorizontalAlignment( SwingConstants.CENTER );
+						textArea.setFont( FONT.deriveFont( 12 * scale ).deriveFont( Font.BOLD ) );
+						textArea.addActionListener( new ActionListener()
+						{
 							// Get track name and pass it to model
 							@Override
-							public void actionPerformed(final ActionEvent arg0) {
+							public void actionPerformed( final ActionEvent arg0 )
+							{
 								final String newname = textArea.getText();
-								trackScheme.getModel().getTrackModel().setName(trackID, newname);
-								scrollPane.remove(textArea);
-								ColumnHeader.this.remove(scrollPane);
+								trackScheme.getModel().getTrackModel().setName( trackID, newname );
+								scrollPane.remove( textArea );
+								ColumnHeader.this.remove( scrollPane );
 								TrackSchemeGraphComponent.this.repaint();
 							}
-						});
+						} );
 
-						scrollPane.setViewportView(textArea);
-						ColumnHeader.this.add(scrollPane);
+						scrollPane.setViewportView( textArea );
+						ColumnHeader.this.add( scrollPane );
 
 						textArea.revalidate();
 						textArea.requestFocusInWindow();
@@ -504,30 +569,33 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 					}
 
 				}
-			});
+			} );
 		}
 
 		@Override
-		public String getToolTipText(final MouseEvent event) {
+		public String getToolTipText( final MouseEvent event )
+		{
 			final Point point = event.getPoint();
 			final double scale = graph.getView().getScale();
 			final double xcs = TrackScheme.X_COLUMN_SIZE * scale;
 			double x = xcs;
 			// Column headers
-			if (null != columnWidths) {
+			if ( null != columnWidths )
+			{
 				int index = 0;
-				while (x < point.x) {
-					if (index >= columnTrackIDs.length) {
-						return "Unlaid spots";
-					}
-					final int cw = columnWidths[index++];
+				while ( x < point.x )
+				{
+					if ( index >= columnTrackIDs.length ) { return "Unlaid spots"; }
+					final int cw = columnWidths[ index++ ];
 					x += cw * xcs;
 				}
-				if (index == 0) {
+				if ( index == 0 )
+				{
 					index = 1;
 				}
-				String columnName = trackScheme.getModel().getTrackModel().name(columnTrackIDs[index - 1]);
-				if (null == columnName) {
+				String columnName = trackScheme.getModel().getTrackModel().name( columnTrackIDs[ index - 1 ] );
+				if ( null == columnName )
+				{
 					columnName = "Name not set";
 				}
 				return columnName;
@@ -536,125 +604,144 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 		}
 
 		@Override
-		public void paint(final Graphics g) {
-			final Graphics2D g2d = (Graphics2D) g;
+		public void paint( final Graphics g )
+		{
+			final Graphics2D g2d = ( Graphics2D ) g;
 			final double scale = graph.getView().getScale();
 
-			final float fontScale = (float) (12 * Math.min(1d, scale));
-			g.setFont(FONT.deriveFont(fontScale).deriveFont(Font.BOLD));
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			final float fontScale = ( float ) ( 12 * Math.min( 1d, scale ) );
+			g.setFont( FONT.deriveFont( fontScale ).deriveFont( Font.BOLD ) );
+			g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 			final Rectangle paintBounds = g.getClipBounds();
-			g.setColor(BACKGROUND_COLOR_1);
-			g.fillRect(paintBounds.x, paintBounds.y, paintBounds.x + paintBounds.width, paintBounds.height);
+			g.setColor( BACKGROUND_COLOR_1 );
+			g.fillRect( paintBounds.x, paintBounds.y, paintBounds.x + paintBounds.width, paintBounds.height );
 
 			// Scaled sizes
 			final double xcs = TrackScheme.X_COLUMN_SIZE * scale;
-			final double ycs = TrackScheme.Y_COLUMN_SIZE * Math.min(1d, scale);
+			final double ycs = TrackScheme.Y_COLUMN_SIZE * Math.min( 1d, scale );
 
-			g.setColor(LINE_COLOR);
-			g.drawLine(paintBounds.x, (int) ycs, paintBounds.x + paintBounds.width, (int) ycs);
+			g.setColor( LINE_COLOR );
+			g.drawLine( paintBounds.x, ( int ) ycs, paintBounds.x + paintBounds.width, ( int ) ycs );
 
 			double x = xcs;
 			// Column headers
-			if (null != columnWidths) {
-				for (int i = 0; i < columnWidths.length; i++) {
-					final int cw = columnWidths[i];
-					String columnName = trackScheme.getModel().getTrackModel().name(columnTrackIDs[i]);
-					if (null == columnName) {
+			if ( null != columnWidths )
+			{
+				for ( int i = 0; i < columnWidths.length; i++ )
+				{
+					final int cw = columnWidths[ i ];
+					String columnName = trackScheme.getModel().getTrackModel().name( columnTrackIDs[ i ] );
+					if ( null == columnName )
+					{
 						columnName = "Name not set";
 					}
-					if (i == 0) {
+					if ( i == 0 )
+					{
 						// Special case column 1.
-						g.drawString(columnName, 20, (int) (ycs / 2d));
+						g.drawString( columnName, 20, ( int ) ( ycs / 2d ) );
 
-					} else {
-						g.drawString(columnName, (int) (x + 20d), (int) (ycs / 2d));
+					}
+					else
+					{
+						g.drawString( columnName, ( int ) ( x + 20d ), ( int ) ( ycs / 2d ) );
 					}
 					x += cw * xcs;
-					g.setColor(LINE_COLOR);
-					g.drawLine((int) x, 0, (int) x, (int) ycs);
+					g.setColor( LINE_COLOR );
+					g.drawLine( ( int ) x, 0, ( int ) x, ( int ) ycs );
 				}
 			}
 
 			// Last column header
-			g.setColor(Color.decode(TrackScheme.DEFAULT_COLOR));
-			g.drawString("Unlaid spots", (int) (x + 20d), (int) (ycs / 2d));
+			g.setColor( Color.decode( TrackScheme.DEFAULT_COLOR ) );
+			g.drawString( "Unlaid spots", ( int ) ( x + 20d ), ( int ) ( ycs / 2d ) );
 		}
 
 		@Override
-		public Dimension getPreferredSize() {
-			final double scale = Math.min(1, graph.getView().getScale());
+		public Dimension getPreferredSize()
+		{
+			final double scale = Math.min( 1, graph.getView().getScale() );
 			final double ycs = TrackScheme.Y_COLUMN_SIZE * scale + 1;
 			final int width = getViewport().getView().getSize().width;
-			return new Dimension(width, (int) ycs);
+			return new Dimension( width, ( int ) ycs );
 		}
 
 	}
 
-	private class RowHeader extends JPanel {
+	private class RowHeader extends JPanel
+	{
 		private static final long serialVersionUID = 1L;
 
-		public RowHeader() {
-			setOpaque(true);
-			setBackground(BACKGROUND_COLOR_1);
-			setToolTipText("Row header tooltip");
+		public RowHeader()
+		{
+			setOpaque( true );
+			setBackground( BACKGROUND_COLOR_1 );
+			setToolTipText( "Row header tooltip" );
 		}
 
 		@Override
-		public String getToolTipText(final MouseEvent event) {
+		public String getToolTipText( final MouseEvent event )
+		{
 			final Point point = event.getPoint();
 			final double scale = graph.getView().getScale();
-			final int frame = (int) (point.y / (TrackScheme.Y_COLUMN_SIZE * scale));
+			final int frame = ( int ) ( point.y / ( TrackScheme.Y_COLUMN_SIZE * scale ) );
 			return "frame " + frame;
 		}
 
 		@Override
-		public void paint(final Graphics g) {
+		public void paint( final Graphics g )
+		{
 
-			final Graphics2D g2d = (Graphics2D) g;
+			final Graphics2D g2d = ( Graphics2D ) g;
 			final double scale = graph.getView().getScale();
 
-			final float fontScale = (float) (12 * Math.min(1d, scale));
-			g.setFont(FONT.deriveFont(fontScale).deriveFont(Font.BOLD));
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			final float fontScale = ( float ) ( 12 * Math.min( 1d, scale ) );
+			g.setFont( FONT.deriveFont( fontScale ).deriveFont( Font.BOLD ) );
+			g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 			final Rectangle paintBounds = g.getClipBounds();
 
 			final int height = viewport.getView().getSize().height;
 
 			// Scaled sizes
-			final double xcs = TrackScheme.X_COLUMN_SIZE * Math.min(1d, scale);
+			final double xcs = TrackScheme.X_COLUMN_SIZE * Math.min( 1d, scale );
 			final double ycs = TrackScheme.Y_COLUMN_SIZE * scale;
 
 			// Alternating row color
-			g.setColor(BACKGROUND_COLOR_1);
-			g.fillRect(paintBounds.x, paintBounds.y, paintBounds.width, paintBounds.height);
+			g.setColor( BACKGROUND_COLOR_1 );
+			g.fillRect( paintBounds.x, paintBounds.y, paintBounds.width, paintBounds.height );
 
 			double y = 0;
-			if (paintDecorationLevel > 1) {
-				g.setColor(BACKGROUND_COLOR_2);
-				while (y < height) {
-					if (y > paintBounds.y - ycs && y < paintBounds.y + paintBounds.height) {
-						g.fillRect(0, (int) y, (int) xcs, (int) ycs);
+			if ( paintDecorationLevel > 1 )
+			{
+				g.setColor( BACKGROUND_COLOR_2 );
+				while ( y < height )
+				{
+					if ( y > paintBounds.y - ycs && y < paintBounds.y + paintBounds.height )
+					{
+						g.fillRect( 0, ( int ) y, ( int ) xcs, ( int ) ycs );
 					}
 					y += 2d * ycs;
 				}
 			}
 
 			// Header separator
-			g.setColor(TrackSchemeGraphComponent.LINE_COLOR);
-			if (xcs > paintBounds.x && xcs < paintBounds.x + paintBounds.width) {
-				g.drawLine((int) xcs, paintBounds.y, (int) xcs, paintBounds.y + paintBounds.height);
+			g.setColor( TrackSchemeGraphComponent.LINE_COLOR );
+			if ( xcs > paintBounds.x && xcs < paintBounds.x + paintBounds.width )
+			{
+				g.drawLine( ( int ) xcs, paintBounds.y, ( int ) xcs, paintBounds.y + paintBounds.height );
 			}
 
 			// Row headers
 			final double x = xcs / 4d;
 			y = ycs / 2d;
 
-			if (xcs > paintBounds.x) {
-				while (y < height) {
-					if (y > paintBounds.y - ycs && y < paintBounds.y + paintBounds.height) {
-						final int frame = (int) (y / ycs);
-						g.drawString(String.format("frame %d", frame), (int) x, (int) Math.round(y + 12 * scale));
+			if ( xcs > paintBounds.x )
+			{
+				while ( y < height )
+				{
+					if ( y > paintBounds.y - ycs && y < paintBounds.y + paintBounds.height )
+					{
+						final int frame = ( int ) ( y / ycs );
+						g.drawString( String.format( "frame %d", frame ), ( int ) x, ( int ) Math.round( y + 12 * scale ) );
 					}
 					y += ycs;
 				}
@@ -662,10 +749,11 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 		}
 
 		@Override
-		public Dimension getPreferredSize() {
-			final double scale = Math.min(1, graph.getView().getScale());
+		public Dimension getPreferredSize()
+		{
+			final double scale = Math.min( 1, graph.getView().getScale() );
 			final double xcs = TrackScheme.X_COLUMN_SIZE * scale + 1;
-			return new Dimension((int) xcs, (int) viewport.getPreferredSize().getHeight());
+			return new Dimension( ( int ) xcs, ( int ) viewport.getPreferredSize().getHeight() );
 		}
 
 	}

@@ -5,11 +5,11 @@ import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.LogPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
-import pluginTools.InteractiveBud;
 
 import javax.swing.SwingUtilities;
 
-public class TrackingDescriptor implements WizardPanelDescriptor {
+public class TrackingDescriptor implements WizardPanelDescriptor
+{
 
 	private static final String KEY = "Tracking";
 
@@ -19,75 +19,92 @@ public class TrackingDescriptor implements WizardPanelDescriptor {
 
 	private final TrackMateGUIController controller;
 
-	public TrackingDescriptor(final TrackMateGUIController controller) {
+	public TrackingDescriptor( final TrackMateGUIController controller )
+	{
 		this.controller = controller;
 		this.trackmate = controller.getPlugin();
 		this.logPanel = controller.getGUI().getLogPanel();
 	}
 
 	@Override
-	public LogPanel getComponent() {
+	public LogPanel getComponent()
+	{
 		return logPanel;
 	}
 
 	@Override
-	public void aboutToDisplayPanel() {
-	}
+	public void aboutToDisplayPanel()
+	{}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel()
+	{
 		final Logger logger = trackmate.getModel().getLogger();
 		final BCellobjectTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
-		logger.log("Starting tracking using " + trackerFactory.getName() + "\n", Logger.BLUE_COLOR);
-		logger.log("with settings:\n");
-		logger.log(trackerFactory.toString(trackmate.getSettings().trackerSettings));
+		logger.log( "Starting tracking using " + trackerFactory.getName() + "\n", Logger.BLUE_COLOR );
+		logger.log( "with settings:\n" );
+		logger.log( trackerFactory.toString( trackmate.getSettings().trackerSettings ) );
 		controller.disableButtonsAndStoreState();
 
-		new Thread("TrackMate tracking thread") {
+		new Thread( "TrackMate tracking thread" )
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				final long start = System.currentTimeMillis();
 				final boolean trackingOK = trackmate.execTracking();
 				final long end = System.currentTimeMillis();
-				if (trackingOK) {
-					logger.log("Found " + trackmate.getModel().getTrackModel().nTracks(false) + " tracks.\n");
-					logger.log(String.format("Tracking done in %.1f s.\n", (end - start) / 1e3f), Logger.BLUE_COLOR);
-				} else {
-					logger.error(trackmate.getErrorMessage() + '\n');
+				if ( trackingOK )
+				{
+					logger.log( "Found " + trackmate.getModel().getTrackModel().nTracks( false ) + " tracks.\n" );
+					logger.log( String.format( "Tracking done in %.1f s.\n", ( end - start ) / 1e3f ), Logger.BLUE_COLOR );
 				}
-				SwingUtilities.invokeLater(new Runnable() {
+				else
+				{
+					logger.error( trackmate.getErrorMessage() + '\n' );
+				}
+				SwingUtilities.invokeLater( new Runnable()
+				{
 					@Override
-					public void run() {
+					public void run()
+					{
 						controller.restoreButtonsState();
 					}
-				});
+				} );
 			}
 
 		}.start();
 	}
 
 	@Override
-	public void aboutToHidePanel(InteractiveBud parent) {
-		final Thread trackFeatureCalculationThread = new Thread("TrackMate track feature calculation thread") {
+	public void aboutToHidePanel()
+	{
+		final Thread trackFeatureCalculationThread = new Thread( "TrackMate track feature calculation thread" )
+		{
 			@Override
-			public void run() {
-				trackmate.computeTrackFeatures(true);
+			public void run()
+			{
+				trackmate.computeTrackFeatures( true );
 			}
 		};
 		trackFeatureCalculationThread.start();
-		try {
+		try
+		{
 			trackFeatureCalculationThread.join();
-		} catch (final InterruptedException e) {
+		}
+		catch ( final InterruptedException e )
+		{
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void comingBackToPanel() {
-	}
+	public void comingBackToPanel()
+	{}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
 }

@@ -14,14 +14,15 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 
 import org.scijava.plugin.Plugin;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.FeatureModel;
 import Buddy.plugin.trackmate.Model;
+import budDetector.BCellobject;
 
-@SuppressWarnings("deprecation")
-@Plugin(type = TrackAnalyzer.class)
-public class TrackLocationAnalyzer implements TrackAnalyzer {
+@SuppressWarnings( "deprecation" )
+@Plugin( type = TrackAnalyzer.class )
+public class TrackLocationAnalyzer implements TrackAnalyzer
+{
 
 	/*
 	 * FEATURE NAMES
@@ -32,45 +33,39 @@ public class TrackLocationAnalyzer implements TrackAnalyzer {
 
 	public static final String Y_LOCATION = "TRACK_Y_LOCATION";
 
-	public static final String DistBud = "TRACK_DistBud";
+	public static final String Z_LOCATION = "TRACK_Z_LOCATION";
 
-	public static final String DistDynamicBud = "TRACK_DistDynamicBud";
+	public static final List< String > FEATURES = new ArrayList< >( 3 );
 
-	public static final List<String> FEATURES = new ArrayList<>(4);
+	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 3 );
 
-	public static final Map<String, String> FEATURE_NAMES = new HashMap<>(4);
+	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 3 );
 
-	public static final Map<String, String> FEATURE_SHORT_NAMES = new HashMap<>(4);
+	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 3 );
 
-	public static final Map<String, Dimension> FEATURE_DIMENSIONS = new HashMap<>(4);
+	public static final Map< String, Boolean > IS_INT = new HashMap< >( 3 );
 
-	public static final Map<String, Boolean> IS_INT = new HashMap<>(4);
+	static
+	{
+		FEATURES.add( X_LOCATION );
+		FEATURES.add( Y_LOCATION );
+		FEATURES.add( Z_LOCATION );
 
-	static {
-		FEATURES.add(X_LOCATION);
-		FEATURES.add(Y_LOCATION);
-		FEATURES.add(DistBud);
-		FEATURES.add(DistDynamicBud);
+		FEATURE_NAMES.put( X_LOCATION, "X Location (mean)" );
+		FEATURE_NAMES.put( Y_LOCATION, "Y Location (mean)" );
+		FEATURE_NAMES.put( Z_LOCATION, "Z Location (mean)" );
 
-		FEATURE_NAMES.put(X_LOCATION, "X Location (mean)");
-		FEATURE_NAMES.put(Y_LOCATION, "Y Location (mean)");
-		FEATURE_NAMES.put(DistBud, "DistBud");
-		FEATURE_NAMES.put(DistDynamicBud, "DistDynamicBud");
+		FEATURE_SHORT_NAMES.put( X_LOCATION, "X" );
+		FEATURE_SHORT_NAMES.put( Y_LOCATION, "Y" );
+		FEATURE_SHORT_NAMES.put( Z_LOCATION, "Z" );
 
-		FEATURE_SHORT_NAMES.put(X_LOCATION, "X");
-		FEATURE_SHORT_NAMES.put(Y_LOCATION, "Y");
-		FEATURE_SHORT_NAMES.put(DistBud, "DistBud");
-		FEATURE_SHORT_NAMES.put(DistDynamicBud, "DistDynamicBud");
+		FEATURE_DIMENSIONS.put( X_LOCATION, Dimension.POSITION );
+		FEATURE_DIMENSIONS.put( Y_LOCATION, Dimension.POSITION );
+		FEATURE_DIMENSIONS.put( Z_LOCATION, Dimension.POSITION );
 
-		FEATURE_DIMENSIONS.put(X_LOCATION, Dimension.POSITION);
-		FEATURE_DIMENSIONS.put(Y_LOCATION, Dimension.POSITION);
-		FEATURE_DIMENSIONS.put(DistBud, Dimension.distBud);
-		FEATURE_DIMENSIONS.put(DistDynamicBud, Dimension.distDynamicBud);
-
-		IS_INT.put(X_LOCATION, Boolean.FALSE);
-		IS_INT.put(Y_LOCATION, Boolean.FALSE);
-		IS_INT.put(DistBud, Boolean.FALSE);
-		IS_INT.put(DistDynamicBud, Boolean.FALSE);
+		IS_INT.put( X_LOCATION, Boolean.FALSE );
+		IS_INT.put( Y_LOCATION, Boolean.FALSE );
+		IS_INT.put( Z_LOCATION, Boolean.FALSE );
 	}
 
 	private int numThreads;
@@ -81,56 +76,58 @@ public class TrackLocationAnalyzer implements TrackAnalyzer {
 	 * CONSTRUCTOR
 	 */
 
-	public TrackLocationAnalyzer() {
+	public TrackLocationAnalyzer()
+	{
 		setNumThreads();
 	}
 
 	@Override
-	public boolean isLocal() {
+	public boolean isLocal()
+	{
 		return true;
 	}
 
 	@Override
-	public void process(final Collection<Integer> trackIDs, final Model model) {
+	public void process( final Collection< Integer > trackIDs, final Model model )
+	{
 
-		if (trackIDs.isEmpty()) {
-			return;
-		}
+		if ( trackIDs.isEmpty() ) { return; }
 
-		final ArrayBlockingQueue<Integer> queue = new ArrayBlockingQueue<>(trackIDs.size(), false, trackIDs);
+		final ArrayBlockingQueue< Integer > queue = new ArrayBlockingQueue< >( trackIDs.size(), false, trackIDs );
 		final FeatureModel fm = model.getFeatureModel();
 
-		final Thread[] threads = SimpleMultiThreading.newThreads(numThreads);
-		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new Thread("TrackLocationAnalyzer thread " + i) {
+		final Thread[] threads = SimpleMultiThreading.newThreads( numThreads );
+		for ( int i = 0; i < threads.length; i++ )
+		{
+			threads[ i ] = new Thread( "TrackLocationAnalyzer thread " + i )
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					Integer trackID;
-					while ((trackID = queue.poll()) != null) {
+					while ( ( trackID = queue.poll() ) != null )
+					{
 
-						final Set<BCellobject> track = model.getTrackModel().trackBCellobjects(trackID);
+						final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 
 						double x = 0;
 						double y = 0;
-						double distBud = 0;
-						double distDynamicBud = 0;
+						double z = 0;
 
-						for (final BCellobject BCellobject : track) {
-							x += BCellobject.getFeature(BCellobject.POSITION_X);
-							y += BCellobject.getFeature(BCellobject.POSITION_Y);
-							distBud += BCellobject.getFeature(BCellobject.distBud);
-							distDynamicBud += BCellobject.getFeature(BCellobject.distDynamicBud);
+						for ( final BCellobject BCellobject : track )
+						{
+							x += BCellobject.getFeature( BCellobject.POSITION_X );
+							y += BCellobject.getFeature( BCellobject.POSITION_Y );
+							z += BCellobject.getFeature( BCellobject.POSITION_Z );
 						}
-
 						final int nBCellobjects = track.size();
 						x /= nBCellobjects;
 						y /= nBCellobjects;
-						distBud /= nBCellobjects;
-						distDynamicBud /= nBCellobjects;
-						fm.putTrackFeature(trackID, X_LOCATION, x);
-						fm.putTrackFeature(trackID, Y_LOCATION, y);
-						fm.putTrackFeature(trackID, DistBud, distBud);
-						fm.putTrackFeature(trackID, DistDynamicBud, distDynamicBud);
+						z /= nBCellobjects;
+
+						fm.putTrackFeature( trackID, X_LOCATION, x );
+						fm.putTrackFeature( trackID, Y_LOCATION, y );
+						fm.putTrackFeature( trackID, Z_LOCATION, z );
 
 					}
 
@@ -139,80 +136,93 @@ public class TrackLocationAnalyzer implements TrackAnalyzer {
 		}
 
 		final long start = System.currentTimeMillis();
-		SimpleMultiThreading.startAndJoin(threads);
+		SimpleMultiThreading.startAndJoin( threads );
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
 	}
 
 	@Override
-	public int getNumThreads() {
+	public int getNumThreads()
+	{
 		return numThreads;
 	}
 
 	@Override
-	public void setNumThreads() {
+	public void setNumThreads()
+	{
 		this.numThreads = Runtime.getRuntime().availableProcessors();
 	}
 
 	@Override
-	public void setNumThreads(final int numThreads) {
+	public void setNumThreads( final int numThreads )
+	{
 		this.numThreads = numThreads;
 
 	}
 
 	@Override
-	public long getProcessingTime() {
+	public long getProcessingTime()
+	{
 		return processingTime;
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
 
 	@Override
-	public List<String> getFeatures() {
+	public List< String > getFeatures()
+	{
 		return FEATURES;
 	}
 
 	@Override
-	public Map<String, String> getFeatureShortNames() {
+	public Map< String, String > getFeatureShortNames()
+	{
 		return FEATURE_SHORT_NAMES;
 	}
 
 	@Override
-	public Map<String, String> getFeatureNames() {
+	public Map< String, String > getFeatureNames()
+	{
 		return FEATURE_NAMES;
 	}
 
 	@Override
-	public Map<String, Dimension> getFeatureDimensions() {
+	public Map< String, Dimension > getFeatureDimensions()
+	{
 		return FEATURE_DIMENSIONS;
 	}
 
 	@Override
-	public String getInfoText() {
+	public String getInfoText()
+	{
 		return null;
 	}
 
 	@Override
-	public String getName() {
+	public ImageIcon getIcon()
+	{
+		return null;
+	}
+
+	@Override
+	public String getName()
+	{
 		return KEY;
 	}
 
 	@Override
-	public Map<String, Boolean> getIsIntFeature() {
+	public Map< String, Boolean > getIsIntFeature()
+	{
 		return IS_INT;
 	}
 
 	@Override
-	public boolean isManualFeature() {
+	public boolean isManualFeature()
+	{
 		return false;
-	}
-
-	@Override
-	public ImageIcon getIcon() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

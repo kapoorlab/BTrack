@@ -7,7 +7,6 @@ import java.util.Iterator;
 import javax.swing.JProgressBar;
 
 import budDetector.BCellobject;
-import greenDetector.Greenobject;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;

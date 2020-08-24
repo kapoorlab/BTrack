@@ -1,47 +1,47 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.gui.LogPanel;
-import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 
 import java.awt.Component;
 
-public class LogPanelDescriptor implements WizardPanelDescriptor {
+public class LogPanelDescriptor implements WizardPanelDescriptor
+{
 
 	public static final String KEY = "LogPanel";
 
 	private final LogPanel logPanel;
 
-	public LogPanelDescriptor(final LogPanel logPanel) {
+	public LogPanelDescriptor( final LogPanel logPanel )
+	{
 		this.logPanel = logPanel;
 	}
 
 	@Override
-	public Component getComponent() {
+	public Component getComponent()
+	{
 		return logPanel;
 	}
 
 	@Override
-	public void aboutToDisplayPanel() {
-	}
+	public void aboutToDisplayPanel()
+	{}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
-	}
+	public void displayingPanel()
+	{}
 
 	@Override
-	public void aboutToHidePanel(InteractiveBud parent) {
-	}
+	public void aboutToHidePanel()
+	{}
 
 	@Override
-	public void comingBackToPanel() {
-	}
+	public void comingBackToPanel()
+	{}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
-
-
 
 }

@@ -2,13 +2,15 @@ package Buddy.plugin.trackmate.action;
 
 import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
 import static Buddy.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
+
+import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.util.ExportableChartPanel;
 import Buddy.plugin.trackmate.visualization.trackscheme.TrackSchemeFrame;
+import budDetector.BCellobject;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -20,18 +22,17 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.scijava.plugin.Plugin;
 
-import budDetector.BCellobject;
-import pluginTools.InteractiveBud;
-
 public class PlotNBCellobjectsVsTimeAction extends AbstractTMAction {
 
-	// public static final ImageIcon ICON = new
-	// ImageIcon(TrackSchemeFrame.class.getResource("resources/plots.png"));
+
+	public static final ImageIcon ICON = new ImageIcon(TrackSchemeFrame.class.getResource("resources/plots.png"));
 	public static final String NAME = "Plot N BCellobjects vs time";
 
 	public static final String KEY = "PLOT_NBCellobjectS_VS_TIME";
-	public static final String INFO_TEXT = "<html>" + "Plot the number of BCellobjects in each frame as a function <br>"
-			+ "of time. Only the filtered BCellobjects are taken into account. " + "</html>";
+	public static final String INFO_TEXT =  "<html>" +
+			"Plot the number of BCellobjects in each frame as a function <br>" +
+			"of time. Only the filtered BCellobjects are taken into account. " +
+			"</html>";
 
 	@Override
 	public void execute(final TrackMate trackmate) {
@@ -53,20 +54,19 @@ public class PlotNBCellobjectsVsTimeAction extends AbstractTMAction {
 		}
 
 		// Plot data
-		final String xAxisLabel = "Time (" + trackmate.getModel().getTimeUnits() + ")";
+		final String xAxisLabel = "Time ("+trackmate.getModel().getTimeUnits()+")";
 		final String yAxisLabel = "N BCellobjects";
-		final String title = "NBCellobjects vs Time for " + trackmate.getSettings().imp.getShortTitle();
+		final String title = "NBCellobjects vs Time for "+trackmate.getSettings().imp.getShortTitle();
 		final DefaultXYDataset dataset = new DefaultXYDataset();
 		dataset.addSeries("NBCellobjects", data);
 
-		final JFreeChart chart = ChartFactory.createXYLineChart(title, xAxisLabel, yAxisLabel, dataset,
-				PlotOrientation.VERTICAL, true, true, false);
+		final JFreeChart chart = ChartFactory.createXYLineChart(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 		chart.getTitle().setFont(FONT);
 		chart.getLegend().setItemFont(SMALL_FONT);
 
 		// The plot
 		final XYPlot plot = chart.getXYPlot();
-		// plot.setRenderer(0, pointRenderer);
+//		plot.setRenderer(0, pointRenderer);
 		plot.getRangeAxis().setLabelFont(FONT);
 		plot.getRangeAxis().setTickLabelFont(SMALL_FONT);
 		plot.getDomainAxis().setLabelFont(FONT);
@@ -80,33 +80,39 @@ public class PlotNBCellobjectsVsTimeAction extends AbstractTMAction {
 		frame.setVisible(true);
 	}
 
-	@Plugin(type = TrackMateActionFactory.class)
-	public static class Factory implements TrackMateActionFactory {
+
+	@Plugin( type = TrackMateActionFactory.class )
+	public static class Factory implements TrackMateActionFactory
+	{
 
 		@Override
-		public String getInfoText() {
+		public String getInfoText()
+		{
 			return INFO_TEXT;
 		}
 
 		@Override
-		public String getName() {
+		public String getName()
+		{
 			return NAME;
 		}
 
 		@Override
-		public String getKey() {
+		public String getKey()
+		{
 			return KEY;
 		}
 
 		@Override
-		public TrackMateAction create(final InteractiveBud parent,final TrackMateGUIController controller) {
-			return new PlotNBCellobjectsVsTimeAction();
+		public ImageIcon getIcon()
+		{
+			return ICON;
 		}
 
 		@Override
-		public ImageIcon getIcon() {
-			// TODO Auto-generated method stub
-			return null;
+		public TrackMateAction create( final TrackMateGUIController controller )
+		{
+			return new PlotNBCellobjectsVsTimeAction();
 		}
 	}
 }

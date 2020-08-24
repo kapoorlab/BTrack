@@ -15,37 +15,38 @@ import net.imglib2.KDTree;
 import net.imglib2.RealPoint;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.multithreading.SimpleMultiThreading;
-import pluginTools.InteractiveBud;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
 import Buddy.plugin.trackmate.util.TMUtils;
+import budDetector.BCellobject;
 
-@SuppressWarnings("deprecation")
-public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker {
+@SuppressWarnings( "deprecation" )
+public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm	implements BCellobjectTracker {
 
 	/*
 	 * FIELDS
 	 */
-	public final InteractiveBud parent;
 
-	protected final Map<String, Object> settings;
+	protected final BCellobjectCollection BCellobjects;
+
+	protected final Map< String, Object > settings;
 
 	protected Logger logger = Logger.VOID_LOGGER;
 
-	protected SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> graph;
+	protected SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public NearestNeighborTracker(final InteractiveBud parent, final Map<String, Object> settings) {
-		this.parent = parent;
+	public NearestNeighborTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	{
+		this.BCellobjects = BCellobjects;
 		this.settings = settings;
 	}
 
@@ -70,9 +71,9 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 		reset();
 
 		final double maxLinkingDistance = (Double) settings.get(KEY_LINKING_MAX_DISTANCE);
-		final double maxDistSquare = maxLinkingDistance * maxLinkingDistance;
+		final double maxDistSquare = maxLinkingDistance  * maxLinkingDistance;
 
-		final TreeSet<Integer> frames = new TreeSet<>(parent.budcells.keySet());
+		final TreeSet<Integer> frames = new TreeSet<>(BCellobjects.keySet());
 		final Thread[] threads = new Thread[numThreads];
 
 		// Prepare the thread array
@@ -80,7 +81,7 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 		final AtomicInteger progress = new AtomicInteger(0);
 		for (int ithread = 0; ithread < threads.length; ithread++) {
 
-			threads[ithread] = new Thread("Nearest neighbor tracker thread " + (1 + ithread) + "/" + threads.length) {
+			threads[ithread] = new Thread("Nearest neighbor tracker thread "+(1+ithread)+"/"+threads.length) {
 
 				@Override
 				public void run() {
@@ -91,14 +92,14 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 						final int sourceFrame = i;
 						final int targetFrame = frames.higher(i);
 
-						final int nTargetBCellobjects = parent.budcells.getNBCellobjects(targetFrame);
+						final int nTargetBCellobjects = BCellobjects.getNBCellobjects(targetFrame);
 						if (nTargetBCellobjects < 1) {
 							continue;
 						}
 
 						final List<RealPoint> targetCoords = new ArrayList<>(nTargetBCellobjects);
 						final List<FlagNode<BCellobject>> targetNodes = new ArrayList<>(nTargetBCellobjects);
-						final Iterator<BCellobject> targetIt = parent.budcells.iterator(targetFrame);
+						final Iterator<BCellobject> targetIt = BCellobjects.iterator(targetFrame);
 						while (targetIt.hasNext()) {
 							final double[] coords = new double[3];
 							final BCellobject BCellobject = targetIt.next();
@@ -107,13 +108,12 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 							targetNodes.add(new FlagNode<>(BCellobject));
 						}
 
-						final KDTree<FlagNode<BCellobject>> tree = new KDTree<>(targetNodes, targetCoords);
-						final NearestNeighborFlagSearchOnKDTree<BCellobject> search = new NearestNeighborFlagSearchOnKDTree<>(
-								tree);
 
-						// For each BCellobject in the source frame, find its nearest neighbor in the
-						// target frame
-						final Iterator<BCellobject> sourceIt = parent.budcells.iterator(sourceFrame);
+						final KDTree<FlagNode<BCellobject>> tree = new KDTree<>(targetNodes, targetCoords);
+						final NearestNeighborFlagSearchOnKDTree<BCellobject> search = new NearestNeighborFlagSearchOnKDTree<>(tree);
+
+						// For each BCellobject in the source frame, find its nearest neighbor in the target frame
+						final Iterator<BCellobject> sourceIt = BCellobjects.iterator(sourceFrame);
 						while (sourceIt.hasNext()) {
 							final BCellobject source = sourceIt.next();
 							final double[] coords = new double[3];
@@ -125,8 +125,7 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 							final FlagNode<BCellobject> targetNode = search.getSampler().get();
 
 							if (squareDist > maxDistSquare) {
-								// The closest we could find is too far. We skip this source BCellobject and do
-								// not create a link
+								// The closest we could find is too far. We skip this source BCellobject and do not create a link
 								continue;
 							}
 
@@ -140,11 +139,12 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 							}
 
 						}
-						logger.setProgress(progress.incrementAndGet() / (float) frames.size());
+						logger.setProgress(progress.incrementAndGet() / (float)frames.size() );
 
 					}
 				}
 			};
+
 
 		}
 
@@ -168,7 +168,7 @@ public class NearestNeighborTracker extends MultiThreadedBenchmarkAlgorithm impl
 
 	public void reset() {
 		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		final Iterator<BCellobject> it = parent.budcells.iterator(true);
+		final Iterator<BCellobject> it = BCellobjects.iterator(true);
 		while (it.hasNext()) {
 			graph.addVertex(it.next());
 		}

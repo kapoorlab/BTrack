@@ -12,18 +12,18 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.ImageIcon;
 
 import net.imglib2.multithreading.SimpleMultiThreading;
-import tracker.GREENDimension;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.Model;
+import budDetector.BCellobject;
 
-@SuppressWarnings("deprecation")
-@Plugin(type = TrackAnalyzer.class)
-public class TrackBranchingAnalyzer implements TrackAnalyzer {
+@SuppressWarnings( "deprecation" )
+@Plugin( type = TrackAnalyzer.class )
+public class TrackBranchingAnalyzer implements TrackAnalyzer
+{
 
 	/*
 	 * CONSTANTS
@@ -42,146 +42,166 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 
 	public static final String NUMBER_BCellobjectS = "NUMBER_BCellobjectS";
 
-	public static final List<String> FEATURES = new ArrayList<>(5);
+	public static final List< String > FEATURES = new ArrayList< >( 5 );
 
-	public static final Map<String, String> FEATURE_NAMES = new HashMap<>(5);
+	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 5 );
 
-	public static final Map<String, String> FEATURE_SHORT_NAMES = new HashMap<>(5);
+	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 5 );
 
-	public static final Map<String, Dimension> FEATURE_DIMENSIONS = new HashMap<>(5);
+	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 5 );
 
-	public static final Map<String, Boolean> IS_INT = new HashMap<>(5);
+	public static final Map< String, Boolean > IS_INT = new HashMap< >( 5 );
 
-	static {
-		FEATURES.add(NUMBER_BCellobjectS);
-		FEATURES.add(NUMBER_GAPS);
-		FEATURES.add(LONGEST_GAP);
-		FEATURES.add(NUMBER_SPLITS);
-		FEATURES.add(NUMBER_MERGES);
-		FEATURES.add(NUMBER_COMPLEX);
+	static
+	{
+		FEATURES.add( NUMBER_BCellobjectS );
+		FEATURES.add( NUMBER_GAPS );
+		FEATURES.add( LONGEST_GAP );
+		FEATURES.add( NUMBER_SPLITS );
+		FEATURES.add( NUMBER_MERGES );
+		FEATURES.add( NUMBER_COMPLEX );
 
-		FEATURE_NAMES.put(NUMBER_BCellobjectS, "Number of BCellobjects in track");
-		FEATURE_NAMES.put(NUMBER_GAPS, "Number of gaps");
-		FEATURE_NAMES.put(LONGEST_GAP, "Longest gap");
-		FEATURE_NAMES.put(NUMBER_SPLITS, "Number of split events");
-		FEATURE_NAMES.put(NUMBER_MERGES, "Number of merge events");
-		FEATURE_NAMES.put(NUMBER_COMPLEX, "Complex points");
+		FEATURE_NAMES.put( NUMBER_BCellobjectS, "Number of BCellobjects in track" );
+		FEATURE_NAMES.put( NUMBER_GAPS, "Number of gaps" );
+		FEATURE_NAMES.put( LONGEST_GAP, "Longest gap" );
+		FEATURE_NAMES.put( NUMBER_SPLITS, "Number of split events" );
+		FEATURE_NAMES.put( NUMBER_MERGES, "Number of merge events" );
+		FEATURE_NAMES.put( NUMBER_COMPLEX, "Complex points" );
 
-		FEATURE_SHORT_NAMES.put(NUMBER_BCellobjectS, "N BCellobjects");
-		FEATURE_SHORT_NAMES.put(NUMBER_GAPS, "Gaps");
-		FEATURE_SHORT_NAMES.put(LONGEST_GAP, "Longest gap");
-		FEATURE_SHORT_NAMES.put(NUMBER_SPLITS, "Splits");
-		FEATURE_SHORT_NAMES.put(NUMBER_MERGES, "Merges");
-		FEATURE_SHORT_NAMES.put(NUMBER_COMPLEX, "Complex");
+		FEATURE_SHORT_NAMES.put( NUMBER_BCellobjectS, "N BCellobjects" );
+		FEATURE_SHORT_NAMES.put( NUMBER_GAPS, "Gaps" );
+		FEATURE_SHORT_NAMES.put( LONGEST_GAP, "Longest gap" );
+		FEATURE_SHORT_NAMES.put( NUMBER_SPLITS, "Splits" );
+		FEATURE_SHORT_NAMES.put( NUMBER_MERGES, "Merges" );
+		FEATURE_SHORT_NAMES.put( NUMBER_COMPLEX, "Complex" );
 
-		FEATURE_DIMENSIONS.put(NUMBER_BCellobjectS, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_GAPS, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(LONGEST_GAP, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_SPLITS, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_MERGES, Dimension.NONE);
-		FEATURE_DIMENSIONS.put(NUMBER_COMPLEX, Dimension.NONE);
+		FEATURE_DIMENSIONS.put( NUMBER_BCellobjectS, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( NUMBER_GAPS, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( LONGEST_GAP, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( NUMBER_SPLITS, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( NUMBER_MERGES, Dimension.NONE );
+		FEATURE_DIMENSIONS.put( NUMBER_COMPLEX, Dimension.NONE );
 
-		IS_INT.put(NUMBER_BCellobjectS, Boolean.TRUE);
-		IS_INT.put(NUMBER_GAPS, Boolean.TRUE);
-		IS_INT.put(LONGEST_GAP, Boolean.TRUE);
-		IS_INT.put(NUMBER_SPLITS, Boolean.TRUE);
-		IS_INT.put(NUMBER_MERGES, Boolean.TRUE);
-		IS_INT.put(NUMBER_COMPLEX, Boolean.TRUE);
+		IS_INT.put( NUMBER_BCellobjectS, Boolean.TRUE );
+		IS_INT.put( NUMBER_GAPS, Boolean.TRUE );
+		IS_INT.put( LONGEST_GAP, Boolean.TRUE );
+		IS_INT.put( NUMBER_SPLITS, Boolean.TRUE );
+		IS_INT.put( NUMBER_MERGES, Boolean.TRUE );
+		IS_INT.put( NUMBER_COMPLEX, Boolean.TRUE );
 	}
 
 	private int numThreads;
 
 	private long processingTime;
 
-	public TrackBranchingAnalyzer() {
+	public TrackBranchingAnalyzer()
+	{
 		setNumThreads();
 	}
 
 	@Override
-	public boolean isLocal() {
+	public boolean isLocal()
+	{
 		return true;
 	}
 
 	@Override
-	public void process(final Collection<Integer> trackIDs, final Model model) {
+	public void process( final Collection< Integer > trackIDs, final Model model )
+	{
 
-		if (trackIDs.isEmpty()) {
-			return;
-		}
+		if ( trackIDs.isEmpty() ) { return; }
 
-		final ArrayBlockingQueue<Integer> queue = new ArrayBlockingQueue<>(trackIDs.size(), false, trackIDs);
+		final ArrayBlockingQueue< Integer > queue = new ArrayBlockingQueue< >( trackIDs.size(), false, trackIDs );
 
-		final Thread[] threads = SimpleMultiThreading.newThreads(numThreads);
-		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new Thread("TrackBranchingAnalyzer thread " + i) {
+		final Thread[] threads = SimpleMultiThreading.newThreads( numThreads );
+		for ( int i = 0; i < threads.length; i++ )
+		{
+			threads[ i ] = new Thread( "TrackBranchingAnalyzer thread " + i )
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					Integer trackID;
-					while ((trackID = queue.poll()) != null) {
+					while ( ( trackID = queue.poll() ) != null )
+					{
 
-						final Set<BCellobject> track = model.getTrackModel().trackBCellobjects(trackID);
+						final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 
 						int nmerges = 0;
 						int nsplits = 0;
 						int ncomplex = 0;
-						for (final BCellobject BCellobject : track) {
-							final Set<DefaultWeightedEdge> edges = model.getTrackModel().edgesOf(BCellobject);
+						for ( final BCellobject BCellobject : track )
+						{
+							final Set< DefaultWeightedEdge > edges = model.getTrackModel().edgesOf( BCellobject );
 
 							// get neighbors
-							final Set<BCellobject> neighbors = new HashSet<>();
-							for (final DefaultWeightedEdge edge : edges) {
-								neighbors.add(model.getTrackModel().getEdgeSource(edge));
-								neighbors.add(model.getTrackModel().getEdgeTarget(edge));
+							final Set< BCellobject > neighbors = new HashSet< >();
+							for ( final DefaultWeightedEdge edge : edges )
+							{
+								neighbors.add( model.getTrackModel().getEdgeSource( edge ) );
+								neighbors.add( model.getTrackModel().getEdgeTarget( edge ) );
 							}
-							neighbors.remove(BCellobject);
+							neighbors.remove( BCellobject );
 
 							// inspect neighbors relative time position
 							int earlier = 0;
 							int later = 0;
-							for (final BCellobject neighbor : neighbors) {
-								if (BCellobject.diffTo(neighbor, BCellobject.POSITION_T) > 0) {
+							for ( final BCellobject neighbor : neighbors )
+							{
+								if ( BCellobject.diffTo( neighbor, BCellobject.POSITION_T ) > 0 )
+								{
 									earlier++; // neighbor is before in time
-								} else {
+								}
+								else
+								{
 									later++;
 								}
 							}
 
 							// Test for classical BCellobject
-							if (earlier == 1 && later == 1) {
+							if ( earlier == 1 && later == 1 )
+							{
 								continue;
 							}
 
 							// classify BCellobject
-							if (earlier <= 1 && later > 1) {
+							if ( earlier <= 1 && later > 1 )
+							{
 								nsplits++;
-							} else if (later <= 1 && earlier > 1) {
+							}
+							else if ( later <= 1 && earlier > 1 )
+							{
 								nmerges++;
-							} else if (later > 1 && earlier > 1) {
+							}
+							else if ( later > 1 && earlier > 1 )
+							{
 								ncomplex++;
 							}
 						}
 
 						int ngaps = 0, longestgap = 0;
-						for (final DefaultWeightedEdge edge : model.getTrackModel().trackEdges(trackID)) {
-							final BCellobject source = model.getTrackModel().getEdgeSource(edge);
-							final BCellobject target = model.getTrackModel().getEdgeTarget(edge);
-							final int gaplength = (int) Math.abs(target.diffTo(source, BCellobject.POSITION_T)) - 1;
-							if (gaplength > 0) {
+						for ( final DefaultWeightedEdge edge : model.getTrackModel().trackEdges( trackID ) )
+						{
+							final BCellobject source = model.getTrackModel().getEdgeSource( edge );
+							final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
+							final int gaplength = (int)Math.abs( target.diffTo( source, BCellobject.POSITION_T ) ) - 1;
+							if ( gaplength > 0 )
+							{
 								ngaps++;
-								if (longestgap < gaplength) {
+								if ( longestgap < gaplength )
+								{
 									longestgap = gaplength;
 								}
 							}
 						}
 
 						// Put feature data
-						model.getFeatureModel().putTrackFeature(trackID, NUMBER_GAPS, Double.valueOf(ngaps));
-						model.getFeatureModel().putTrackFeature(trackID, LONGEST_GAP, Double.valueOf(longestgap));
-						model.getFeatureModel().putTrackFeature(trackID, NUMBER_SPLITS, Double.valueOf(nsplits));
-						model.getFeatureModel().putTrackFeature(trackID, NUMBER_MERGES, Double.valueOf(nmerges));
-						model.getFeatureModel().putTrackFeature(trackID, NUMBER_COMPLEX, Double.valueOf(ncomplex));
-						model.getFeatureModel().putTrackFeature(trackID, NUMBER_BCellobjectS,
-								Double.valueOf(track.size()));
+						model.getFeatureModel().putTrackFeature( trackID, NUMBER_GAPS, Double.valueOf( ngaps ) );
+						model.getFeatureModel().putTrackFeature( trackID, LONGEST_GAP, Double.valueOf( longestgap ) );
+						model.getFeatureModel().putTrackFeature( trackID, NUMBER_SPLITS, Double.valueOf( nsplits ) );
+						model.getFeatureModel().putTrackFeature( trackID, NUMBER_MERGES, Double.valueOf( nmerges ) );
+						model.getFeatureModel().putTrackFeature( trackID, NUMBER_COMPLEX, Double.valueOf( ncomplex ) );
+						model.getFeatureModel().putTrackFeature( trackID, NUMBER_BCellobjectS, Double.valueOf( track.size() ) );
 
 					}
 
@@ -190,82 +210,94 @@ public class TrackBranchingAnalyzer implements TrackAnalyzer {
 		}
 
 		final long start = System.currentTimeMillis();
-		SimpleMultiThreading.startAndJoin(threads);
+		SimpleMultiThreading.startAndJoin( threads );
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
 	}
 
 	@Override
-	public int getNumThreads() {
+	public int getNumThreads()
+	{
 		return numThreads;
 	}
 
 	@Override
-	public void setNumThreads() {
+	public void setNumThreads()
+	{
 		this.numThreads = Runtime.getRuntime().availableProcessors();
 	}
 
 	@Override
-	public void setNumThreads(final int numThreads) {
+	public void setNumThreads( final int numThreads )
+	{
 		this.numThreads = numThreads;
 
 	}
 
 	@Override
-	public long getProcessingTime() {
+	public long getProcessingTime()
+	{
 		return processingTime;
 	}
 
 	@Override
-	public List<String> getFeatures() {
+	public List< String > getFeatures()
+	{
 		return FEATURES;
 	}
 
 	@Override
-	public Map<String, String> getFeatureShortNames() {
+	public Map< String, String > getFeatureShortNames()
+	{
 		return FEATURE_SHORT_NAMES;
 	}
 
 	@Override
-	public Map<String, String> getFeatureNames() {
+	public Map< String, String > getFeatureNames()
+	{
 		return FEATURE_NAMES;
 	}
 
 	@Override
-	public Map<String, Dimension> getFeatureDimensions() {
+	public Map< String, Dimension > getFeatureDimensions()
+	{
 		return FEATURE_DIMENSIONS;
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
 
 	@Override
-	public String getInfoText() {
+	public String getInfoText()
+	{
 		return null;
 	}
 
 	@Override
-	public ImageIcon getIcon() {
+	public ImageIcon getIcon()
+	{
 		return null;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return KEY;
 	}
 
 	@Override
-	public Map<String, Boolean> getIsIntFeature() {
+	public Map< String, Boolean > getIsIntFeature()
+	{
 		return IS_INT;
 	}
 
 	@Override
-	public boolean isManualFeature() {
+	public boolean isManualFeature()
+	{
 		return false;
 	}
-
-
 
 }

@@ -9,108 +9,113 @@ import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.io.IOUtils;
 import Buddy.plugin.trackmate.io.TmXmlWriter;
-import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 
-public class SaveDescriptor extends SomeDialogDescriptor {
+public class SaveDescriptor extends SomeDialogDescriptor
+{
 
 	private static final String KEY = "Saving";
 
 	private final TrackMate trackmate;
 
 	private final TrackMateGUIController controller;
-	
-	
-	
-	public SaveDescriptor(final TrackMateGUIController controller) {
-		super(controller.getGUI().getLogPanel());
+
+	public SaveDescriptor( final TrackMateGUIController controller )
+	{
+		super( controller.getGUI().getLogPanel() );
 		this.trackmate = controller.getPlugin();
 		this.controller = controller;
-		
 	}
 
-
-
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel()
+	{
 
 		final Logger logger = logPanel.getLogger();
-		logger.log("Saving data...\n", Logger.BLUE_COLOR);
-		if (null == file) {
+		logger.log( "Saving data...\n", Logger.BLUE_COLOR );
+		if ( null == file )
+		{
 			File folder;
-			if (null != trackmate.getSettings().imp && null != trackmate.getSettings().imp.getOriginalFileInfo()
-					&& null != trackmate.getSettings().imp.getOriginalFileInfo().directory) {
-				folder = new File(trackmate.getSettings().imp.getOriginalFileInfo().directory);
+			if (
+					null != trackmate.getSettings().imp
+					&& null != trackmate.getSettings().imp.getOriginalFileInfo()
+					&& null != trackmate.getSettings().imp.getOriginalFileInfo().directory )
+			{
+				folder = new File( trackmate.getSettings().imp.getOriginalFileInfo().directory );
 				/*
-				 * Update the settings field with the image file location now, because it's
-				 * valid.
+				 * Update the settings field with the image file location now,
+				 * because it's valid.
 				 */
 				trackmate.getSettings().imageFolder = trackmate.getSettings().imp.getOriginalFileInfo().directory;
-			} else {
-				folder = new File(System.getProperty("user.dir"));
+			}
+			else
+			{
+				folder = new File( System.getProperty( "user.dir" ) );
 				/*
-				 * Warn the user that the file cannot be reloaded properly because the source
-				 * image does not match a file.
+				 * Warn the user that the file cannot be reloaded properly
+				 * because the source image does not match a file.
 				 */
-				logger.error("Warning: The source image does not match a file on the system."
+				logger.error( "Warning: The source image does not match a file on the system."
 						+ "TrackMate won't be able to reload it when opening this XML file.\n"
 						+ "To fix this, save the source image to a TIF file before saving the TrackMate session.\n");
 				trackmate.getSettings().imageFolder = "";
 			}
-			try {
-				file = new File(
-						folder.getPath() + File.separator + trackmate.getSettings().imp.getShortTitle() + ".xml");
-			} catch (final NullPointerException npe) {
-				file = new File(folder.getPath() + File.separator + "TrackMateData.xml");
+			try
+			{
+				file = new File( folder.getPath() + File.separator + trackmate.getSettings().imp.getShortTitle() + ".xml" );
+			}
+			catch ( final NullPointerException npe )
+			{
+				file = new File( folder.getPath() + File.separator + "TrackMateData.xml" );
 			}
 		}
 
 		/*
-		 * If we are to save tracks, we better ensures that track and edge features are
-		 * there, even if we have to enforce it.
+		 * If we are to save tracks, we better ensures that track and edge
+		 * features are there, even if we have to enforce it.
 		 */
-		if (trackmate.getModel().getTrackModel().nTracks(false) > 0) {
-			trackmate.computeEdgeFeatures(true);
-			trackmate.computeTrackFeatures(true);
+		if ( trackmate.getModel().getTrackModel().nTracks( false ) > 0 )
+		{
+			trackmate.computeEdgeFeatures( true );
+			trackmate.computeTrackFeatures( true );
 		}
 
-		final File tmpFile = IOUtils.askForFileForSaving(file, controller.getGUI(), logger);
-		if (null == tmpFile) {
-			return;
-		}
+		final File tmpFile = IOUtils.askForFileForSaving( file, controller.getGUI(), logger );
+		if ( null == tmpFile ) { return; }
 		file = tmpFile;
 
 		/*
 		 * Write model, settings and GUI state
 		 */
 
-		final TmXmlWriter writer = new TmXmlWriter(file, logger);
+		final TmXmlWriter writer = new TmXmlWriter( file, logger );
 
-		writer.appendLog(logPanel.getTextContent());
-		writer.appendModel(trackmate.getModel());
-		writer.appendSettings(trackmate.getSettings());
-		writer.appendGUIState(controller.getGuimodel());
+		writer.appendLog( logPanel.getTextContent() );
+		writer.appendModel( trackmate.getModel() );
+		writer.appendSettings( trackmate.getSettings() );
+		writer.appendGUIState( controller.getGuimodel() );
 
-		try {
+		try
+		{
 			writer.writeToFile();
-			logger.log("Data saved to: " + file.toString() + '\n');
-		} catch (final FileNotFoundException e) {
-			logger.error("File not found:\n" + e.getMessage() + '\n');
+			logger.log( "Data saved to: " + file.toString() + '\n' );
+		}
+		catch ( final FileNotFoundException e )
+		{
+			logger.error( "File not found:\n" + e.getMessage() + '\n' );
 			return;
-		} catch (final IOException e) {
-			logger.error("Input/Output error:\n" + e.getMessage() + '\n');
+		}
+		catch ( final IOException e )
+		{
+			logger.error( "Input/Output error:\n" + e.getMessage() + '\n' );
 			return;
 		}
 
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
-	
-	
-	
-
 
 }

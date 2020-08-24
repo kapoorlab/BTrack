@@ -291,7 +291,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
+	public void displayingPanel() {
 		frame = new JFrame();
 		frame.getContentPane().add(logPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -369,5 +369,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 		final LoadTrackMatePlugIn_ plugIn = new LoadTrackMatePlugIn_();
 		plugIn.run("samples/FakeTracks.xml");
 	}
+
+	
 
 }

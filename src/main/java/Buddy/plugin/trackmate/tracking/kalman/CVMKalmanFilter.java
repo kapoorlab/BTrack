@@ -1,5 +1,11 @@
 package Buddy.plugin.trackmate.tracking.kalman;
 
+
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+
+import javax.swing.JLabel;
+
 import Jama.Matrix;
 
 /**
@@ -78,6 +84,18 @@ public class CVMKalmanFilter
 	 *            the std of the additive white gaussian noise affecting the
 	 *            position <b>measurement</b>. Large values means that the
 	 *            positions measured are not accurate.
+	 *            		final JLabel lblCitation = new JLabel("<html>" +" BTrack is based on TrackMate which is a published Fiji tool for tracking,"
+		+  "<b>Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), "
+		+ "<i>TrackMate: An open and extensible platform for single-particle "
+		+ "tracking.</i></b> Methods 115: 80-90.");
+		lblCitation.setFont(SMALL_FONT);
+		final GridBagConstraints gbc_lblCitation = new GridBagConstraints();
+		gbc_lblCitation.fill = GridBagConstraints.BOTH;
+		gbc_lblCitation.insets = new Insets(5, 5, 5, 5);
+		gbc_lblCitation.gridwidth = 4;
+		gbc_lblCitation.gridx = 0;
+		gbc_lblCitation.gridy = 0;
+		add(lblCitation, gbc_lblCitation);
 	 */
 	public CVMKalmanFilter( final double[] X0, final double initStateCovariance, final double positionProcessStd, final double velocityProcessStd, final double positionMeasurementStd )
 	{

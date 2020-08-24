@@ -4,6 +4,7 @@ import java.util.Map;
 
 import budDetector.BCellobject;
 
+
 /**
  * A cost function that tempers a square distance cost by difference in feature
  * values.
@@ -24,33 +25,38 @@ import budDetector.BCellobject;
  * <li>All penalties are summed, to form <code>P = (1 + ∑ p )</code>
  * <li>The cost is set to the square of the product: <code>C = ( D × P )²</code>
  * </ul>
- * For instance: if 2 BCellobjects differ by twice the value in a feature which
- * is in the penalty map with a factor of 1, they will <i>look</i> as if they
- * were twice as far.
+ * For instance: if 2 BCellobjects differ by twice the value in a feature which is in
+ * the penalty map with a factor of 1, they will <i>look</i> as if they were
+ * twice as far.
  *
  * @author Jean-Yves Tinevez - 2014
  *
  */
-public class FeaturePenaltyCostFunction implements CostFunction<BCellobject, BCellobject> {
+public class FeaturePenaltyCostFunction implements CostFunction< BCellobject, BCellobject >
+{
 
-	private final Map<String, Double> featurePenalties;
+	private final Map< String, Double > featurePenalties;
 
-	public FeaturePenaltyCostFunction(final Map<String, Double> featurePenalties) {
+	public FeaturePenaltyCostFunction( final Map< String, Double > featurePenalties )
+	{
 		this.featurePenalties = featurePenalties;
 	}
 
 	@Override
-	public double linkingCost(final BCellobject source, final BCellobject target) {
-		final double d1 = source.squareDistanceTo(target);
-		final double d2 = (d1 == 0) ? Double.MIN_NORMAL : d1;
+	public double linkingCost( final BCellobject source, final BCellobject target )
+	{
+		final double d1 = source.squareDistanceTo( target );
+		final double d2 = ( d1 == 0 ) ? Double.MIN_NORMAL : d1;
 
 		double penalty = 1;
-		for (final String feature : featurePenalties.keySet()) {
-			final double ndiff = source.normalizeDiffTo(target, feature);
-			if (Double.isNaN(ndiff)) {
+		for ( final String feature : featurePenalties.keySet() )
+		{
+			final double ndiff = source.normalizeDiffTo( target, feature );
+			if ( Double.isNaN( ndiff ) )
+			{
 				continue;
 			}
-			final double factor = featurePenalties.get(feature);
+			final double factor = featurePenalties.get( feature );
 			penalty += factor * 1.5 * ndiff;
 		}
 

@@ -28,7 +28,8 @@ import com.mxgraph.swing.handler.mxRubberband;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.util.TrackNavigator;
 
-public class TrackSchemeFrame extends JFrame {
+public class TrackSchemeFrame extends JFrame
+{
 
 	/*
 	 * CONSTANTS
@@ -57,65 +58,75 @@ public class TrackSchemeFrame extends JFrame {
 	 * CONSTRUCTORS
 	 */
 
-	public TrackSchemeFrame(final TrackScheme trackScheme) {
+	public TrackSchemeFrame( final TrackScheme trackScheme )
+	{
 		this.trackScheme = trackScheme;
 		this.graph = trackScheme.getGraph();
 
 		// Frame look
-		// setIconImage( TrackScheme.TRACK_SCHEME_ICON.getImage() );
+		setIconImage( TrackScheme.TRACK_SCHEME_ICON.getImage() );
 
 		// Layout
-		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setLayout( new BorderLayout() );
 
 		// Add a ToolBar
-		getContentPane().add(createToolBar(), BorderLayout.NORTH);
+		getContentPane().add( createToolBar(), BorderLayout.NORTH );
 
 		// Add the status bar
 		final JPanel statusPanel = new JPanel();
-		getContentPane().add(statusPanel, BorderLayout.SOUTH);
+		getContentPane().add( statusPanel, BorderLayout.SOUTH );
 
-		statusPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		statusPanel.setLayout( new FlowLayout( FlowLayout.RIGHT ) );
 
-		final JLabel statusLabel = new JLabel(" ");
-		statusLabel.setFont(SMALL_FONT);
-		statusLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		statusLabel.setPreferredSize(new Dimension(200, 12));
-		statusPanel.add(statusLabel);
+		final JLabel statusLabel = new JLabel( " " );
+		statusLabel.setFont( SMALL_FONT );
+		statusLabel.setHorizontalAlignment( SwingConstants.RIGHT );
+		statusLabel.setPreferredSize( new Dimension( 200, 12 ) );
+		statusPanel.add( statusLabel );
 
 		final JProgressBar progressBar = new JProgressBar();
-		progressBar.setPreferredSize(new Dimension(146, 12));
-		statusPanel.add(progressBar);
+		progressBar.setPreferredSize( new Dimension( 146, 12 ) );
+		statusPanel.add( progressBar );
 
-		this.logger = new Logger() {
+		this.logger = new Logger()
+		{
 			@Override
-			public void log(final String message, final Color color) {
-				SwingUtilities.invokeLater(new Runnable() {
+			public void log( final String message, final Color color )
+			{
+				SwingUtilities.invokeLater( new Runnable()
+				{
 					@Override
-					public void run() {
-						statusLabel.setText(message);
-						statusLabel.setForeground(color);
+					public void run()
+					{
+						statusLabel.setText( message );
+						statusLabel.setForeground( color );
 					}
-				});
+				} );
 			}
 
 			@Override
-			public void error(final String message) {
-				log(message, Color.RED);
+			public void error( final String message )
+			{
+				log( message, Color.RED );
 			}
 
 			@Override
-			public void setProgress(final double val) {
-				SwingUtilities.invokeLater(new Runnable() {
+			public void setProgress( final double val )
+			{
+				SwingUtilities.invokeLater( new Runnable()
+				{
 					@Override
-					public void run() {
-						progressBar.setValue((int) (val * 100));
+					public void run()
+					{
+						progressBar.setValue( ( int ) ( val * 100 ) );
 					}
-				});
+				} );
 			}
 
 			@Override
-			public void setStatus(final String status) {
-				log(status, Logger.BLUE_COLOR);
+			public void setStatus( final String status )
+			{
+				log( status, Logger.BLUE_COLOR );
 			}
 		};
 	}
@@ -124,110 +135,121 @@ public class TrackSchemeFrame extends JFrame {
 	 * PUBLIC METHODS
 	 */
 
-
-
-	public void init(final JGraphXAdapter lGraph) {
+	public void init( final JGraphXAdapter lGraph )
+	{
 		this.graph = lGraph;
 		// GraphComponent
 		graphComponent = createGraphComponent();
 
 		// Add the info pane
-		infoPane = new InfoPane(trackScheme.getModel(), trackScheme.getSelectionModel());
+		infoPane = new InfoPane( trackScheme.getModel(), trackScheme.getSelectionModel() );
 
 		// Add the graph outline
-		final mxGraphOutline graphOutline = new mxGraphOutline(graphComponent);
+		final mxGraphOutline graphOutline = new mxGraphOutline( graphComponent );
 
-		final JSplitPane inner = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphOutline, infoPane);
-		inner.setDividerLocation(120);
-		inner.setMinimumSize(new Dimension(0, 0));
+		final JSplitPane inner = new JSplitPane( JSplitPane.VERTICAL_SPLIT, graphOutline, infoPane );
+		inner.setDividerLocation( 120 );
+		inner.setMinimumSize( new Dimension( 0, 0 ) );
 
-		final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inner, graphComponent);
-		splitPane.setDividerLocation(170);
-		getContentPane().add(splitPane, BorderLayout.CENTER);
+		final JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, inner, graphComponent );
+		splitPane.setDividerLocation( 170 );
+		getContentPane().add( splitPane, BorderLayout.CENTER );
 
-		final TrackSchemeKeyboardHandler keyboardHandler = new TrackSchemeKeyboardHandler(graphComponent,
-				new TrackNavigator(trackScheme.getModel(), trackScheme.getSelectionModel()));
-		keyboardHandler.installKeyboardActions(graphComponent);
-		keyboardHandler.installKeyboardActions(infoPane);
+		final TrackSchemeKeyboardHandler keyboardHandler = new TrackSchemeKeyboardHandler( graphComponent, new TrackNavigator( trackScheme.getModel(), trackScheme.getSelectionModel() ) );
+		keyboardHandler.installKeyboardActions( graphComponent );
+		keyboardHandler.installKeyboardActions( infoPane );
 	}
 
 	/*
 	 * Selection management
 	 */
 
-	public void centerViewOn(final mxICell cell) {
-		graphComponent.scrollCellToVisible(cell, true);
+	public void centerViewOn( final mxICell cell )
+	{
+		graphComponent.scrollCellToVisible( cell, true );
 	}
 
 	/**
 	 * Instantiate the graph component in charge of painting the graph. Hook for
 	 * sub-classers.
 	 */
-	private TrackSchemeGraphComponent createGraphComponent() {
-		final TrackSchemeGraphComponent gc = new TrackSchemeGraphComponent(graph, trackScheme);
-		gc.getVerticalScrollBar().setUnitIncrement(16);
-		gc.getHorizontalScrollBar().setUnitIncrement(16);
+	private TrackSchemeGraphComponent createGraphComponent()
+	{
+		final TrackSchemeGraphComponent gc = new TrackSchemeGraphComponent( graph, trackScheme );
+		gc.getVerticalScrollBar().setUnitIncrement( 16 );
+		gc.getHorizontalScrollBar().setUnitIncrement( 16 );
 
 		/*
-		 * gc.setExportEnabled(true); Seems to be required to have a preview when we
-		 * move cells. Also give the ability to export a cell as an image clipping
+		 * gc.setExportEnabled(true); Seems to be required to have a preview
+		 * when we move cells. Also give the ability to export a cell as an
+		 * image clipping
 		 */
-		gc.getConnectionHandler().setEnabled(TrackScheme.DEFAULT_LINKING_ENABLED);
+		gc.getConnectionHandler().setEnabled( TrackScheme.DEFAULT_LINKING_ENABLED );
 		/*
 		 * By default, can be changed in the track scheme toolbar
 		 */
 
-		new mxRubberband(gc);
+		new mxRubberband( gc );
 
 		// Popup menu
-		gc.getGraphControl().addMouseListener(new MouseAdapter() {
+		gc.getGraphControl().addMouseListener( new MouseAdapter()
+		{
 			@Override
-			public void mousePressed(final MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					displayPopupMenu(gc.getCellAt(e.getX(), e.getY(), false), e.getPoint());
+			public void mousePressed( final MouseEvent e )
+			{
+				if ( e.isPopupTrigger() )
+				{
+					displayPopupMenu( gc.getCellAt( e.getX(), e.getY(), false ), e.getPoint() );
 				}
 			}
 
 			@Override
-			public void mouseReleased(final MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					displayPopupMenu(gc.getCellAt(e.getX(), e.getY(), false), e.getPoint());
+			public void mouseReleased( final MouseEvent e )
+			{
+				if ( e.isPopupTrigger() )
+				{
+					displayPopupMenu( gc.getCellAt( e.getX(), e.getY(), false ), e.getPoint() );
 				}
 			}
-		});
+		} );
 
-		gc.addMouseWheelListener(new MouseWheelListener() {
+		gc.addMouseWheelListener( new MouseWheelListener()
+		{
 
 			@Override
-			public void mouseWheelMoved(final MouseWheelEvent e) {
-				if (gc.isPanningEvent(e)) {
+			public void mouseWheelMoved( final MouseWheelEvent e )
+			{
+				if ( gc.isPanningEvent( e ) )
+				{
 					final boolean in = e.getWheelRotation() < 0;
-					if (in)
+					if ( in )
 						gc.zoomIn();
 					else
 						gc.zoomOut();
 				}
 			}
-		});
+		} );
 
-		gc.setKeepSelectionVisibleOnZoom(true);
-		gc.setPanning(true);
+		gc.setKeepSelectionVisibleOnZoom( true );
+		gc.setPanning( true );
 		return gc;
 	}
 
 	/**
 	 * Instantiate the toolbar of the track scheme.
 	 */
-	private JToolBar createToolBar() {
-		return new TrackSchemeToolbar(trackScheme);
+	private JToolBar createToolBar()
+	{
+		return new TrackSchemeToolbar( trackScheme );
 	}
 
 	/**
 	 * PopupMenu
 	 */
-	private void displayPopupMenu(final Object cell, final Point point) {
-		final TrackSchemePopupMenu menu = new TrackSchemePopupMenu(trackScheme, cell, point);
-		menu.show(graphComponent.getViewport().getView(), (int) point.getX(), (int) point.getY());
+	private void displayPopupMenu( final Object cell, final Point point )
+	{
+		final TrackSchemePopupMenu menu = new TrackSchemePopupMenu( trackScheme, cell, point );
+		menu.show( graphComponent.getViewport().getView(), ( int ) point.getX(), ( int ) point.getY() );
 	}
 
 }

@@ -19,7 +19,8 @@ import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
  * @author Jean-Yves Tinevez - 2013
  *
  */
-public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm {
+public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm
+{
 
 	private static final String BASE_ERROR_MSG = "[TrackFeatureCalculator] ";
 
@@ -27,7 +28,8 @@ public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm {
 
 	private final Model model;
 
-	public TrackFeatureCalculator(final Model model, final Settings settings) {
+	public TrackFeatureCalculator( final Model model, final Settings settings )
+	{
 		this.settings = settings;
 		this.model = model;
 	}
@@ -37,12 +39,15 @@ public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm {
 	 */
 
 	@Override
-	public boolean checkInput() {
-		if (null == model) {
+	public boolean checkInput()
+	{
+		if ( null == model )
+		{
 			errorMessage = BASE_ERROR_MSG + "Model object is null.";
 			return false;
 		}
-		if (null == settings) {
+		if ( null == settings )
+		{
 			errorMessage = BASE_ERROR_MSG + "Settings object is null.";
 			return false;
 		}
@@ -50,26 +55,27 @@ public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm {
 	}
 
 	/**
-	 * Calculates the track features configured in the {@link Settings} for all the
-	 * tracks of this model.
+	 * Calculates the track features configured in the {@link Settings} for all
+	 * the tracks of this model.
 	 */
 	@Override
-	public boolean process() {
+	public boolean process()
+	{
 		final long start = System.currentTimeMillis();
 
 		// Declare what you do.
-		for (final TrackAnalyzer analyzer : settings.getTrackAnalyzers()) {
-			final Collection<String> features = analyzer.getFeatures();
-			final Map<String, String> featureNames = analyzer.getFeatureNames();
-			final Map<String, String> featureShortNames = analyzer.getFeatureShortNames();
-			final Map<String, Dimension> featureDimensions = analyzer.getFeatureDimensions();
-			final Map<String, Boolean> isIntFeature = analyzer.getIsIntFeature();
-			model.getFeatureModel().declareTrackFeatures(features, featureNames, featureShortNames, featureDimensions,
-					isIntFeature);
+		for ( final TrackAnalyzer analyzer : settings.getTrackAnalyzers() )
+		{
+			final Collection< String > features = analyzer.getFeatures();
+			final Map< String, String > featureNames = analyzer.getFeatureNames();
+			final Map< String, String > featureShortNames = analyzer.getFeatureShortNames();
+			final Map< String, Dimension > featureDimensions = analyzer.getFeatureDimensions();
+			final Map< String, Boolean > isIntFeature = analyzer.getIsIntFeature();
+			model.getFeatureModel().declareTrackFeatures( features, featureNames, featureShortNames, featureDimensions, isIntFeature );
 		}
 
 		// Do it.
-		computeTrackFeaturesAgent(model.getTrackModel().trackIDs(false), settings.getTrackAnalyzers(), true);
+		computeTrackFeaturesAgent( model.getTrackModel().trackIDs( false ), settings.getTrackAnalyzers(), true );
 
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
@@ -77,12 +83,13 @@ public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm {
 	}
 
 	/**
-	 * Calculates all the track features configured in the {@link Settings} object
-	 * for the specified tracks.
+	 * Calculates all the track features configured in the {@link Settings}
+	 * object for the specified tracks.
 	 */
-	public void computeTrackFeatures(final Collection<Integer> trackIDs, final boolean doLogIt) {
-		final List<TrackAnalyzer> trackFeatureAnalyzers = settings.getTrackAnalyzers();
-		computeTrackFeaturesAgent(trackIDs, trackFeatureAnalyzers, doLogIt);
+	public void computeTrackFeatures( final Collection< Integer > trackIDs, final boolean doLogIt )
+	{
+		final List< TrackAnalyzer > trackFeatureAnalyzers = settings.getTrackAnalyzers();
+		computeTrackFeaturesAgent( trackIDs, trackFeatureAnalyzers, doLogIt );
 	}
 
 	/*
@@ -92,28 +99,34 @@ public class TrackFeatureCalculator extends MultiThreadedBenchmarkAlgorithm {
 	/**
 	 * Calculate all features for the tracks with the given IDs.
 	 */
-	private void computeTrackFeaturesAgent(final Collection<Integer> trackIDs, final List<TrackAnalyzer> analyzers,
-			final boolean doLogIt) {
+	private void computeTrackFeaturesAgent( final Collection< Integer > trackIDs, final List< TrackAnalyzer > analyzers, final boolean doLogIt )
+	{
 		final Logger logger = model.getLogger();
-		if (doLogIt) {
-			logger.log("Computing track features:\n", Logger.BLUE_COLOR);
+		if ( doLogIt )
+		{
+			logger.log( "Computing track features:\n", Logger.BLUE_COLOR );
 		}
 
-		for (final TrackAnalyzer analyzer : analyzers) {
-			if (analyzer.isManualFeature()) {
+		for ( final TrackAnalyzer analyzer : analyzers )
+		{
+			if ( analyzer.isManualFeature() )
+			{
 				// Skip manual analyzers
 				continue;
 			}
 
-			analyzer.setNumThreads(numThreads);
-			if (analyzer.isLocal()) {
-				analyzer.process(trackIDs, model);
-			} else {
-				analyzer.process(model.getTrackModel().trackIDs(false), model);
+			analyzer.setNumThreads( numThreads );
+			if ( analyzer.isLocal() )
+			{
+				analyzer.process( trackIDs, model );
+			}
+			else
+			{
+				analyzer.process( model.getTrackModel().trackIDs( false ), model );
 			}
 
-			if (doLogIt)
-				logger.log("  - " + analyzer.getName() + " in " + analyzer.getProcessingTime() + " ms.\n");
+			if ( doLogIt )
+				logger.log( "  - " + analyzer.getName() + " in " + analyzer.getProcessingTime() + " ms.\n" );
 
 		}
 	}

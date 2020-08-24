@@ -1,8 +1,6 @@
 package Buddy.plugin.trackmate.gui.descriptors;
 
 import Buddy.plugin.trackmate.gui.LogPanel;
-import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 
 import java.awt.Component;
 import java.io.File;
@@ -14,38 +12,41 @@ import java.io.File;
  * @author Jean-Yves Tinevez
  *
  */
-public abstract class SomeDialogDescriptor implements WizardPanelDescriptor {
+public abstract class SomeDialogDescriptor implements WizardPanelDescriptor
+{
 
 	/**
 	 * File that governs saving and loading. We make it a static field so that
-	 * loading and sharing events always point to a single file location by default.
+	 * loading and sharing events always point to a single file location by
+	 * default.
 	 */
 	public static File file;
 
 	protected final LogPanel logPanel;
 
-	public SomeDialogDescriptor(final LogPanel logPanel) {
+	public SomeDialogDescriptor( final LogPanel logPanel )
+	{
 		this.logPanel = logPanel;
 	}
 
 	@Override
-	public Component getComponent() {
+	public Component getComponent()
+	{
 		return logPanel;
 	}
 
 	@Override
-	public void aboutToDisplayPanel() {
-	}
+	public void aboutToDisplayPanel()
+	{}
 
 	@Override
-	public abstract void displayingPanel(InteractiveBud parent);
-	
+	public abstract void displayingPanel();
 
 	@Override
-	public void aboutToHidePanel(InteractiveBud parent) {
-	}
+	public void aboutToHidePanel()
+	{}
 
 	@Override
-	public void comingBackToPanel() {
-	}
+	public void comingBackToPanel()
+	{}
 }

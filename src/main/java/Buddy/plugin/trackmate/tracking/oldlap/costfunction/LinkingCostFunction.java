@@ -29,36 +29,41 @@ import Buddy.plugin.trackmate.tracking.LAPUtils;
  * @author Jean-Yves Tinevez
  *
  */
-public class LinkingCostFunction implements CostFunctions {
+public class LinkingCostFunction implements CostFunctions
+{
 
 	protected final double maxDist;
 
-	protected final Map<String, Double> featurePenalties;
+	protected final Map< String, Double > featurePenalties;
 
 	protected final double blockingValue;
 
-	@SuppressWarnings("unchecked")
-	public LinkingCostFunction(final Map<String, Object> settings) {
-		this.maxDist = (Double) settings.get(KEY_LINKING_MAX_DISTANCE);
-		this.featurePenalties = (Map<String, Double>) settings.get(KEY_LINKING_FEATURE_PENALTIES);
-		this.blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
+	@SuppressWarnings( "unchecked" )
+	public LinkingCostFunction( final Map< String, Object > settings )
+	{
+		this.maxDist = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
+		this.featurePenalties = ( Map< String, Double > ) settings.get( KEY_LINKING_FEATURE_PENALTIES );
+		this.blockingValue = ( Double ) settings.get( KEY_BLOCKING_VALUE );
 	}
 
 	@Override
-	public Matrix getCostFunction(final List<BCellobject> t0, final List<BCellobject> t1) {
+	public Matrix getCostFunction( final List< BCellobject > t0, final List< BCellobject > t1 )
+	{
 		BCellobject s0 = null; // BCellobject in t0
 		BCellobject s1 = null; // BCellobject in t1
-		final Matrix m = new Matrix(t0.size(), t1.size());
+		final Matrix m = new Matrix( t0.size(), t1.size() );
 
-		for (int i = 0; i < t0.size(); i++) {
+		for ( int i = 0; i < t0.size(); i++ )
+		{
 
-			s0 = t0.get(i);
+			s0 = t0.get( i );
 
-			for (int j = 0; j < t1.size(); j++) {
+			for ( int j = 0; j < t1.size(); j++ )
+			{
 
-				s1 = t1.get(j);
-				final double cost = LAPUtils.computeLinkingCostFor(s0, s1, maxDist, blockingValue, featurePenalties);
-				m.set(i, j, cost);
+				s1 = t1.get( j );
+				final double cost = LAPUtils.computeLinkingCostFor( s0, s1, maxDist, blockingValue, featurePenalties );
+				m.set( i, j, cost );
 			}
 		}
 

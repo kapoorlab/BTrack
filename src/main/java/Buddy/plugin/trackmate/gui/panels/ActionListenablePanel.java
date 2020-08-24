@@ -12,36 +12,34 @@ public class ActionListenablePanel extends JPanel {
 	private static final long serialVersionUID = -1732282609704990375L;
 
 	protected ArrayList<ActionListener> actionListeners = new ArrayList<>();
-
+	
 	/**
-	 * Adds an {@link ActionListener} to this panel. These listeners will be
-	 * notified when a button is pushed or when the feature to color is changed.
+	 * Adds an {@link ActionListener} to this panel. These listeners will be notified when
+	 * a button is pushed or when the feature to color is changed.
 	 */
 	public void addActionListener(ActionListener listener) {
 		actionListeners.add(listener);
 	}
-
+	
 	/**
-	 * Removes an ActionListener from this panel.
-	 * 
-	 * @return true if the listener was in the ActionListener collection of this
-	 *         instance.
+	 * Removes an ActionListener from this panel. 
+	 * @return true if the listener was in the ActionListener collection of this instance.
 	 */
 	public boolean removeActionListener(ActionListener listener) {
 		return actionListeners.remove(listener);
 	}
-
+	
 	public Collection<ActionListener> getActionListeners() {
 		return actionListeners;
 	}
+	
 
-	/**
-	 * Forwards the given {@link ActionEvent} to all the {@link ActionListener} of
-	 * this panel.
+	/** 
+	 * Forwards the given {@link ActionEvent} to all the {@link ActionListener} of this panel.
 	 */
 	protected void fireAction(ActionEvent e) {
 		for (ActionListener l : actionListeners)
 			l.actionPerformed(e);
 	}
-
+	
 }

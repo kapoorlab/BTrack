@@ -131,7 +131,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 		trackNode.setSelection(selectionModel.getEdgeSelection());
 		trackNode.refresh();
 		// Highlight BCellobjects.
-		displayBCellobjectSelection((Integer) displaySettings
+		displaySpotCollection((Integer) displaySettings
 				.get(KEY_TRACK_DISPLAY_MODE) == TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY);
 		// Center on last BCellobject
 		super.selectionChanged(event);
@@ -188,7 +188,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 			trackContent.setVisible((Boolean) value);
 		} else if (key == KEY_TRACK_DISPLAY_MODE && null != trackNode) {
 			trackNode.setTrackDisplayMode((Integer) value);
-			displayBCellobjectSelection((Integer) value == TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY);
+			displaySpotCollection((Integer) value == TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY);
 		} else if (key == KEY_TRACK_DISPLAY_DEPTH && null != trackNode) {
 			trackNode.setTrackDisplayDepth((Integer) value);
 		}
@@ -375,15 +375,15 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 	/**
 	 * Changes the visibility of the displayed BCellobject.
 	 *
-	 * @param onlyBCellobjectSelection
+	 * @param onlySpotCollection
 	 *            If <code>true</code>, we display on the BCellobjects in the
 	 *            selection. Otherwise we display all BCellobjects marked as
 	 *            visible.
 	 */
-	private void displayBCellobjectSelection(final boolean onlyBCellobjectSelection) {
-		final Set<BCellobject> BCellobjectSelection = selectionModel.getBCellobjectSelection();
-		if (onlyBCellobjectSelection) {
-			if (BCellobjectSelection.isEmpty()) {
+	private void displaySpotCollection(final boolean onlySpotCollection) {
+		final Set<BCellobject> SpotCollection = selectionModel.getBCellobjectSelection();
+		if (onlySpotCollection) {
+			if (SpotCollection.isEmpty()) {
 				for (final Integer frame : blobs.keySet()) {
 					blobs.get(frame).setVisible(false);
 				}
@@ -397,7 +397,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 				BCellobjectsPerFrame.put(frame, BCellobjects);
 			}
 
-			for (final BCellobject BCellobject : BCellobjectSelection) {
+			for (final BCellobject BCellobject : SpotCollection) {
 				final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
 				final ArrayList<BCellobject> BCellobjects = BCellobjectsPerFrame.get(Integer.valueOf(frame));
 				BCellobjects.add(BCellobject);
@@ -417,7 +417,7 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 				final Iterable<BCellobject> BCellobjects = model.getBCellobjects().iterable(frame, true);
 				blobs.get(frame).setVisible(BCellobjects);
 			}
-			highlightBCellobjects(BCellobjectSelection);
+			highlightBCellobjects(SpotCollection);
 		}
 	}
 

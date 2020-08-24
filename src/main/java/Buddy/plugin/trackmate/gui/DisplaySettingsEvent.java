@@ -10,7 +10,8 @@ import java.util.EventObject;
  * @author Jean-Yves Tinevez - 2013
  * @see Buddy.plugin.trackmate.visualization.TrackMateModelView
  */
-public class DisplaySettingsEvent extends EventObject {
+public class DisplaySettingsEvent extends EventObject
+{
 
 	private static final long serialVersionUID = 4259460590261659068L;
 
@@ -20,29 +21,33 @@ public class DisplaySettingsEvent extends EventObject {
 
 	private final Object oldValue;
 
-	public DisplaySettingsEvent(final Object source, final String key, final Object newValue, final Object oldValue) {
-		super(source);
+	public DisplaySettingsEvent( final Object source, final String key, final Object newValue, final Object oldValue )
+	{
+		super( source );
 		this.key = key;
 		this.newValue = newValue;
 		this.oldValue = oldValue;
 	}
 
-	public String getKey() {
+	public String getKey()
+	{
 		return key;
 	}
 
-	public Object getOldValue() {
+	public Object getOldValue()
+	{
 		return oldValue;
 	}
 
-	public Object getNewValue() {
+	public Object getNewValue()
+	{
 		return newValue;
 	}
 
 	@Override
-	public String toString() {
-		final String str = "DisplaySettingsEvent[source=" + source.getClass() + ", key=" + key + ", new=" + newValue
-				+ ", old=" + oldValue;
+	public String toString()
+	{
+		final String str = "DisplaySettingsEvent[source=" + source.getClass() + ", key=" + key + ", new=" + newValue + ", old=" + oldValue;
 		return str;
 	}
 }

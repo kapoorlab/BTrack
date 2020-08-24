@@ -27,9 +27,10 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 
+
 /**
- * A collection of static utilities made to export {@link JFreeChart} charts to
- * various scalable file format.
+ * A collection of static utilities made to export {@link JFreeChart} charts 
+ * to various scalable file format.
  * 
  * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; Jul 20, 2011
  */
@@ -38,18 +39,14 @@ public class ChartExporter {
 	/**
 	 * Exports a JFreeChart to a SVG file.
 	 * 
-	 * @param chart
-	 *            JFreeChart to export
-	 * @param bounds
-	 *            the dimensions of the viewport
-	 * @param svgFile
-	 *            the output file.
-	 * @throws IOException
-	 *             if writing the svgFile fails.
+	 * @param chart JFreeChart to export
+	 * @param bounds the dimensions of the viewport
+	 * @param svgFile the output file.
+	 * @throws IOException if writing the svgFile fails.
 	 */
 	public static void exportChartAsSVG(JFreeChart chart, Rectangle bounds, File svgFile) throws IOException {
 		// Get a DOMImplementation and create an XML document
-		org.w3c.dom.DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+		org.w3c.dom.DOMImplementation domImpl =	GenericDOMImplementation.getDOMImplementation();
 		org.w3c.dom.Document document = domImpl.createDocument(null, "svg", null);
 
 		// Create an instance of the SVG Generator
@@ -59,47 +56,43 @@ public class ChartExporter {
 		chart.draw(svgGenerator, bounds);
 
 		// Write svg file
-		try (OutputStream outputStream = new FileOutputStream(svgFile);
-				Writer out = new OutputStreamWriter(outputStream, "UTF-8")) {
-			svgGenerator.stream(out, true);
+		try (OutputStream outputStream = new FileOutputStream( svgFile );
+				Writer out = new OutputStreamWriter( outputStream, "UTF-8" ))
+		{
+			svgGenerator.stream( out, true );
 		}
 	}
 
 	/**
 	 * Exports a JFreeChart to a PDF file.
 	 * <p>
-	 * We use a dirty hack for that: we first export to a physical SVG file, reload
-	 * it, and use Apache FOP PDF transcoder to convert it to pdfs. It only works
-	 * partially, for the text ends up in not being selectable in the pdf.
+	 * We use a dirty hack for that: we first export to a physical SVG file, reload it, and
+	 * use Apache FOP PDF transcoder to convert it to pdfs. It only works partially, for
+	 * the text ends up in not being selectable in the pdf.
 	 * 
-	 * @param chart
-	 *            JFreeChart to export
-	 * @param bounds
-	 *            the dimensions of the viewport
-	 * @param pdfFile
-	 *            the output file.
-	 * @throws IOException
-	 *             if writing the pdfFile fails.
-	 * @throws DocumentException
+	 * @param chart JFreeChart to export
+	 * @param bounds the dimensions of the viewport
+	 * @param pdfFile the output file.
+	 * @throws IOException if writing the pdfFile fails.
+	 * @throws DocumentException  
 	 */
-	public static void exportChartAsPDF(JFreeChart chart, Rectangle bounds, File pdfFile)
-			throws IOException, DocumentException {
+	public static void exportChartAsPDF(JFreeChart chart, Rectangle bounds, File pdfFile) throws IOException, DocumentException {
 		// step 1
-		com.itextpdf.text.Rectangle pageSize = new com.itextpdf.text.Rectangle(bounds.x, bounds.y, bounds.width,
-				bounds.height);
-		com.itextpdf.text.Document document = new com.itextpdf.text.Document(pageSize);
-		// step 2
-		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
-		// step 3
-		document.open();
-		// step 4
-		PdfContentByte canvas = writer.getDirectContent();
-		PdfGraphics2D g2 = new PdfGraphics2D(canvas, pageSize.getWidth(), pageSize.getHeight());
-		chart.draw(g2, bounds);
-		g2.dispose();
-		// step 5
-		document.close();
+		com.itextpdf.text.Rectangle pageSize = new com.itextpdf.text.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document(pageSize);
+        // step 2
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
+        // step 3
+        document.open();
+        // step 4
+        PdfContentByte canvas = writer.getDirectContent();
+        PdfGraphics2D g2 = new PdfGraphics2D( canvas, pageSize.getWidth(), pageSize.getHeight() );
+        chart.draw(g2, bounds);
+        g2.dispose();
+        // step 5
+        document.close();
 	}
+
 
 	private static Object[] createDummyChart() {
 		// Collect data
@@ -107,7 +100,7 @@ public class ChartExporter {
 		final double[][] data = new double[2][nPoints];
 
 		int index = 0;
-		for (int i = 0; i < nPoints; i++) {
+		for (int i = 0; i<nPoints; i++) {
 			data[0][index] = Math.random() * 100;
 			data[1][index] = Math.random() * 10;
 			index++;
@@ -120,14 +113,13 @@ public class ChartExporter {
 		DefaultXYDataset dataset = new DefaultXYDataset();
 		dataset.addSeries("Nspots", data);
 
-		JFreeChart chart = ChartFactory.createXYLineChart(title, xAxisLabel, yAxisLabel, dataset,
-				PlotOrientation.VERTICAL, true, true, false);
+		JFreeChart chart = ChartFactory.createXYLineChart(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 		chart.getTitle().setFont(FONT);
 		chart.getLegend().setItemFont(SMALL_FONT);
 
 		// The plot
 		XYPlot plot = chart.getXYPlot();
-		// plot.setRenderer(0, pointRenderer);
+		//				plot.setRenderer(0, pointRenderer);
 		plot.getRangeAxis().setLabelFont(FONT);
 		plot.getRangeAxis().setTickLabelFont(SMALL_FONT);
 		plot.getDomainAxis().setLabelFont(FONT);

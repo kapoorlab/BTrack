@@ -39,7 +39,8 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
-import tracker.GREENTrackModel;
+import tracker.BUDDYBudTrackModel;
+import tracker.BUDDYTrackModel;
 
 public class InteractiveGreen  extends JPanel implements PlugIn{
 
@@ -75,8 +76,8 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 	public RealLocalizable Refcord;
 	public int thirdDimension;
 	public int fourthDimension;
-	public GREENTrackModel Globalmodel;
-	public GREENTrackModel BudGlobalModel;
+	public BUDDYTrackModel Globalmodel;
+	public BUDDYBudTrackModel BudGlobalModel;
 	public int thirdDimensionSize;
 	public int fourthDimensionSize;
 	public ImagePlus impA;

@@ -6,27 +6,31 @@ package Buddy.plugin.trackmate.features;
  * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; Sep 23, 2010
  *
  */
-public class FeatureFilter {
+public class FeatureFilter
+{
 	public final String feature;
 
 	public final Double value;
 
 	public final boolean isAbove;
 
-	public FeatureFilter(final String feature, final Double value, final boolean isAbove) {
+	public FeatureFilter( final String feature, final Double value, final boolean isAbove )
+	{
 		this.feature = feature;
 		this.value = value;
 		this.isAbove = isAbove;
 	}
 
-	public FeatureFilter(final String feature, final double value, final boolean isAbove) {
-		this(feature, Double.valueOf(value), isAbove);
+	public FeatureFilter( final String feature, final double value, final boolean isAbove )
+	{
+		this( feature, Double.valueOf( value ), isAbove );
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		String str = feature.toString();
-		if (isAbove)
+		if ( isAbove )
 			str += " > ";
 		else
 			str += " < ";

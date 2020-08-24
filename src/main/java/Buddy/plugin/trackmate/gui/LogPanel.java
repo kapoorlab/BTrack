@@ -21,9 +21,7 @@ import javax.swing.text.StyleContext;
 
 /**
  * A panel using s {@link JTextPane} to log events.
- * 
- * @author Jean-Yves Tinevez &lt;tinevez@pasteur.fr&gt; - September 2010 -
- *         January 2011.
+ * @author Jean-Yves Tinevez &lt;tinevez@pasteur.fr&gt; - September 2010 - January 2011.
  */
 public class LogPanel extends ActionListenablePanel {
 
@@ -43,7 +41,7 @@ public class LogPanel extends ActionListenablePanel {
 
 			@Override
 			public void error(String message) {
-				log(message, Logger.ERROR_COLOR);
+				log(message, Logger.ERROR_COLOR);				
 			}
 
 			@Override
@@ -70,14 +68,12 @@ public class LogPanel extends ActionListenablePanel {
 					}
 				});
 			}
-
+			
 			@Override
 			public void setProgress(double val) {
-				if (val < 0)
-					val = 0;
-				if (val > 1)
-					val = 1;
-				final int intVal = (int) (val * 100);
+				if (val < 0) val =0;
+				if (val > 1) val = 1;
+				final int intVal = (int) (val*100);
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -85,41 +81,40 @@ public class LogPanel extends ActionListenablePanel {
 					}
 				});
 			}
-		};
+		};		
 	}
-
+	
 	/*
 	 * PUBLIC METHODS
 	 */
-
+	
 	/**
 	 * @return a {@link Logger} object that will log all events to this log panel.
 	 */
 	public Logger getLogger() {
 		return logger;
 	}
-
+	
 	/**
 	 * @return the text content currently displayed in the log panel.
 	 */
 	public String getTextContent() {
 		return jTextPaneLog.getText();
 	}
-
+	
 	/**
 	 * Set the text content currently displayed in the log panel.
-	 * 
-	 * @param log
-	 *            the text to display.
+	 * @param log  the text to display.
 	 */
 	public void setTextContent(String log) {
 		jTextPaneLog.setText(log);
 	}
-
+	
+	
 	/*
 	 * PRIVATE METHODS
 	 */
-
+	
 	private void initGUI() {
 		try {
 			BorderLayout thisLayout = new BorderLayout();
@@ -155,13 +150,14 @@ public class LogPanel extends ActionListenablePanel {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/*
 	 * MAIN METHOD
 	 */
-
+	
 	/**
-	 * Auto-generated main method to display this JPanel inside a new JFrame.
+	 * Auto-generated main method to display this 
+	 * JPanel inside a new JFrame.
 	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
@@ -170,7 +166,7 @@ public class LogPanel extends ActionListenablePanel {
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-
+		
 		lp.getLogger().log("Hello!\n", Logger.BLUE_COLOR);
 		lp.getLogger().log("World!\n");
 		lp.getLogger().error("Oh no!!!! More lemmings!!!!\n");

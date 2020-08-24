@@ -39,6 +39,8 @@ public class BCellobjectCollection implements MultiThreaded {
 	public static final Double ZERO = Double.valueOf(0d);
 
 	public static final Double ONE = Double.valueOf(1d);
+	
+	public static final String VISIBLITY = "VISIBILITY";
 
 	/**
 	 * Time units for filtering and cropping operation timeouts. Filtering should
@@ -147,6 +149,47 @@ public class BCellobjectCollection implements MultiThreaded {
 			return false;
 		}
 		return BCellobjects.remove(BCellobject);
+	}
+	
+	public void setVisible( final boolean visible )
+	{
+		final Double val = visible ? ONE : ZERO;
+		final Collection< Integer > frames = content.keySet();
+
+		final ExecutorService executors = Executors.newFixedThreadPool( numThreads );
+		for ( final Integer frame : frames )
+		{
+
+			final Runnable command = new Runnable()
+			{
+				@Override
+				public void run()
+				{
+
+					final Set< BCellobject > spots = content.get( frame );
+					for ( final BCellobject spot : spots )
+					{
+						spot.putFeature( VISIBLITY, val );
+					}
+
+				}
+			};
+			executors.execute( command );
+		}
+
+		executors.shutdown();
+		try
+		{
+			final boolean ok = executors.awaitTermination( TIME_OUT_DELAY, TIME_OUT_UNITS );
+			if ( !ok )
+			{
+				System.err.println( "[SpotCollection.setVisible()] Timeout of " + TIME_OUT_DELAY + " " + TIME_OUT_UNITS + " reached." );
+			}
+		}
+		catch ( final InterruptedException e )
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**

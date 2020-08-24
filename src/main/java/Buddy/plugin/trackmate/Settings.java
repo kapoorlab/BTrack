@@ -9,8 +9,8 @@ import java.util.Map;
 
 import Buddy.plugin.trackmate.features.FeatureAnalyzer;
 import Buddy.plugin.trackmate.features.FeatureFilter;
+import Buddy.plugin.trackmate.features.BCellobject.BCellobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
-import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import ij.ImagePlus;

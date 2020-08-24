@@ -13,12 +13,12 @@ import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
-import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
+import Buddy.plugin.trackmate.features.BCellobject.BCellobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import Buddy.plugin.trackmate.gui.descriptors.WizardPanelDescriptor;
-import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
+import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.TrackAnalyzerProvider;
 import Buddy.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.ImagePlus;
@@ -35,8 +35,6 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	private final ArrayList< ActionListener > actionListeners = new ArrayList<>();
 
 	private final TrackMateGUIController controller;
-	
-	public final InteractiveBud parent;
 
 	/**
 	 * The view that is launched immediately when this descriptor leaves. It
@@ -44,11 +42,10 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	 */
 	private HyperStackDisplayer mainView;
 
-	public StartDialogDescriptor(final InteractiveBud parent, final TrackMateGUIController controller )
+	public StartDialogDescriptor( final TrackMateGUIController controller )
 	{
 		this.controller = controller;
-		this.parent = parent;
-		this.panel = new StartDialogPanel(parent);
+		this.panel = new StartDialogPanel();
 		panel.addActionListener( new ActionListener()
 		{
 			@Override
@@ -91,7 +88,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent)
+	public void displayingPanel()
 	{
 		ImagePlus imp;
 		final TrackMate trackmate = controller.getPlugin();
@@ -108,31 +105,32 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 	}
 
 	@Override
-	public void aboutToHidePanel(InteractiveBud parent)
+	public void aboutToHidePanel()
 	{
 		final TrackMate trackmate = controller.getPlugin();
 		final Settings settings = trackmate.getSettings();
 		final Model model = trackmate.getModel();
 
+		final InteractiveBud parent = trackmate.getParent();
 		/*
 		 * Get settings and pass them to the trackmate managed by the wizard
 		 */
 
-		panel.updateTo(parent,  model, settings );
+		panel.updateTo( model, settings );
 		trackmate.getModel().getLogger().log( settings.toStringImageInfo() );
 
 		/*
-		 * Configure settings object with BCell, edge and track analyzers as
+		 * Configure settings object with BCellobject, edge and track analyzers as
 		 * specified in the providers.
 		 */
 
 		settings.clearBCellobjectAnalyzerFactories();
-		final BCellobjectAnalyzerProvider BCellAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
-		final List< String > BCellAnalyzerKeys = BCellAnalyzerProvider.getKeys();
-		for ( final String key : BCellAnalyzerKeys )
+		final BCellobjectAnalyzerProvider BCellobjectAnalyzerProvider = controller.getBCellobjectAnalyzerProvider();
+		final List< String > BCellobjectAnalyzerKeys = BCellobjectAnalyzerProvider.getKeys();
+		for ( final String key : BCellobjectAnalyzerKeys )
 		{
-			final BCellobjectAnalyzerFactory< ? > BCellFeatureAnalyzer = BCellAnalyzerProvider.getFactory( key );
-			settings.addBCellobjectAnalyzerFactory( BCellFeatureAnalyzer );
+			final BCellobjectAnalyzerFactory< ? > BCellobjectFeatureAnalyzer = BCellobjectAnalyzerProvider.getFactory( key );
+			settings.addBCellobjectAnalyzerFactory( BCellobjectFeatureAnalyzer );
 		}
 
 		settings.clearEdgeAnalyzers();
@@ -170,7 +168,7 @@ public class StartDialogDescriptor implements WizardPanelDescriptor
 		}
 
 		final SelectionModel selectionModel = controller.getSelectionModel();
-		mainView = new HyperStackDisplayer( parent, model, selectionModel, settings.imp );
+		mainView = new HyperStackDisplayer(parent,  model, selectionModel, settings.imp );
 		controller.getGuimodel().addView( mainView );
 		final Map< String, Object > displaySettings = controller.getGuimodel().getDisplaySettings();
 		for ( final String key : displaySettings.keySet() )

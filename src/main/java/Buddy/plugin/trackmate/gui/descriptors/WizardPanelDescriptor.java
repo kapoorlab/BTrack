@@ -2,9 +2,6 @@ package Buddy.plugin.trackmate.gui.descriptors;
 
 import java.awt.Component;
 
-import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
-
 /**
  * A base descriptor class used to reference a Component panel for the Wizard,
  * as well as provide general rules as to how the panel should behave.
@@ -34,7 +31,8 @@ import pluginTools.InteractiveGreen;
  * and is used typically to set up and refresh what is displayed on the
  * descriptor component.
  */
-public interface WizardPanelDescriptor {
+public interface WizardPanelDescriptor
+{
 
 	/**
 	 * Returns a unique key that identifies the GUI state this descriptor
@@ -55,26 +53,24 @@ public interface WizardPanelDescriptor {
 
 	/**
 	 * This method is used to perform functionality when the panel itself is
-	 * displayed. It is the responsibility of concrete implementations to set the
-	 * state of the GUI, such as the 'Next' button enabled/disabled. The 'Next'
-	 * button is disabled by the GUI at the start of each 'Next' action. Concrete
-	 * implementations must re-enable it before this method returns. For instance,
-	 * you want to disable the 'Next' button while an intense calculation is
-	 * ongoing, then re-enable it.
-	 * 
-	 * @param parent
+	 * displayed. It is the responsibility of concrete implementations to set
+	 * the state of the GUI, such as the 'Next' button enabled/disabled. The
+	 * 'Next' button is disabled by the GUI at the start of each 'Next' action.
+	 * Concrete implementations must re-enable it before this method returns.
+	 * For instance, you want to disable the 'Next' button while an intense
+	 * calculation is ongoing, then re-enable it.
 	 */
-	public void displayingPanel(InteractiveBud parent);
+	public void displayingPanel();
+
 	/**
-	 * This method is used to perform functionality just before the panel is to be
-	 * hidden.
+	 * This method is used to perform functionality just before the panel is to
+	 * be hidden.
 	 */
-	public void aboutToHidePanel(InteractiveBud parent);
+	public void aboutToHidePanel();
 
 	/**
 	 * This method is used to perform functionality when the panel is visited by
 	 * navigating backward.
 	 */
 	public void comingBackToPanel();
-
 }

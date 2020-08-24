@@ -14,14 +14,15 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 
 import org.scijava.plugin.Plugin;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.FeatureModel;
 import Buddy.plugin.trackmate.Model;
+import budDetector.BCellobject;
 
-@SuppressWarnings("deprecation")
-@Plugin(type = TrackAnalyzer.class)
-public class TrackDurationAnalyzer implements TrackAnalyzer {
+@SuppressWarnings( "deprecation" )
+@Plugin( type = TrackAnalyzer.class )
+public class TrackDurationAnalyzer implements TrackAnalyzer
+{
 
 	public static final String KEY = "Track duration";
 
@@ -33,100 +34,108 @@ public class TrackDurationAnalyzer implements TrackAnalyzer {
 
 	public static final String TRACK_DISPLACEMENT = "TRACK_DISPLACEMENT";
 
-	public static final List<String> FEATURES = new ArrayList<>(4);
+	public static final List< String > FEATURES = new ArrayList< >( 4 );
 
-	public static final Map<String, String> FEATURE_NAMES = new HashMap<>(4);
+	public static final Map< String, String > FEATURE_NAMES = new HashMap< >( 4 );
 
-	public static final Map<String, String> FEATURE_SHORT_NAMES = new HashMap<>(4);
+	public static final Map< String, String > FEATURE_SHORT_NAMES = new HashMap< >( 4 );
 
-	public static final Map<String, Dimension> FEATURE_DIMENSIONS = new HashMap<>(4);
+	public static final Map< String, Dimension > FEATURE_DIMENSIONS = new HashMap< >( 4 );
 
-	public static final Map<String, Boolean> IS_INT = new HashMap<>(4);
+	public static final Map< String, Boolean > IS_INT = new HashMap< >( 4 );
 
-	static {
-		FEATURES.add(TRACK_DURATION);
-		FEATURES.add(TRACK_START);
-		FEATURES.add(TRACK_STOP);
-		FEATURES.add(TRACK_DISPLACEMENT);
+	static
+	{
+		FEATURES.add( TRACK_DURATION );
+		FEATURES.add( TRACK_START );
+		FEATURES.add( TRACK_STOP );
+		FEATURES.add( TRACK_DISPLACEMENT );
 
-		FEATURE_NAMES.put(TRACK_DURATION, "Duration of track");
-		FEATURE_NAMES.put(TRACK_START, "Track start");
-		FEATURE_NAMES.put(TRACK_STOP, "Track stop");
-		FEATURE_NAMES.put(TRACK_DISPLACEMENT, "Track displacement");
+		FEATURE_NAMES.put( TRACK_DURATION, "Duration of track" );
+		FEATURE_NAMES.put( TRACK_START, "Track start" );
+		FEATURE_NAMES.put( TRACK_STOP, "Track stop" );
+		FEATURE_NAMES.put( TRACK_DISPLACEMENT, "Track displacement" );
 
-		FEATURE_SHORT_NAMES.put(TRACK_DURATION, "Duration");
-		FEATURE_SHORT_NAMES.put(TRACK_START, "T start");
-		FEATURE_SHORT_NAMES.put(TRACK_STOP, "T stop");
-		FEATURE_SHORT_NAMES.put(TRACK_DISPLACEMENT, "Displacement");
+		FEATURE_SHORT_NAMES.put( TRACK_DURATION, "Duration" );
+		FEATURE_SHORT_NAMES.put( TRACK_START, "T start" );
+		FEATURE_SHORT_NAMES.put( TRACK_STOP, "T stop" );
+		FEATURE_SHORT_NAMES.put( TRACK_DISPLACEMENT, "Displacement" );
 
-		FEATURE_DIMENSIONS.put(TRACK_DURATION, Dimension.TIME);
-		FEATURE_DIMENSIONS.put(TRACK_START, Dimension.TIME);
-		FEATURE_DIMENSIONS.put(TRACK_STOP, Dimension.TIME);
-		FEATURE_DIMENSIONS.put(TRACK_DISPLACEMENT, Dimension.LENGTH);
+		FEATURE_DIMENSIONS.put( TRACK_DURATION, Dimension.TIME );
+		FEATURE_DIMENSIONS.put( TRACK_START, Dimension.TIME );
+		FEATURE_DIMENSIONS.put( TRACK_STOP, Dimension.TIME );
+		FEATURE_DIMENSIONS.put( TRACK_DISPLACEMENT, Dimension.LENGTH );
 
-		IS_INT.put(TRACK_DURATION, Boolean.FALSE);
-		IS_INT.put(TRACK_START, Boolean.FALSE);
-		IS_INT.put(TRACK_STOP, Boolean.FALSE);
-		IS_INT.put(TRACK_DISPLACEMENT, Boolean.FALSE);
+		IS_INT.put( TRACK_DURATION, Boolean.FALSE );
+		IS_INT.put( TRACK_START, Boolean.FALSE );
+		IS_INT.put( TRACK_STOP, Boolean.FALSE );
+		IS_INT.put( TRACK_DISPLACEMENT, Boolean.FALSE );
 	}
 
 	private int numThreads;
 
 	private long processingTime;
 
-	public TrackDurationAnalyzer() {
+	public TrackDurationAnalyzer()
+	{
 		setNumThreads();
 	}
 
 	@Override
-	public boolean isLocal() {
+	public boolean isLocal()
+	{
 		return true;
 	}
 
 	@Override
-	public void process(final Collection<Integer> trackIDs, final Model model) {
+	public void process( final Collection< Integer > trackIDs, final Model model )
+	{
 
-		if (trackIDs.isEmpty()) {
-			return;
-		}
+		if ( trackIDs.isEmpty() ) { return; }
 
-		final ArrayBlockingQueue<Integer> queue = new ArrayBlockingQueue<>(trackIDs.size(), false, trackIDs);
+		final ArrayBlockingQueue< Integer > queue = new ArrayBlockingQueue< >( trackIDs.size(), false, trackIDs );
 		final FeatureModel fm = model.getFeatureModel();
 
-		final Thread[] threads = SimpleMultiThreading.newThreads(numThreads);
-		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new Thread("TrackDurationAnalyzer thread " + i) {
+		final Thread[] threads = SimpleMultiThreading.newThreads( numThreads );
+		for ( int i = 0; i < threads.length; i++ )
+		{
+			threads[ i ] = new Thread( "TrackDurationAnalyzer thread " + i )
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					Integer trackID;
-					while ((trackID = queue.poll()) != null) {
+					while ( ( trackID = queue.poll() ) != null )
+					{
 
 						// I love brute force.
-						final Set<BCellobject> track = model.getTrackModel().trackBCellobjects(trackID);
+						final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
 						double minT = Double.POSITIVE_INFINITY;
 						double maxT = Double.NEGATIVE_INFINITY;
 						Double t;
 						BCellobject startBCellobject = null;
 						BCellobject endBCellobject = null;
-						for (final BCellobject BCellobject : track) {
-							t = BCellobject.getFeature(BCellobject.POSITION_T);
-							if (t < minT) {
+						for ( final BCellobject BCellobject : track )
+						{
+							t = BCellobject.getFeature( BCellobject.POSITION_T );
+							if ( t < minT )
+							{
 								minT = t;
 								startBCellobject = BCellobject;
 							}
-							if (t > maxT) {
+							if ( t > maxT )
+							{
 								maxT = t;
 								endBCellobject = BCellobject;
 							}
 						}
 						if (null == startBCellobject || null == endBCellobject)
 							continue;
-
-						fm.putTrackFeature(trackID, TRACK_DURATION, (maxT - minT));
-						fm.putTrackFeature(trackID, TRACK_START, minT);
-						fm.putTrackFeature(trackID, TRACK_STOP, maxT);
-						fm.putTrackFeature(trackID, TRACK_DISPLACEMENT,
-								Math.sqrt(startBCellobject.squareDistanceTo(endBCellobject)));
+						
+						fm.putTrackFeature( trackID, TRACK_DURATION, ( maxT - minT ) );
+						fm.putTrackFeature( trackID, TRACK_START, minT );
+						fm.putTrackFeature( trackID, TRACK_STOP, maxT );
+						fm.putTrackFeature( trackID, TRACK_DISPLACEMENT, Math.sqrt( startBCellobject.squareDistanceTo( endBCellobject ) ) );
 
 					}
 				}
@@ -134,80 +143,93 @@ public class TrackDurationAnalyzer implements TrackAnalyzer {
 		}
 
 		final long start = System.currentTimeMillis();
-		SimpleMultiThreading.startAndJoin(threads);
+		SimpleMultiThreading.startAndJoin( threads );
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
 	}
 
 	@Override
-	public int getNumThreads() {
+	public int getNumThreads()
+	{
 		return numThreads;
 	}
 
 	@Override
-	public void setNumThreads() {
+	public void setNumThreads()
+	{
 		this.numThreads = Runtime.getRuntime().availableProcessors();
 	}
 
 	@Override
-	public void setNumThreads(final int numThreads) {
+	public void setNumThreads( final int numThreads )
+	{
 		this.numThreads = numThreads;
 
 	}
 
 	@Override
-	public long getProcessingTime() {
+	public long getProcessingTime()
+	{
 		return processingTime;
 	}
 
 	@Override
-	public List<String> getFeatures() {
+	public List< String > getFeatures()
+	{
 		return FEATURES;
 	}
 
 	@Override
-	public Map<String, String> getFeatureShortNames() {
+	public Map< String, String > getFeatureShortNames()
+	{
 		return FEATURE_SHORT_NAMES;
 	}
 
 	@Override
-	public Map<String, String> getFeatureNames() {
+	public Map< String, String > getFeatureNames()
+	{
 		return FEATURE_NAMES;
 	}
 
 	@Override
-	public Map<String, Dimension> getFeatureDimensions() {
+	public Map< String, Dimension > getFeatureDimensions()
+	{
 		return FEATURE_DIMENSIONS;
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
 
 	@Override
-	public String getInfoText() {
+	public String getInfoText()
+	{
 		return null;
 	}
 
 	@Override
-	public String getName() {
+	public ImageIcon getIcon()
+	{
+		return null;
+	}
+
+	@Override
+	public String getName()
+	{
 		return KEY;
 	}
 
 	@Override
-	public Map<String, Boolean> getIsIntFeature() {
+	public Map< String, Boolean > getIsIntFeature()
+	{
 		return IS_INT;
 	}
 
 	@Override
-	public boolean isManualFeature() {
+	public boolean isManualFeature()
+	{
 		return false;
-	}
-
-	@Override
-	public ImageIcon getIcon() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

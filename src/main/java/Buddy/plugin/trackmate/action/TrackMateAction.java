@@ -9,7 +9,8 @@ import Buddy.plugin.trackmate.TrackMate;
  *
  * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; 2011-2013
  */
-public interface TrackMateAction {
+public interface TrackMateAction
+{
 
 	/**
 	 * Executes this action using the specified trackmate instance.

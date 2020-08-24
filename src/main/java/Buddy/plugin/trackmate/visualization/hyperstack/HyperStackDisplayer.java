@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.ModelChangeEvent;
 import Buddy.plugin.trackmate.SelectionChangeEvent;
@@ -13,12 +12,14 @@ import Buddy.plugin.trackmate.visualization.AbstractTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import Buddy.plugin.trackmate.visualization.ViewUtils;
+import budDetector.BCellobject;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import pluginTools.InteractiveBud;
 
-public class HyperStackDisplayer extends AbstractTrackMateModelView {
+public class HyperStackDisplayer extends AbstractTrackMateModelView
+{
 
 	private static final boolean DEBUG = false;
 
@@ -29,31 +30,35 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	protected TrackOverlay trackOverlay;
 
 	private BCellobjectEditTool editTool;
+	
+	public InteractiveBud parent;
 
 	private Roi initialROI;
 
 	public static final String KEY = "HYPERSTACKDISPLAYER";
-	
-	public final InteractiveBud parent;
 
 	/*
 	 * CONSTRUCTORS
 	 */
 
-	public HyperStackDisplayer(final InteractiveBud parent, final Model model, final SelectionModel selectionModel, final ImagePlus imp) {
-		super( model, selectionModel);
-		if (null != imp) {
+	public HyperStackDisplayer(final InteractiveBud parent, final Model model, final SelectionModel selectionModel, final ImagePlus imp )
+	{
+		super( model, selectionModel );
+		if ( null != imp )
+		{
 			this.imp = imp;
-		} else {
-			this.imp = ViewUtils.makeEmpytImagePlus(model);
 		}
-		this.parent = parent;
+		else
+		{
+			this.imp = ViewUtils.makeEmpytImagePlus( model );
+		}
 		this.BCellobjectOverlay = createBCellobjectOverlay();
 		this.trackOverlay = createTrackOverlay();
 	}
 
-	public HyperStackDisplayer(final InteractiveBud parent, final Model model, final SelectionModel selectionModel) {
-		this(parent, model, selectionModel, null);
+	public HyperStackDisplayer( final InteractiveBud parent, final Model model, final SelectionModel selectionModel )
+	{
+		this( parent,  model, selectionModel, null );
 	}
 
 	/*
@@ -61,25 +66,27 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	 */
 
 	/**
-	 * Hook for subclassers. Instantiate here the overlay you want to use for the
-	 * BCellobjects.
+	 * Hook for subclassers. Instantiate here the overlay you want to use for
+	 * the BCellobjects.
 	 *
 	 * @return the BCellobject overlay
 	 */
-	protected BCellobjectOverlay createBCellobjectOverlay() {
-		return new BCellobjectOverlay(parent, model, imp, displaySettings);
+	protected BCellobjectOverlay createBCellobjectOverlay()
+	{
+		return new BCellobjectOverlay( model, imp, displaySettings );
 	}
 
 	/**
-	 * Hook for subclassers. Instantiate here the overlay you want to use for the
-	 * BCellobjects.
+	 * Hook for subclassers. Instantiate here the overlay you want to use for
+	 * the BCellobjects.
 	 *
 	 * @return the track overlay
 	 */
-	protected TrackOverlay createTrackOverlay() {
-		final TrackOverlay to = new TrackOverlay(parent, model, imp, displaySettings);
-		final TrackColorGenerator colorGenerator = (TrackColorGenerator) displaySettings.get(KEY_TRACK_COLORING);
-		to.setTrackColorGenerator(colorGenerator);
+	protected TrackOverlay createTrackOverlay()
+	{
+		final TrackOverlay to = new TrackOverlay( model, imp, displaySettings );
+		final TrackColorGenerator colorGenerator = ( TrackColorGenerator ) displaySettings.get( KEY_TRACK_COLORING );
+		to.setTrackColorGenerator( colorGenerator );
 		return to;
 	}
 
@@ -92,24 +99,27 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	 *
 	 * @return the ImagePlus used in this view.
 	 */
-	public ImagePlus getImp() {
+	public ImagePlus getImp()
+	{
 		return imp;
 	}
 
 	@Override
-	public void modelChanged(final ModelChangeEvent event) {
-		if (DEBUG)
-			System.out.println("[HyperStackDisplayer] Received model changed event ID: " + event.getEventID() + " from "
-					+ event.getSource());
+	public void modelChanged( final ModelChangeEvent event )
+	{
+		if ( DEBUG )
+			System.out.println( "[HyperStackDisplayer] Received model changed event ID: " + event.getEventID() + " from " + event.getSource() );
 		boolean redoOverlay = false;
 
-		switch (event.getEventID()) {
+		switch ( event.getEventID() )
+		{
 
 		case ModelChangeEvent.MODEL_MODIFIED:
 			// Rebuild track overlay only if edges were added or removed, or if
 			// at least one BCellobject was removed.
-			final Set<DefaultWeightedEdge> edges = event.getEdges();
-			if (edges != null && edges.size() > 0) {
+			final Set< DefaultWeightedEdge > edges = event.getEdges();
+			if ( edges != null && edges.size() > 0 )
+			{
 				redoOverlay = true;
 			}
 			break;
@@ -128,73 +138,86 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 			break;
 		}
 
-		if (redoOverlay)
+		if ( redoOverlay )
 			refresh();
 	}
 
 	@Override
-	public void selectionChanged(final SelectionChangeEvent event) {
+	public void selectionChanged( final SelectionChangeEvent event )
+	{
 		// Highlight selection
-		trackOverlay.setHighlight(selectionModel.getEdgeSelection());
-		BCellobjectOverlay.setBCellobjectSelection(selectionModel.getBCellobjectSelection());
+		trackOverlay.setHighlight( selectionModel.getEdgeSelection() );
+		BCellobjectOverlay.setBCellobjectSelection( selectionModel.getBCellobjectSelection() );
 		// Center on last BCellobject
-		super.selectionChanged(event);
+		super.selectionChanged( event );
 		// Redraw
 		imp.updateAndDraw();
 	}
 
 	@Override
-	public void centerViewOn(final BCellobject BCellobject) {
-		final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
+	public void centerViewOn( final BCellobject BCellobject )
+	{
+		final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
 		final double dz = imp.getCalibration().pixelDepth;
-		imp.setPosition(imp.getC(), 0, frame + 1);
+		final long z = Math.round( BCellobject.getFeature( BCellobject.POSITION_Z ) / dz ) + 1;
+		imp.setPosition( imp.getC(), ( int ) z, frame + 1 );
 	}
 
 	@Override
-	public void render() {
+	public void render()
+	{
 		initialROI = imp.getRoi();
-		if (initialROI != null) {
+		if ( initialROI != null )
+		{
 			imp.killRoi();
 		}
 
 		clear();
-		imp.setOpenAsHyperStack(true);
-		if (!imp.isVisible()) {
+		imp.setOpenAsHyperStack( true );
+		if ( !imp.isVisible() )
+		{
 			imp.show();
 		}
 
-		addOverlay(BCellobjectOverlay);
-		addOverlay(trackOverlay);
+		addOverlay( BCellobjectOverlay );
+		addOverlay( trackOverlay );
 		imp.updateAndDraw();
 		registerEditTool();
 	}
 
 	@Override
-	public void refresh() {
-		if (null != imp) {
+	public void refresh()
+	{
+		if ( null != imp )
+		{
 			imp.updateAndDraw();
 		}
 	}
 
 	@Override
-	public void clear() {
+	public void clear()
+	{
 		Overlay overlay = imp.getOverlay();
-		if (overlay == null) {
+		if ( overlay == null )
+		{
 			overlay = new Overlay();
-			imp.setOverlay(overlay);
+			imp.setOverlay( overlay );
 		}
 		overlay.clear();
-		if (initialROI != null) {
-			imp.getOverlay().add(initialROI);
+		if ( initialROI != null )
+		{
+			imp.getOverlay().add( initialROI );
 		}
 		refresh();
 	}
 
-	public void addOverlay(final Roi overlay) {
-		imp.getOverlay().add(overlay);
+	public void addOverlay( final Roi overlay )
+	{
+		imp.getOverlay().add( overlay );
 	}
 
-	public SelectionModel getSelectionModel() {
+	public SelectionModel getSelectionModel()
+	{
 		return selectionModel;
 	}
 
@@ -202,39 +225,45 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView {
 	 * PRIVATE METHODS
 	 */
 
-	private void registerEditTool() {
-		editTool = BCellobjectEditTool.getInstance(parent);
-		if (!BCellobjectEditTool.isLaunched()) {
-			editTool.run("");
+	private void registerEditTool()
+	{
+		editTool = BCellobjectEditTool.getInstance();
+		if ( !BCellobjectEditTool.isLaunched() )
+		{
+			editTool.run( "" );
 		}
-		editTool.register(imp, this);
+		editTool.register( imp, this );
 	}
 
 	@Override
-	public void setDisplaySettings(final String key, final Object value) {
+	public void setDisplaySettings( final String key, final Object value )
+	{
 		boolean dorefresh = false;
 
-		if (key == TrackMateModelView.KEY_BCellobject_COLORING || key == TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH
-				|| key == KEY_DRAWING_DEPTH) {
+		if ( key == TrackMateModelView.KEY_BCellobject_COLORING || key == TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH || key == KEY_DRAWING_DEPTH )
+		{
 			dorefresh = true;
 
-		} else if (key == TrackMateModelView.KEY_TRACK_COLORING) {
+		}
+		else if ( key == TrackMateModelView.KEY_TRACK_COLORING )
+		{
 			// pass the new one to the track overlay - we ignore its BCellobject
 			// coloring and keep the BCellobject coloring
-			final TrackColorGenerator colorGenerator = (TrackColorGenerator) value;
-			trackOverlay.setTrackColorGenerator(colorGenerator);
+			final TrackColorGenerator colorGenerator = ( TrackColorGenerator ) value;
+			trackOverlay.setTrackColorGenerator( colorGenerator );
 			dorefresh = true;
 		}
 
-		super.setDisplaySettings(key, value);
-		if (dorefresh) {
+		super.setDisplaySettings( key, value );
+		if ( dorefresh )
+		{
 			refresh();
 		}
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return KEY;
 	}
-
 }

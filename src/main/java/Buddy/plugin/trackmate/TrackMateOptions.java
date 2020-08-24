@@ -1,12 +1,12 @@
 package Buddy.plugin.trackmate;
 
+import org.jfree.chart.renderer.InterpolatePaintScale;
 import org.scijava.menu.MenuConstants;
 import org.scijava.options.OptionsPlugin;
 import org.scijava.plugin.Menu;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import Buddy.plugin.trackmate.org.jfree.chart.renderer.InterpolatePaintScale;
 
 @Plugin(type = OptionsPlugin.class, menu = {
 		@Menu(label = MenuConstants.EDIT_LABEL, weight = MenuConstants.EDIT_WEIGHT, mnemonic = MenuConstants.EDIT_MNEMONIC),

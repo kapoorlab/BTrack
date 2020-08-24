@@ -14,6 +14,7 @@ import Buddy.plugin.trackmate.io.TmXmlReader;
 import Buddy.plugin.trackmate.io.TmXmlReader_v12;
 import Buddy.plugin.trackmate.io.TmXmlReader_v20;
 import Buddy.plugin.trackmate.util.Version;
+import budDetector.BCellobject;
 
 import java.awt.Frame;
 import java.io.File;
@@ -25,28 +26,30 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import budDetector.BCellobject;
-import pluginTools.InteractiveBud;
-
 public class MergeFileAction extends AbstractTMAction {
 
+	public static final ImageIcon ICON = new ImageIcon(TrackMateWizard.class.getResource("images/arrow_merge.png"));
 	public static final String NAME = "Merge a TrackMate file";
 
 	public static final String KEY = "MERGE_OTHER_FILE";
 
-	public static final String INFO_TEXT = "<html>" + "Merge the current model with the data from another <br>"
+	public static final String INFO_TEXT = "<html>"
+			+ "Merge the current model with the data from another <br>"
 			+ "file, specified by the user. This is useful <i>e.g.</i> <br>"
 			+ "if two operators have been annotating the same datasets <br>"
-			+ "and want to merge their work in a single file." + "<p>"
+			+ "and want to merge their work in a single file."
+			+ "<p>"
 			+ "Only the BCellobjects belonging to visible tracks are imported <br>"
 			+ "from the target file, which makes this action non-entirely <br>"
 			+ "symmetrical.  Numerical features are re-calculated using <br>"
-			+ "the current settings. There is no check that the imported <br>" + "data was generated on the raw source."
+			+ "the current settings. There is no check that the imported <br>"
+			+ "data was generated on the raw source."
 			+ "</html>";
 
 	private final Frame parent;
 
-	public MergeFileAction(final Frame parent) {
+	public MergeFileAction( final Frame parent )
+	{
 		this.parent = parent;
 	}
 
@@ -59,7 +62,7 @@ public class MergeFileAction extends AbstractTMAction {
 			file = new File(folder.getPath() + File.separator + "TrackMateData.xml");
 		}
 
-		final File tmpFile = IOUtils.askForFileForLoading(file, "Merge a TrackMate XML file", parent, logger);
+		final File tmpFile = IOUtils.askForFileForLoading( file, "Merge a TrackMate XML file", parent, logger );
 		if (null == tmpFile) {
 			return;
 		}
@@ -103,13 +106,12 @@ public class MergeFileAction extends AbstractTMAction {
 				BCellobject newBCellobject = null; // we keep a reference to the new BCellobject, needed below
 				for (final BCellobject oldBCellobject : BCellobjects) {
 					// An awkward way to avoid BCellobject ID conflicts after loading two files
-					newBCellobject = oldBCellobject;
+					newBCellobject = new BCellobject( oldBCellobject );
 					for (final String feature : oldBCellobject.getFeatures().keySet()) {
 						newBCellobject.putFeature(feature, oldBCellobject.getFeature(feature));
 					}
 					mapOldToNew.put(oldBCellobject, newBCellobject);
-					model.addBCellobjectTo(newBCellobject,
-							oldBCellobject.getFeature(BCellobject.POSITION_T).intValue());
+					model.addBCellobjectTo(newBCellobject, oldBCellobject.getFeature(BCellobject.POSITION_T).intValue());
 					nNewBCellobjects++;
 				}
 
@@ -148,33 +150,38 @@ public class MergeFileAction extends AbstractTMAction {
 
 	}
 
-	@Plugin(type = TrackMateActionFactory.class, visible = true)
-	public static class Factory implements TrackMateActionFactory {
+	@Plugin( type = TrackMateActionFactory.class, visible = true )
+	public static class Factory implements TrackMateActionFactory
+	{
 
 		@Override
-		public String getInfoText() {
+		public String getInfoText()
+		{
 			return INFO_TEXT;
 		}
 
 		@Override
-		public String getName() {
+		public String getName()
+		{
 			return NAME;
 		}
 
 		@Override
-		public String getKey() {
+		public String getKey()
+		{
 			return KEY;
 		}
 
 		@Override
-		public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
-			return new MergeFileAction(controller.getGUI());
+		public ImageIcon getIcon()
+		{
+			return ICON;
 		}
 
 		@Override
-		public ImageIcon getIcon() {
-			// TODO Auto-generated method stub
-			return null;
+		public TrackMateAction create( final TrackMateGUIController controller )
+		{
+			return new MergeFileAction( controller.getGUI() );
 		}
 	}
 }

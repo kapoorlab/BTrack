@@ -7,7 +7,6 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import Buddy.plugin.trackmate.BCellobjectCollection;
 import budDetector.Budpointobject;
 
 public class BUDDYModel {

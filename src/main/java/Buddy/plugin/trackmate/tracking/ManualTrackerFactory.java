@@ -3,86 +3,96 @@ package Buddy.plugin.trackmate.tracking;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.gui.ConfigurationPanel;
-import pluginTools.InteractiveBud;
 
 import java.util.Map;
 
 import javax.swing.ImageIcon;
 
 import org.jdom2.Element;
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = BCellobjectTrackerFactory.class, priority = -1d)
-public class ManualTrackerFactory implements BCellobjectTrackerFactory {
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.HIGH )
+public class ManualTrackerFactory implements BCellobjectTrackerFactory
+{
 	public static final String TRACKER_KEY = "MANUAL_TRACKER";
 
 	public static final String NAME = "Manual tracking";
 
-	public static final String INFO_TEXT = "<html>" + "Choosing this tracker skips the automated tracking step <br>"
-			+ "and keeps the current annotation.</html>";
+	public static final String INFO_TEXT = "<html>" + "Choosing this tracker skips the automated tracking step <br>" + "and keeps the current annotation.</html>";
 
 	private String errorMessage;
 
 	@Override
-	public String getInfoText() {
+	public String getInfoText()
+	{
 		return INFO_TEXT;
 	}
 
 	@Override
-	public ImageIcon getIcon() {
+	public ImageIcon getIcon()
+	{
 		return null;
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return TRACKER_KEY;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return NAME;
 	}
 
 	@Override
-	public BCellobjectTracker create(final InteractiveBud parent, final Map<String, Object> settings) {
+	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	{
 		return null;
 	}
 
 	@Override
-	public ConfigurationPanel getTrackerConfigurationPanel(final Model model) {
+	public ConfigurationPanel getTrackerConfigurationPanel( final Model model )
+	{
 		return null;
 	}
 
 	@Override
-	public boolean marshall(final Map<String, Object> settings, final Element element) {
+	public boolean marshall( final Map< String, Object > settings, final Element element )
+	{
 		return true;
 	}
 
 	@Override
-	public boolean unmarshall(final Element element, final Map<String, Object> settings) {
+	public boolean unmarshall( final Element element, final Map< String, Object > settings )
+	{
 		return true;
 	}
 
 	@Override
-	public String toString(final Map<String, Object> sm) {
-		if (!checkSettingsValidity(sm)) {
-			return errorMessage;
-		}
+	public String toString( final Map< String, Object > sm )
+	{
+		if ( !checkSettingsValidity( sm ) ) { return errorMessage; }
 		return "  Manual tracking.\n";
 	}
 
 	@Override
-	public Map<String, Object> getDefaultSettings() {
+	public Map< String, Object > getDefaultSettings()
+	{
 		return null;
 	}
 
 	@Override
-	public boolean checkSettingsValidity(final Map<String, Object> settings) {
+	public boolean checkSettingsValidity( final Map< String, Object > settings )
+	{
 		return true;
 	}
 
 	@Override
-	public String getErrorMessage() {
+	public String getErrorMessage()
+	{
 		return errorMessage;
 	}
 

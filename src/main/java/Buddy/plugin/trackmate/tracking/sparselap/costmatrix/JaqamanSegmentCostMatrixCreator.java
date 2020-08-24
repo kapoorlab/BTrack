@@ -15,6 +15,11 @@ import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_
 import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
 import static Buddy.plugin.trackmate.util.TMUtils.checkMapKeys;
 import static Buddy.plugin.trackmate.util.TMUtils.checkParameter;
+import Buddy.plugin.trackmate.tracking.sparselap.costfunction.CostFunction;
+import Buddy.plugin.trackmate.tracking.sparselap.costfunction.FeaturePenaltyCostFunction;
+import Buddy.plugin.trackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
+import Buddy.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
+import budDetector.BCellobject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,16 +29,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.algorithm.MultiThreaded;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
-
-import Buddy.plugin.trackmate.tracking.sparselap.costfunction.CostFunction;
-import Buddy.plugin.trackmate.tracking.sparselap.costfunction.FeaturePenaltyCostFunction;
-import Buddy.plugin.trackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
-import Buddy.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
-import budDetector.BCellobject;
-import net.imglib2.algorithm.MultiThreaded;
 
 /**
  * This class generates the top-left quadrant of the LAP segment linking cost
@@ -53,11 +51,12 @@ import net.imglib2.algorithm.MultiThreaded;
  * @author Jean-Yves Tinevez - 2014
  * 
  */
-public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCellobject, BCellobject>, MultiThreaded {
+public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< BCellobject, BCellobject >, MultiThreaded
+{
 
 	private static final String BASE_ERROR_MESSAGE = "[JaqamanSegmentCostMatrixCreator] ";
 
-	private final Map<String, Object> settings;
+	private final Map< String, Object > settings;
 
 	private String errorMessage;
 
@@ -65,32 +64,34 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 
 	private long processingTime;
 
-	private List<BCellobject> uniqueSources;
+	private List< BCellobject > uniqueSources;
 
-	private List<BCellobject> uniqueTargets;
+	private List< BCellobject > uniqueTargets;
 
-	private final Graph<BCellobject, DefaultWeightedEdge> graph;
+	private final Graph< BCellobject, DefaultWeightedEdge > graph;
 
 	private double alternativeCost = -1;
 
 	private int numThreads;
 
 	/**
-	 * Instantiates a cost matrix creator for the top-left quadrant of the segment
-	 * linking cost matrix.
+	 * Instantiates a cost matrix creator for the top-left quadrant of the
+	 * segment linking cost matrix.
 	 * 
 	 */
-	public JaqamanSegmentCostMatrixCreator(final SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> graph2,
-			final Map<String, Object> settings) {
-		this.graph = graph2;
+	public JaqamanSegmentCostMatrixCreator( final Graph< BCellobject, DefaultWeightedEdge > graph, final Map< String, Object > settings )
+	{
+		this.graph = graph;
 		this.settings = settings;
 		setNumThreads();
 	}
 
 	@Override
-	public boolean checkInput() {
+	public boolean checkInput()
+	{
 		final StringBuilder str = new StringBuilder();
-		if (!checkSettingsValidity(settings, str)) {
+		if ( !checkSettingsValidity( settings, str ) )
+		{
 			errorMessage = BASE_ERROR_MESSAGE + "Incorrect settings map:\n" + str.toString();
 			return false;
 		}
@@ -98,12 +99,14 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 	}
 
 	@Override
-	public String getErrorMessage() {
+	public String getErrorMessage()
+	{
 		return errorMessage;
 	}
 
 	@Override
-	public boolean process() {
+	public boolean process()
+	{
 		final long start = System.currentTimeMillis();
 
 		/*
@@ -111,41 +114,40 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 		 */
 
 		// Gap closing.
-		@SuppressWarnings("unchecked")
-		final Map<String, Double> gcFeaturePenalties = (Map<String, Double>) settings
-				.get(KEY_GAP_CLOSING_FEATURE_PENALTIES);
-		final CostFunction<BCellobject, BCellobject> gcCostFunction = getCostFunctionFor(gcFeaturePenalties);
-		final int maxFrameInterval = (Integer) settings.get(KEY_GAP_CLOSING_MAX_FRAME_GAP);
-		final double gcMaxDistance = (Double) settings.get(KEY_GAP_CLOSING_MAX_DISTANCE);
+		@SuppressWarnings( "unchecked" )
+		final Map< String, Double > gcFeaturePenalties = ( Map< String, Double > ) settings.get( KEY_GAP_CLOSING_FEATURE_PENALTIES );
+		final CostFunction< BCellobject, BCellobject > gcCostFunction = getCostFunctionFor( gcFeaturePenalties );
+		final int maxFrameInterval = ( Integer ) settings.get( KEY_GAP_CLOSING_MAX_FRAME_GAP );
+		final double gcMaxDistance = ( Double ) settings.get( KEY_GAP_CLOSING_MAX_DISTANCE );
 		final double gcCostThreshold = gcMaxDistance * gcMaxDistance;
-		final boolean allowGapClosing = (Boolean) settings.get(KEY_ALLOW_GAP_CLOSING);
+		final boolean allowGapClosing = ( Boolean ) settings.get( KEY_ALLOW_GAP_CLOSING );
 
 		// Merging
-		@SuppressWarnings("unchecked")
-		final Map<String, Double> mFeaturePenalties = (Map<String, Double>) settings.get(KEY_MERGING_FEATURE_PENALTIES);
-		final CostFunction<BCellobject, BCellobject> mCostFunction = getCostFunctionFor(mFeaturePenalties);
-		final double mMaxDistance = (Double) settings.get(KEY_MERGING_MAX_DISTANCE);
+		@SuppressWarnings( "unchecked" )
+		final Map< String, Double > mFeaturePenalties = ( Map< String, Double > ) settings.get( KEY_MERGING_FEATURE_PENALTIES );
+		final CostFunction< BCellobject, BCellobject > mCostFunction = getCostFunctionFor( mFeaturePenalties );
+		final double mMaxDistance = ( Double ) settings.get( KEY_MERGING_MAX_DISTANCE );
 		final double mCostThreshold = mMaxDistance * mMaxDistance;
-		final boolean allowMerging = (Boolean) settings.get(KEY_ALLOW_TRACK_MERGING);
+		final boolean allowMerging = ( Boolean ) settings.get( KEY_ALLOW_TRACK_MERGING );
 
 		// Splitting
-		@SuppressWarnings("unchecked")
-		final Map<String, Double> sFeaturePenalties = (Map<String, Double>) settings
-				.get(KEY_SPLITTING_FEATURE_PENALTIES);
-		final CostFunction<BCellobject, BCellobject> sCostFunction = getCostFunctionFor(sFeaturePenalties);
-		final boolean allowSplitting = (Boolean) settings.get(KEY_ALLOW_TRACK_SPLITTING);
-		final double sMaxDistance = (Double) settings.get(KEY_SPLITTING_MAX_DISTANCE);
+		@SuppressWarnings( "unchecked" )
+		final Map< String, Double > sFeaturePenalties = ( Map< String, Double > ) settings.get( KEY_SPLITTING_FEATURE_PENALTIES );
+		final CostFunction< BCellobject, BCellobject > sCostFunction = getCostFunctionFor( sFeaturePenalties );
+		final boolean allowSplitting = ( Boolean ) settings.get( KEY_ALLOW_TRACK_SPLITTING );
+		final double sMaxDistance = ( Double ) settings.get( KEY_SPLITTING_MAX_DISTANCE );
 		final double sCostThreshold = sMaxDistance * sMaxDistance;
 
 		// Alternative cost
-		final double alternativeCostFactor = (Double) settings.get(KEY_ALTERNATIVE_LINKING_COST_FACTOR);
-		final double percentile = (Double) settings.get(KEY_CUTOFF_PERCENTILE);
+		final double alternativeCostFactor = ( Double ) settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
+		final double percentile = ( Double ) settings.get( KEY_CUTOFF_PERCENTILE );
 
 		// Do we have to work?
-		if (!allowGapClosing && !allowSplitting && !allowMerging) {
+		if ( !allowGapClosing && !allowSplitting && !allowMerging )
+		{
 			uniqueSources = Collections.emptyList();
 			uniqueTargets = Collections.emptyList();
-			scm = new SparseCostMatrix(new double[0], new int[0], new int[0], 0);
+			scm = new SparseCostMatrix( new double[ 0 ], new int[ 0 ], new int[ 0 ], 0 );
 			return true;
 		}
 
@@ -155,23 +157,27 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 
 		final boolean mergingOrSplitting = allowMerging || allowSplitting;
 
-		final GraphSegmentSplitter segmentSplitter = new GraphSegmentSplitter(graph, mergingOrSplitting);
-		final List<BCellobject> segmentEnds = segmentSplitter.getSegmentEnds();
-		final List<BCellobject> segmentStarts = segmentSplitter.getSegmentStarts();
+		final GraphSegmentSplitter segmentSplitter = new GraphSegmentSplitter( graph, mergingOrSplitting );
+		final List< BCellobject > segmentEnds = segmentSplitter.getSegmentEnds();
+		final List< BCellobject > segmentStarts = segmentSplitter.getSegmentStarts();
 
 		/*
-		 * Generate all middle points list. We have to sort it by the same order we will
-		 * sort the unique list of targets, otherwise the SCM will complains it does not
-		 * receive columns in the right order.
+		 * Generate all middle points list. We have to sort it by the same order
+		 * we will sort the unique list of targets, otherwise the SCM will
+		 * complains it does not receive columns in the right order.
 		 */
-		final List<BCellobject> allMiddles;
-		if (mergingOrSplitting) {
-			final List<List<BCellobject>> segmentMiddles = segmentSplitter.getSegmentMiddles();
-			allMiddles = new ArrayList<>();
-			for (final List<BCellobject> segment : segmentMiddles) {
-				allMiddles.addAll(segment);
+		final List< BCellobject > allMiddles;
+		if ( mergingOrSplitting )
+		{
+			final List< List< BCellobject > > segmentMiddles = segmentSplitter.getSegmentMiddles();
+			allMiddles = new ArrayList< >();
+			for ( final List< BCellobject > segment : segmentMiddles )
+			{
+				allMiddles.addAll( segment );
 			}
-		} else {
+		}
+		else
+		{
 			allMiddles = Collections.emptyList();
 		}
 
@@ -180,8 +186,8 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 		/*
 		 * Sources and targets.
 		 */
-		final ArrayList<BCellobject> sources = new ArrayList<>();
-		final ArrayList<BCellobject> targets = new ArrayList<>();
+		final ArrayList< BCellobject > sources = new ArrayList< >();
+		final ArrayList< BCellobject > targets = new ArrayList< >();
 		// Corresponding costs.
 		final ResizableDoubleArray linkCosts = new ResizableDoubleArray();
 
@@ -190,37 +196,45 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 		 * (gap-closing) then the segment middles (merging).
 		 */
 
-		final ExecutorService executorGCM = Executors.newFixedThreadPool(numThreads);
-		for (final BCellobject source : segmentEnds) {
-			executorGCM.submit(new Runnable() {
+		final ExecutorService executorGCM = Executors.newFixedThreadPool( numThreads );
+		for ( final BCellobject source : segmentEnds )
+		{
+			executorGCM.submit( new Runnable()
+			{
 				@Override
-				public void run() {
-					final int sourceFrame = source.getFeature(BCellobject.POSITION_T).intValue();
+				public void run()
+				{
+					final int sourceFrame = source.getFeature( BCellobject.POSITION_T ).intValue();
 
 					/*
 					 * Iterate over segment starts - GAP-CLOSING.
 					 */
 
-					if (allowGapClosing) {
-						for (final BCellobject target : segmentStarts) {
+					if ( allowGapClosing )
+					{
+						for ( final BCellobject target : segmentStarts )
+						{
 							// Check frame interval, must be within user
 							// specification.
-							final int targetFrame = target.getFeature(BCellobject.POSITION_T).intValue();
+							final int targetFrame = target.getFeature( BCellobject.POSITION_T ).intValue();
 							final int tdiff = targetFrame - sourceFrame;
-							if (tdiff < 1 || tdiff > maxFrameInterval) {
+							if ( tdiff < 1 || tdiff > maxFrameInterval )
+							{
 								continue;
 							}
 
 							// Check max distance
-							final double cost = gcCostFunction.linkingCost(source, target);
-							if (cost > gcCostThreshold) {
+							final double cost = gcCostFunction.linkingCost( source, target );
+							if ( cost > gcCostThreshold )
+							{
 								continue;
 							}
 
-							synchronized (lock) {
-								sources.add(source);
-								targets.add(target);
-								linkCosts.add(cost);
+							synchronized ( lock )
+							{
+								sources.add( source );
+								targets.add( target );
+								linkCosts.add( cost );
 							}
 						}
 					}
@@ -229,35 +243,43 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 					 * Iterate over middle points - MERGING.
 					 */
 
-					if (allowMerging) {
-						for (final BCellobject target : allMiddles) {
+					if ( allowMerging )
+					{
+						for ( final BCellobject target : allMiddles )
+						{
 							// Check frame interval, must be 1.
-							final int targetFrame = target.getFeature(BCellobject.POSITION_T).intValue();
+							final int targetFrame = target.getFeature( BCellobject.POSITION_T ).intValue();
 							final int tdiff = targetFrame - sourceFrame;
-							if (tdiff != 1) {
+							if ( tdiff != 1 )
+							{
 								continue;
 							}
 
 							// Check max distance
-							final double cost = mCostFunction.linkingCost(source, target);
-							if (cost > mCostThreshold) {
+							final double cost = mCostFunction.linkingCost( source, target );
+							if ( cost > mCostThreshold )
+							{
 								continue;
 							}
 
-							synchronized (lock) {
-								sources.add(source);
-								targets.add(target);
-								linkCosts.add(cost);
+							synchronized ( lock )
+							{
+								sources.add( source );
+								targets.add( target );
+								linkCosts.add( cost );
 							}
 						}
 					}
 				}
-			});
+			} );
 		}
 		executorGCM.shutdown();
-		try {
-			executorGCM.awaitTermination(1, TimeUnit.DAYS);
-		} catch (final InterruptedException e) {
+		try
+		{
+			executorGCM.awaitTermination( 1, TimeUnit.DAYS );
+		}
+		catch ( final InterruptedException e )
+		{
 			errorMessage = BASE_ERROR_MESSAGE + e.getMessage();
 			return false;
 		}
@@ -265,50 +287,64 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 		/*
 		 * Iterate over middle points targeting segment starts - SPLITTING
 		 */
-		if (allowSplitting) {
-			final ExecutorService executorS = Executors.newFixedThreadPool(numThreads);
-			for (final BCellobject source : allMiddles) {
-				executorS.submit(new Runnable() {
+		if ( allowSplitting )
+		{
+			final ExecutorService executorS = Executors.newFixedThreadPool( numThreads );
+			for ( final BCellobject source : allMiddles )
+			{
+				executorS.submit( new Runnable()
+				{
 					@Override
-					public void run() {
-						final int sourceFrame = source.getFeature(BCellobject.POSITION_T).intValue();
-						for (final BCellobject target : segmentStarts) {
+					public void run()
+					{
+						final int sourceFrame = source.getFeature( BCellobject.POSITION_T ).intValue();
+						for ( final BCellobject target : segmentStarts )
+						{
 							// Check frame interval, must be 1.
-							final int targetFrame = target.getFeature(BCellobject.POSITION_T).intValue();
+							final int targetFrame = target.getFeature( BCellobject.POSITION_T ).intValue();
 							final int tdiff = targetFrame - sourceFrame;
 
-							if (tdiff != 1) {
+							if ( tdiff != 1 )
+							{
 								continue;
 							}
 
 							// Check max distance
-							final double cost = sCostFunction.linkingCost(source, target);
-							if (cost > sCostThreshold) {
+							final double cost = sCostFunction.linkingCost( source, target );
+							if ( cost > sCostThreshold )
+							{
 								continue;
 							}
-							synchronized (lock) {
-								sources.add(source);
-								targets.add(target);
-								linkCosts.add(cost);
+							synchronized ( lock )
+							{
+								sources.add( source );
+								targets.add( target );
+								linkCosts.add( cost );
 							}
 						}
 					}
-				});
+				}
+						);
 			}
 			executorS.shutdown();
-			try {
-				executorS.awaitTermination(1, TimeUnit.DAYS);
-			} catch (final InterruptedException e) {
+			try
+			{
+				executorS.awaitTermination( 1, TimeUnit.DAYS );
+			}
+			catch ( final InterruptedException e )
+			{
 				errorMessage = BASE_ERROR_MESSAGE + e.getMessage();
 			}
 		}
 		linkCosts.trimToSize();
 
 		/*
-		 * Build a sparse cost matrix from this. If the accepted costs are not empty.
+		 * Build a sparse cost matrix from this. If the accepted costs are not
+		 * empty.
 		 */
 
-		if (sources.isEmpty() || targets.isEmpty()) {
+		if ( sources.isEmpty() || targets.isEmpty() )
+		{
 			uniqueSources = Collections.emptyList();
 			uniqueTargets = Collections.emptyList();
 			alternativeCost = Double.NaN;
@@ -316,11 +352,13 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 			/*
 			 * CAREFUL! We return null if no acceptable links are found.
 			 */
-		} else {
+		}
+		else
+		{
 
-			final DefaultCostMatrixCreator<BCellobject, BCellobject> creator = new DefaultCostMatrixCreator<>(sources,
-					targets, linkCosts.data, alternativeCostFactor, percentile);
-			if (!creator.checkInput() || !creator.process()) {
+			final DefaultCostMatrixCreator< BCellobject, BCellobject > creator = new DefaultCostMatrixCreator< >( sources, targets, linkCosts.data, alternativeCostFactor, percentile );
+			if ( !creator.checkInput() || !creator.process() )
+			{
 				errorMessage = "Linking track segments: " + creator.getErrorMessage();
 				return false;
 			}
@@ -339,103 +377,118 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator<BCello
 		return true;
 	}
 
-	protected CostFunction<BCellobject, BCellobject> getCostFunctionFor(final Map<String, Double> featurePenalties) {
+	protected CostFunction< BCellobject, BCellobject > getCostFunctionFor( final Map< String, Double > featurePenalties )
+	{
 		// Link Nick Perry original non sparse LAP framework.
-		final CostFunction<BCellobject, BCellobject> costFunction;
-		if (null == featurePenalties || featurePenalties.isEmpty()) {
+		final CostFunction< BCellobject, BCellobject > costFunction;
+		if ( null == featurePenalties || featurePenalties.isEmpty() )
+		{
 			costFunction = new SquareDistCostFunction();
-		} else {
-			costFunction = new FeaturePenaltyCostFunction(featurePenalties);
+		}
+		else
+		{
+			costFunction = new FeaturePenaltyCostFunction( featurePenalties );
 		}
 		return costFunction;
 	}
 
 	@Override
-	public SparseCostMatrix getResult() {
+	public SparseCostMatrix getResult()
+	{
 		return scm;
 	}
 
 	@Override
-	public List<BCellobject> getSourceList() {
+	public List< BCellobject > getSourceList()
+	{
 		return uniqueSources;
 	}
 
 	@Override
-	public List<BCellobject> getTargetList() {
+	public List< BCellobject > getTargetList()
+	{
 		return uniqueTargets;
 	}
 
 	@Override
-	public double getAlternativeCostForSource(final BCellobject source) {
+	public double getAlternativeCostForSource( final BCellobject source )
+	{
 		return alternativeCost;
 	}
 
 	@Override
-	public double getAlternativeCostForTarget(final BCellobject target) {
+	public double getAlternativeCostForTarget( final BCellobject target )
+	{
 		return alternativeCost;
 	}
 
 	@Override
-	public long getProcessingTime() {
+	public long getProcessingTime()
+	{
 		return processingTime;
 	}
 
-	private static final boolean checkSettingsValidity(final Map<String, Object> settings, final StringBuilder str) {
-		if (null == settings) {
-			str.append("Settings map is null.\n");
+	private static final boolean checkSettingsValidity( final Map< String, Object > settings, final StringBuilder str )
+	{
+		if ( null == settings )
+		{
+			str.append( "Settings map is null.\n" );
 			return false;
 		}
 
 		boolean ok = true;
 		// Gap-closing
-		ok = ok & checkParameter(settings, KEY_ALLOW_GAP_CLOSING, Boolean.class, str);
-		ok = ok & checkParameter(settings, KEY_GAP_CLOSING_MAX_DISTANCE, Double.class, str);
-		ok = ok & checkParameter(settings, KEY_GAP_CLOSING_MAX_FRAME_GAP, Integer.class, str);
-		ok = ok & checkFeatureMap(settings, KEY_GAP_CLOSING_FEATURE_PENALTIES, str);
+		ok = ok & checkParameter( settings, KEY_ALLOW_GAP_CLOSING, Boolean.class, str );
+		ok = ok & checkParameter( settings, KEY_GAP_CLOSING_MAX_DISTANCE, Double.class, str );
+		ok = ok & checkParameter( settings, KEY_GAP_CLOSING_MAX_FRAME_GAP, Integer.class, str );
+		ok = ok & checkFeatureMap( settings, KEY_GAP_CLOSING_FEATURE_PENALTIES, str );
 		// Splitting
-		ok = ok & checkParameter(settings, KEY_ALLOW_TRACK_SPLITTING, Boolean.class, str);
-		ok = ok & checkParameter(settings, KEY_SPLITTING_MAX_DISTANCE, Double.class, str);
-		ok = ok & checkFeatureMap(settings, KEY_SPLITTING_FEATURE_PENALTIES, str);
+		ok = ok & checkParameter( settings, KEY_ALLOW_TRACK_SPLITTING, Boolean.class, str );
+		ok = ok & checkParameter( settings, KEY_SPLITTING_MAX_DISTANCE, Double.class, str );
+		ok = ok & checkFeatureMap( settings, KEY_SPLITTING_FEATURE_PENALTIES, str );
 		// Merging
-		ok = ok & checkParameter(settings, KEY_ALLOW_TRACK_MERGING, Boolean.class, str);
-		ok = ok & checkParameter(settings, KEY_MERGING_MAX_DISTANCE, Double.class, str);
-		ok = ok & checkFeatureMap(settings, KEY_MERGING_FEATURE_PENALTIES, str);
+		ok = ok & checkParameter( settings, KEY_ALLOW_TRACK_MERGING, Boolean.class, str );
+		ok = ok & checkParameter( settings, KEY_MERGING_MAX_DISTANCE, Double.class, str );
+		ok = ok & checkFeatureMap( settings, KEY_MERGING_FEATURE_PENALTIES, str );
 		// Others
-		ok = ok & checkParameter(settings, KEY_ALTERNATIVE_LINKING_COST_FACTOR, Double.class, str);
-		ok = ok & checkParameter(settings, KEY_CUTOFF_PERCENTILE, Double.class, str);
+		ok = ok & checkParameter( settings, KEY_ALTERNATIVE_LINKING_COST_FACTOR, Double.class, str );
+		ok = ok & checkParameter( settings, KEY_CUTOFF_PERCENTILE, Double.class, str );
 
 		// Check keys
-		final List<String> mandatoryKeys = new ArrayList<>();
-		mandatoryKeys.add(KEY_ALLOW_GAP_CLOSING);
-		mandatoryKeys.add(KEY_GAP_CLOSING_MAX_DISTANCE);
-		mandatoryKeys.add(KEY_GAP_CLOSING_MAX_FRAME_GAP);
-		mandatoryKeys.add(KEY_ALLOW_TRACK_SPLITTING);
-		mandatoryKeys.add(KEY_SPLITTING_MAX_DISTANCE);
-		mandatoryKeys.add(KEY_ALLOW_TRACK_MERGING);
-		mandatoryKeys.add(KEY_MERGING_MAX_DISTANCE);
-		mandatoryKeys.add(KEY_ALTERNATIVE_LINKING_COST_FACTOR);
-		mandatoryKeys.add(KEY_CUTOFF_PERCENTILE);
-		final List<String> optionalKeys = new ArrayList<>();
-		optionalKeys.add(KEY_GAP_CLOSING_FEATURE_PENALTIES);
-		optionalKeys.add(KEY_SPLITTING_FEATURE_PENALTIES);
-		optionalKeys.add(KEY_MERGING_FEATURE_PENALTIES);
-		ok = ok & checkMapKeys(settings, mandatoryKeys, optionalKeys, str);
+		final List< String > mandatoryKeys = new ArrayList< >();
+		mandatoryKeys.add( KEY_ALLOW_GAP_CLOSING );
+		mandatoryKeys.add( KEY_GAP_CLOSING_MAX_DISTANCE );
+		mandatoryKeys.add( KEY_GAP_CLOSING_MAX_FRAME_GAP );
+		mandatoryKeys.add( KEY_ALLOW_TRACK_SPLITTING );
+		mandatoryKeys.add( KEY_SPLITTING_MAX_DISTANCE );
+		mandatoryKeys.add( KEY_ALLOW_TRACK_MERGING );
+		mandatoryKeys.add( KEY_MERGING_MAX_DISTANCE );
+		mandatoryKeys.add( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
+		mandatoryKeys.add( KEY_CUTOFF_PERCENTILE );
+		final List< String > optionalKeys = new ArrayList< >();
+		optionalKeys.add( KEY_GAP_CLOSING_FEATURE_PENALTIES );
+		optionalKeys.add( KEY_SPLITTING_FEATURE_PENALTIES );
+		optionalKeys.add( KEY_MERGING_FEATURE_PENALTIES );
+		ok = ok & checkMapKeys( settings, mandatoryKeys, optionalKeys, str );
 
 		return ok;
 	}
 
 	@Override
-	public void setNumThreads() {
+	public void setNumThreads()
+	{
 		this.numThreads = Runtime.getRuntime().availableProcessors();
 	}
 
 	@Override
-	public void setNumThreads(final int numThreads) {
+	public void setNumThreads( final int numThreads )
+	{
 		this.numThreads = numThreads;
 	}
 
 	@Override
-	public int getNumThreads() {
+	public int getNumThreads()
+	{
 		return numThreads;
 	}
 

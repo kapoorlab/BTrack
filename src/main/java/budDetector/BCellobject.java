@@ -38,6 +38,33 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	private String name;
 	
 	
+	public BCellobject( final RealLocalizable currentcell) {
+		
+		
+		
+		super(3);
+		this.ID = IDcounter.incrementAndGet();
+		putFeature( POSITION_X, Double.valueOf( currentcell.getDoublePosition(0) ) );
+		putFeature( POSITION_Y, Double.valueOf( currentcell.getDoublePosition(1) ) );
+		putFeature( POSITION_Z, Double.valueOf( currentcell.getDoublePosition(2) ) );
+		putFeature( Radi_X, Double.valueOf( 1 ) );
+		putFeature( Radi_Y, Double.valueOf( 1) );
+		putFeature( Radi_Z, Double.valueOf( 1 ) );
+		putFeature( Size, Double.valueOf( 1));
+		putFeature( INTENSITY, Double.valueOf( 1) );
+		
+		putFeature( distBud, Double.valueOf( closestBudPoint ) );
+		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
+		
+		this.mybud = null;
+		this.mybudpoints = null;
+		this.currentcell = null;
+		this.closestGrowthPoint = 0;
+		this.closestBudPoint = 0;
+		this.name = "ID" + ID;
+		
+	}
+	
 	public BCellobject( final Cellobject currentcell,  final int time) {
 		
 		
@@ -91,6 +118,50 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		this.time = time;
 		this.name = "ID" + ID;
 		
+	}
+
+	public BCellobject( final int ID )
+	{
+		super( 3 );
+		this.ID = ID;
+		synchronized ( IDcounter )
+		{
+			if ( IDcounter.get() < ID )
+			{
+				IDcounter.set( ID );
+			}
+		}
+		
+		this.mybud = null;
+		this.mybudpoints = null;
+		this.currentcell = null;
+		this.closestGrowthPoint = 0;
+		this.closestBudPoint = 0;
+	}
+	
+	
+	public BCellobject( final double x, final double y, final double z, final double radius,  final String name )
+	{
+		super( 3 );
+		this.ID = IDcounter.incrementAndGet();
+		putFeature( POSITION_X, Double.valueOf( x ) );
+		putFeature( POSITION_Y, Double.valueOf( y ) );
+		putFeature( POSITION_Z, Double.valueOf( z ) );
+		putFeature( Size, Double.valueOf( radius ) );
+		if ( null == name )
+		{
+			this.name = "ID" + ID;
+		}
+		else
+		{
+			this.name = name;
+		}
+		
+		this.mybud = null;
+		this.mybudpoints = null;
+		this.currentcell = null;
+		this.closestGrowthPoint = 0;
+		this.closestBudPoint = 0;
 	}
 
 	

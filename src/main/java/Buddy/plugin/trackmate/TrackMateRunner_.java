@@ -14,8 +14,8 @@ import java.util.Set;
 
 import Buddy.plugin.trackmate.action.ExportTracksToXML;
 import Buddy.plugin.trackmate.features.FeatureFilter;
+import Buddy.plugin.trackmate.features.BCellobject.BCellobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
-import Buddy.plugin.trackmate.features.spot.BCellobjectAnalyzerFactory;
 import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackBranchingAnalyzer;
 import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;

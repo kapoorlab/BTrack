@@ -26,20 +26,21 @@ import org.scijava.vecmath.Color4f;
 import org.scijava.vecmath.Point3d;
 import org.scijava.vecmath.Tuple3d;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.util.TMUtils;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
+import budDetector.BCellobject;
 import ij3d.ContentNode;
 import ij3d.TimelapseListener;
 
-public class TrackDisplayNode extends ContentNode implements TimelapseListener {
+public class TrackDisplayNode extends ContentNode implements TimelapseListener
+{
 
 	/** The model, needed to retrieve connectivity. */
 	private final Model model;
 
 	/** Hold the color and transparency of all BCellobjects for a given track. */
-	private final HashMap<Integer, Color> colors = new HashMap<>();
+	private final HashMap< Integer, Color > colors = new HashMap< >();
 
 	private int displayDepth = TrackMateModelView.DEFAULT_TRACK_DISPLAY_DEPTH;
 
@@ -48,8 +49,8 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	private int currentTimePoint = 0;
 
 	/**
-	 * Reference for each frame, then for each track, the line primitive indices of
-	 * edges present in that track and in that frame.
+	 * Reference for each frame, then for each track, the line primitive indices
+	 * of edges present in that track and in that frame.
 	 * <p>
 	 * For instance
 	 *
@@ -57,22 +58,22 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	 *  frameIndices.get(2).get(3) = { 5, 10 }
 	 * </pre>
 	 *
-	 * indicates that in the frame number 2, the track number 3 has 2 edges, that
-	 * are represented in the {@link LineArray} primitive by points with indices 5
-	 * and 10.
+	 * indicates that in the frame number 2, the track number 3 has 2 edges,
+	 * that are represented in the {@link LineArray} primitive by points with
+	 * indices 5 and 10.
 	 */
-	private HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> frameIndices;
+	private HashMap< Integer, HashMap< Integer, ArrayList< Integer > > > frameIndices;
 
 	/**
-	 * Dictionary referencing the line vertices corresponding to each edge, for each
-	 * track.
+	 * Dictionary referencing the line vertices corresponding to each edge, for
+	 * each track.
 	 */
-	private Map<Integer, HashMap<DefaultWeightedEdge, Integer>> edgeIndices;
+	private Map< Integer, HashMap< DefaultWeightedEdge, Integer > > edgeIndices;
 
 	/**
 	 * Primitives: one {@link LineArray} per track.
 	 */
-	private Map<Integer, LineArray> lines;
+	private Map< Integer, LineArray > lines;
 
 	/**
 	 * Switch used for display. Is the only child of this {@link ContentNode}.
@@ -87,22 +88,23 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	/**
 	 * Maps track IDs to their index in the switch mask.
 	 */
-	private HashMap<Integer, Integer> switchMaskIndex;
+	private HashMap< Integer, Integer > switchMaskIndex;
 
-	private Collection<DefaultWeightedEdge> edgeSelection;
+	private Collection< DefaultWeightedEdge > edgeSelection;
 
-	private HashMap<DefaultWeightedEdge, Color> previousEdgeHighlight;
+	private HashMap< DefaultWeightedEdge, Color > previousEdgeHighlight;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public TrackDisplayNode(final Model model) {
+	public TrackDisplayNode( final Model model )
+	{
 		this.model = model;
-		setCapability(ALLOW_CHILDREN_WRITE);
-		setCapability(ALLOW_CHILDREN_EXTEND);
+		setCapability( ALLOW_CHILDREN_WRITE );
+		setCapability( ALLOW_CHILDREN_EXTEND );
 		makeMeshes();
-		setTrackVisible(model.getTrackModel().trackIDs(true));
+		setTrackVisible( model.getTrackModel().trackIDs( true ) );
 	}
 
 	/*
@@ -110,231 +112,272 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	 */
 
 	/**
-	 * Set the visibility of the tracks which indices are given to true, and of all
-	 * other tracks to false.
+	 * Set the visibility of the tracks which indices are given to true, and of
+	 * all other tracks to false.
 	 */
-	public void setTrackVisible(final Collection<Integer> trackIDs) {
-		switchMask.set(0, model.getTrackModel().nTracks(false), false);
-		for (final Integer trackID : trackIDs) {
-			final int trackIndex = switchMaskIndex.get(trackID).intValue();
-			switchMask.set(trackIndex, true);
+	public void setTrackVisible( final Collection< Integer > trackIDs )
+	{
+		switchMask.set( 0, model.getTrackModel().nTracks( false ), false );
+		for ( final Integer trackID : trackIDs )
+		{
+			final int trackIndex = switchMaskIndex.get( trackID ).intValue();
+			switchMask.set( trackIndex, true );
 		}
-		trackSwitch.setChildMask(switchMask);
+		trackSwitch.setChildMask( switchMask );
 	}
 
-	public void setTrackDisplayMode(final int mode) {
+	public void setTrackDisplayMode( final int mode )
+	{
 		this.displayMode = mode;
-		if (displayMode == TrackMateModelView.TRACK_DISPLAY_MODE_WHOLE) {
+		if ( displayMode == TrackMateModelView.TRACK_DISPLAY_MODE_WHOLE )
+		{
 			final Color4f color = new Color4f();
-			for (final Integer trackID : lines.keySet()) {
-				final LineArray line = lines.get(trackID);
+			for ( final Integer trackID : lines.keySet() )
+			{
+				final LineArray line = lines.get( trackID );
 
-				for (int i = 0; i < line.getVertexCount(); i++) {
-					line.getColor(i, color);
+				for ( int i = 0; i < line.getVertexCount(); i++ )
+				{
+					line.getColor( i, color );
 					color.w = 1f;
-					line.setColor(i, color);
+					line.setColor( i, color );
 				}
 			}
 		}
 	}
 
-	public void setTrackDisplayDepth(final int displayDepth) {
+	public void setTrackDisplayDepth( final int displayDepth )
+	{
 		this.displayDepth = displayDepth;
 	}
 
-	void refresh() {
+	void refresh()
+	{
 		// Holder for passing values
 		final Color4f color = new Color4f();
-		switch (displayMode) {
+		switch ( displayMode )
+		{
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_WHOLE: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_WHOLE:
+		{
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY: {
-			if (null == edgeSelection)
+		case TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY:
+		{
+			if ( null == edgeSelection )
 				break;
 
 			// Make them all invisible.
-			for (final int frame : frameIndices.keySet()) {
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+			for ( final int frame : frameIndices.keySet() )
+			{
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = 0;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
 
 			// Restore visibility of selection.
-			for (final DefaultWeightedEdge edge : edgeSelection) {
-				final Integer trackID = model.getTrackModel().trackIDOf(edge);
-				final Integer index = edgeIndices.get(trackID).get(edge);
-				final LineArray line = lines.get(trackID);
-				if (null == line)
+			for ( final DefaultWeightedEdge edge : edgeSelection )
+			{
+				final Integer trackID = model.getTrackModel().trackIDOf( edge );
+				final Integer index = edgeIndices.get( trackID ).get( edge );
+				final LineArray line = lines.get( trackID );
+				if ( null == line )
 					continue;
 
-				final int frame = model.getTrackModel().getEdgeSource(edge).getFeature(BCellobject.POSITION_T)
-						.intValue();
-				final int frameDist = Math.abs(frame - currentTimePoint);
+				final int frame = model.getTrackModel().getEdgeSource( edge ).getFeature( BCellobject.POSITION_T ).intValue();
+				final int frameDist = Math.abs( frame  - currentTimePoint );
 				float tp;
-				if (frameDist > displayDepth)
+				if ( frameDist > displayDepth )
 					tp = 0f;
 				else
-					tp = 1f - (float) frameDist / displayDepth;
+					tp = 1f - ( float ) frameDist / displayDepth;
 
-				line.getColor(index, color);
+				line.getColor( index, color );
 				color.w = tp;
-				line.setColor(index, color);
-				line.setColor(index + 1, color);
+				line.setColor( index, color );
+				line.setColor( index + 1, color );
 			}
 
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL:
+		{
 			float tp;
 			int frameDist;
-			for (final int frame : frameIndices.keySet()) {
-				frameDist = Math.abs(frame - currentTimePoint);
-				if (frameDist > displayDepth)
+			for ( final int frame : frameIndices.keySet() )
+			{
+				frameDist = Math.abs( frame - currentTimePoint );
+				if ( frameDist > displayDepth )
 					tp = 0f;
 				else
-					tp = 1f - (float) frameDist / displayDepth;
+					tp = 1f - ( float ) frameDist / displayDepth;
 
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = tp;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_QUICK: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_QUICK:
+		{
 			float tp;
 			int frameDist;
-			for (final int frame : frameIndices.keySet()) {
-				frameDist = Math.abs(frame - currentTimePoint);
-				if (frameDist > displayDepth)
+			for ( final int frame : frameIndices.keySet() )
+			{
+				frameDist = Math.abs( frame - currentTimePoint );
+				if ( frameDist > displayDepth )
 					tp = 0f;
 				else
 					tp = 1f;
 
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = tp;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD:
+		{
 			float tp;
 			int frameDist;
-			for (final int frame : frameIndices.keySet()) {
+			for ( final int frame : frameIndices.keySet() )
+			{
 				frameDist = currentTimePoint - frame;
-				if (frameDist <= 0 || frameDist > displayDepth)
+				if ( frameDist <= 0 || frameDist > displayDepth )
 					tp = 0f;
 				else
-					tp = 1f - (float) frameDist / displayDepth;
+					tp = 1f - ( float ) frameDist / displayDepth;
 
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = tp;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD_QUICK: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD_QUICK:
+		{
 			float tp;
 			int frameDist;
-			for (final int frame : frameIndices.keySet()) {
+			for ( final int frame : frameIndices.keySet() )
+			{
 				frameDist = currentTimePoint - frame;
-				if (frameDist <= 0 || frameDist > displayDepth)
+				if ( frameDist <= 0 || frameDist > displayDepth )
 					tp = 0f;
 				else
 					tp = 1f;
 
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					if (null == line) {
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					if ( null == line )
+					{
 						continue;
 					}
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = tp;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD:
+		{
 			float tp;
 			int frameDist;
-			for (final int frame : frameIndices.keySet()) {
+			for ( final int frame : frameIndices.keySet() )
+			{
 				frameDist = frame - currentTimePoint;
-				if (frameDist < 0 || frameDist > displayDepth)
+				if ( frameDist < 0 || frameDist > displayDepth )
 					tp = 0f;
 				else
-					tp = 1f - (float) frameDist / displayDepth;
+					tp = 1f - ( float ) frameDist / displayDepth;
 
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					if (null == line) {
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					if ( null == line )
+					{
 						continue;
 					}
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = tp;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
 			break;
 		}
 
-		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD_QUICK: {
+		case TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_FORWARD_QUICK:
+		{
 			float tp;
 			int frameDist;
-			for (final int frame : frameIndices.keySet()) {
+			for ( final int frame : frameIndices.keySet() )
+			{
 				frameDist = frame - currentTimePoint;
-				if (frameDist < 0 || frameDist > displayDepth)
+				if ( frameDist < 0 || frameDist > displayDepth )
 					tp = 0f;
 				else
 					tp = 1f;
 
-				for (final Integer trackID : lines.keySet()) {
-					final LineArray line = lines.get(trackID);
-					if (null == line) {
+				for ( final Integer trackID : lines.keySet() )
+				{
+					final LineArray line = lines.get( trackID );
+					if ( null == line )
+					{
 						continue;
 					}
-					for (final Integer index : frameIndices.get(frame).get(trackID)) {
-						line.getColor(index, color);
+					for ( final Integer index : frameIndices.get( frame ).get( trackID ) )
+					{
+						line.getColor( index, color );
 						color.w = tp;
-						line.setColor(index, color);
-						line.setColor(index + 1, color);
+						line.setColor( index, color );
+						line.setColor( index + 1, color );
 					}
 				}
 			}
@@ -343,64 +386,63 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 		}
 
 		// Deal now with selection
-		if ((null != edgeSelection) && (displayMode != TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY)) {
+		if ( ( null != edgeSelection ) && ( displayMode != TrackMateModelView.TRACK_DISPLAY_MODE_SELECTION_ONLY ) )
+		{
 			// Restore previous display settings for previously highlighted
 			// edges
-			if (null != previousEdgeHighlight)
-				for (final DefaultWeightedEdge edge : previousEdgeHighlight.keySet())
-					setColor(edge, previousEdgeHighlight.get(edge));
+			if ( null != previousEdgeHighlight )
+				for ( final DefaultWeightedEdge edge : previousEdgeHighlight.keySet() )
+					setColor( edge, previousEdgeHighlight.get( edge ) );
 
 			// Store current color settings
-			previousEdgeHighlight = new HashMap<>();
-			for (final DefaultWeightedEdge edge : edgeSelection)
-				previousEdgeHighlight.put(edge, getColor(edge));
+			previousEdgeHighlight = new HashMap< >();
+			for ( final DefaultWeightedEdge edge : edgeSelection )
+				previousEdgeHighlight.put( edge, getColor( edge ) );
 
 			// Change edge color
 			final Color highlightColor = TrackMateModelView.DEFAULT_HIGHLIGHT_COLOR;
-			for (final DefaultWeightedEdge edge : edgeSelection)
-				setColor(edge, highlightColor);
+			for ( final DefaultWeightedEdge edge : edgeSelection )
+				setColor( edge, highlightColor );
 		}
 	}
 
 	/**
 	 * Sets the color of the given edge mesh.
 	 */
-	public void setColor(final DefaultWeightedEdge edge, final Color color) {
+	public void setColor( final DefaultWeightedEdge edge, final Color color )
+	{
 		// First, find to what track it belongs to
-		final int trackID = model.getTrackModel().trackIDOf(edge);
-		if (null == edgeIndices.get(trackID) || null == edgeIndices.get(trackID).get(edge))
+		final int trackID = model.getTrackModel().trackIDOf( edge );
+		if ( null == edgeIndices.get( trackID ) || null == edgeIndices.get( trackID ).get( edge ) )
 			return;
 
 		// Set color of corresponding line primitive
 		final Color4f color4 = new Color4f();
-		final int index = edgeIndices.get(trackID).get(edge);
-		final LineArray line = lines.get(trackID);
-		if (null == line) {
-			return;
-		}
-		line.getColor(index, color4);
-		final float[] val = color.getRGBColorComponents(null);
-		color4.x = val[0];
-		color4.y = val[1];
-		color4.z = val[2];
-		line.setColor(index, color4);
-		line.setColor(index + 1, color4);
+		final int index = edgeIndices.get( trackID ).get( edge );
+		final LineArray line = lines.get( trackID );
+		if ( null == line ) { return; }
+		line.getColor( index, color4 );
+		final float[] val = color.getRGBColorComponents( null );
+		color4.x = val[ 0 ];
+		color4.y = val[ 1 ];
+		color4.z = val[ 2 ];
+		line.setColor( index, color4 );
+		line.setColor( index + 1, color4 );
 	}
 
 	/**
 	 * Returns the color of the specified edge mesh.
 	 */
-	public Color getColor(final DefaultWeightedEdge edge) {
+	public Color getColor( final DefaultWeightedEdge edge )
+	{
 		// First, find to what track it belongs to
-		final int trackID = model.getTrackModel().trackIDOf(edge);
+		final int trackID = model.getTrackModel().trackIDOf( edge );
 		// Retrieve color from index
 		final Color4f color = new Color4f();
-		final int index = edgeIndices.get(trackID).get(edge);
-		final LineArray line = lines.get(trackID);
-		if (null == line) {
-			return null;
-		}
-		line.getColor(index, color);
+		final int index = edgeIndices.get( trackID ).get( edge );
+		final LineArray line = lines.get( trackID );
+		if ( null == line ) { return null; }
+		line.getColor( index, color );
 		return color.get();
 	}
 
@@ -409,7 +451,8 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	 */
 
 	@Override
-	public void timepointChanged(final int timepoint) {
+	public void timepointChanged( final int timepoint )
+	{
 		this.currentTimePoint = timepoint;
 		refresh();
 	}
@@ -418,113 +461,121 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	 * PRIVATE METHODS
 	 */
 
-	protected void makeMeshes() {
+	protected void makeMeshes()
+	{
 
-		this.trackSwitch = new Switch(Switch.CHILD_MASK);
-		trackSwitch.setCapability(Switch.ALLOW_SWITCH_WRITE);
-		trackSwitch.setCapability(Group.ALLOW_CHILDREN_WRITE);
-		trackSwitch.setCapability(Group.ALLOW_CHILDREN_EXTEND);
+		this.trackSwitch = new Switch( Switch.CHILD_MASK );
+		trackSwitch.setCapability( Switch.ALLOW_SWITCH_WRITE );
+		trackSwitch.setCapability( Group.ALLOW_CHILDREN_WRITE );
+		trackSwitch.setCapability( Group.ALLOW_CHILDREN_EXTEND );
 		this.switchMask = new BitSet();
 
 		// All edges of ALL tracks
-		final int ntracks = model.getTrackModel().nTracks(false);
+		final int ntracks = model.getTrackModel().nTracks( false );
 
 		// Instantiate refs fields
 		final int nframes = model.getBCellobjects().keySet().size();
-		frameIndices = new HashMap<>(nframes, 1); // optimum
-		for (final int frameIndex : model.getBCellobjects().keySet()) {
-			frameIndices.put(frameIndex, new HashMap<Integer, ArrayList<Integer>>(ntracks));
-			for (final Integer trackID : model.getTrackModel().trackIDs(true)) {
-				frameIndices.get(frameIndex).put(trackID, new ArrayList<Integer>());
+		frameIndices = new HashMap< >( nframes, 1 ); // optimum
+		for ( final int frameIndex : model.getBCellobjects().keySet() )
+		{
+			frameIndices.put( frameIndex, new HashMap< Integer, ArrayList< Integer > >( ntracks ) );
+			for ( final Integer trackID : model.getTrackModel().trackIDs( true ) )
+			{
+				frameIndices.get( frameIndex ).put( trackID, new ArrayList< Integer >() );
 			}
 		}
-		edgeIndices = new HashMap<>(ntracks);
-		for (final Integer trackID : model.getTrackModel().trackIDs(true)) {
-			final int nedges = model.getTrackModel().trackEdges(trackID).size();
-			edgeIndices.put(trackID, new HashMap<DefaultWeightedEdge, Integer>(nedges, 1));
+		edgeIndices = new HashMap< >( ntracks );
+		for ( final Integer trackID : model.getTrackModel().trackIDs( true ) )
+		{
+			final int nedges = model.getTrackModel().trackEdges( trackID ).size();
+			edgeIndices.put( trackID, new HashMap< DefaultWeightedEdge, Integer >( nedges, 1 ) );
 		}
-		lines = new HashMap<>(ntracks);
+		lines = new HashMap< >( ntracks );
 
 		// Holder for coordinates (array ref will not be used, just its
 		// elements)
-		double[] coordinates = new double[3];
+		double[] coordinates = new double[ 3 ];
 
 		// Common line appearance
 		final Appearance appearance = new Appearance();
-		final LineAttributes lineAtts = new LineAttributes(4f, LineAttributes.PATTERN_SOLID, true);
-		appearance.setLineAttributes(lineAtts);
-		final TransparencyAttributes transAtts = new TransparencyAttributes(TransparencyAttributes.BLENDED, 0.2f);
-		appearance.setTransparencyAttributes(transAtts);
+		final LineAttributes lineAtts = new LineAttributes( 4f, LineAttributes.PATTERN_SOLID, true );
+		appearance.setLineAttributes( lineAtts );
+		final TransparencyAttributes transAtts = new TransparencyAttributes( TransparencyAttributes.BLENDED, 0.2f );
+		appearance.setTransparencyAttributes( transAtts );
 		final RenderingAttributes renderingAtts = new RenderingAttributes();
-		renderingAtts.setAlphaTestFunction(RenderingAttributes.GREATER_OR_EQUAL);
-		renderingAtts.setAlphaTestValue(0.3f);
-		appearance.setRenderingAttributes(renderingAtts);
+		renderingAtts.setAlphaTestFunction( RenderingAttributes.GREATER_OR_EQUAL );
+		renderingAtts.setAlphaTestValue( 0.3f );
+		appearance.setRenderingAttributes( renderingAtts );
 
 		// Iterate over each track
-		switchMaskIndex = new HashMap<>(ntracks);
+		switchMaskIndex = new HashMap< >( ntracks );
 		int trackIndex = 0;
-		for (final Integer trackID : model.getTrackModel().trackIDs(true)) {
-			switchMaskIndex.put(trackID, trackIndex++);
+		for ( final Integer trackID : model.getTrackModel().trackIDs( true ) )
+		{
+			switchMaskIndex.put( trackID, trackIndex++ );
 
-			final Set<DefaultWeightedEdge> track = model.getTrackModel().trackEdges(trackID);
+			final Set< DefaultWeightedEdge > track = model.getTrackModel().trackEdges( trackID );
 
 			// One line object to display all edges of one track
-			final LineArray line = new LineArray(2 * track.size(), GeometryArray.COORDINATES | GeometryArray.COLOR_4);
-			line.setCapability(GeometryArray.ALLOW_COLOR_WRITE);
+			final LineArray line = new LineArray( 2 * track.size(), GeometryArray.COORDINATES | GeometryArray.COLOR_4 );
+			line.setCapability( GeometryArray.ALLOW_COLOR_WRITE );
 
 			// Color
-			Color trackColor = colors.get(trackID);
-			if (null == trackColor) {
+			Color trackColor = colors.get( trackID );
+			if ( null == trackColor )
+			{
 				trackColor = TrackMateModelView.DEFAULT_BCellobject_COLOR;
 			}
-			final Color4f color = new Color4f(trackColor);
+			final Color4f color = new Color4f( trackColor );
 			color.w = 1f; // opaque edge for now
 
 			// Iterate over track edge
 			int edgeIndex = 0;
-			for (final DefaultWeightedEdge edge : track) {
+			for ( final DefaultWeightedEdge edge : track )
+			{
 				// Find source and target
-				final BCellobject target = model.getTrackModel().getEdgeTarget(edge);
-				final BCellobject source = model.getTrackModel().getEdgeSource(edge);
+				final BCellobject target = model.getTrackModel().getEdgeTarget( edge );
+				final BCellobject source = model.getTrackModel().getEdgeSource( edge );
 
 				// Add coords and colors of each vertex
-				coordinates = new double[3];
-				TMUtils.localize(source, coordinates);
-				line.setCoordinate(edgeIndex, coordinates);
-				line.setColor(edgeIndex, color);
+				coordinates = new double[ 3 ];
+				TMUtils.localize( source, coordinates );
+				line.setCoordinate( edgeIndex, coordinates );
+				line.setColor( edgeIndex, color );
 				edgeIndex++;
-				coordinates = new double[3];
-				TMUtils.localize(target, coordinates);
-				line.setCoordinate(edgeIndex, coordinates);
-				line.setColor(edgeIndex, color);
+				coordinates = new double[ 3 ];
+				TMUtils.localize( target, coordinates );
+				line.setCoordinate( edgeIndex, coordinates );
+				line.setColor( edgeIndex, color );
 				edgeIndex++;
 
 				// Keep refs
-				edgeIndices.get(trackID).put(edge, edgeIndex - 2);
-				final int frame = source.getFeature(BCellobject.POSITION_T).intValue();
-				frameIndices.get(frame).get(trackID).add(edgeIndex - 2);
+				edgeIndices.get( trackID ).put( edge, edgeIndex - 2 );
+				final int frame = source.getFeature( BCellobject.POSITION_T ).intValue();
+				frameIndices.get( frame ).get( trackID ).add( edgeIndex - 2 );
 
 			} // Finished building this track's line
 
 			// Add primitive to the switch and to the ref list
-			lines.put(trackID, line);
-			trackSwitch.addChild(new Shape3D(line, appearance));
+			lines.put( trackID, line );
+			trackSwitch.addChild( new Shape3D( line, appearance ) );
 
 		} // Finish iterating over tracks
 
 		// Add main switch to this content
-		switchMask = new BitSet(ntracks);
-		switchMask.set(0, ntracks, true); // all visible
-		trackSwitch.setChildMask(switchMask);
+		switchMask = new BitSet( ntracks );
+		switchMask.set( 0, ntracks, true ); // all visible
+		trackSwitch.setChildMask( switchMask );
 
 		removeAllChildren();
 		final BranchGroup branchGroup = new BranchGroup();
-		branchGroup.setCapability(BranchGroup.ALLOW_DETACH);
-		branchGroup.addChild(trackSwitch);
-		addChild(branchGroup);
+		branchGroup.setCapability( BranchGroup.ALLOW_DETACH );
+		branchGroup.addChild( trackSwitch );
+		addChild( branchGroup );
 	}
 
-	public void setSelection(final Collection<DefaultWeightedEdge> edgeSelection) {
+	public void setSelection( final Collection< DefaultWeightedEdge > edgeSelection )
+	{
 		this.edgeSelection = edgeSelection;
 	}
 
@@ -534,27 +585,30 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void channelsUpdated(final boolean[] channels) {
-	}
+	public void channelsUpdated( final boolean[] channels )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void colorUpdated(final Color3f color) {
-	}
+	public void colorUpdated( final Color3f color )
+	{}
 
 	@Override
-	public void eyePtChanged(final View view) {
-	}
+	public void eyePtChanged( final View view )
+	{}
 
 	@Override
-	public void getCenter(final Tuple3d center) {
+	public void getCenter( final Tuple3d center )
+	{
 		double x = 0, y = 0, z = 0;
-		for (final Iterator<BCellobject> it = model.getBCellobjects().iterator(true); it.hasNext();) {
+		for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( true ); it.hasNext(); )
+		{
 			final BCellobject BCellobject = it.next();
-			x += BCellobject.getFeature(BCellobject.POSITION_X);
-			y += BCellobject.getFeature(BCellobject.POSITION_Y);
+			x += BCellobject.getFeature( BCellobject.POSITION_X );
+			y += BCellobject.getFeature( BCellobject.POSITION_Y );
+			z += BCellobject.getFeature( BCellobject.POSITION_Z );
 		}
-		final int nBCellobject = model.getBCellobjects().getNBCellobjects();
+		final int nBCellobject = model.getBCellobjects().getNBCellobjects(  );
 		x /= nBCellobject;
 		y /= nBCellobject;
 		z /= nBCellobject;
@@ -564,18 +618,22 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	}
 
 	@Override
-	public void getMax(final Tuple3d max) {
+	public void getMax( final Tuple3d max )
+	{
 		double xmax = Double.NEGATIVE_INFINITY;
 		double ymax = Double.NEGATIVE_INFINITY;
 		double zmax = Double.NEGATIVE_INFINITY;
 		double radius;
-		for (final Iterator<BCellobject> it = model.getBCellobjects().iterator(true); it.hasNext();) {
+		for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( true ); it.hasNext(); )
+		{
 			final BCellobject BCellobject = it.next();
-			radius = BCellobject.getFeature(BCellobject.Size);
-			if (xmax < BCellobject.getFeature(BCellobject.POSITION_X) + radius)
-				xmax = BCellobject.getFeature(BCellobject.POSITION_X) + radius;
-			if (ymax < BCellobject.getFeature(BCellobject.POSITION_Y) + radius)
-				ymax = BCellobject.getFeature(BCellobject.POSITION_Y) + radius;
+			radius = BCellobject.getFeature( BCellobject.Size );
+			if ( xmax < BCellobject.getFeature( BCellobject.POSITION_X ) + radius )
+				xmax = BCellobject.getFeature( BCellobject.POSITION_X ) + radius;
+			if ( ymax < BCellobject.getFeature( BCellobject.POSITION_Y ) + radius )
+				ymax = BCellobject.getFeature( BCellobject.POSITION_Y ) + radius;
+			if ( zmax < BCellobject.getFeature( BCellobject.POSITION_Z ) + radius )
+				zmax = BCellobject.getFeature( BCellobject.POSITION_Z ) + radius;
 		}
 		max.x = xmax;
 		max.y = ymax;
@@ -584,18 +642,22 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	}
 
 	@Override
-	public void getMin(final Tuple3d min) {
+	public void getMin( final Tuple3d min )
+	{
 		double xmin = Double.POSITIVE_INFINITY;
 		double ymin = Double.POSITIVE_INFINITY;
 		double zmin = Double.POSITIVE_INFINITY;
 		double radius;
-		for (final Iterator<BCellobject> it = model.getBCellobjects().iterator(true); it.hasNext();) {
+		for ( final Iterator< BCellobject > it = model.getBCellobjects().iterator( true ); it.hasNext(); )
+		{
 			final BCellobject BCellobject = it.next();
-			radius = BCellobject.getFeature(BCellobject.Size);
-			if (xmin > BCellobject.getFeature(BCellobject.POSITION_X) - radius)
-				xmin = BCellobject.getFeature(BCellobject.POSITION_X) - radius;
-			if (ymin > BCellobject.getFeature(BCellobject.POSITION_Y) - radius)
-				ymin = BCellobject.getFeature(BCellobject.POSITION_Y) - radius;
+			radius = BCellobject.getFeature( BCellobject.Size );
+			if ( xmin > BCellobject.getFeature( BCellobject.POSITION_X ) - radius )
+				xmin = BCellobject.getFeature( BCellobject.POSITION_X ) - radius;
+			if ( ymin > BCellobject.getFeature( BCellobject.POSITION_Y ) - radius )
+				ymin = BCellobject.getFeature( BCellobject.POSITION_Y ) - radius;
+			if ( zmin > BCellobject.getFeature( BCellobject.POSITION_Z ) - radius )
+				zmin = BCellobject.getFeature( BCellobject.POSITION_Z ) - radius;
 		}
 		min.x = xmin;
 		min.y = ymin;
@@ -603,48 +665,49 @@ public class TrackDisplayNode extends ContentNode implements TimelapseListener {
 	}
 
 	@Override
-	public float getVolume() {
+	public float getVolume()
+	{
 		final Point3d min = new Point3d();
 		final Point3d max = new Point3d();
-		getMin(min);
-		getMax(max);
-		max.sub(min);
-		return (float) (max.x * max.y * max.z);
+		getMin( min );
+		getMax( max );
+		max.sub( min );
+		return ( float ) ( max.x * max.y * max.z );
 	}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void shadeUpdated(final boolean shaded) {
-	}
+	public void shadeUpdated( final boolean shaded )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void thresholdUpdated(final int threshold) {
-	}
+	public void thresholdUpdated( final int threshold )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void transparencyUpdated(final float transparency) {
-	}
+	public void transparencyUpdated( final float transparency )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void lutUpdated(final int[] r, final int[] g, final int[] b, final int[] a) {
-	}
+	public void lutUpdated( final int[] r, final int[] g, final int[] b, final int[] a )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void swapDisplayedData(final String path, final String name) {
-	}
+	public void swapDisplayedData( final String path, final String name )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void restoreDisplayedData(final String path, final String name) {
-	}
+	public void restoreDisplayedData( final String path, final String name )
+	{}
 
 	/** Ignored for {@link TrackDisplayNode} */
 	@Override
-	public void clearDisplayedData() {
-	}
+	public void clearDisplayedData()
+	{}
 
 }

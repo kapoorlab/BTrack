@@ -14,19 +14,23 @@ import javax.swing.JOptionPane;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 
-public class GuiUtils {
-
+public class GuiUtils
+{
+	
 	/**
-	 * Returns the black color or white color depending on the specified background
-	 * color, to ensure proper readability of the text on said background.
+	 * Returns the black color or white color depending on the specified
+	 * background color, to ensure proper readability of the text on said
+	 * background.
 	 * 
 	 * @param backgroundColor
 	 *            the background color.
 	 * @return the black or white color.
 	 */
-	public static Color textColorForBackground(Color backgroundColor) {
-		if ((backgroundColor.getRed() * 0.299 + backgroundColor.getGreen() * 0.587
-				+ backgroundColor.getBlue() * 0.114) > 150)
+	public static Color textColorForBackground( Color backgroundColor )
+	{
+		if ( ( backgroundColor.getRed() * 0.299
+				+ backgroundColor.getGreen() * 0.587
+				+ backgroundColor.getBlue() * 0.114 ) > 150 )
 			return Color.BLACK;
 		else
 			return Color.WHITE;
@@ -35,52 +39,63 @@ public class GuiUtils {
 	/**
 	 * Positions a JFrame more or less cleverly next a {@link Component}.
 	 */
-	public static void positionWindow(final JFrame gui, final Component component) {
+	public static void positionWindow( final JFrame gui, final Component component )
+	{
 
-		if (null != component) {
+		if ( null != component )
+		{
 			// Get total size of all screens
 			final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			final GraphicsDevice[] gs = ge.getScreenDevices();
 			int screenWidth = 0;
-			for (int i = 0; i < gs.length; i++) {
-				final DisplayMode dm = gs[i].getDisplayMode();
+			for ( int i = 0; i < gs.length; i++ )
+			{
+				final DisplayMode dm = gs[ i ].getDisplayMode();
 				screenWidth += dm.getWidth();
 			}
 
 			final Point windowLoc = component.getLocation();
 			final Dimension windowSize = component.getSize();
 			final Dimension guiSize = gui.getSize();
-			if (guiSize.width > windowLoc.x) {
-				if (guiSize.width > screenWidth - (windowLoc.x + windowSize.width)) {
-					gui.setLocationRelativeTo(null); // give up
-				} else {
-					// put it to the right
-					gui.setLocation(windowLoc.x + windowSize.width, windowLoc.y);
+			if ( guiSize.width > windowLoc.x )
+			{
+				if ( guiSize.width > screenWidth - ( windowLoc.x + windowSize.width ) )
+				{
+					gui.setLocationRelativeTo( null ); // give up
 				}
-			} else {
+				else
+				{
+					// put it to the right
+					gui.setLocation( windowLoc.x + windowSize.width, windowLoc.y );
+				}
+			}
+			else
+			{
 				// put it to the left
-				gui.setLocation(windowLoc.x - guiSize.width, windowLoc.y);
+				gui.setLocation( windowLoc.x - guiSize.width, windowLoc.y );
 			}
 
-		} else {
-			gui.setLocationRelativeTo(null);
+		}
+		else
+		{
+			gui.setLocationRelativeTo( null );
 		}
 	}
 
-	public static final void userCheckImpDimensions(final ImagePlus imp) {
+	public static final void userCheckImpDimensions( final ImagePlus imp )
+	{
 		final int[] dims = imp.getDimensions();
-		if (dims[4] == 1 && dims[3] > 1) {
-			switch (JOptionPane
-					.showConfirmDialog(null,
-							"It appears this image has 1 timepoint but " + dims[3] + " slices.\n"
-									+ "Do you want to swap Z and T?",
-							"Z/T swapped?", JOptionPane.YES_NO_CANCEL_OPTION)) {
+		if ( dims[ 4 ] == 1 && dims[ 3 ] > 1 )
+		{
+			switch ( JOptionPane.showConfirmDialog( null, "It appears this image has 1 timepoint but " + dims[ 3 ] + " slices.\n" + "Do you want to swap Z and T?", "Z/T swapped?", JOptionPane.YES_NO_CANCEL_OPTION ) )
+			{
 			case JOptionPane.YES_OPTION:
-				imp.setDimensions(dims[2], dims[4], dims[3]);
+				imp.setDimensions( dims[ 2 ], dims[ 4 ], dims[ 3 ] );
 				final Calibration calibration = imp.getCalibration();
-				if (0. == calibration.frameInterval) {
+				if ( 0. == calibration.frameInterval )
+				{
 					calibration.frameInterval = 1;
-					calibration.setTimeUnit("frame");
+					calibration.setTimeUnit( "frame" );
 				}
 				break;
 

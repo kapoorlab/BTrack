@@ -18,19 +18,18 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import budDetector.BCellobject;
-import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.tracking.LAPUtils;
+import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
+import Buddy.plugin.trackmate.tracking.LAPUtils;
 import Buddy.plugin.trackmate.tracking.oldlap.costmatrix.LinkingCostMatrixCreator;
 import Buddy.plugin.trackmate.tracking.oldlap.costmatrix.TrackSegmentCostMatrixCreator;
 import Buddy.plugin.trackmate.tracking.oldlap.hungarian.AssignmentAlgorithm;
 import Buddy.plugin.trackmate.tracking.oldlap.hungarian.AssignmentProblem;
 import Buddy.plugin.trackmate.tracking.oldlap.hungarian.HungarianAlgorithm;
+import budDetector.BCellobject;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 import net.imglib2.multithreading.SimpleMultiThreading;
-import pluginTools.InteractiveBud;
 
 /**
  *
@@ -41,8 +40,9 @@ import pluginTools.InteractiveBud;
  * Problem.
  *
  * <p>
- * For reference, see: Jaqaman, K. et al. "Robust single-particle tracking in
- * live-cell time-lapse sequences." Nature Methods, 2008.
+ * For reference, see: Jaqaman, K. et al.
+ * "Robust single-particle tracking in live-cell time-lapse sequences." Nature
+ * Methods, 2008.
  *
  * <p>
  * In this tracking framework, tracking is divided into two steps:
@@ -90,10 +90,8 @@ import pluginTools.InteractiveBud;
  *
  * <ul>
  * <li>Linked end-to-tail (gap closing)</li>
- * <li>Split (the start of one track is linked to the middle of another
- * track)</li>
- * <li>Merged (the end of one track is linked to the middle of another
- * track</li>
+ * <li>Split (the start of one track is linked to the middle of another track)</li>
+ * <li>Merged (the end of one track is linked to the middle of another track</li>
  * <li>Terminated (track ends)</li>
  * <li>Initiated (track starts)</li>
  * </ul>
@@ -113,39 +111,39 @@ import pluginTools.InteractiveBud;
  *
  * @author Nicholas Perry
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings( "deprecation" )
 public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker {
 
 	private final static String BASE_ERROR_MESSAGE = "LAPTracker: ";
 	private static final boolean DEBUG = false;
 
 	/** Logger used to echo progress on tracking. */
-	protected Logger logger = Logger.VOID_LOGGER;
+	protected Logger logger	= Logger.VOID_LOGGER;
 
 	/** The cost matrix for linking individual track segments (step 2). */
 	protected double[][] segmentCosts = null;
 	/** Stores the objects to track as a list of BCellobjects per frame. */
 
 	/**
-	 * Stores whether the default cost matrices from the paper should be used, or if
-	 * the user will supply their own.
+	 * Stores whether the default cost matrices from the paper should be used,
+	 * or if the user will supply their own.
 	 */
 	protected boolean defaultCosts = true;
 	/**
 	 * Store the track segments computed during step (1) of the algorithm.
 	 * <p>
-	 * In individual segments, BCellobjects are put in a {@link SortedSet} so that
-	 * they are retrieved by frame order when iterated over.
+	 * In individual segments, BCellobjects are put in a {@link SortedSet} so that they
+	 * are retrieved by frame order when iterated over.
 	 * <p>
-	 * The segments are put in a list, for we need to have them indexed to build a
-	 * cost matrix for segments in the step (2) of the algorithm.
+	 * The segments are put in a list, for we need to have them indexed to build
+	 * a cost matrix for segments in the step (2) of the algorithm.
 	 */
 	protected List<SortedSet<BCellobject>> trackSegments = null;
 	/** Holds references to the middle BCellobjects in the track segments. */
 	protected List<BCellobject> middlePoints;
 	/**
-	 * Holds references to the middle BCellobjects considered for merging in the
-	 * track segments.
+	 * Holds references to the middle BCellobjects considered for merging in the track
+	 * segments.
 	 */
 	protected List<BCellobject> mergingMiddlePoints;
 	/**
@@ -159,23 +157,24 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 */
 	protected int[] mergingMiddlePointsSegmentIndices;
 	/**
-	 * Each index corresponds to a BCellobject in middleSplittingPoints, and holds
-	 * the track segment index that the middle point belongs to.
+	 * Each index corresponds to a BCellobject in middleSplittingPoints, and holds the
+	 * track segment index that the middle point belongs to.
 	 */
 	protected int[] splittingMiddlePointsSegmentIndices;
 	/** The graph this tracker will use to link BCellobjects. */
 	protected SimpleWeightedGraph<BCellobject, DefaultWeightedEdge> graph;
 	/** The BCellobject collection that will be linked in the graph. */
-	public final InteractiveBud parent;
+	protected final BCellobjectCollection BCellobjects;
 	/** The settings map that configures this tracker. */
-	protected final Map<String, Object> settings;
+	protected final Map< String, Object > settings;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public LAPTracker(final InteractiveBud parent, final Map<String, Object> settings) {
-		this.parent = parent;
+	public LAPTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	{
+		this.BCellobjects = BCellobjects;
 		this.settings = settings;
 	}
 
@@ -184,11 +183,11 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 */
 
 	/**
-	 * Hook for subclassers. Generate the assignment algorithm that will be used to
-	 * solve the {@link AssignmentProblem} held by this tracker.
+	 * Hook for subclassers. Generate the assignment algorithm that will be used
+	 * to solve the {@link AssignmentProblem} held by this tracker.
 	 * <p>
-	 * Here, by default, it returns the Hungarian algorithm implementation by Gary
-	 * Baker and Nick Perry that solves an assignment problem in O(n^4).
+	 * Here, by default, it returns the Hungarian algorithm implementation by
+	 * Gary Baker and Nick Perry that solves an assignment problem in O(n^4).
 	 */
 	protected AssignmentAlgorithm createAssignmentProblemSolver() {
 		return new HungarianAlgorithm();
@@ -204,7 +203,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 */
 	public void reset() {
 		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		final Iterator<BCellobject> it = parent.budcells.iterator(true);
+		final Iterator<BCellobject> it = BCellobjects.iterator(true);
 		while (it.hasNext()) {
 			graph.addVertex(it.next());
 		}
@@ -220,7 +219,8 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 * tracks.
 	 *
 	 * @param segmentCosts
-	 *            The cost matrix, with structure matching figure 1c in the paper.
+	 *            The cost matrix, with structure matching figure 1c in the
+	 *            paper.
 	 */
 	public void setSegmentCosts(final double[][] segmentCosts) {
 		this.segmentCosts = segmentCosts;
@@ -256,28 +256,27 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	}
 
 	/**
-	 * Use <b>only if the default cost matrices (from the paper) are to be used.</b>
+	 * Use <b>only if the default cost matrices (from the paper) are to be
+	 * used.</b>
 	 */
 	@Override
 	public boolean process() {
-
-		System.out.println(parent.budcells.keySet().size());
 		// Check that the objects list itself isn't null
-		if (null == parent.budcells) {
+		if (null == BCellobjects) {
 			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is null.";
 			return false;
 		}
 
 		// Check that the objects list contains inner collections.
-		if (parent.budcells.keySet().isEmpty()) {
+		if (BCellobjects.keySet().isEmpty()) {
 			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
 			return false;
 		}
 
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
-		for (final int frame : parent.budcells.keySet()) {
-			if (parent.budcells.getNBCellobjects(frame) > 0) {
+		for (final int frame : BCellobjects.keySet()) {
+			if (BCellobjects.getNBCellobjects(frame) > 0) {
 				empty = false;
 				break;
 			}
@@ -416,11 +415,9 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 
 		if (DEBUG) {
 			if (trackSegments.size() > 100) {
-				System.out.println("Final cost matrix is " + segmentCosts.length + " x " + segmentCosts[0].length
-						+ ".\n" + "Too big to display.");
+				System.out.println("Final cost matrix is " + segmentCosts.length + " x " + segmentCosts[0].length + ".\n" + "Too big to display.");
 			} else {
-				LAPUtils.displayCostMatrix(segmentCosts, trackSegments.size(), splittingMiddlePoints.size(),
-						blockingValue, finalTrackSolutions);
+				LAPUtils.displayCostMatrix(segmentCosts, trackSegments.size(), splittingMiddlePoints.size(), blockingValue, finalTrackSolutions);
 			}
 		}
 
@@ -433,16 +430,16 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	/**
 	 * Perform the frame to frame linking.
 	 * <p>
-	 * For each frame, compute the cost matrix to link each BCellobject to another
-	 * BCellobject in the next frame. Then compute the optimal track segments using
-	 * this cost matrix. Finally, update the graph with found links.
+	 * For each frame, compute the cost matrix to link each BCellobject to another BCellobject
+	 * in the next frame. Then compute the optimal track segments using this
+	 * cost matrix. Finally, update the graph with found links.
 	 */
 	public boolean solveLAPForTrackSegments() {
 		final double blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
 
 		// Prepare frame pairs in order, not necessarily separated by 1.
-		final ArrayList<int[]> framePairs = new ArrayList<>(parent.budcells.keySet().size() - 1);
-		final Iterator<Integer> frameIterator = parent.budcells.keySet().iterator();
+		final ArrayList<int[]> framePairs = new ArrayList<>(BCellobjects.keySet().size() - 1);
+		final Iterator<Integer> frameIterator = BCellobjects.keySet().iterator();
 		int frame0 = frameIterator.next();
 		int frame1;
 		while (frameIterator.hasNext()) { // ascending order
@@ -459,8 +456,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 		final AtomicInteger progress = new AtomicInteger(0);
 		for (int ithread = 0; ithread < threads.length; ithread++) {
 
-			threads[ithread] = new Thread(
-					"LAPTracker track segment linking thread " + (1 + ithread) + "/" + threads.length) {
+			threads[ithread] = new Thread("LAPTracker track segment linking thread " + (1 + ithread) + "/" + threads.length) {
 
 				@Override
 				public void run() {
@@ -472,23 +468,20 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 						final int lFrame1 = framePairs.get(i)[1];
 
 						// Get BCellobjects - we have to create a list from each content
-						final List<BCellobject> t0 = new ArrayList<>(parent.budcells.getNBCellobjects(lFrame0));
-						for (final Iterator<BCellobject> iterator = parent.budcells.iterator(lFrame0); iterator
-								.hasNext();) {
+						final List<BCellobject> t0 = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame0));
+						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame0); iterator.hasNext();) {
 							t0.add(iterator.next());
 
 						}
-						final List<BCellobject> t1 = new ArrayList<>(parent.budcells.getNBCellobjects(lFrame1));
-						for (final Iterator<BCellobject> iterator = parent.budcells.iterator(lFrame1); iterator
-								.hasNext();) {
+						final List<BCellobject> t1 = new ArrayList<>(BCellobjects.getNBCellobjects(lFrame1));
+						for (final Iterator<BCellobject> iterator = BCellobjects.iterator(lFrame1); iterator.hasNext();) {
 							t1.add(iterator.next());
 						}
 
 						// Create cost matrix
 						final double[][] costMatrix = createFrameToFrameLinkingCostMatrix(t0, t1, settings);
 
-						// Special case: top-left corner of the cost matrix is all blocked: we do
-						// nothing for this pair
+						// Special case: top-left corner of the cost matrix is all blocked: we do nothing for this pair
 						// We handle this special case here, because some solvers might hang with this.
 						boolean allBlocked = true;
 						for (int j = 0; j < t0.size(); j++) {
@@ -558,8 +551,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	 *            created
 	 * @return the cost matrix as an array of array of double
 	 */
-	protected double[][] createFrameToFrameLinkingCostMatrix(final List<BCellobject> t0, final List<BCellobject> t1,
-			final Map<String, Object> lSettings) {
+	protected double[][] createFrameToFrameLinkingCostMatrix(final List<BCellobject> t0, final List<BCellobject> t1, final Map<String, Object> lSettings) {
 		// Create cost matrix
 		final LinkingCostMatrixCreator objCosts = new LinkingCostMatrixCreator(t0, t1, lSettings);
 		if (!objCosts.checkInput() || !objCosts.process()) {
@@ -570,8 +562,8 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	}
 
 	/**
-	 * Computes and returns the optimal final track using the cost matrix segment
-	 * costs.
+	 * Computes and returns the optimal final track using the cost matrix
+	 * segment costs.
 	 *
 	 * @return <code>true</code> if this executes correctly, <code>false</code>
 	 *         otherwise.
@@ -586,12 +578,11 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	}
 
 	/**
-	 * Uses DFS approach to create a List of track segments from the overall result
-	 * of step 1
+	 * Uses DFS approach to create a List of track segments from the overall
+	 * result of step 1
 	 * <p>
 	 * We have recorded the tracks as edges in the track graph, we now turn them
-	 * into multiple explicit sets of BCellobjects, sorted by their
-	 * {@link BCellobject#FRAME}.
+	 * into multiple explicit sets of BCellobjects, sorted by their {@link BCellobject#FRAME}.
 	 */
 	private void compileTrackSegments() {
 		final ConnectivityInspector<BCellobject, DefaultWeightedEdge> inspector = new ConnectivityInspector<>(graph);
@@ -605,9 +596,9 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 	}
 
 	/**
-	 * Takes the solutions from the Hungarian algorithm, which are an int[][], and
-	 * appropriately links the track segments. Before this method is called, the
-	 * BCellobjects in the track segments are connected within themselves, but not
+	 * Takes the solutions from the Hungarian algorithm, which are an int[][],
+	 * and appropriately links the track segments. Before this method is called,
+	 * the BCellobjects in the track segments are connected within themselves, but not
 	 * between track segments.
 	 *
 	 * Thus, we only care here if the result was a 'gap closing,' 'merging,' or
@@ -626,9 +617,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 
 		if (DEBUG) {
 			System.out.println("-- DEBUG information from LAPTracker --");
-			System.out.println("Compiling final tracks with " + numTrackSegments + " segments, "
-					+ numMergingMiddlePoints + " merging BCellobject candidates, " + numSplittingMiddlePoints
-					+ " splitting BCellobject condidates.");
+			System.out.println("Compiling final tracks with " + numTrackSegments + " segments, " + numMergingMiddlePoints + " merging BCellobject candidates, " + numSplittingMiddlePoints + " splitting BCellobject condidates.");
 		}
 
 		for (final int[] solution : finalTrackSolutions) {
@@ -664,7 +653,8 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 						SortedSet<BCellobject> track = null;
 						int indexTrack = 0;
 						int indexBCellobject = 0;
-						for (final SortedSet<BCellobject> t : trackSegments) {
+						for (final SortedSet<BCellobject> t : trackSegments)
+						{
 							if (t.contains(middle)) {
 								track = t;
 								for (final BCellobject BCellobject : track) {
@@ -676,8 +666,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 							}
 							indexTrack++;
 						}
-						System.out.println("Merging from segment " + i + " end to BCellobject " + indexBCellobject
-								+ " in segment " + indexTrack + ".");
+						System.out.println("Merging from segment " + i + " end to BCellobject " + indexBCellobject + " in segment " + indexTrack + ".");
 					}
 
 				}
@@ -696,7 +685,8 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 						SortedSet<BCellobject> track = null;
 						int indexTrack = 0;
 						int indexBCellobject = 0;
-						for (final SortedSet<BCellobject> t : trackSegments) {
+						for (final SortedSet<BCellobject> t : trackSegments)
+						{
 							if (t.contains(mother)) {
 								track = t;
 								for (final BCellobject BCellobject : track) {
@@ -708,8 +698,7 @@ public class LAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCell
 							}
 							indexTrack++;
 						}
-						System.out.println("Splitting from BCellobject " + indexBCellobject + " in segment "
-								+ indexTrack + " to segment" + j + ".");
+						System.out.println("Splitting from BCellobject " + indexBCellobject + " in segment " + indexTrack + " to segment" + j + ".");
 					}
 				}
 			}

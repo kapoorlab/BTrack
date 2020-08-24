@@ -1,8 +1,7 @@
 package Buddy.plugin.trackmate.visualization;
 
-import budDetector.BCellobject;
-import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.Model;
+import budDetector.BCellobject;
 import ij.ImagePlus;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
@@ -24,15 +23,12 @@ public class ViewUtils {
 	private static final double TARGET_X_IMAGE_SIZE = 512;
 	private static final double TARGET_Z_IMAGE_SIZE = 128;
 
-	private ViewUtils() {
-	}
+	private ViewUtils() {}
 
-	public static final ImagePlus makeEmptyImagePlus(final int width, final int height, final int nslices,
-			final int nframes, final double[] calibration) {
-		final RandomAccessible<UnsignedByteType> randomAccessible = Views
-				.extendBorder(ArrayImgs.unsignedBytes(new long[] { 1, 1, 1, 1 }));
-		final Interval interval = new FinalInterval(width, height, nslices, nframes);
-		final RandomAccessibleInterval<UnsignedByteType> view = Views.interval(randomAccessible, interval);
+	public static final ImagePlus makeEmptyImagePlus(final int width, final int height, final int nslices, final int nframes, final double[] calibration) {
+		final RandomAccessible< UnsignedByteType > randomAccessible = Views.extendBorder( ArrayImgs.unsignedBytes( new long[] { 1, 1, 1, 1 } ) );
+		final Interval interval = new FinalInterval( width, height, nslices, nframes );
+		final RandomAccessibleInterval< UnsignedByteType > view = Views.interval( randomAccessible, interval );
 
 		final ImagePlus imp = ImageJFunctions.wrap(view, "blank");
 		imp.getCalibration().pixelWidth = calibration[0];
@@ -52,11 +48,10 @@ public class ViewUtils {
 		int nframes = 0;
 
 		for (final BCellobject BCellobject : model.getBCellobjects().iterable(true)) {
-			
-			double radiav = (BCellobject.getFeature(BCellobject.RADIUS[0])  +  BCellobject.getFeature(BCellobject.RADIUS[1])  +  BCellobject.getFeature(BCellobject.RADIUS[2]) )/ 3;
-			final double r = radiav;
+			final double r = BCellobject.getFeature(BCellobject.Size);
 			final double x = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_X));
 			final double y = Math.ceil(r + BCellobject.getFeature(BCellobject.POSITION_Y));
+			final double z = Math.ceil(BCellobject.getFeature(BCellobject.POSITION_Z));
 			final int t = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
 
 			if (x > maxX) {
@@ -65,7 +60,9 @@ public class ViewUtils {
 			if (y > maxY) {
 				maxY = y;
 			}
-
+			if (z > maxZ) {
+				maxZ = z;
+			}
 			if (t > nframes) {
 				nframes = t;
 			}
@@ -91,6 +88,5 @@ public class ViewUtils {
 		imp.getCalibration().setTimeUnit(model.getTimeUnits());
 		return imp;
 	}
-	
-	
+
 }

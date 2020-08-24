@@ -11,7 +11,8 @@ package Buddy.plugin.trackmate.tracking.sparselap.costfunction;
  * @param <J>
  *            the type of the targets.
  */
-public interface CostFunction<K, J> {
+public interface CostFunction< K, J >
+{
 
 	/**
 	 * Returns the cost to link two objects.
@@ -22,6 +23,6 @@ public interface CostFunction<K, J> {
 	 *            the target object.
 	 * @return the cost as a double.
 	 */
-	public double linkingCost(K source, J target);
+	public double linkingCost( K source, J target );
 
 }

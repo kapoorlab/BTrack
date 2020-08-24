@@ -3,14 +3,13 @@ package Buddy.plugin.trackmate.util;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.graph.TimeDirectedNeighborIndex;
+import budDetector.BCellobject;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-
-import budDetector.BCellobject;
 
 public class TrackNavigator {
 
@@ -211,8 +210,8 @@ public class TrackNavigator {
 	 */
 
 	/**
-	 * Return a meaningful BCellobject from the current selection, or
-	 * <code>null</code> if the selection is empty.
+	 * Return a meaningful BCellobject from the current selection, or <code>null</code>
+	 * if the selection is empty.
 	 */
 	private BCellobject getABCellobject() {
 		// Get it from BCellobject selection

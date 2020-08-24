@@ -10,67 +10,73 @@ import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import ij.gui.GenericDialog;
-import pluginTools.InteractiveBud;
 
-@Plugin(type = TrackMateActionFactory.class)
-public class ExtractTrackStackActionFactory implements TrackMateActionFactory {
+@Plugin( type = TrackMateActionFactory.class )
+public class ExtractTrackStackActionFactory implements TrackMateActionFactory
+{
 
 	private static double diameterFactor = 1.5d;
 
 	private static int dimChoice = 0;
 
 	@Override
-	public String getInfoText() {
+	public String getInfoText()
+	{
 		return ExtractTrackStackAction.INFO_TEXT;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return ExtractTrackStackAction.NAME;
 	}
 
 	@Override
-	public String getKey() {
+	public String getKey()
+	{
 		return ExtractTrackStackAction.KEY;
 	}
 
 	@Override
-	public TrackMateAction create(final InteractiveBud parent, final TrackMateGUIController controller) {
-		final GenericDialog dialog = new GenericDialog("Extract track stack", controller.getGUI());
+	public ImageIcon getIcon()
+	{
+		return ExtractTrackStackAction.ICON;
+	}
+
+	@Override
+	public TrackMateAction create( final TrackMateGUIController controller )
+	{
+		final GenericDialog dialog = new GenericDialog( "Extract track stack", controller.getGUI() );
 
 		// Radius factor
-		dialog.addSlider("Image size (spot\ndiameter units):", 0.1, 5.1, diameterFactor);
+		dialog.addSlider( "Image size (spot\ndiameter units):", 0.1, 5.1, diameterFactor );
 
 		// Central slice vs 3D
 		final String[] dimChoices = new String[] { "Central slice ", "3D" };
-		dialog.addRadioButtonGroup("Dimensionality:", dimChoices, 2, 1, dimChoices[dimChoice]);
+		dialog.addRadioButtonGroup( "Dimensionality:", dimChoices, 2, 1, dimChoices[ dimChoice ] );
 
 		// Show & Read user input
 		dialog.showDialog();
-		if (dialog.wasCanceled()) {
+		if ( dialog.wasCanceled() )
+		{
 			// Return dummy action.
-			return new TrackMateAction() {
+			return new TrackMateAction()
+			{
 				@Override
-				public void setLogger(final Logger logger) {
-				}
+				public void setLogger( final Logger logger )
+				{}
 
 				@Override
-				public void execute(final TrackMate trackmate) {
-				}
+				public void execute( final TrackMate trackmate )
+				{}
 			};
 		}
 
 		diameterFactor = dialog.getNextNumber();
-		dimChoice = Arrays.asList(dimChoices).indexOf(dialog.getNextRadioButton());
+		dimChoice = Arrays.asList( dimChoices ).indexOf( dialog.getNextRadioButton() );
 		final boolean do3D = dimChoice == 1;
 
-		return new ExtractTrackStackAction(parent, controller.getSelectionModel(), diameterFactor, do3D);
-	}
-
-	@Override
-	public ImageIcon getIcon() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExtractTrackStackAction( controller.getSelectionModel(), diameterFactor, do3D );
 	}
 
 }

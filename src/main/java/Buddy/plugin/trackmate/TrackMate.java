@@ -8,13 +8,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.util.VersionUtils;
 
 import budDetector.BCellobject;
-import greenDetector.Greenobject;
 import Buddy.plugin.trackmate.features.BCellobjectFeatureCalculator;
 import Buddy.plugin.trackmate.features.EdgeFeatureCalculator;
 import Buddy.plugin.trackmate.features.FeatureFilter;
 import Buddy.plugin.trackmate.features.TrackFeatureCalculator;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
-import Buddy.plugin.trackmate.util.GreenTMUtils;
 import Buddy.plugin.trackmate.util.TMUtils;
 import ij.gui.ShapeRoi;
 import net.imagej.ImgPlus;
@@ -143,36 +141,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	}
 	
 	
-	protected List<Greenobject> translateAndPruneGreenobjects(final List<Greenobject> GreenobjectsThisFrame,
-			final Settings lSettings) {
-
-		// Put them back in the right referential
-		final double[] calibration = GreenTMUtils.getSpatialCalibration(lSettings.imp);
-		GreenTMUtils.translateGreenobjects(GreenobjectsThisFrame, lSettings.xstart ,
-				lSettings.ystart , lSettings.zstart );
-		List<Greenobject> prunedGreenobjects;
-		// Prune if outside of ROI
-		if (lSettings.roi instanceof ShapeRoi) {
-			prunedGreenobjects = new ArrayList<>();
-			for (final Greenobject Greenobject : GreenobjectsThisFrame) {
-				if (lSettings.roi.contains(
-						(int) Math.round(Greenobject.getFeature(Greenobject.POSITION_X) ),
-						(int) Math.round(Greenobject.getFeature(Greenobject.POSITION_Y))))
-					prunedGreenobjects.add(Greenobject);
-			}
-		} else if (null != lSettings.polygon) {
-			prunedGreenobjects = new ArrayList<>();
-			for (final Greenobject Greenobject : GreenobjectsThisFrame) {
-				if (lSettings.polygon.contains(Greenobject.getFeature(Greenobject.POSITION_X) ,
-						Greenobject.getFeature(Greenobject.POSITION_Y) ))
-					prunedGreenobjects.add(Greenobject);
-			}
-		} else {
-			prunedGreenobjects = GreenobjectsThisFrame;
-		}
-		return prunedGreenobjects;
-	}
-
+	
 	/*
 	 * METHODS
 	 */
@@ -186,6 +155,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 		return settings;
 	}
 	
+	
+	public InteractiveBud getParent() {
+		
+		return parent;
+	}
 	
 
 	/*
@@ -288,7 +262,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	public boolean execTracking() {
 		final Logger logger = model.getLogger();
 		logger.log("Starting tracking process.\n");
-		final BCellobjectTracker tracker = settings.trackerFactory.create(parent, settings.trackerSettings);
+		final BCellobjectTracker tracker = settings.trackerFactory.create(parent.budcells, settings.trackerSettings);
 		tracker.setNumThreads(numThreads);
 		tracker.setLogger(logger);
 		if (tracker.checkInput() && tracker.process()) {

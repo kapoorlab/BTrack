@@ -17,31 +17,34 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
-import budDetector.BCellobject;
 import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.visualization.TrackMateModelView;
+import budDetector.BCellobject;
 
-@SuppressWarnings("unchecked")
-public class SearchBar extends JTextField {
+@SuppressWarnings( "unchecked" )
+public class SearchBar extends JTextField
+{
 	private static final long serialVersionUID = 1L;
 
-	private final static Font NORMAL_FONT = TrackMateWizard.FONT.deriveFont(10f);
+	private final static Font NORMAL_FONT = TrackMateWizard.FONT.deriveFont( 10f );
 
 	private final static Font NOTFOUND_FONT;
-	static {
-		@SuppressWarnings("rawtypes")
+	static
+	{
+		@SuppressWarnings( "rawtypes" )
 		final Map attributes = NORMAL_FONT.getAttributes();
-		attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-		attributes.put(TextAttribute.FOREGROUND, Color.RED.darker());
-		NOTFOUND_FONT = new Font(attributes);
+		attributes.put( TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON );
+		attributes.put( TextAttribute.FOREGROUND, Color.RED.darker() );
+		NOTFOUND_FONT = new Font( attributes );
 	}
 
-	private final PropertyChangeSupport observer = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport observer = new PropertyChangeSupport( this );
 
 	private final Model model;
 
 	private final TrackMateModelView view;
+
 
 	/**
 	 * Creates new form SearchBox
@@ -51,128 +54,152 @@ public class SearchBar extends JTextField {
 	 * @param view
 	 *            the view to update when a BCellobject is found.
 	 */
-	public SearchBar(final Model model, final TrackMateModelView view) {
+	public SearchBar( final Model model, final TrackMateModelView view )
+	{
 		this.model = model;
 		this.view = view;
-		putClientProperty("JTextField.variant", "search");
-		putClientProperty("JTextField.Search.Prompt", "Search");
-		setPreferredSize(new Dimension(80, 25));
-		setFont(NORMAL_FONT);
+		putClientProperty( "JTextField.variant", "search" );
+		putClientProperty( "JTextField.Search.Prompt", "Search" );
+		setPreferredSize( new Dimension( 80, 25 ) );
+		setFont( NORMAL_FONT );
 
-		addFocusListener(new java.awt.event.FocusAdapter() {
+		addFocusListener( new java.awt.event.FocusAdapter()
+		{
 			@Override
-			public void focusGained(final java.awt.event.FocusEvent evt) {
-				searchBoxFocusGained(evt);
+			public void focusGained( final java.awt.event.FocusEvent evt )
+			{
+				searchBoxFocusGained( evt );
 			}
 
 			@Override
-			public void focusLost(final java.awt.event.FocusEvent evt) {
-				searchBoxFocusLost(evt);
+			public void focusLost( final java.awt.event.FocusEvent evt )
+			{
+				searchBoxFocusLost( evt );
 			}
-		});
-		addKeyListener(new KeyAdapter() {
+		} );
+		addKeyListener( new KeyAdapter()
+		{
 			@Override
-			public void keyReleased(final KeyEvent e) {
-				searchBoxKey(e);
+			public void keyReleased( final KeyEvent e )
+			{
+				searchBoxKey( e );
 			}
-		});
-		observer.addPropertyChangeListener(new SearchAction());
+		} );
+		observer.addPropertyChangeListener( new SearchAction() );
 	}
 
-	private void searchBoxKey(final KeyEvent e) {
-		setFont(NORMAL_FONT);
-		if (getText().length() > 1 || e.getKeyCode() == KeyEvent.VK_ENTER) {
-			observer.firePropertyChange("Searching started", null, getText());
+	private void searchBoxKey( final KeyEvent e )
+	{
+		setFont( NORMAL_FONT );
+		if ( getText().length() > 1 || e.getKeyCode() == KeyEvent.VK_ENTER )
+		{
+			observer.firePropertyChange( "Searching started", null, getText() );
 		}
 	}
 
 	/**
-	 * @param evt
+	 * @param evt  
 	 */
-	private void searchBoxFocusGained(final java.awt.event.FocusEvent evt) {
-		setFont(NORMAL_FONT);
-		setFont(getFont().deriveFont(Font.PLAIN));
-		// setText( null );
+	private void searchBoxFocusGained( final java.awt.event.FocusEvent evt )
+	{
+		setFont( NORMAL_FONT );
+		setFont( getFont().deriveFont( Font.PLAIN ) );
+//		setText( null );
 	}
 
 	/**
-	 * @param evt
+	 * @param evt  
 	 */
-	private void searchBoxFocusLost(final java.awt.event.FocusEvent evt) {
-		setFont(NORMAL_FONT);
-		setFont(getFont().deriveFont(Font.ITALIC));
-		// setText( "Search" );
+	private void searchBoxFocusLost( final java.awt.event.FocusEvent evt )
+	{
+		setFont( NORMAL_FONT );
+		setFont( getFont().deriveFont( Font.ITALIC ) );
+//		setText( "Search" );
 	}
 
-	private class SearchAction implements PropertyChangeListener, Iterator<BCellobject> {
+	private class SearchAction implements PropertyChangeListener, Iterator< BCellobject >
+	{
 
-		private Iterator<BCellobject> iterator;
+		private Iterator< BCellobject > iterator;
 
-		private Iterator<Integer> trackIterator;
+		private Iterator< Integer > trackIterator;
 
-		public SearchAction() {
-			trackIterator = model.getTrackModel().trackIDs(true).iterator();
-			if (trackIterator.hasNext()) {
+		public SearchAction()
+		{
+			trackIterator = model.getTrackModel().trackIDs( true ).iterator();
+			if ( trackIterator.hasNext() )
+			{
 				final Integer currentTrackID = trackIterator.next();
-				final BCellobject trackStart = firstBCellobjectOf(currentTrackID);
-				iterator = model.getTrackModel().getSortedDepthFirstIterator(trackStart, BCellobject.nameComparator,
-						false);
-			} else {
+				final BCellobject trackStart = firstBCellobjectOf( currentTrackID );
+				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, BCellobject.nameComparator, false );
+			}
+			else
+			{
 				iterator = Collections.EMPTY_LIST.iterator();
 			}
 		}
 
 		@Override
-		public void propertyChange(final PropertyChangeEvent evt) {
-			final String text = (String) evt.getNewValue();
-			if (!text.isEmpty()) {
-				search(text);
+		public void propertyChange( final PropertyChangeEvent evt )
+		{
+			final String text = ( String ) evt.getNewValue();
+			if ( !text.isEmpty() )
+			{
+				search( text );
 			}
 		}
 
-		private void search(final String text) {
+		private void search( final String text )
+		{
 			BCellobject start = null;
 			BCellobject BCellobject;
-			while ((BCellobject = next()) != start) {
-				if (start == null) {
+			while ( ( BCellobject = next() ) != start )
+			{
+				if ( start == null )
+				{
 					start = BCellobject;
 				}
-				if (BCellobject.getName().contains(text)) {
-					view.centerViewOn(BCellobject);
+				if ( BCellobject.getName().contains( text ) )
+				{
+					view.centerViewOn( BCellobject );
 					return;
 				}
 			}
-			setFont(NOTFOUND_FONT);
+			setFont( NOTFOUND_FONT );
 		}
 
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext()
+		{
 			return true;
 		}
 
 		@Override
-		public BCellobject next() {
-			if (null == iterator || !iterator.hasNext()) {
-				if (null == trackIterator || !trackIterator.hasNext()) {
-					trackIterator = model.getTrackModel().trackIDs(true).iterator();
+		public BCellobject next()
+		{
+			if ( null == iterator || !iterator.hasNext() )
+			{
+				if ( null == trackIterator || !trackIterator.hasNext() )
+				{
+					trackIterator = model.getTrackModel().trackIDs( true ).iterator();
 				}
 				final Integer currentTrackID = trackIterator.next();
-				final BCellobject trackStart = firstBCellobjectOf(currentTrackID);
-				iterator = model.getTrackModel().getSortedDepthFirstIterator(trackStart, BCellobject.nameComparator,
-						false);
+				final BCellobject trackStart = firstBCellobjectOf( currentTrackID );
+				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, BCellobject.nameComparator, false );
 			}
 			return iterator.next();
 		}
 
-		private BCellobject firstBCellobjectOf(final Integer trackID) {
-			final List<BCellobject> trackBCellobjects = new ArrayList<>(
-					model.getTrackModel().trackBCellobjects(trackID));
-			Collections.sort(trackBCellobjects, BCellobject.frameComparator);
-			return trackBCellobjects.get(0);
+		private BCellobject firstBCellobjectOf( final Integer trackID )
+		{
+			final List< BCellobject > trackBCellobjects = new ArrayList<>( model.getTrackModel().trackBCellobjects( trackID ) );
+			Collections.sort( trackBCellobjects, BCellobject.frameComparator );
+			return trackBCellobjects.get( 0 );
 		}
 
 		@Override
-		public void remove() {
+		public void remove()
+		{
 			throw new UnsupportedOperationException();
 		}
 	}

@@ -35,14 +35,14 @@ import net.imglib2.multithreading.SimpleMultiThreading;
  * <li>Must be within a certain distance.</li>
  * </ul>
  * 
- * @see LAPUtils#computeLinkingCostFor(BCellobject, BCellobject, double, double,
- *      Map)
+ * @see LAPUtils#computeLinkingCostFor(BCellobject, BCellobject, double, double, Map)
  * @author Nicholas Perry
  * @author Jean-Yves Tinevez
  *
  */
-@SuppressWarnings("deprecation")
-public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm implements OutputAlgorithm<Matrix> {
+@SuppressWarnings( "deprecation" )
+public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm implements OutputAlgorithm< Matrix >
+{
 
 	/** If false, gap closing will be prohibited. */
 	private final boolean allowed;
@@ -54,21 +54,21 @@ public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm impleme
 	protected final double blockingValue;
 
 	/** Thresholds for the feature ratios. */
-	protected final Map<String, Double> featurePenalties;
+	protected final Map< String, Double > featurePenalties;
 
-	protected final List<SortedSet<BCellobject>> trackSegments;
+	protected final List< SortedSet< BCellobject > > trackSegments;
 
-	protected final List<BCellobject> middlePoints;
+	protected final List< BCellobject > middlePoints;
 
 	protected Matrix m;
 
-	@SuppressWarnings("unchecked")
-	public MergingCostFunction(final Map<String, Object> settings, final List<SortedSet<BCellobject>> trackSegments,
-			final List<BCellobject> middlePoints) {
-		this.maxDist = (Double) settings.get(KEY_MERGING_MAX_DISTANCE);
-		this.blockingValue = (Double) settings.get(KEY_BLOCKING_VALUE);
-		this.featurePenalties = (Map<String, Double>) settings.get(KEY_MERGING_FEATURE_PENALTIES);
-		this.allowed = (Boolean) settings.get(KEY_ALLOW_TRACK_MERGING);
+	@SuppressWarnings( "unchecked" )
+	public MergingCostFunction( final Map< String, Object > settings, final List< SortedSet< BCellobject > > trackSegments, final List< BCellobject > middlePoints )
+	{
+		this.maxDist = ( Double ) settings.get( KEY_MERGING_MAX_DISTANCE );
+		this.blockingValue = ( Double ) settings.get( KEY_BLOCKING_VALUE );
+		this.featurePenalties = ( Map< String, Double > ) settings.get( KEY_MERGING_FEATURE_PENALTIES );
+		this.allowed = ( Boolean ) settings.get( KEY_ALLOW_TRACK_MERGING );
 		this.trackSegments = trackSegments;
 		this.middlePoints = middlePoints;
 	}
@@ -78,57 +78,65 @@ public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm impleme
 	 */
 
 	@Override
-	public boolean process() {
+	public boolean process()
+	{
 		final long start = System.currentTimeMillis();
 		// If we are not allow to catch merging events, simply fill the matrix
 		// with blocking values.
-		if (!allowed) {
-			m = new Matrix(trackSegments.size(), 0, blockingValue);
-		} else {
+		if ( !allowed )
+		{
+			m = new Matrix( trackSegments.size(), 0, blockingValue );
+		}
+		else
+		{
 
-			m = new Matrix(trackSegments.size(), middlePoints.size());
+			m = new Matrix( trackSegments.size(), middlePoints.size() );
 
 			// Prepare threads
-			final Thread[] threads = SimpleMultiThreading.newThreads(numThreads);
+			final Thread[] threads = SimpleMultiThreading.newThreads( numThreads );
 
 			// Prepare the thread array
-			final AtomicInteger ai = new AtomicInteger(0);
-			for (int ithread = 0; ithread < threads.length; ithread++) {
+			final AtomicInteger ai = new AtomicInteger( 0 );
+			for ( int ithread = 0; ithread < threads.length; ithread++ )
+			{
 
-				threads[ithread] = new Thread(
-						"LAPTracker merging cost thread " + (1 + ithread) + "/" + threads.length) {
+				threads[ ithread ] = new Thread( "LAPTracker merging cost thread " + ( 1 + ithread ) + "/" + threads.length )
+				{
 
 					@Override
-					public void run() {
+					public void run()
+					{
 
-						for (int i = ai.getAndIncrement(); i < trackSegments.size(); i = ai.getAndIncrement()) {
-							final BCellobject end = trackSegments.get(i).last();
+						for ( int i = ai.getAndIncrement(); i < trackSegments.size(); i = ai.getAndIncrement() )
+						{
+							final BCellobject end = trackSegments.get( i ).last();
 
-							for (int j = 0; j < middlePoints.size(); j++) {
-								final BCellobject middle = middlePoints.get(j);
+							for ( int j = 0; j < middlePoints.size(); j++ )
+							{
+								final BCellobject middle = middlePoints.get( j );
 
 								// Frame threshold - middle BCellobject must be one
 								// frame ahead of the end BCellobject
-								final int endFrame = end.getFeature(BCellobject.POSITION_T).intValue();
-								final int middleFrame = middle.getFeature(BCellobject.POSITION_T).intValue();
+								final int endFrame = end.getFeature( BCellobject.POSITION_T ).intValue();
+								final int middleFrame = middle.getFeature( BCellobject.POSITION_T).intValue();
 								// We only merge from one frame to the next one,
 								// no more
-								if (middleFrame - endFrame != 1) {
-									m.set(i, j, blockingValue);
+								if ( middleFrame - endFrame != 1 )
+								{
+									m.set( i, j, blockingValue );
 									continue;
 								}
 
 								// Initial cost
-								final double cost = LAPUtils.computeLinkingCostFor(end, middle, maxDist, blockingValue,
-										featurePenalties);
-								m.set(i, j, cost);
+								final double cost = LAPUtils.computeLinkingCostFor( end, middle, maxDist, blockingValue, featurePenalties );
+								m.set( i, j, cost );
 							}
 						}
 					}
 				};
 			}
 
-			SimpleMultiThreading.startAndJoin(threads);
+			SimpleMultiThreading.startAndJoin( threads );
 		}
 
 		final long end = System.currentTimeMillis();
@@ -137,12 +145,14 @@ public class MergingCostFunction extends MultiThreadedBenchmarkAlgorithm impleme
 	}
 
 	@Override
-	public boolean checkInput() {
+	public boolean checkInput()
+	{
 		return true;
 	}
 
 	@Override
-	public Matrix getResult() {
+	public Matrix getResult()
+	{
 		return m;
 	}
 }

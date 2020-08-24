@@ -3,54 +3,53 @@ package Buddy.plugin.trackmate.gui.descriptors;
 import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.GrapherPanel;
 import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 
 import java.awt.Component;
 
-public class GrapherDescriptor implements WizardPanelDescriptor {
+public class GrapherDescriptor implements WizardPanelDescriptor
+{
 
 	private static final String KEY = "GraphFeatures";
 
 	private final GrapherPanel panel;
 
 	private final TrackMateGUIController controller;
-	
 
-	public GrapherDescriptor(final TrackMate trackmate, final TrackMateGUIController controller) {
-		this.panel = new GrapherPanel(trackmate);
+	public GrapherDescriptor( final TrackMate trackmate, final TrackMateGUIController controller )
+	{
+		this.panel = new GrapherPanel( trackmate );
 		this.controller = controller;
 	}
 
-
-
 	@Override
-	public Component getComponent() {
+	public Component getComponent()
+	{
 		return panel;
 	}
 
 	@Override
-	public void aboutToDisplayPanel() {
+	public void aboutToDisplayPanel()
+	{
 		panel.refresh();
 	}
 
 	@Override
-	public void displayingPanel(InteractiveBud parent) {
-		controller.getGUI().setNextButtonEnabled(true);
-	}
-
-
-	
-	@Override
-	public void aboutToHidePanel(InteractiveBud parent) {
+	public void displayingPanel()
+	{
+		controller.getGUI().setNextButtonEnabled( true );
 	}
 
 	@Override
-	public void comingBackToPanel() {
-	}
+	public void aboutToHidePanel()
+	{}
 
 	@Override
-	public String getKey() {
+	public void comingBackToPanel()
+	{}
+
+	@Override
+	public String getKey()
+	{
 		return KEY;
 	}
 }
