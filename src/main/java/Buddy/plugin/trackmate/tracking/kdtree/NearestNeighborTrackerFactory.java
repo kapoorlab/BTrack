@@ -20,14 +20,14 @@ import org.jdom2.Element;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.LOW )
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.VERY_LOW, visible = false )
 public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 {
 	public static final String TRACKER_KEY = "NEAREST_NEIGHBOR_TRACKER";
 
-	public static final String NAME = "Nearest neighbor search";
+	public static final String NAME = null;
 
-	public static final String INFO_TEXT = "<html>" + "This tracker is the most simple one, and is based on nearest neighbor <br>" + "search. The BCellobjects in the target frame are searched for the nearest neighbor <br> " + "of each BCellobject in the source frame. If the BCellobjects found are closer than the <br>" + "maximal allowed distance, a link between the two is created. <br>" + "<p>" + "The nearest neighbor search relies upon the KD-tree technique implemented <br>" + "in imglib by Johannes Schindelin and friends. This ensure a very efficient " + "tracking and makes this tracker suitable for situation where a huge number <br>" + "of particles are to be tracked over a very large number of frames. However, <br>" + "because of the naiveness of its principles, it can result in pathological <br>" + "tracks. It can only do frame-to-frame linking; there cannot be any track <br>" + "merging or splitting, and gaps will not be closed. Also, the end results are non-" + "deterministic." + " </html>";
+	public static final String INFO_TEXT = "<html>" + " Not a valid choice for BTrackMate " + " </html>";
 
 	private String errorMessage;
 
@@ -46,7 +46,7 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 	@Override
 	public String getKey()
 	{
-		return TRACKER_KEY;
+		return null;
 	}
 
 	@Override

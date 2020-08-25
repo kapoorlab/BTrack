@@ -1,7 +1,7 @@
 package Buddy.plugin.trackmate;
 
 public enum Dimension {
-	NONE, distBud, distDynamicBud, INTENSITY, INTENSITY_SQUARED, POSITION, VELOCITY, LENGTH, // we separate length and
+	NONE, distBud, QUALITY, distDynamicBud, INTENSITY, INTENSITY_SQUARED, POSITION, VELOCITY, LENGTH, // we separate length and
 																								// position so that
 																								// x,y,z are plotted on
 																								// a different graph

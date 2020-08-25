@@ -97,7 +97,7 @@ public class LoadDescriptor extends SomeDialogDescriptor
 		final Settings settings = new Settings();
 
 		// With this we can create a new controller from the provided one:
-		final TrackMate lTrackmate = new TrackMate( parent, settings );
+		final TrackMate lTrackmate = new TrackMate( parent, model, settings );
 		final TrackMateGUIController newcontroller = controller.createOn(parent,  lTrackmate );
 
 		// We feed then the reader with the providers taken from the NEW

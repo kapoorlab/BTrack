@@ -12,14 +12,14 @@ import org.jdom2.Element;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.HIGH )
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.EXTREMELY_LOW ,visible = false)
 public class ManualTrackerFactory implements BCellobjectTrackerFactory
 {
 	public static final String TRACKER_KEY = "MANUAL_TRACKER";
 
 	public static final String NAME = "Manual tracking";
 
-	public static final String INFO_TEXT = "<html>" + "Choosing this tracker skips the automated tracking step <br>" + "and keeps the current annotation.</html>";
+	public static final String INFO_TEXT = "<html>" + "Not a valid choice for BTrackMate.</html>";
 
 	private String errorMessage;
 

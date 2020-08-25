@@ -31,7 +31,7 @@ import net.imglib2.RealPoint;
 public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 {
 
-	public static final ImageIcon ICON = new ImageIcon( TrackMateWizard.class.getResource( "images/BCellobject_icon.png" ) );
+	public static final ImageIcon ICON = new ImageIcon( TrackMateWizard.class.getResource( "images/spot_icon.png" ) );
 
 	public static final String NAME = "Close gaps by introducing new BCellobjects";
 

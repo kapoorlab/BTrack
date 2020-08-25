@@ -71,6 +71,7 @@ public class TrackScheme extends AbstractTrackMateModelView
 
 	static final int DEFAULT_CELL_HEIGHT = 40;
 
+	
 	public static final ImageIcon TRACK_SCHEME_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/Icon3a_print_transparency.png" ) );
 
 	public static final ImageIcon TRACK_SCHEME_ICON_16x16;

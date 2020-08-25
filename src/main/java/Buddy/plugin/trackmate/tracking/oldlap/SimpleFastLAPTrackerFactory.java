@@ -8,7 +8,7 @@ import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.VERY_LOW )
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.VERY_LOW , visible = false)
 public class SimpleFastLAPTrackerFactory extends FastLAPTrackerFactory
 {
 	public static final String THIS2_TRACKER_KEY = "SIMPLE_FAST_LAP_TRACKER";

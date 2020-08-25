@@ -9,7 +9,7 @@ import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.VERY_LOW )
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.VERY_LOW, visible= false )
 public class FastLAPTrackerFactory extends LAPTrackerFactory
 {
 	public static final String THIS_TRACKER_KEY = "FAST_LAP_TRACKER";

@@ -68,13 +68,12 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 	 * CONSTRUCTORS
 	 */
 
-	public TrackMate(final InteractiveBud parent, final Settings settings) {
+	public TrackMate(final InteractiveBud parent, final Model model, final Settings settings) {
 
 		this.parent = parent;
-		final Model model = new Model();
-		
-		model.setBCellobjects(parent.budcells, true);
 
+		System.out.println("Created BTrackmate Model");
+		
 		this.model = model;
 		this.settings = settings;
 		
@@ -114,7 +113,6 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm {
 			final Settings lSettings) {
 
 		// Put them back in the right referential
-		final double[] calibration = TMUtils.getSpatialCalibration(parent, lSettings.imp);
 		TMUtils.translateBCellobjects(BCellobjectsThisFrame, lSettings.xstart ,
 				lSettings.ystart , lSettings.zstart );
 		List<BCellobject> prunedBCellobjects;

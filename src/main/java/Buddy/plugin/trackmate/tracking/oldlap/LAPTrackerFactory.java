@@ -39,11 +39,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-
+import org.scijava.Priority;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, visible = false )
+@Plugin( type = BCellobjectTrackerFactory.class, visible = true, priority= Priority.EXTREMELY_HIGH)
 public class LAPTrackerFactory implements BCellobjectTrackerFactory
 {
 

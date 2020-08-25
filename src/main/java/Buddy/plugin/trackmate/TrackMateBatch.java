@@ -99,7 +99,7 @@ public class TrackMateBatch
 			settings.trackerSettings = ts;
 
 			// Re-run TrackMate for the tracking part
-			final TrackMate trackmate = new TrackMate(parent, settings );
+			final TrackMate trackmate = new TrackMate(parent, model, settings );
 			final boolean trackingOk = trackmate.execTracking();
 			if ( !trackingOk )
 			{

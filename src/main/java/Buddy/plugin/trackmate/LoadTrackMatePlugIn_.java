@@ -328,7 +328,7 @@ public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn
 	 * @return a new {@link TrackMate} instance.
 	 */
 	protected TrackMate createTrackMate() {
-		return new TrackMate(parent, settings);
+		return new TrackMate(parent, model, settings);
 	}
 	
 	

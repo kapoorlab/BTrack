@@ -71,7 +71,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 	 * @return a new {@link Model} instance.
 	 */
 
-	public InteractiveBud inputparent() {
+	public InteractiveBud getparent() {
 
 		return parent;
 	}
@@ -112,7 +112,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 
 		model.setPhysicalUnits(spaceUnits, timeUnits);
 
-		return new TrackMate(parent, settings);
+		return new TrackMate(parent, model, settings);
 	}
 
 	/*

@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>net.kapoor</groupId>
-	<artifactId>B_Track</artifactId>
+	<artifactId>BTrack</artifactId>
 	<version>1.0.0</version>
 	
 	<name>Cell tracking inside buds</name>
