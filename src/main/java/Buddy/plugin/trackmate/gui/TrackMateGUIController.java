@@ -690,7 +690,7 @@ public class TrackMateGUIController implements ActionListener
 		
 		else if ( currentDescriptor == trackerChoiceDescriptor )
 		{
-			if ( null == trackmate.getSettings().trackerFactory || trackmate.getSettings().trackerFactory.getKey().equals( ManualTrackerFactory.TRACKER_KEY ) )
+			if ( null == trackmate.getSettings().trackerFactory  )
 				return trackFilterDescriptor;
 
 			return trackerConfigurationDescriptor;

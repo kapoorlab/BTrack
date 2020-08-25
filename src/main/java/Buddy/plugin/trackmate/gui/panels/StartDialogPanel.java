@@ -98,7 +98,7 @@ public class StartDialogPanel extends ActionListenablePanel
 				+ "<p>"
 				+ "by Varun Kapoor."+ "<p>"
 				+ "<p>"
-				
+				+ "TrackMate is based on this publication:"
 				+ "<p>"
 				+ "<b>Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), "
 				+ "<i>TrackMate: An open and extensible platform for single-particle "
