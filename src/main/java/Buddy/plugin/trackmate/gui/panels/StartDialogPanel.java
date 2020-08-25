@@ -92,11 +92,13 @@ public class StartDialogPanel extends ActionListenablePanel
 		setLayout( gridBagLayout );
 
 		final JLabel lblCitation = new JLabel( "<html>"
-				+ "BTrackMate is slim version of Trackmate, "
+				+ "BTrackMate is slim version of Trackmate "
 				+ "to be used when inputting Deep Learning "
-				+ "or integer labelled segmentations via BTrack"
-				+ "by Varun Kapoor"
-				+ "original Trackmate publication"
+				+ "or integer labelled segmentations via BTrack."+ "<p>"
+				+ "<p>"
+				+ "by Varun Kapoor."+ "<p>"
+				+ "<p>"
+				
 				+ "<p>"
 				+ "<b>Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), "
 				+ "<i>TrackMate: An open and extensible platform for single-particle "
@@ -135,7 +137,7 @@ public class StartDialogPanel extends ActionListenablePanel
 		gbc_lblLinkPubMed.gridwidth = 4;
 		gbc_lblLinkPubMed.insets = new Insets( 0, 10, 5, 5 );
 		gbc_lblLinkPubMed.gridx = 0;
-		gbc_lblLinkPubMed.gridy = 1;
+		gbc_lblLinkPubMed.gridy = 6;
 		add( lblLinkPubMed, gbc_lblLinkPubMed );
 
 		jLabelImageName = new JLabel( "Select an image, and press refresh." );
@@ -147,7 +149,7 @@ public class StartDialogPanel extends ActionListenablePanel
 		gbc_jLabelImageName.gridwidth = 4;
 		gbc_jLabelImageName.gridx = 0;
 		gbc_jLabelImageName.gridy = 8;
-		add( jLabelImageName, gbc_jLabelImageName );
+		//add( jLabelImageName, gbc_jLabelImageName );
 
 		final JLabel jLabelCheckCalibration = new JLabel( "Calibration settings:" );
 		jLabelCheckCalibration.setFont( SMALL_FONT );
