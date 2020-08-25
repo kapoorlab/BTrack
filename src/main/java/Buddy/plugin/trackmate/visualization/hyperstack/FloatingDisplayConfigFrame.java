@@ -18,7 +18,10 @@ import Buddy.plugin.trackmate.gui.DisplaySettingsListener;
 import Buddy.plugin.trackmate.gui.TrackMateGUIModel;
 import Buddy.plugin.trackmate.gui.TrackMateWizard;
 import Buddy.plugin.trackmate.gui.panels.ConfigureViewsPanel;
+import Buddy.plugin.trackmate.visualization.BCellobjectColorGenerator;
+import Buddy.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
 import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
+import Buddy.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import Buddy.plugin.trackmate.visualization.ManualEdgeColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
 import Buddy.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
@@ -60,7 +63,6 @@ public class FloatingDisplayConfigFrame extends JFrame
 		panel.setEdgeColorGenerator( createEdgeColorGenerator() );
 		panel.setBCellobjectColorGeneratorPerTrackFeature( createBCellobjectColorGeneratorPerTrackFeature() );
 		panel.setManualEdgeColorGenerator( createManualEdgeColorGenerator() );
-		panel.setManualBCellobjectColorGenerator( createManualBCellobjectColorGenerator() );
 
 		panel.getTrackSchemeButton().setVisible( false );
 		panel.getDoAnalysisButton().setVisible( false );

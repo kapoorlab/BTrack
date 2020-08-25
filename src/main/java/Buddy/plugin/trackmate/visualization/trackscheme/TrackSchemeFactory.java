@@ -22,7 +22,7 @@ public class TrackSchemeFactory implements ViewFactory
 	@Override
 	public TrackMateModelView create( final InteractiveBud parent,  final Model model, final Settings settings, final SelectionModel selectionModel )
 	{
-		return new TrackScheme( model, selectionModel );
+		return new TrackScheme( parent, model, selectionModel );
 	}
 
 	@Override

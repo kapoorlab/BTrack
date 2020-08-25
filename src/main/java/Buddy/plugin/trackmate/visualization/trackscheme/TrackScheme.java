@@ -45,6 +45,7 @@ import Buddy.plugin.trackmate.visualization.AbstractTrackMateModelView;
 import Buddy.plugin.trackmate.visualization.TrackColorGenerator;
 import budDetector.BCellobject;
 import ij.ImagePlus;
+import pluginTools.InteractiveBud;
 
 public class TrackScheme extends AbstractTrackMateModelView
 {
@@ -161,9 +162,9 @@ public class TrackScheme extends AbstractTrackMateModelView
 	 * CONSTRUCTORS
 	 */
 
-	public TrackScheme( final Model model, final SelectionModel selectionModel )
+	public TrackScheme(final InteractiveBud parent, final Model model, final SelectionModel selectionModel )
 	{
-		super( model, selectionModel );
+		super( parent, model, selectionModel );
 		initDisplaySettings();
 		initGUI();
 	}

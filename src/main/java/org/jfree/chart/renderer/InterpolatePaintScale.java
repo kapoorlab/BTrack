@@ -117,7 +117,7 @@ public class InterpolatePaintScale implements PaintScale, Serializable
 		luts.put( "Turbo", Turbo );
 		luts.put( "Jet", Jet );
 		luts.put( "Viridis", Viridis );
-		luts.putAll( InterpolatePaintScaleIO.getLUTs() );
+		//luts.putAll( InterpolatePaintScaleIO.getLUTs() );
 		return luts;
 	}
 

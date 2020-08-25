@@ -28,6 +28,7 @@ import Buddy.plugin.trackmate.visualization.TrackMateModelView;
 import ij3d.Content;
 import ij3d.ContentInstant;
 import ij3d.Image3DUniverse;
+import pluginTools.InteractiveBud;
 import budDetector.BCellobject;
 
 public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
@@ -53,6 +54,8 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 	private Content trackContent;
 
 	private final Image3DUniverse universe;
+	
+	public final InteractiveBud parent;
 
 	// For highlighting
 	private ArrayList<BCellobject> previousBCellobjectHighlight;
@@ -63,9 +66,10 @@ public class BCellobjectDisplayer3D extends AbstractTrackMateModelView {
 
 	private TreeMap<Integer, ContentInstant> contentAllFrames;
 
-	public BCellobjectDisplayer3D(final Model model, final SelectionModel selectionModel,
+	public BCellobjectDisplayer3D(final InteractiveBud parent, final Model model, final SelectionModel selectionModel,
 			final Image3DUniverse universe) {
-		super(model, selectionModel);
+		super(parent, model, selectionModel);
+		this.parent = parent;
 		this.universe = universe;
 		setModel(model);
 	}

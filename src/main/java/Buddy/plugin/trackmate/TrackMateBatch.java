@@ -3,7 +3,6 @@ package Buddy.plugin.trackmate;
 import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
 import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
 import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import Buddy.plugin.trackmate.action.ISBIChallengeExporter;
 import Buddy.plugin.trackmate.io.TmXmlReader;
 import Buddy.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import Buddy.plugin.trackmate.providers.BCellobjectAnalyzerProvider;
@@ -108,9 +107,7 @@ public class TrackMateBatch
 				logger.error( trackmate.getErrorMessage() );
 			}
 
-			// Then export to ISBI
-			ISBIChallengeExporter.exportToFile( model, settings, exportPath );
-			logger.flush();
+		
 
 		}
 

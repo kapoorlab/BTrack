@@ -1,6 +1,6 @@
 package Buddy.plugin.trackmate.util;
 
-import Buddy.util.NumberParser;
+import fiji.util.NumberParser;
 
 /**
  * A utility class to deal with version numbers. Found on StackOverflow:

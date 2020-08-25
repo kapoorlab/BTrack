@@ -753,25 +753,7 @@ public class BCellobjectEditTool extends AbstractTool implements MouseMotionList
 		IJ.showStatus( statusString );
 	}
 
-	void semiAutoTracking( final Model model, final SelectionModel selectionModel, final ImagePlus lImp )
-	{
-		@SuppressWarnings( "rawtypes" )
-		final SemiAutoTracker autotracker = new SemiAutoTracker( model, selectionModel, lImp, logger );
-		autotracker.setParameters( params.qualityThreshold, params.distanceTolerance, params.nFrames );
-		autotracker.setNumThreads( 4 );
-		new Thread( "TrackMate semi-automated tracking thread" )
-		{
-			@Override
-			public void run()
-			{
-				final boolean ok = autotracker.checkInput() && autotracker.process();
-				if ( !ok )
-				{
-					logger.error( autotracker.getErrorMessage() );
-				}
-			}
-		}.start();
-	}
+	
 
 	@Override
 	public void showOptionDialog()

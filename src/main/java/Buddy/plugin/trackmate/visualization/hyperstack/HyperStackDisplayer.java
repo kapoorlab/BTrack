@@ -43,7 +43,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 
 	public HyperStackDisplayer(final InteractiveBud parent, final Model model, final SelectionModel selectionModel, final ImagePlus imp )
 	{
-		super( model, selectionModel );
+		super(parent,  model, selectionModel );
 		if ( null != imp )
 		{
 			this.imp = imp;

@@ -96,7 +96,7 @@ public class BCellobjectDisplayer3DFactory implements ViewFactory
 			}
 		}
 
-		final BCellobjectDisplayer3D view = new BCellobjectDisplayer3D( model, selectionModel, universe );
+		final BCellobjectDisplayer3D view = new BCellobjectDisplayer3D( parent, model, selectionModel, universe );
 
 		// Deregister on window closing.
 		win.addWindowListener( new WindowListener()

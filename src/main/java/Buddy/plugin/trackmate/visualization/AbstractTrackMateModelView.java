@@ -7,6 +7,7 @@ import Buddy.plugin.trackmate.SelectionChangeListener;
 import Buddy.plugin.trackmate.SelectionModel;
 import Buddy.plugin.trackmate.TrackMateOptionUtils;
 import budDetector.BCellobject;
+import pluginTools.InteractiveBud;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,16 +34,18 @@ public abstract class AbstractTrackMateModelView implements SelectionChangeListe
 	/** The model displayed by this class. */
 	protected Model model;
 
+	protected InteractiveBud parent;
 	protected final SelectionModel selectionModel;
 
 	/*
 	 * PROTECTED CONSTRUCTOR
 	 */
 
-	protected AbstractTrackMateModelView( final Model model, final SelectionModel selectionModel )
+	protected AbstractTrackMateModelView( InteractiveBud parent, final Model model, final SelectionModel selectionModel )
 	{
 		this.selectionModel = selectionModel;
 		this.model = model;
+		this.parent = parent;
 		this.displaySettings = initDisplaySettings( model );
 		model.addModelChangeListener( this );
 		selectionModel.addSelectionChangeListener( this );

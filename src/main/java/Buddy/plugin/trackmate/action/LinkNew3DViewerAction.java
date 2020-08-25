@@ -58,7 +58,7 @@ public class LinkNew3DViewerAction extends AbstractTMAction
 				universe.init( win );
 				win.pack();
 				win.setVisible( true );
-				final BCellobjectDisplayer3D newDisplayer = new BCellobjectDisplayer3D( trackmate.getModel(), controller.getSelectionModel(), universe );
+				final BCellobjectDisplayer3D newDisplayer = new BCellobjectDisplayer3D(trackmate.getParent(), trackmate.getModel(), controller.getSelectionModel(), universe );
 
 				// Deregister on window closing.
 				win.addWindowListener( new WindowListener()

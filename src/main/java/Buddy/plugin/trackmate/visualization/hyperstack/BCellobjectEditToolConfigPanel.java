@@ -194,16 +194,8 @@ public class BCellobjectEditToolConfigPanel extends JFrame
 		panelSemiAutoParams.add( jNFNFrames );
 
 		final JButton buttonSemiAutoTracking = new JButton( SEMIAUTO_TRACKING_ICON );
-		buttonSemiAutoTracking.setBounds( 6, 31, 33, 23 );
 		panelSemiAutoParams.add( buttonSemiAutoTracking );
-		buttonSemiAutoTracking.addActionListener( new ActionListener()
-		{
-			@Override
-			public void actionPerformed( final ActionEvent arg0 )
-			{
-				semiAutoTracking();
-			}
-		} );
+
 
 		final JLabel labelSemiAutoTracking = new JLabel( "Semi-automatic tracking" );
 		labelSemiAutoTracking.setToolTipText( "Launch semi-automatic tracking on selected BCellobjects." );
@@ -417,16 +409,5 @@ public class BCellobjectEditToolConfigPanel extends JFrame
 		parent.params.stepwiseTimeBrowsing = ( int ) jNFNStepwiseTime.getValue();
 	}
 
-	private void semiAutoTracking()
-	{
-		final ImagePlus imp = parent.imp;
-		if ( imp == null )
-			return;
-		final HyperStackDisplayer displayer = parent.displayers.get( imp );
-		if ( null == displayer )
-			return;
-		final Model model = displayer.getModel();
-		final SelectionModel selectionModel = displayer.getSelectionModel();
-		parent.semiAutoTracking( model, selectionModel, imp );
-	}
+
 }

@@ -117,18 +117,11 @@ public class CopyOverlayAction extends AbstractTMAction
 							impChooser.setVisible( false );
 							TrackMateModelView newDisplayer;
 							String title;
-							if ( null == dest )
-							{
-								logger.log( "Copying data and overlay to new 3D viewer\n" );
-								newDisplayer = new BCellobjectDisplayer3D.create( tm.getParent(), tm.getModel(), tm.getSettings(), selectionModel );
-								title = "3D viewer overlay";
-							}
-							else
-							{
+							
 								logger.log( "Copying overlay to " + dest.getShortTitle() + "\n" );
 								newDisplayer = new HyperStackDisplayer(tm.getParent(), tm.getModel(), selectionModel, dest );
 								title = dest.getShortTitle() + " ctrl";
-							}
+							
 							newDisplayer.render();
 
 							panel = new ConfigureViewsPanel( tm.getModel() );
@@ -244,7 +237,7 @@ public class CopyOverlayAction extends AbstractTMAction
 			@Override
 			public void run()
 			{
-				final TrackScheme trackscheme = new TrackScheme( trackmate.getModel(), selectionModel );
+				final TrackScheme trackscheme = new TrackScheme(trackmate.getParent(), trackmate.getModel(), selectionModel );
 				final BCellobjectImageUpdater thumbnailUpdater = new BCellobjectImageUpdater( trackmate.getSettings() );
 				trackscheme.setBCellobjectImageUpdater( thumbnailUpdater );
 				for ( final String settingKey : guimodel.getDisplaySettings().keySet() )

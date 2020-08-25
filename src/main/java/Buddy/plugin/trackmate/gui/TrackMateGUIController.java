@@ -33,7 +33,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.scijava.object.ObjectService;
-
+import Buddy.plugin.trackmate.visualization.BCellobjectColorGenerator;
+import Buddy.plugin.trackmate.visualization.BCellobjectColorGeneratorPerTrackFeature;
+import Buddy.plugin.trackmate.visualization.ManualBCellobjectColorGenerator;
 import Buddy.plugin.trackmate.gui.descriptors.StartDialogDescriptor;
 import Buddy.plugin.trackmate.Logger;
 import Buddy.plugin.trackmate.Model;
@@ -151,7 +153,7 @@ public class TrackMateGUIController implements ActionListener
 	protected FeatureColorGenerator< BCellobject > BCellobjectColorGenerator;
 
 	protected ManualEdgeColorGenerator manualEdgeColorGenerator;
-
+	protected ManualBCellobjectColorGenerator manualBCellobjectColorGenerator;
 
 	protected FeatureColorGenerator< BCellobject > BCellobjectColorGeneratorPerTrackFeature;
 
@@ -220,6 +222,7 @@ public class TrackMateGUIController implements ActionListener
 		this.edgeColorGenerator = createEdgeColorGenerator();
 		this.trackColorGenerator = createTrackColorGenerator();
 		this.manualEdgeColorGenerator = createManualEdgeColorGenerator();
+		this.manualBCellobjectColorGenerator = createManualBCellobjectColorGenerator();
 		this.BCellobjectColorGeneratorPerTrackFeature = createBCellobjectColorGeneratorPerTrackFeature();
 
 		// 0.
@@ -399,6 +402,10 @@ public class TrackMateGUIController implements ActionListener
 	public EdgeAnalyzerProvider getEdgeAnalyzerProvider()
 	{
 		return edgeAnalyzerProvider;
+	}
+	
+	protected ManualBCellobjectColorGenerator createManualBCellobjectColorGenerator() {
+		return new ManualBCellobjectColorGenerator();
 	}
 
 	/**
@@ -1095,7 +1102,7 @@ public class TrackMateGUIController implements ActionListener
 			@Override
 			public void run()
 			{
-				final TrackScheme trackscheme = new TrackScheme( trackmate.getModel(), selectionModel );
+				final TrackScheme trackscheme = new TrackScheme( trackmate.getParent(), trackmate.getModel(), selectionModel );
 				final BCellobjectImageUpdater thumbnailUpdater = new BCellobjectImageUpdater( trackmate.getSettings() );
 				trackscheme.setBCellobjectImageUpdater( thumbnailUpdater );
 				for ( final String settingKey : guimodel.getDisplaySettings().keySet() )
