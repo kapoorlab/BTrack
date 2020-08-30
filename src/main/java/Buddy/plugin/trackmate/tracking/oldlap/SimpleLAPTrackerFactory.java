@@ -4,9 +4,11 @@ import Buddy.plugin.trackmate.Model;
 import Buddy.plugin.trackmate.gui.ConfigurationPanel;
 import Buddy.plugin.trackmate.gui.panels.tracker.SimpleLAPTrackerSettingsPanel;
 import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, visible = false )
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.EXTREMELY_LOW, visible = false )
 public class SimpleLAPTrackerFactory extends LAPTrackerFactory
 {
 	public static final String THIS_TRACKER_KEY = "SIMPLE_LAP_TRACKER";

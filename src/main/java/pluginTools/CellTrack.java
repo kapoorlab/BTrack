@@ -3,6 +3,10 @@ package pluginTools;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JProgressBar;
 
@@ -20,7 +24,7 @@ import net.imglib2.view.Views;
 import pluginTools.InteractiveBud.ValueChange;
 
 
-public class CellTrack {
+public class CellTrack implements Runnable {
 	
 	
 	final InteractiveBud parent;
@@ -118,6 +122,16 @@ public class CellTrack {
 			if (type.compareTo(max) > 0)
 				max.set(type);
 		}
+	}
+
+
+
+
+	@Override
+	public void run() {
+		
+		ShowCellTime();
+		
 	}
 
 

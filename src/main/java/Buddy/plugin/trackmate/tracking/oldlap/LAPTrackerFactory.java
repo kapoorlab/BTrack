@@ -43,7 +43,7 @@ import org.scijava.Priority;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, visible = true, priority= Priority.EXTREMELY_HIGH)
+@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.EXTREMELY_LOW, visible= false  )
 public class LAPTrackerFactory implements BCellobjectTrackerFactory
 {
 

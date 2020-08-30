@@ -7,7 +7,9 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.InteractiveBud;
 
 public class TrackMatePlugIn_ implements PlugIn {
@@ -24,7 +26,30 @@ public class TrackMatePlugIn_ implements PlugIn {
 
 		this.parent = parent;
 	}
-
+	public static ImagePlus Reshape(RandomAccessibleInterval<FloatType> image, String title) {
+		
+		int channels, frames;
+		
+		ImagePlus imp = ImageJFunctions.wrapFloat(image, title);
+		if(imp.getNChannels() > imp.getNFrames()) {
+			channels = imp.getNFrames();
+		    frames = imp.getNChannels();
+		    
+		}
+		
+		else {
+			
+			channels = imp.getNChannels();
+		    frames = imp.getNFrames();
+			
+		}
+		
+		imp.setDimensions(channels, imp.getNSlices(), frames);
+		imp.show();
+		
+		return imp;
+		
+	}
 	/**
 	 * Runs the TrackMate GUI plugin.
 	 *
@@ -36,14 +61,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 	 */
 	@Override
 	public void run(final String imagePath) {
-		final ImagePlus imp = ImageJFunctions.show(parent.originalimg);
-		int channels = 1;
-		int frames = (int)parent.originalimg.dimension(2);
-
-		imp.setC(channels);
-		imp.setT(frames);
-		
-		imp.setDimensions(frames, 1, 1);
+		ImagePlus imp = Reshape(parent.originalimg, "");
 		GuiUtils.userCheckImpDimensions(imp);
 
 		settings = createSettings(imp);

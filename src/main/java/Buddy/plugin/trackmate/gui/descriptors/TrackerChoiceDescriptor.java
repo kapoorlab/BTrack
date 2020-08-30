@@ -7,7 +7,9 @@ import Buddy.plugin.trackmate.gui.panels.ListChooserPanel;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
 import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import Buddy.plugin.trackmate.tracking.ManualTrackerFactory;
+import Buddy.plugin.trackmate.tracking.oldlap.LAPTrackerFactory;
 import Buddy.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import Buddy.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -133,7 +135,7 @@ public class TrackerChoiceDescriptor implements WizardPanelDescriptor
 		}
 		else
 		{
-			key = SimpleSparseLAPTrackerFactory.THIS2_TRACKER_KEY;
+			key = SparseLAPTrackerFactory.THIS_TRACKER_KEY;
 		}
 		final int index = trackerProvider.getVisibleKeys().indexOf( key );
 

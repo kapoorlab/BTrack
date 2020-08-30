@@ -1,5 +1,11 @@
 package pluginTools;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
@@ -27,10 +33,14 @@ public class CollectCells extends SwingWorker<Void, Void> {
 		
 		parent.BudOvalRois.clear();
 		
-	
+		// set up executor service
+		final ExecutorService taskExecutor = Executors.newCachedThreadPool();
+		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		
-		CellTrack newtrack = new CellTrack(parent, jpb);
-		newtrack.ShowCellTime();
+		tasks.add(Executors.callable(new CellTrack(parent, jpb)));
+		taskExecutor.invokeAll(tasks);
+		
+		
 		
 		
 		

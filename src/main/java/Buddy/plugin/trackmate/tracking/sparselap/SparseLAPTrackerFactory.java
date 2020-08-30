@@ -9,9 +9,11 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class )
+
+@Plugin( type = BCellobjectTrackerFactory.class, visible = true, priority= Priority.FIRST)
 public class SparseLAPTrackerFactory extends LAPTrackerFactory
 {
 

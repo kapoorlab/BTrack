@@ -134,7 +134,6 @@ public class TrackEachCell {
 	
 	
 
-
 		while (setiter.hasNext()) {
 
 			percent++;
