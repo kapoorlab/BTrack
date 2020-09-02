@@ -10,6 +10,7 @@ import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
@@ -41,24 +42,15 @@ public class BudSlicer {
 			int thirdDimension, int thirdDimensionSize, int fourthDimension, int fourthDimensionSize) {
 
 		final T type = originalimg.randomAccess().get().createVariable();
-		long[] dim = { originalimg.dimension(0), originalimg.dimension(1) };
+		long[] dim = { originalimg.dimension(0), originalimg.dimension(1), originalimg.dimension(2) };
 		final ImgFactory<T> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
 		RandomAccessibleInterval<T> totalimg = factory.create(dim, type);
 
-		if (thirdDimensionSize == 0) {
 
-			totalimg = originalimg;
-		}
-		if (thirdDimensionSize > 0 && fourthDimensionSize == 0) {
-
-			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, thirdDimension - 1);
-		}
-
-		if (fourthDimensionSize > 0) {
 
 			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, fourthDimension - 1);
-
-		}
+		
+		    
 
 		return totalimg;
 
@@ -85,6 +77,10 @@ public class BudSlicer {
 		return totalimg;
 
 	}
+	
+	
+
+	
 
 	public static RandomAccessibleInterval<BitType> getCurrentViewBit(RandomAccessibleInterval<BitType> originalimg,
 			int thirdDimension, int thirdDimensionSize, int fourthDimension, int fourthDimensionSize) {

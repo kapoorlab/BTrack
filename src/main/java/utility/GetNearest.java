@@ -174,7 +174,7 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 	}
 	
 	
-public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveGreen parent, final RandomAccessibleInterval<IntType> Mask, final RandomAccessibleInterval<IntType> GreenCellSeg) {
+public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent, final RandomAccessibleInterval<IntType> Mask, final RandomAccessibleInterval<IntType> GreenCellSeg) {
 		
 		Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();

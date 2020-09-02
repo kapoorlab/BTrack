@@ -19,23 +19,10 @@ public class PanelZero3DCell {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
+				.openImage("/Users/aimachine/Documents/GreenCells/SmartSeedResults-small.tif");
 		impA.show();
 		
-		ImagePlus impB = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/YellowSeg.tif");
-		impB.show();
-	
-	
 		
-		ImagePlus impC = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/TransmittedLightA.tif");
-		impC.show();
-
-		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
-		impD.show();
-
 		ThreeDTimeCellFileChooser panel = new ThreeDTimeCellFileChooser();
 
 		frame.getContentPane().add(panel, "Center");

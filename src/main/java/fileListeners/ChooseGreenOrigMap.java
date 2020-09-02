@@ -37,13 +37,15 @@ public class ChooseGreenOrigMap implements ActionListener {
 		
 		
     	parent.impOrigGreen = WindowManager.getImage(imagename);
-   
+    	System.out.println(	parent.impOrigGreen .getNFrames() + " " + 	parent.impOrigGreen .getNChannels() + " " + 	parent.impOrigGreen .getNSlices() + " " + 	parent.impOrigGreen .getNDimensions());
     	if(parent.impOrigGreen!=null) {
 			
     		    parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;
 			parent.calibrationY = parent.impOrigGreen.getCalibration().pixelHeight;
 			parent.calibrationZ = parent.impOrigGreen.getCalibration().pixelDepth;
 			parent.FrameInterval = parent.impOrigGreen.getCalibration().frameInterval;
+			parent.TimeTotal = parent.impOrigGreen.getNFrames();
+			
 			
 			if (parent.FrameInterval == 0)
 				parent.FrameInterval = 1;
@@ -51,10 +53,11 @@ public class ChooseGreenOrigMap implements ActionListener {
 			otherSymbols.setDecimalSeparator('.');
 			otherSymbols.setGroupingSeparator(','); 
 			DecimalFormat df = new DecimalFormat(("#.###"), otherSymbols);
-			parent.inputLabelcalT.setText(String.valueOf(df.format(parent.FrameInterval))); 
+			parent.FieldinputLabelcalT.setText(String.valueOf(df.format(parent.FrameInterval))); 
 			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibrationX)));
 			parent.inputFieldcalY.setText(String.valueOf(df.format(parent.calibrationY)));
 			parent.inputFieldcalZ.setText(String.valueOf(df.format(parent.calibrationZ)));
+			parent.inputFieldT.setText(String.valueOf(df.format(parent.TimeTotal)));
 	}
  
 		

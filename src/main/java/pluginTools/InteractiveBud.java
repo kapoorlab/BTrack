@@ -148,6 +148,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public ArrayList<RealLocalizable> ChosenBudcenter;
 	public HashMap<String, RealLocalizable> SelectedAllRefcords;
 	public int thirdDimension;
+	public int fourthDimension;
 	public BUDDYTrackModel Globalmodel;
 	public BUDDYBudTrackModel BudGlobalModel;
 	public int thirdDimensionSize;
@@ -157,6 +158,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public int maxframegap = 30;
 	public int thirdDimensionslider = 1;
 	public int thirdDimensionsliderInit = 1;
+	public int fourthDimensionslider = 1;
+	public int fourthDimensionsliderInit = 1;
+	public int fourthDimensionSize;
 	public JProgressBar jpb;
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
@@ -262,6 +266,12 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		thirdDimension = 1;
 	}
 	
+	public void setZ(final int value) {
+		fourthDimensionslider = value;
+		fourthDimensionsliderInit = 1;
+		fourthDimension = 1;
+	}
+	
 	
 	public int getTimeMax() {
 
@@ -270,7 +280,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	@Override
 	public void run(String arg0) {
 
-		
+		for(int d = 0; d < originalimg.numDimensions(); ++d)
+		System.out.println(originalimg.dimension(d));
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
@@ -302,14 +313,60 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			AutostartTime = thirdDimension;
 			AutoendTime = thirdDimensionSize;
 			maxframegap = thirdDimensionSize / 4;
+			
+			setTime(thirdDimension);
+			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
+			if(SegYelloworiginalimg!=null)
+				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
+			imp = ImageJFunctions.show(CurrentView, "Original Image");
+			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
+			
+			
+			if(BudAnalysis) {
+				
+				StartDisplayer();
+			    Card();
+			
+			}
+			
+			else {
+				
+				System.out.println("Cell collector");
+				CellCollector();
+				
+			}
 		}
-		setTime(thirdDimension);
-		CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
-		CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
+
+		
+		if (ndims > 3) {
+			
+			
+
+			thirdDimension = 1;
+
+			thirdDimensionSize = (int) originalimg.dimension(2);
+			
+			fourthDimension = 1;
+
+			fourthDimensionSize = (int) originalimg.dimension(3);
+			
+		
+		setZ(thirdDimension);
+		setTime(fourthDimension);
+		
+		CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+		CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
 		if(SegYelloworiginalimg!=null)
-			CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
+			CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
 		imp = ImageJFunctions.show(CurrentView, "Original Image");
-		imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
+		imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
+		
+
+		System.out.println("Green Cell collector");
+		GreenCellCollector();
+		
+		}
 		
 	
 		Cardframe.repaint();
@@ -319,90 +376,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		saveFile = new java.io.File(".");
 		//Get Labelled images
 		
-		  long[] dims = new long[Segoriginalimg.numDimensions()];
-      // get image dimension
-		 Segoriginalimg.dimensions(dims);
-      // create labeling index image
-       RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
-       ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
-       Iterator<Integer> labels = new Iterator<Integer>()
-      {
-          private int i = 1;
-
-          @Override
-          public boolean hasNext()
-          {
-              return true;
-          }
-
-          @Override
-          public Integer next()
-          {
-              return i++;
-          }
-
-          @Override
-          public void remove()
-          {}
-      };
-      
-      ConnectedComponents.labelAllConnectedComponents(Segoriginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
-      
-		Segoriginalimg = labeling.getIndexImg();
-		
-		if(SegYelloworiginalimg!=null) {
-			
-			
-			
-			  dims = new long[SegYelloworiginalimg.numDimensions()];
-		        // get image dimension
-			  SegYelloworiginalimg.dimensions(dims);
-		        // create labeling index image
-		         indexImg = ArrayImgs.ints(dims);
-		        labeling = new ImgLabeling<>(indexImg);
-		        labels = new Iterator<Integer>()
-		        {
-		            private int i = 1;
-
-		            @Override
-		            public boolean hasNext()
-		            {
-		                return true;
-		            }
-
-		            @Override
-		            public Integer next()
-		            {
-		                return i++;
-		            }
-
-		            @Override
-		            public void remove()
-		            {}
-		        };
-		        
-		        ConnectedComponents.labelAllConnectedComponents(SegYelloworiginalimg, labeling, labels, StructuringElement.FOUR_CONNECTED);
-		        
-		        SegYelloworiginalimg = labeling.getIndexImg();
-			
-		}
-		
+     
 	
 		
 		
-		if(BudAnalysis) {
-		
-			StartDisplayer();
-		    Card();
-		
-		}
-		
-		else {
-			
-			System.out.println("Cell collector");
-			CellCollector();
-			
-		}
+
 		
 		
 	}
@@ -423,6 +401,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		
 		if (change == ValueChange.THIRDDIMmouse)
 		{
+			if (ndims == 3) {
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 			String TID = Integer.toString( thirdDimension);
 			AccountedT.put(TID,  thirdDimension);
@@ -450,6 +429,27 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			
 		}
 		}
+			
+		if(ndims > 3) {
+			imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
+			String TID = Integer.toString( fourthDimension);
+			AccountedT.put(TID,  fourthDimension);
+			
+			
+			
+			CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+			CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+			if(SegYelloworiginalimg!=null)
+				CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
+			repaintView(CurrentView);
+			
+			imp.getOverlay().clear();
+			imp.updateAndDraw();
+			
+		}
+			
+			
+		}
 		
 		
 	}
@@ -470,6 +470,14 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		CollectCells display = new CollectCells(this, jpb);
 		display.execute();
 		
+	}
+	
+	public void GreenCellCollector() {
+		
+		
+		
+		CollectGreenCells display = new CollectGreenCells(this, jpb);
+		display.execute();
 	}
 	
 	public void repaintView( RandomAccessibleInterval<FloatType> Activeimage) {
@@ -782,5 +790,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	
 	
 	public Boolean EscapePressed = false;
+	
+	
+	
+	
 
 }

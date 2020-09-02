@@ -123,10 +123,7 @@ public class BudFileChooser extends JPanel {
 	public CheckboxGroup cellmode = new CheckboxGroup();
 	public Checkbox FreeMode = new Checkbox("No Flourescent Channel", NoChannel, cellmode);
 	public Checkbox YellowMode = new Checkbox("Flourescent Channel 1", DoYellow, cellmode);
-	// public Checkbox GreenMode = new Checkbox("Flourescent Channel 2", DoGreen,
-	// cellmode);
-	// public Checkbox RedMode = new Checkbox("Flourescent Channel 3", DoRed,
-	// cellmode);
+
 
 	public BudFileChooser() {
 

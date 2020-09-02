@@ -295,7 +295,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		
 
 		System.out.println("Cell collector");
-		CellCollector();
+		//CellCollector();
 	}
 	
 	
@@ -328,14 +328,7 @@ public class InteractiveGreen  extends JPanel implements PlugIn{
 		
 	}
 	
-	
-	public void CellCollector() {
-		
-		
-		
-		CollectGreenCells display = new CollectGreenCells(this, jpb);
-		display.execute();
-	}
+
 	
 	public void repaintView( RandomAccessibleInterval<FloatType> Activeimage) {
 		

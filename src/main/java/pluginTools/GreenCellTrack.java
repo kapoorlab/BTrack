@@ -11,21 +11,22 @@ import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
-import pluginTools.InteractiveGreen.ValueChange;
+import pluginTools.InteractiveBud.ValueChange;
 
 
 public class GreenCellTrack {
 	
 	
-	final InteractiveGreen parent;
+	final InteractiveBud parent;
 	final JProgressBar jpb;
 	
 	
-	public GreenCellTrack(final InteractiveGreen parent, final JProgressBar jpb) {
+	public GreenCellTrack(final InteractiveBud parent, final JProgressBar jpb) {
 		
 		this.parent = parent;
 		this.jpb = jpb;
@@ -38,24 +39,26 @@ public class GreenCellTrack {
 	public void ShowCellTime() {
 		
 		int percent = 0;
-		for(int t = 1; t <= parent.thirdDimensionSize; ++t) {
+		System.out.println(parent.fourthDimensionSize);
+		
+		for(int t = 1; t <= parent.fourthDimensionSize; ++t) {
 	
 		parent.updatePreview(ValueChange.THIRDDIMmouse);
 	
-		parent.thirdDimension = t;
+		System.out.println(t);
+		
+		parent.fourthDimension = t;
 		
 	
 		GetPixelList(parent.CurrentViewInt);
 		
 		
-		ArrayList<BCellobject> Greencelllist = new ArrayList<BCellobject>();
 		
 			
 		   TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
 		   compute.displayCells();
 		
 		
-			parent.AllGreencells.put(Integer.toString(t), Greencelllist);
 			
 
 		percent++;
@@ -79,8 +82,10 @@ public class GreenCellTrack {
 			intCursor.fwd();
 			int i = intCursor.get().get();
 
-			if(!parent.pixellist.contains(i) && i > 0)
+			if(!parent.pixellist.contains(i) && i > 0) {
 				parent.pixellist.add(i);
+			
+			}
 
 		}
 

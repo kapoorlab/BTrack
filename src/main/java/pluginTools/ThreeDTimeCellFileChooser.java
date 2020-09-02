@@ -98,7 +98,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring), new EmptyBorder(c.insets));
 
 	public Label inputLabelcalX, inputLabelcalY, inputLabelcalZ, inputLabelcalT;
-	public double calibrationX, calibrationY, calibrationZ, FrameInterval;
+	public double calibrationX, calibrationY, calibrationZ, FrameInterval, TimeTotal;
+	
+	public Label inputZ, inputT;
+	public TextField inputFieldZ, inputFieldT;
 
 	public TextField inputFieldcalX, inputFieldcalY, inputFieldcalZ, FieldinputLabelcalT;
 	public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"),
@@ -127,6 +130,11 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		inputLabelcalT = new Label("Pixel calibration in T (min)");
 		FieldinputLabelcalT = new TextField(5);
 		FieldinputLabelcalT.setText("1");
+		panelFirst.setLayout(layout);
+		
+		inputT = new Label("Total TimePoints");
+		inputFieldT = new TextField(5);
+		inputFieldT.setText("1");
 		panelFirst.setLayout(layout);
 
 		Paneldone.setLayout(layout);
@@ -196,9 +204,15 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 7, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.RELATIVE, insets, 0, 0));
+		
+		Microscope.add(inputT, new GridBagConstraints(0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.RELATIVE, insets, 0, 0));
+
+		Microscope.add(inputFieldT, new GridBagConstraints(0, 9, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.setBorder(microborder);
@@ -215,6 +229,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		inputFieldcalX.addTextListener(new CalXListener());
 		inputFieldcalY.addTextListener(new CalYListener());
 		FieldinputLabelcalT.addTextListener(new CalTListener());
+		inputFieldT.addTextListener(new InputTListener());
 		Done.addActionListener(new GreenDoneListener());
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
@@ -279,6 +294,21 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		}
 
 	}
+	
+	public class InputTListener implements TextListener {
+
+		@Override
+		public void textValueChanged(TextEvent e) {
+			final TextComponent tc = (TextComponent) e.getSource();
+			String s = tc.getText();
+
+			if (s.length() > 0)
+				 TimeTotal = Float.parseFloat(s);
+
+		}
+
+	}
+
 
 	public class GreenDoneListener implements ActionListener {
 
@@ -296,14 +326,16 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 	public void DoneCurrGreen(Frame parent) throws ImgIOException {
 
+		
+		
 		WindowManager.closeAllWindows();
 		// Tracking and Measurement is done with imageA
 
+		
 		Done.setEnabled(false);
 		RandomAccessibleInterval<FloatType> imageOrigGreen = SimplifiedIO.openImage(
 				impOrigGreen.getOriginalFileInfo().directory + impOrigGreen.getOriginalFileInfo().fileName,
 				new FloatType());
-
 		// Segmentation image for green cells
 		RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(
 				impSegGreen.getOriginalFileInfo().directory + impSegGreen.getOriginalFileInfo().fileName,
@@ -334,9 +366,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
 			RandomAccessibleInterval<IntType> imageBigMask  = Create4D(imageOrigGreen, imageMask);
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
-			InteractiveGreen CellCollection = new InteractiveGreen(imageOrigGreen, imageSegA, imageBigMask,
-					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
-					FrameInterval, name);
+			
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageSegA, imageBigMask, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+					FrameInterval, name, false);
+			
+			
+		
 
 			CellCollection.run(null);
 			jpb = CellCollection.jpb;
@@ -345,9 +380,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		if (NoMask) {
 
 			RandomAccessibleInterval<IntType> imageMask = CreateBorderMask(imageOrigGreen);
-			InteractiveGreen CellCollection = new InteractiveGreen(imageOrigGreen, imageSegA, imageMask,
-					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
-					FrameInterval, name);
+			
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageSegA, imageMask, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+					FrameInterval, name, false);
+			
+			
+		
 
 			CellCollection.run(null);
 

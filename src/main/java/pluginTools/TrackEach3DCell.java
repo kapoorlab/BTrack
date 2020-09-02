@@ -59,12 +59,12 @@ import displayBud.DisplayListOverlay;
 public class TrackEach3DCell {
 
 
-	final InteractiveGreen parent;
+	final InteractiveBud parent;
 	int percent;
 	ArrayList<Cellobject> Greencelllist = new ArrayList<Cellobject>();
 	
 	
-	public TrackEach3DCell(final InteractiveGreen parent,
+	public TrackEach3DCell(final InteractiveBud parent,
 			final int percent) {
 
 		this.parent = parent;
@@ -87,7 +87,7 @@ public class TrackEach3DCell {
 	public void displayCells() {
 
 		
-		String uniqueID = Integer.toString(parent.thirdDimension);
+		String uniqueID = Integer.toString(parent.fourthDimension);
 		
 		
 		Iterator<Integer> setiter = parent.pixellist.iterator();
@@ -102,7 +102,6 @@ public class TrackEach3DCell {
 			if (label > 0) {
 
 		
-
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
@@ -118,8 +117,8 @@ public class TrackEach3DCell {
 
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
-														100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
-														"Collecting Cells = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
+														100 * (percent) / (parent.fourthDimensionSize + parent.pixellist.size()),
+														"Collecting Cells = " + parent.fourthDimension + "/" + parent.fourthDimensionSize );
 
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
@@ -150,9 +149,9 @@ public class TrackEach3DCell {
 		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
 		
 
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
+		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.fourthDimension, label,
 				truths.size() * parent.calibrationX);
-	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewMaskInt, parent.CurrentViewInt);
+	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 
      	for(Cellobject currentbudcell:Greencelllist) {
 			
@@ -163,8 +162,8 @@ public class TrackEach3DCell {
 			// and the distance
 			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
-            parent.Greencells.add(budncell, parent.thirdDimension);  
+			BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
+            parent.budcells.add(budncell, parent.fourthDimension);  
 		}
 		
 	      
@@ -263,8 +262,8 @@ public class TrackEach3DCell {
 
 		// Go through the whole image and add every pixel, that belongs to
 		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1) };
-		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
+		long[] minVal = { Intimg.max(0), Intimg.max(1), Intimg.max(2)  };
+		long[] maxVal = { Intimg.min(0), Intimg.min(1), Intimg.min(2) };
 
 		while (intCursor.hasNext()) {
 			intCursor.fwd();
@@ -291,69 +290,17 @@ public class TrackEach3DCell {
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
 
-	
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
 		
+		
+		
 		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
 		return region;
 
 	}
-	public static Budregionobject YellowCurrentLabelBinaryImage(
-			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
-		int n = Intimg.numDimensions();
-		long[] position = new long[n];
-		Cursor<IntType> intCursor = Views.iterable(Intimg).cursor();
-
-		RandomAccessibleInterval<BitType> outimg = new ArrayImgFactory<BitType>().create(Intimg, new BitType());
-		RandomAccess<BitType> imageRA = outimg.randomAccess();
-
-		// Go through the whole image and add every pixel, that belongs to
-		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1) };
-		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
-
-		while (intCursor.hasNext()) {
-			intCursor.fwd();
-			imageRA.setPosition(intCursor);
-			int i = intCursor.get().get();
-			if (i == currentLabel) {
-
-				intCursor.localize(position);
-				for (int d = 0; d < n; ++d) {
-					if (position[d] < minVal[d]) {
-						minVal[d] = position[d];
-					}
-					if (position[d] > maxVal[d]) {
-						maxVal[d] = position[d];
-					}
-
-				}
-
-				imageRA.get().setOne();
-			} else
-				imageRA.get().setZero();
-
-		}
-		
-		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
-		for (int d = 0; d < n; ++d) {
-			
-			minVal[d] = minVal[d] - 10;
-			maxVal[d] = maxVal[d] + 10;
-			
-		}
 	
-		Point min = new Point(minVal);
-		outimg = Views.offsetInterval(outimg, minVal, maxVal);
-		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
-		
-		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
-		return region;
-
-	}
 
 
 }

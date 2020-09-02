@@ -138,17 +138,12 @@ public class TrackEachBud {
 		
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
-	
-		
-
 		while (setiter.hasNext()) {
 
 			percent++;
 			int label = setiter.next();
 
 			if (label > 0) {
-
-		
 
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
