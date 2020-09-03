@@ -118,7 +118,7 @@ public class TrackEach3DCell {
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
 														100 * (percent) / (parent.fourthDimensionSize + parent.pixellist.size()),
-														"Collecting Cells = " + parent.fourthDimension + "/" + parent.fourthDimensionSize );
+														"Collecting Cells T = " + parent.fourthDimension + "/" + parent.fourthDimensionSize );
 
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
@@ -153,6 +153,8 @@ public class TrackEach3DCell {
 				truths.size() * parent.calibrationX);
 	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 
+	      
+	      
      	for(Cellobject currentbudcell:Greencelllist) {
 			
 			
@@ -160,7 +162,9 @@ public class TrackEach3DCell {
 			
 			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
 			// and the distance
-			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
+			double closestBudPoint = 0;
+			if(closestskel!=null)
+				closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			// Make the bud n cell object, each cell has all information about the bud n itself 
 			BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
             parent.budcells.add(budncell, parent.fourthDimension);  
@@ -191,16 +195,17 @@ public class TrackEach3DCell {
 	    double minY = Interiorimage.realMin(1);
 	    double maxY = Interiorimage.realMax(1);	
 			
+	    double minZ = Interiorimage.realMin(2);
+	    double maxZ = Interiorimage.realMax(2);
 	    
-	    RealPoint startA = new RealPoint(new double[] {minX, minY});
+	    RealPoint startA = new RealPoint(new double[] {minX, minY, minZ});
 	    endPoints.add(startA);
-	    RealPoint startB = new RealPoint(new double[] {minX, maxY});
+	    RealPoint startB = new RealPoint(new double[] {minX, maxY, maxZ});
 	    endPoints.add(startB);
-	    RealPoint startC = new RealPoint(new double[] {maxX, maxY});
+	    RealPoint startC = new RealPoint(new double[] {maxX, maxY, maxZ});
 	    endPoints.add(startC);
-	    RealPoint startD = new RealPoint(new double[] {maxX, minY});
+	    RealPoint startD = new RealPoint(new double[] {maxX, minY, minZ});
 	    endPoints.add(startD);
-	    
 	    
 	    
 		return endPoints;

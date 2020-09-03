@@ -18,57 +18,41 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud.ValueChange;
 
-
 public class GreenCellTrack {
-	
-	
+
 	final InteractiveBud parent;
 	final JProgressBar jpb;
-	
-	
+
 	public GreenCellTrack(final InteractiveBud parent, final JProgressBar jpb) {
-		
+
 		this.parent = parent;
 		this.jpb = jpb;
-		
-	}
-	
-	
 
-	
+	}
+
 	public void ShowCellTime() {
-		
-		int percent = 0;
-		System.out.println(parent.fourthDimensionSize);
-		
-		for(int t = 1; t <= parent.fourthDimensionSize; ++t) {
-	
-		parent.updatePreview(ValueChange.THIRDDIMmouse);
-	
-		System.out.println(t);
-		
-		parent.fourthDimension = t;
-		
-	
-		GetPixelList(parent.CurrentViewInt);
-		
-		
-		
-			
-		   TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
-		   compute.displayCells();
-		
-		
-			
 
-		percent++;
-		
+		int percent = 0;
+
+		for (int t = 1; t <= parent.fourthDimensionSize; ++t) {
+
+			parent.fourthDimension = t;
+
+			parent.updatePreview(ValueChange.THIRDDIMmouse);
+
+			System.out.println(t + " " + parent.fourthDimensionSize);
+			GetPixelList(parent.CurrentViewInt);
+
+			TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
+			compute.displayCells();
+
+			percent++;
+
 		}
-		
-		
+
 	}
-	
-	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {
+
+	public void GetPixelList(RandomAccessibleInterval<IntType> intimg) {
 
 		IntType min = new IntType();
 		IntType max = new IntType();
@@ -76,21 +60,20 @@ public class GreenCellTrack {
 		Cursor<IntType> intCursor = Views.iterable(intimg).cursor();
 		// Neglect the background class label
 		parent.pixellist.clear();
-		
-		
+
 		while (intCursor.hasNext()) {
 			intCursor.fwd();
 			int i = intCursor.get().get();
 
-			if(!parent.pixellist.contains(i) && i > 0) {
+			if (!parent.pixellist.contains(i) && i > 0) {
 				parent.pixellist.add(i);
-			
+
 			}
 
 		}
 
 	}
-	
+
 	public <T extends Comparable<T> & Type<T>> void computeMinMax(final Iterable<T> input, final T min, final T max) {
 		// create a cursor for the image (the order does not matter)
 		final Iterator<T> iterator = input.iterator();
@@ -113,6 +96,5 @@ public class GreenCellTrack {
 				max.set(type);
 		}
 	}
-
 
 }

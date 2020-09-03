@@ -21,6 +21,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
@@ -180,8 +181,6 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 		RandomAccess<IntType> budintran = Mask.randomAccess();
-		// Select all yellow cells
-		
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();
@@ -189,6 +188,7 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 			int labelyellow = intcursor.get().get();
 			int label = budintran.get().get();
 			InsideCellList.put(labelyellow, false);
+			
 			if(label > 0)
 				InsideCellList.put(labelyellow, true);
 			
@@ -197,35 +197,35 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 					for (Integer labelgreen : InsideCellList.keySet()) {
 						   Boolean isInterior = InsideCellList.get(labelgreen);
 						    if(isInterior) {
+						    	
 							Budregionobject PairCurrentViewBit = TrackEachBud
-									.BudCurrentLabelBinaryImage(GreenCellSeg, labelgreen);
-
+									.BudCurrentLabelBinaryImage3D(GreenCellSeg, labelgreen);
 							// For each bud get the list of points
 							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 							double cellArea = Volume(PairCurrentViewBit.Interiorimage);
 							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
 							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
 							double[] Extents = radiusXYZ( PairCurrentViewBit.Boundaryimage);
-
 							Cellobject insideGreencells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents); 
 							Allcells.add(insideGreencells);
-						
-							for (RealLocalizable insidetruth : bordercelltruths) {
+							
 
-								Integer xPts = (int) insidetruth.getFloatPosition(0);
-								Integer yPts = (int) insidetruth.getFloatPosition(1);
+								Integer xPts = (int) cellcenterpoint.getFloatPosition(0);
+								Integer yPts = (int) cellcenterpoint.getFloatPosition(1);
+								Integer zPts = (int) cellcenterpoint.getFloatPosition(2);
 								
-								OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
+								OvalRoi points = new OvalRoi(xPts, yPts, 10, 10);
 								points.setStrokeColor(Color.RED);
-								points.setStrokeWidth(2);
+								points.setStrokeWidth(10);
 								parent.overlay.add(points);
-							}
+								parent.imp.updateAndDraw();
+							
 						    }
 					}
 					
-					parent.imp.updateAndDraw();
+					
 		return Allcells;
 		
 	}

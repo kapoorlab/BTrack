@@ -95,9 +95,8 @@ import tracker.BUDDYCostFunction;
 import tracker.BUDDYTrackModel;
 import zGUI.CovistoZselectPanel;
 
-public class InteractiveBud  extends JPanel implements PlugIn{
+public class InteractiveBud extends JPanel implements PlugIn {
 
-	
 	private static final long serialVersionUID = 1L;
 	public String usefolder = IJ.getDirectory("imagej");
 	public String addToName = "BTrack_";
@@ -105,7 +104,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public final int scrollbarSize = 1000;
 	public Set<Integer> pixellist;
 	public NumberFormat nf;
-	public Color Drawcolor; 
+	public Color Drawcolor;
 	public RandomAccessibleInterval<FloatType> originalimg;
 	public RandomAccessibleInterval<FloatType> originalSecimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
@@ -129,10 +128,8 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public ArrayList<ValuePair<String, Budpointobject>> Tracklist;
 	public HashMap<String, Double> TrackMeanVelocitylist;
 	public HashMap<String, Double> TrackMaxVelocitylist;
-	public HashMap<Integer, HashMap<Integer,Double>> BudVelocityMap;
-	
-	
-	
+	public HashMap<Integer, HashMap<Integer, Double>> BudVelocityMap;
+
 	public ArrayList<ValuePair<String, Budobject>> BudTracklist;
 	public HashMap<String, ArrayList<BCellobject>> AllBudcells;
 	public Overlay overlay;
@@ -165,7 +162,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public XYSeriesCollection Velocitydataset;
-	public ImageJ ij; 
+	public ImageJ ij;
 	public JFreeChart chartVelocity;
 	public double calibrationX;
 	public double calibrationY;
@@ -176,119 +173,113 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	public BCellobjectCollection budcells = new BCellobjectCollection();
-	public HashMap<Integer,Integer> IDlist = new HashMap<Integer, Integer>();
+	public HashMap<Integer, Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Budpointobject> Finalresult;
+
 	// Input Bud and its segmentation
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final String NameA,final double calibrationX, double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
-			
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.NameA = NameA;
-			this.calibrationX = calibrationX;
-			this.calibrationY = calibrationY;
-		    this.calibrationZ = 1;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			this.BudAnalysis = BudAnalysis;
-			
-		}
-		
-		
-		// Input RGB and one flourescent channel segmentation images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring) {
-		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.NameA = NameA;
-			this.calibrationX = calibrationX;
-			this.calibrationY = calibrationY;
-			this.calibrationZ =  1;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			
-		}
-		
-		// Input Image and one flourescent channel and mask images
-		public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-				final RandomAccessibleInterval<IntType> Segoriginalimg,
-				final RandomAccessibleInterval<IntType> SegYelloworiginalimg,
-				final String NameA,final double calibrationX, final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
-		
-			
-			this.originalimg = originalimg;
-			this.Segoriginalimg = Segoriginalimg;
-			this.SegYelloworiginalimg = SegYelloworiginalimg;
-			this.NameA = NameA;
-			this.calibrationX = calibrationX;
-			this.calibrationY = calibrationY;
-			this.calibrationZ = 1;
-			this.timecal = timecal;
-			this.ndims = originalimg.numDimensions();
-			this.Velocitydataset = new XYSeriesCollection();
-			this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-			this.jFreeChartFrameRate.setVisible(false);
-			this.inputstring = inputstring;
-			this.BudAnalysis = BudAnalysis;
-			
-		}
-		
+	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+			final RandomAccessibleInterval<IntType> Segoriginalimg, final String NameA, final double calibrationX,
+			double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
+		this.originalimg = originalimg;
+		this.Segoriginalimg = Segoriginalimg;
+		this.NameA = NameA;
+		this.calibrationX = calibrationX;
+		this.calibrationY = calibrationY;
+		this.calibrationZ = 1;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+		this.BudAnalysis = BudAnalysis;
 
-	
+	}
+
+	// Input RGB and one flourescent channel segmentation images
+	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+			final RandomAccessibleInterval<IntType> Segoriginalimg,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final String NameA, final double calibrationX,
+			final double calibrationY, final double timecal, String inputstring) {
+
+		this.originalimg = originalimg;
+		this.Segoriginalimg = Segoriginalimg;
+		this.SegYelloworiginalimg = SegYelloworiginalimg;
+		this.NameA = NameA;
+		this.calibrationX = calibrationX;
+		this.calibrationY = calibrationY;
+		this.calibrationZ = 1;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+
+	}
+
+	// Input Image and one flourescent channel and mask images
+	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+			final RandomAccessibleInterval<IntType> Segoriginalimg,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final String NameA, final double calibrationX,
+			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
+
+		this.originalimg = originalimg;
+		this.Segoriginalimg = Segoriginalimg;
+		this.SegYelloworiginalimg = SegYelloworiginalimg;
+		this.NameA = NameA;
+		this.calibrationX = calibrationX;
+		this.calibrationY = calibrationY;
+		this.calibrationZ = 1;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+		this.BudAnalysis = BudAnalysis;
+
+	}
+
 	public ImageStack prestack;
 	public JTable table;
 	public JTableHeader header;
+
 	public static enum ValueChange {
-		
+
 		THIRDDIMmouse, All;
-		
+
 	}
-	
+
 	public void setTime(final int value) {
 		thirdDimensionslider = value;
 		thirdDimensionsliderInit = 1;
 		thirdDimension = 1;
 	}
-	
+
 	public void setZ(final int value) {
 		fourthDimensionslider = value;
 		fourthDimensionsliderInit = 1;
 		fourthDimension = 1;
 	}
-	
-	
+
 	public int getTimeMax() {
 
 		return thirdDimensionSize;
 	}
+
 	@Override
 	public void run(String arg0) {
 
-		for(int d = 0; d < originalimg.numDimensions(); ++d)
-		System.out.println(originalimg.dimension(d));
+	
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
 		BudOvalRois = new ArrayList<OvalRoi>();
-		BudVelocityMap = new HashMap<Integer, HashMap<Integer,Double>>() ;
+		BudVelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
 		jpb = new JProgressBar();
@@ -301,7 +292,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		TrackMeanVelocitylist = new HashMap<String, Double>();
 		TrackMaxVelocitylist = new HashMap<String, Double>();
 		BudTracklist = new ArrayList<ValuePair<String, Budobject>>();
-		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>(); 
+		AllBudpoints = new HashMap<String, ArrayList<Budpointobject>>();
 		AllBuds = new HashMap<String, ArrayList<Budobject>>();
 		ij = new ImageJ();
 		ij.ui().showUI();
@@ -313,177 +304,154 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			AutostartTime = thirdDimension;
 			AutoendTime = thirdDimensionSize;
 			maxframegap = thirdDimensionSize / 4;
-			
+
 			setTime(thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-			if(SegYelloworiginalimg!=null)
-				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
+			if (SegYelloworiginalimg != null)
+				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
+						thirdDimensionSize);
 			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
-			
-			
-			if(BudAnalysis) {
-				
+
+			if (BudAnalysis) {
+
 				StartDisplayer();
-			    Card();
-			
+				Card();
+
 			}
-			
+
 			else {
-				
+
 				System.out.println("Cell collector");
 				CellCollector();
-				
+
 			}
 		}
 
-		
 		if (ndims > 3) {
-			
-			
 
 			thirdDimension = 1;
 
 			thirdDimensionSize = (int) originalimg.dimension(2);
-			
+
 			fourthDimension = 1;
 
 			fourthDimensionSize = (int) originalimg.dimension(3);
-			
-		
-		setZ(thirdDimension);
-		setTime(fourthDimension);
-		
-		CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
-		CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
-		if(SegYelloworiginalimg!=null)
-			CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
-		imp = ImageJFunctions.show(CurrentView, "Original Image");
-		imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
-		
 
-		System.out.println("Green Cell collector");
-		GreenCellCollector();
-		
+			setZ(thirdDimension);
+			setTime(fourthDimension);
+
+			CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize,
+					fourthDimension, fourthDimensionSize);
+			CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize,
+					fourthDimension, fourthDimensionSize);
+			if (SegYelloworiginalimg != null)
+				CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
+						thirdDimensionSize, fourthDimension, fourthDimensionSize);
+			imp = ImageJFunctions.show(CurrentView, "Original Image");
+			
+			imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
+
+			System.out.println("Green Cell collector");
+			GreenCellCollector();
+
 		}
-		
-	
+
 		Cardframe.repaint();
 		Cardframe.validate();
 		panelFirst.repaint();
 		panelFirst.validate();
 		saveFile = new java.io.File(".");
-		//Get Labelled images
-		
-     
-	
-		
-		
+		// Get Labelled images
 
-		
-		
 	}
-	
-	
+
 	public void updatePreview(final ValueChange change) {
-		
-		
-		
-		
+
 		if (overlay == null) {
 
 			overlay = new Overlay();
 			imp.setOverlay(overlay);
-			
+
 		}
-		
-		
-		if (change == ValueChange.THIRDDIMmouse)
-		{
+
+		if (change == ValueChange.THIRDDIMmouse) {
 			if (ndims == 3) {
-			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
-			String TID = Integer.toString( thirdDimension);
-			AccountedT.put(TID,  thirdDimension);
-			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
-			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-			if(SegYelloworiginalimg!=null)
-				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize);
-		repaintView(CurrentView);
-		
-		
-		
-		if(BudAnalysis) {
-		if(CovistoKalmanPanel.Skeletontime.isEnabled()) {
-			imp.getOverlay().clear();
-			imp.updateAndDraw();
-			StartDisplayer();
-			
+				imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
+				String TID = Integer.toString(thirdDimension);
+				AccountedT.put(TID, thirdDimension);
+				CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+				CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension,
+						thirdDimensionSize);
+				if (SegYelloworiginalimg != null)
+					CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
+							thirdDimensionSize);
+				repaintView(CurrentView);
+
+				if (BudAnalysis) {
+					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
+						imp.getOverlay().clear();
+						imp.updateAndDraw();
+						StartDisplayer();
+
+					}
+				}
+
+				else {
+
+					imp.getOverlay().clear();
+					imp.updateAndDraw();
+
+				}
+			}
+
+			if (ndims > 3) {
+				imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
+				String TID = Integer.toString(fourthDimension);
+				AccountedT.put(TID, fourthDimension);
+
+				CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize,
+						fourthDimension, fourthDimensionSize);
+				CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension,
+						thirdDimensionSize, fourthDimension, fourthDimensionSize);
+				if (SegYelloworiginalimg != null)
+					CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
+							thirdDimensionSize, fourthDimension, fourthDimensionSize);
+				repaintView(CurrentView);
+
+				imp.getOverlay().clear();
+				imp.updateAndDraw();
+
+			}
+
 		}
-		}
-		
-		else {
-			
-			imp.getOverlay().clear();
-			imp.updateAndDraw();
-			
-		}
-		}
-			
-		if(ndims > 3) {
-			imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
-			String TID = Integer.toString( fourthDimension);
-			AccountedT.put(TID,  fourthDimension);
-			
-			
-			
-			CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
-			CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
-			if(SegYelloworiginalimg!=null)
-				CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension, thirdDimensionSize, fourthDimension, fourthDimensionSize);
-			repaintView(CurrentView);
-			
-			imp.getOverlay().clear();
-			imp.updateAndDraw();
-			
-		}
-			
-			
-		}
-		
-		
+
 	}
-	
-	
+
 	public void StartDisplayer() {
-		
-		
-		
+
 		ComputeBorder display = new ComputeBorder(this, jpb);
-		
+
 		display.execute();
 	}
-	
-	
+
 	public void CellCollector() {
-		
+
 		CollectCells display = new CollectCells(this, jpb);
 		display.execute();
-		
+
 	}
-	
+
 	public void GreenCellCollector() {
-		
-		
-		
+
 		CollectGreenCells display = new CollectGreenCells(this, jpb);
 		display.execute();
 	}
-	
-	public void repaintView( RandomAccessibleInterval<FloatType> Activeimage) {
-		
-		
-		
+
+	public void repaintView(RandomAccessibleInterval<FloatType> Activeimage) {
+
+		System.out.println("repainting");
 		if (imp == null || !imp.isVisible()) {
 			imp = ImageJFunctions.show(Activeimage);
 
@@ -492,7 +460,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		else {
 			try {
 				final float[] pixels = (float[]) imp.getProcessor().getPixels();
-				
+
 				final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
 
 				for (int i = 0; i < pixels.length; ++i)
@@ -503,22 +471,17 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				final float[] pixels = (float[]) imp.getProcessor().getPixels();
 				final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
 
-			
 				for (int i = 0; i < pixels.length; ++i)
 					pixels[i] = c.next().get();
 
-			   
 			}
-			
-			
+
 			imp.updateAndDraw();
 
 		}
 
 	}
-	
-	
-	
+
 	public JFrame Cardframe = new JFrame("Bud n Cell Tracker");
 	public JPanel panelFirst = new JPanel();
 	public JPanel Original = new JPanel();
@@ -538,10 +501,9 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public Label autoTstart, autoTend;
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
-	
-	
-	public Label thirdexplain = new Label("Press Esc on active image to stop calculation" , Label.CENTER);
-	public Label fourthexplain = new Label("Click Skeletonize buddies after selection" , Label.CENTER);
+
+	public Label thirdexplain = new Label("Press Esc on active image to stop calculation", Label.CENTER);
+	public Label fourthexplain = new Label("Click Skeletonize buddies after selection", Label.CENTER);
 	public String timestring = "Current T";
 	int textwidth = 5;
 	public int AutostartTime, AutoendTime;
@@ -558,17 +520,16 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 	public TextField inputtrackField;
 	public Border selectcell = new CompoundBorder(new TitledBorder("Select Cell"), new EmptyBorder(c.insets));
 	public TextField inputField = new TextField();
-	public Border origborder = new CompoundBorder(new TitledBorder("Results files"),
-			new EmptyBorder(c.insets));
+	public Border origborder = new CompoundBorder(new TitledBorder("Results files"), new EmptyBorder(c.insets));
 	public final JButton ChooseDirectory = new JButton("Choose Directory to save results in");
+
 	public void Card() {
-		
-	
+
 		Cellbutton.setEnabled(false);
 		CardLayout cl = new CardLayout();
 
 		c.insets = new Insets(5, 5, 5, 5);
-		
+
 		c.anchor = GridBagConstraints.BOTH;
 		c.ipadx = 35;
 
@@ -579,10 +540,10 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		panelCont.setLayout(cl);
 
 		panelCont.add(panelFirst, "1");
-		
+
 		inputtrackLabel = new Label("Enter trackID to save");
 		inputtrackField = new TextField(textwidth);
-		
+
 		Object[] colnames = new Object[] { "Track Id", "Location X", "Location Y", "Location T", "Growth Rate" };
 
 		Object[][] rowvalues = new Object[0][colnames.length];
@@ -591,22 +552,20 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			rowvalues = new Object[Finalresult.size()][colnames.length];
 
 		}
-		/*if (Tracklist != null && Tracklist.size() > 0) {
-			rowvalues = new Object[Tracklist.size()][colnames.length];
-		}
-		*/
-		
+		/*
+		 * if (Tracklist != null && Tracklist.size() > 0) { rowvalues = new
+		 * Object[Tracklist.size()][colnames.length]; }
+		 */
+
 		table = new JTable(rowvalues, colnames);
-		header  = table.getTableHeader();
+		header = table.getTableHeader();
 		table.setFillsViewportHeight(true);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
+
 		autoTend = new Label("End time for tracking");
 		endT = new TextField(textwidth);
 		endT.setText(Integer.toString(AutoendTime));
-		
-		
-		
+
 		scrollPane = new JScrollPane(table);
 		Original.setLayout(layout);
 		scrollPane.getViewport().add(table);
@@ -627,7 +586,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		table.isOpaque();
 		scrollPane.setMinimumSize(new Dimension(300, 200));
 		scrollPane.setPreferredSize(new Dimension(300, 200));
-		
+
 		panelFirst.setLayout(layout);
 		overlay = imp.getOverlay();
 		if (overlay == null) {
@@ -644,12 +603,11 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		autoTend = new Label("End time for tracking");
 		endT = new TextField(textwidth);
 		endT.setText(Integer.toString(AutoendTime));
-		
+
 		Timeselect.setLayout(layout);
 		inputFieldT = new TextField(textwidth);
 		inputFieldT.setText(Integer.toString(thirdDimension));
-		
-		
+
 		// Put time slider
 
 		Timeselect.add(timeText, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -664,27 +622,27 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Timeselect.add(endT, new GridBagConstraints(2, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		
-		
-		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);
-		
-		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-       
+
+		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
 		KalmanPanel = CovistoKalmanPanel.KalmanPanel();
-		
+
 		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		
-		if(SegYelloworiginalimg!=null || SegRedoriginalimg!=null || SegGreenoriginalimg!=null)
-		panelFirst.add(Cellbutton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		
+
+		if (SegYelloworiginalimg != null || SegRedoriginalimg != null || SegGreenoriginalimg != null)
+			panelFirst.add(Cellbutton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+
 		panelFirst.add(PanelSelectFile, new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		
-		
 
 		Original.add(inputtrackLabel, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
@@ -701,40 +659,39 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
 		Original.setBorder(origborder);
-		
-		
+
 		panelFirst.add(Original, new GridBagConstraints(3, 1, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		//panelFirst.add(Batchbutton, new GridBagConstraints(3, 2, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
-		//		GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		
-		
-		inputFieldT.addTextListener(new BudTlocListener(this,false));
-		
+		// panelFirst.add(Batchbutton, new GridBagConstraints(3, 2, 3, 1, 0.0, 0.0,
+		// GridBagConstraints.EAST,
+		// GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		inputFieldT.addTextListener(new BudTlocListener(this, false));
+
 		timeslider.addAdjustmentListener(new BudTimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));
 		endT.addTextListener(new BTrackAutoEndListener(this));
-		
+
 		CovistoKalmanPanel.Skeletontime.addActionListener(new BudSkeletonListener(this));
 		CovistoKalmanPanel.Restart.addActionListener(new BudRestartListener(this));
 		CovistoKalmanPanel.Timetrack.addActionListener(new BudLinkobjectListener(this));
 		CovistoKalmanPanel.lostframe.addTextListener(new BudPRELostFrameListener(this));
 		CovistoKalmanPanel.tracklength.addTextListener(new BudSkeletonTrackLengthListener(this));
 
-		
 		CovistoKalmanPanel.maxSearchKalman.addAdjustmentListener(new BudPREMaxSearchTListener(this,
 				CovistoKalmanPanel.maxSearchTextKalman, CovistoKalmanPanel.maxSearchstringKalman,
 				CovistoKalmanPanel.maxSearchradiusMin, CovistoKalmanPanel.maxSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.maxSearchSS));
-		CovistoKalmanPanel.setInitialsearchradius((float) (CovistoKalmanPanel.initialSearchradius/calibrationX));
-		
+		CovistoKalmanPanel.setInitialsearchradius((float) (CovistoKalmanPanel.initialSearchradius / calibrationX));
+
 		CovistoKalmanPanel.initialSearchS.addAdjustmentListener(new BudPREIniSearchListener(this,
 				CovistoKalmanPanel.iniSearchText, CovistoKalmanPanel.initialSearchstring,
 				CovistoKalmanPanel.initialSearchradiusMin, CovistoKalmanPanel.initialSearchradiusMax,
 				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.initialSearchS));
-		CovistoKalmanPanel.alphaS.addAdjustmentListener(new BudAlphaListener(this, CovistoKalmanPanel.alphaText, CovistoKalmanPanel.alphastring,
-				CovistoKalmanPanel.alphaMin, CovistoKalmanPanel.alphaMax, CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.alphaS));
+		CovistoKalmanPanel.alphaS.addAdjustmentListener(new BudAlphaListener(this, CovistoKalmanPanel.alphaText,
+				CovistoKalmanPanel.alphastring, CovistoKalmanPanel.alphaMin, CovistoKalmanPanel.alphaMax,
+				CovistoKalmanPanel.scrollbarSize, CovistoKalmanPanel.alphaS));
 		CovistoKalmanPanel.setInitialAlpha(CovistoKalmanPanel.alphaInit);
 		KalmanPanel.validate();
 		KalmanPanel.repaint();
@@ -746,7 +703,7 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 		SaveAllbutton.addActionListener(new BudSaveAllListener(this));
 		ChooseDirectory.addActionListener(new BTrackSaveDirectoryListener(this));
 		inputField.addTextListener(new BTrackFilenameListener(this));
-		
+
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
@@ -761,38 +718,26 @@ public class InteractiveBud  extends JPanel implements PlugIn{
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == 27)
 					EscapePressed = true;
-				
+
 			}
-			
-			
-			
-			
-			
+
 		});
-		
-		
-		
-		
+
 	}
-	
-	
+
 	public Boolean EscapePressed = false;
-	
-	
-	
-	
 
 }

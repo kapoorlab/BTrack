@@ -43,14 +43,13 @@ public class BudSlicer {
 
 		final T type = originalimg.randomAccess().get().createVariable();
 		long[] dim = { originalimg.dimension(0), originalimg.dimension(1), originalimg.dimension(2) };
+		long[] shortdim = { originalimg.dimension(0), originalimg.dimension(1)};
 		final ImgFactory<T> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
 		RandomAccessibleInterval<T> totalimg = factory.create(dim, type);
 
 
-
 			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, fourthDimension - 1);
 		
-		    
 
 		return totalimg;
 

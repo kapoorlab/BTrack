@@ -44,7 +44,7 @@ public class CollectGreenCells extends SwingWorker<Void, Void> {
 		
 		
 		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
-		plugin.run(null);
+		plugin.run("threeD");
 		
 	}
 	

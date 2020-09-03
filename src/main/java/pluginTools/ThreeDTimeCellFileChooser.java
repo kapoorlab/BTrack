@@ -50,6 +50,7 @@ import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -83,10 +84,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public JComboBox<String> ChooseoriginalImage;
 	public JButton Done = new JButton("Collect Cells and Start Tracker");
 
-	public String chooseCellSegstring = "3D + time Segmentation Image for Cells";
+	public String chooseCellSegstring = "3D + time Segmentation for Cells";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
 
-	public String chooseMaskSegstring = "3D + time Segmentation Image for Cells and 2D + time Mask";
+	public String chooseMaskSegstring = "Segmentation for Cells and  Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
 	public JProgressBar jpb = new JProgressBar();
 
@@ -367,7 +368,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			RandomAccessibleInterval<IntType> imageBigMask  = Create4D(imageOrigGreen, imageMask);
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
 			
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageSegA, imageBigMask, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageBigMask, imageSegA, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			
@@ -379,13 +380,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 		if (NoMask) {
 
-			RandomAccessibleInterval<IntType> imageMask = CreateBorderMask(imageOrigGreen);
-			
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageSegA, imageMask, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			RandomAccessibleInterval<IntType> imageBigMask = CreateBorderMask(imageOrigGreen);
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageBigMask,  imageSegA, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
-			
-		
 
 			CellCollection.run(null);
 

@@ -50,6 +50,32 @@ public class TrackMatePlugIn_ implements PlugIn {
 		return imp;
 		
 	}
+	
+	public static ImagePlus Reshape3D(RandomAccessibleInterval<FloatType> image, String title) {
+		
+		int channels, frames;
+		
+		ImagePlus imp = ImageJFunctions.wrapFloat(image, title);
+		if(imp.getNChannels() > imp.getNFrames()) {
+			channels = imp.getNFrames();
+		    frames = imp.getNChannels();
+		    
+		}
+		
+		else {
+			
+			channels = imp.getNChannels();
+		    frames = imp.getNFrames();
+			
+		}
+		
+		imp.setDimensions(channels, frames,  imp.getNSlices());
+		imp.show();
+		
+		return imp;
+		
+	}
+	
 	/**
 	 * Runs the TrackMate GUI plugin.
 	 *
@@ -61,7 +87,13 @@ public class TrackMatePlugIn_ implements PlugIn {
 	 */
 	@Override
 	public void run(final String imagePath) {
-		ImagePlus imp = Reshape(parent.originalimg, "");
+		
+		
+		ImagePlus imp = null;
+		if (imagePath==null)
+		imp = Reshape(parent.originalimg, "");
+		else
+		imp = Reshape3D(parent.originalimg, "");
 		GuiUtils.userCheckImpDimensions(imp);
 
 		settings = createSettings(imp);
