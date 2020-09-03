@@ -40,7 +40,6 @@ public class GreenCellTrack {
 
 			parent.updatePreview(ValueChange.THIRDDIMmouse);
 
-			System.out.println(t + " " + parent.fourthDimensionSize);
 			GetPixelList(parent.CurrentViewInt);
 
 			TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
