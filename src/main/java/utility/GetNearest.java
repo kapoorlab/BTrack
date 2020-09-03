@@ -183,7 +183,6 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 		RandomAccess<IntType> budintran = Mask.randomAccess();
 		
-		ArrayList<OvalRoi> Rois = new ArrayList<OvalRoi>();
 		
 		while (intcursor.hasNext()) {
 
@@ -207,10 +206,10 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 							// For each bud get the list of points
 							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-							double cellArea = Volume(PairCurrentViewBit.Interiorimage);
+							double cellArea = Volume(PairCurrentViewBit.Boundaryimage);
 							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
-							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
+							double intensity = getIntensity(parent, PairCurrentViewBit.Boundaryimage);
 							double[] Extents = radiusXYZ( PairCurrentViewBit.Boundaryimage);
 							Cellobject insideGreencells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents); 
 							Allcells.add(insideGreencells);

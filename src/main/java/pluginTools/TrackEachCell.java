@@ -131,7 +131,11 @@ public class TrackEachCell {
 		
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
-	
+		int nThreads = Runtime.getRuntime().availableProcessors();
+		System.out.println("Starting threads:" + nThreads);
+		// set up executor service
+		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
+		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 	
 
 		while (setiter.hasNext()) {
@@ -185,11 +189,23 @@ public class TrackEachCell {
 
 											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
 
-
+											tasks.add(Executors.callable(new ParallelLabel2D(parent,Budlist , celllist,  Budpointlist,  PairCurrentViewBit,
+													truths, centerpoint,uniqueID,
+													label)));
 
 					}
 
       		}
+	try {
+			
+			taskExecutor.invokeAll(tasks);
+	
+	} catch (InterruptedException e1) {
+
+		System.out.println(e1 + " Task not executed");
+		
+	}
+
 		
 
 	}

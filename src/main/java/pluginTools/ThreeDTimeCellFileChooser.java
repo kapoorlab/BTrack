@@ -405,6 +405,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
 					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
+			
+			CellCollection.Zslider = Zslider;
 					
 		}
 
@@ -421,6 +423,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
 					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
+			
+			CellCollection.Zslider = Zslider;
 
 		}
 		

@@ -93,7 +93,13 @@ public class TrackEach3DCell {
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
 
-
+		int nThreads = Runtime.getRuntime().availableProcessors();
+		System.out.println("Starting threads:" + nThreads);
+		// set up executor service
+		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
+		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+		
+		
 		while (setiter.hasNext()) {
 
 			percent++;
@@ -120,7 +126,7 @@ public class TrackEach3DCell {
 														100 * (percent) / (parent.fourthDimensionSize + parent.pixellist.size()),
 														"Collecting Cells T = " + parent.fourthDimension + "/" + parent.fourthDimensionSize );
 
-											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
+											tasks.add(Executors.callable(new ParallelLabel(parent, Greencelllist, PairCurrentViewBit, truths, centerpoint, uniqueID, label)));
 
 
 
@@ -128,6 +134,16 @@ public class TrackEach3DCell {
 
       		}
 		
+		
+	try {
+			
+			taskExecutor.invokeAll(tasks);
+	
+	} catch (InterruptedException e1) {
+
+		System.out.println(e1 + " Task not executed");
+		
+	}
 
 	}
 	
@@ -305,6 +321,8 @@ public class TrackEach3DCell {
 		return region;
 
 	}
+
+
 	
 
 
