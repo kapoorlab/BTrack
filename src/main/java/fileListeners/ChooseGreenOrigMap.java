@@ -37,7 +37,6 @@ public class ChooseGreenOrigMap implements ActionListener {
 		
 		
     	parent.impOrigGreen = WindowManager.getImage(imagename);
-    	System.out.println(	parent.impOrigGreen .getNFrames() + " " + 	parent.impOrigGreen .getNChannels() + " " + 	parent.impOrigGreen .getNSlices() + " " + 	parent.impOrigGreen .getNDimensions());
     	if(parent.impOrigGreen!=null) {
 			
     		    parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;

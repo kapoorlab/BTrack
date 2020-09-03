@@ -6,15 +6,13 @@ import java.awt.event.MouseListener;
 import pluginTools.InteractiveBud;
 import pluginTools.InteractiveBud.ValueChange;
 
-public class BudStandardMouseListener implements MouseListener
+public class BudNonStandardMouseListener implements MouseListener
 {
 	final InteractiveBud parent;
-	final ValueChange change;
 
-	public BudStandardMouseListener( final InteractiveBud parent, final ValueChange change)
+	public BudNonStandardMouseListener( final InteractiveBud parent)
 	{
 		this.parent = parent;
-		this.change = change;
 	}
 	
 	
@@ -24,7 +22,6 @@ public class BudStandardMouseListener implements MouseListener
 	{
 		
 		
-		parent.updatePreview(change);
 		
 
 		
@@ -34,7 +31,7 @@ public class BudStandardMouseListener implements MouseListener
 	public void mousePressed( MouseEvent arg0 ){
 		
 		
-		parent.updatePreview(change);
+		
 	}
 
 	@Override
@@ -47,7 +44,7 @@ public class BudStandardMouseListener implements MouseListener
 	}
 
 	@Override
-	public void mouseClicked( MouseEvent arg0 ) {parent.updatePreview(change);}
+	public void mouseClicked( MouseEvent arg0 ) {}
 }
 
 

@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import budDetector.Budobject;
 import budDetector.Budregionobject;
@@ -181,6 +182,9 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 		RandomAccess<IntType> budintran = Mask.randomAccess();
+		
+		ArrayList<OvalRoi> Rois = new ArrayList<OvalRoi>();
+		
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();
@@ -212,15 +216,14 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 							Allcells.add(insideGreencells);
 							
 
-								Integer xPts = (int) cellcenterpoint.getFloatPosition(0);
-								Integer yPts = (int) cellcenterpoint.getFloatPosition(1);
-								Integer zPts = (int) cellcenterpoint.getFloatPosition(2);
-								
-								OvalRoi points = new OvalRoi(xPts, yPts, 10, 10);
-								points.setStrokeColor(Color.RED);
-								points.setStrokeWidth(10);
-								parent.overlay.add(points);
-								parent.imp.updateAndDraw();
+							for (RealLocalizable insidetruth : bordercelltruths) {
+
+								Integer xPts = (int) insidetruth.getFloatPosition(0);
+								Integer yPts = (int) insidetruth.getFloatPosition(1);
+								Integer zPts = (int) insidetruth.getFloatPosition(2);
+								parent.ZTRois.add(new int[] {xPts, yPts, zPts});
+							
+							}
 							
 						    }
 					}

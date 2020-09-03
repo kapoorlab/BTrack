@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
+import java.awt.Scrollbar;
 import java.awt.TextComponent;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -22,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollBar;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -43,6 +45,7 @@ import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoMaskFLListener;
 import listeners.BTrackGoRedFLListener;
 import listeners.BTrackGoYellowFLListener;
+import listeners.BudZListener;
 import listeners.ThreeDCellGoFreeFLListener;
 import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
@@ -91,6 +94,13 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
 	public JProgressBar jpb = new JProgressBar();
 
+	public int thirdDimensionsliderInit = 1;
+	public final int scrollbarSize = 1000;
+	public JScrollBar Zslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
+			scrollbarSize + 10);
+	
+	
+	
 	public String chooseoriginalCellfilestring = "Cells are tracked inside a region";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
 			new EmptyBorder(c.insets));
@@ -136,6 +146,13 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		inputT = new Label("Total TimePoints");
 		inputFieldT = new TextField(5);
 		inputFieldT.setText("1");
+		
+		
+		inputZ = new Label("Z point = 1");
+		inputFieldZ = new TextField(5);
+		inputFieldZ.setText("1");
+		
+		
 		panelFirst.setLayout(layout);
 
 		Paneldone.setLayout(layout);
@@ -217,6 +234,9 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.setBorder(microborder);
+		
+		
+		
 		panelFirst.add(Microscope, new GridBagConstraints(0, 9, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
@@ -360,6 +380,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					"This tracker is for 3D + time images only, your image has higher dimensionality, split the channels perhaps?");
 
 		}
+		
+		Microscope.add(inputZ, new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		Microscope.add(Zslider, new GridBagConstraints(0, 11, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		if (DoMask) {
 
@@ -376,6 +402,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 			CellCollection.run(null);
 			jpb = CellCollection.jpb;
+			
+			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
+					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
+					
 		}
 
 		if (NoMask) {
@@ -388,9 +418,21 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			CellCollection.run(null);
 
 			jpb = CellCollection.jpb;
+			
+			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
+					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
 
 		}
+		
+		
 
+
+		
+
+		
+		Microscope.repaint();
+		Microscope.validate();
+		
 		Cardframe.add(jpb, "Last");
 		Cardframe.repaint();
 		Cardframe.validate();

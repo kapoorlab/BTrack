@@ -20,7 +20,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
@@ -73,27 +71,19 @@ import listeners.BudSkeletonTrackLengthListener;
 import listeners.BudTimeListener;
 import listeners.BudTlocListener;
 import listeners.BudTrackidListener;
+import listeners.BudZListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.algorithm.labeling.ConnectedComponents;
-import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
-import net.imglib2.img.ImagePlusAdapter;
-import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.roi.labeling.ImgLabeling;
-import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import tracker.BUDDYBudTrackModel;
 import tracker.BUDDYCostFunction;
 import tracker.BUDDYTrackModel;
-import zGUI.CovistoZselectPanel;
 
 public class InteractiveBud extends JPanel implements PlugIn {
 
@@ -159,6 +149,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public int fourthDimensionsliderInit = 1;
 	public int fourthDimensionSize;
 	public JProgressBar jpb;
+	public ArrayList<int[]> ZTRois;
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public XYSeriesCollection Velocitydataset;
@@ -268,6 +259,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 		return thirdDimensionSize;
 	}
+	
+	
+	
 
 	@Override
 	public void run(String arg0) {
@@ -279,6 +273,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
 		BudOvalRois = new ArrayList<OvalRoi>();
+		ZTRois = new ArrayList<int[]>();
 		BudVelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
@@ -349,10 +344,15 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			if (SegYelloworiginalimg != null)
 				CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
 						thirdDimensionSize, fourthDimension, fourthDimensionSize);
-			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			
+			
+			imp = ImageJFunctions.show(utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize), "Original Image");
+			
+			
+			imp.setDimensions(1, fourthDimensionSize, 1);
 			imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
 
+		
 			System.out.println("Green Cell collector");
 			GreenCellCollector();
 
@@ -366,6 +366,8 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		// Get Labelled images
 
 	}
+	
+	
 
 	public void updatePreview(final ValueChange change) {
 
@@ -388,7 +390,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize);
 				repaintView(CurrentView);
-
 				if (BudAnalysis) {
 					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
 						imp.getOverlay().clear();
@@ -418,10 +419,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 				if (SegYelloworiginalimg != null)
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize, fourthDimension, fourthDimensionSize);
-				repaintView(CurrentView);
-
-				imp.getOverlay().clear();
-				imp.updateAndDraw();
+				repaintView( utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize));
+				
+			
 
 			}
 
@@ -451,7 +451,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	public void repaintView(RandomAccessibleInterval<FloatType> Activeimage) {
 
-		System.out.println("repainting");
 		if (imp == null || !imp.isVisible()) {
 			imp = ImageJFunctions.show(Activeimage);
 
@@ -501,14 +500,21 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public Label autoTstart, autoTend;
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
+	
+	public Label inputZ = new Label("Current Z = " + 1, Label.CENTER );
 
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation", Label.CENTER);
 	public Label fourthexplain = new Label("Click Skeletonize buddies after selection", Label.CENTER);
 	public String timestring = "Current T";
+	public String Zstring = "Current Z";
+	
 	int textwidth = 5;
 	public int AutostartTime, AutoendTime;
 	public TextField inputFieldT;
 	public JScrollBar timeslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
+			scrollbarSize + 10);
+	
+	public JScrollBar Zslider = new JScrollBar(Scrollbar.HORIZONTAL, thirdDimensionsliderInit, 10, 0,
 			scrollbarSize + 10);
 	public JButton Savebutton = new JButton("Save Track");
 	public JButton Cellbutton = new JButton("Enter BTrackmate");
@@ -671,6 +677,13 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 		timeslider.addAdjustmentListener(new BudTimeListener(this, timeText, timestring, thirdDimensionsliderInit,
 				thirdDimensionSize, scrollbarSize, timeslider));
+		
+		
+		Zslider.addAdjustmentListener(new BudZListener(this, inputZ, Zstring, thirdDimensionsliderInit,
+				thirdDimensionSize, scrollbarSize, Zslider));
+		
+		
+		
 		endT.addTextListener(new BTrackAutoEndListener(this));
 
 		CovistoKalmanPanel.Skeletontime.addActionListener(new BudSkeletonListener(this));

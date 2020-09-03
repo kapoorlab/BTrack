@@ -38,6 +38,7 @@ public class GreenCellTrack {
 
 			parent.fourthDimension = t;
 
+			parent.ZTRois = new ArrayList<int[]>();
 			parent.updatePreview(ValueChange.THIRDDIMmouse);
 
 			GetPixelList(parent.CurrentViewInt);
