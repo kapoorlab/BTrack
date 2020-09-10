@@ -22,7 +22,6 @@ import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
 import net.imglib2.multithreading.SimpleMultiThreading;
 import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 
 /**
  * <p>

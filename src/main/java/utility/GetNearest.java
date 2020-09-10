@@ -29,7 +29,6 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 import pluginTools.TrackEachBud;
 
 public class GetNearest {
@@ -156,12 +155,12 @@ public static RealLocalizable getNearestskelPoint(final List<RealLocalizable> sk
 								parent.imp.updateAndDraw();
 							}
 							
-							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 
-							double cellArea = Volume(PairCurrentViewBit.Interiorimage);
+							double cellArea = Volume(PairCurrentViewBit.Boundaryimage);
 							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
 							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
-							double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
+							double intensity = getIntensity(parent, PairCurrentViewBit.Boundaryimage);
 							double[] Extents = radiusXY( PairCurrentViewBit.Boundaryimage);
 
 							Cellobject insidecells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents );
@@ -295,31 +294,7 @@ public static < T extends RealType< T > > double Volume( final RandomAccessibleI
 		return intensity;		
 		
 	}
-	
-	public static double getIntensity(InteractiveGreen parent, RandomAccessibleInterval<BitType> Regionimage) {
-		
-		double intensity = 0;
-		
-		Cursor<BitType> cursor =  Views.iterable(Regionimage).localizingCursor();
-		
-		RandomAccess<FloatType> intran = parent.CurrentView.randomAccess();
-		
-		while(cursor.hasNext()) {
-			
-			cursor.fwd();
-			
-			if(cursor.get().getInteger() > 0 ) {
-				
-				intensity+=intran.get().get();
-				
-			}
-			
-		}
-		
-		
-		return intensity;		
-		
-	}
+
 	
 	
 	public static OvalRoi getNearestRois(ArrayList<OvalRoi> Allrois, double[] Clickedpoint) {

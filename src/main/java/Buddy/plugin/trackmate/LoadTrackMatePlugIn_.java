@@ -41,7 +41,6 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import pluginTools.InteractiveBud;
-import pluginTools.InteractiveGreen;
 
 public class LoadTrackMatePlugIn_ extends SomeDialogDescriptor implements PlugIn {
 

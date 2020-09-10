@@ -19,7 +19,7 @@ public class PanelZero3DCell {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Documents/GreenCells/SmartSeedResults-small.tif");
+				.openImage("/Users/aimachine/Documents/TRA-1.tif");
 		impA.show();
 		
 		
