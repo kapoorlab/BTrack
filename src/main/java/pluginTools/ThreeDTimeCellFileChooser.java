@@ -52,7 +52,7 @@ import loadfile.CovistoOneChFileLoader;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
@@ -457,7 +457,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	protected RandomAccessibleInterval<IntType> Create4D(RandomAccessibleInterval<FloatType> imageOrig,
 			RandomAccessibleInterval<IntType> impMask) {
 
-		RandomAccessibleInterval<IntType> imageBigMask = new ArrayImgFactory<IntType>().create(imageOrig,
+		RandomAccessibleInterval<IntType> imageBigMask = new CellImgFactory<IntType>().create(imageOrig,
 				new IntType());
 
 		if (impMask.numDimensions() < imageOrig.numDimensions()) {
@@ -505,7 +505,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	@SuppressWarnings("deprecation")
 	protected RandomAccessibleInterval<IntType> CreateBorderMask(RandomAccessibleInterval<FloatType> imageOrig) {
 
-		RandomAccessibleInterval<IntType> imageSegB = new ArrayImgFactory<IntType>().create(imageOrig, new IntType());
+		RandomAccessibleInterval<IntType> imageSegB = new CellImgFactory<IntType>().create(imageOrig, new IntType());
 
 		RandomAccess<IntType> ranac = imageSegB.randomAccess();
 
