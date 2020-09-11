@@ -33,7 +33,10 @@ public class GreenCellTrack implements Runnable{
 	public void ShowCellTime() {
 
 		int percent = 0;
-		
+		int nThreads = Runtime.getRuntime().availableProcessors();
+		// set up executor service
+		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
+		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		for (int t = 1; t <= parent.fourthDimensionSize; ++t) {
 
 			parent.fourthDimension = t;

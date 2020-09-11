@@ -56,7 +56,7 @@ import skeleton.*;
 import utility.GetNearest;
 import displayBud.DisplayListOverlay;
 
-public class TrackEach3DCell {
+public class TrackEach3DCell implements Runnable {
 
 
 	final InteractiveBud parent;
@@ -319,6 +319,16 @@ public class TrackEach3DCell {
 		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
 		return region;
 
+	}
+
+
+
+
+
+	@Override
+	public void run() {
+		displayCells();
+		
 	}
 
 

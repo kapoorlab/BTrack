@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import budDetector.Budobject;
 import budDetector.Budregionobject;
@@ -29,6 +32,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
+import pluginTools.ObjectMaker;
 import pluginTools.TrackEachBud;
 
 public class GetNearest {
@@ -195,36 +199,29 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 				InsideCellList.put(labelyellow, true);
 			
 		}
+		int nThreads = Runtime.getRuntime().availableProcessors();
+		// set up executor service
+		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
+		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 	
 					for (Integer labelgreen : InsideCellList.keySet()) {
 						   Boolean isInterior = InsideCellList.get(labelgreen);
 						    if(isInterior) {
-						    	
-							Budregionobject PairCurrentViewBit = TrackEachBud
-									.BudCurrentLabelBinaryImage3D(GreenCellSeg, labelgreen);
-							// For each bud get the list of points
-							List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-							List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-							double cellArea = Volume(PairCurrentViewBit.Boundaryimage);
-							double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
-							Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
-							double intensity = getIntensity(parent, PairCurrentViewBit.Boundaryimage);
-							double[] Extents = radiusXYZ( PairCurrentViewBit.Boundaryimage);
-							Cellobject insideGreencells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents); 
-							Allcells.add(insideGreencells);
-							
-
-							for (RealLocalizable insidetruth : bordercelltruths) {
-
-								Integer xPts = (int) insidetruth.getFloatPosition(0);
-								Integer yPts = (int) insidetruth.getFloatPosition(1);
-								Integer zPts = (int) insidetruth.getFloatPosition(2);
-								parent.ZTRois.add(new int[] {xPts, yPts, zPts});
-							
-							}
+						    	tasks.add(Executors.callable(new ObjectMaker(parent,  GreenCellSeg,  Allcells, labelgreen )));
 							
 						    }
 					}
+					
+					
+					try {
+						
+						taskExecutor.invokeAll(tasks);
+				
+				} catch (InterruptedException e1) {
+
+					System.out.println(e1 + " Task not executed");
+					
+				}
 					
 					
 		return Allcells;
