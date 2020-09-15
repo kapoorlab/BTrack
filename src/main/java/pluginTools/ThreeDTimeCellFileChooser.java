@@ -363,7 +363,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 				new IntType());
 
 		String name = impOrigGreen.getOriginalFileInfo().fileName;
-		WindowManager.closeAllWindows();
+		//WindowManager.closeAllWindows();
 		// Image -> Mask -> Cell Mask
 		Cardframe.remove(jpb);
 
