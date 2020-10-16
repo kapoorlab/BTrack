@@ -184,18 +184,14 @@ public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent,
 		Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
-		RandomAccess<IntType> budintran = Mask.randomAccess();
 		
 		
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();
-			budintran.setPosition(intcursor);
-			int labelyellow = intcursor.get().get();
-			int label = budintran.get().get();
-			InsideCellList.put(labelyellow, false);
 			
-			if(label > 0)
+			int labelyellow = intcursor.get().get();
+			
 				InsideCellList.put(labelyellow, true);
 			
 		}

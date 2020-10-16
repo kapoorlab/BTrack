@@ -54,6 +54,8 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.Type;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -463,6 +465,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 		RandomAccessibleInterval<IntType> imageBigMask = new CellImgFactory<IntType>().create(imageOrig,
 				new IntType());
+		RandomAccessibleInterval<IntType> imageBigSeg = copyImage(imageSegA);
 
 		if (impMask.numDimensions() < imageOrig.numDimensions()) {
 
@@ -511,22 +514,22 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		
 		Cursor<IntType> Bigcursor = Views.iterable(imageBigMask).localizingCursor();
 		
-		RandomAccess<FloatType> originalimage = imageOrig.randomAccess();
 		
-		RandomAccess<IntType> segimage = imageSegA.randomAccess();
+		RandomAccess<IntType> segimage = imageBigSeg.randomAccess();
 		
 		while(Bigcursor.hasNext()) {
 			
 			Bigcursor.fwd();
-			
+			segimage.setPosition(Bigcursor);
 			if(Bigcursor.get().get() == 0 ) {
-				originalimage.get().setZero();
+				
+						
 				segimage.get().setZero();
 			}
 			
 		}
 
-		ImageObjects images = new ImageObjects(imageOrig, imageBigMask, imageSegA);
+		ImageObjects images = new ImageObjects(imageOrig, imageBigMask, imageBigSeg);
 		return images;
 	}
 	
@@ -596,5 +599,33 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		return imageSegB;
 
 	}
-
+	  
+	    public  RandomAccessibleInterval< IntType > copyImage( final RandomAccessibleInterval<IntType > input )
+	    {
+	        // create a new Image with the same properties
+	        // note that the input provides the size for the new image as it implements
+	        // the Interval interface
+	    	
+	    	RandomAccessibleInterval< IntType > output = new CellImgFactory<IntType>().create( input,
+					new IntType() );
+	 
+	        // create a cursor for both images
+	        Cursor< IntType > cursorInput = Views.iterable(input).cursor();
+	        RandomAccess< IntType > randomAccess = output.randomAccess();
+	 
+	        // iterate over the input
+	        while ( cursorInput.hasNext())
+	        {
+	            // move both cursors forward by one pixel
+	            cursorInput.fwd();
+	            randomAccess.setPosition( cursorInput );
+	 
+	            // set the value of this pixel of the output image to the same as the input,
+	            // every Type supports T.set( T type )
+	            randomAccess.get().set( cursorInput.get() );
+	        }
+	 
+	        // return the copy
+	        return output;
+	    }
 }
