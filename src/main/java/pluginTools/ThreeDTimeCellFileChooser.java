@@ -57,6 +57,8 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import fileListeners.SimplifiedIO;
 
@@ -391,10 +393,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 			RandomAccessibleInterval<IntType> imageMask = SimplifiedIO.openImage(
 					impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
-			RandomAccessibleInterval<IntType> imageBigMask  = Create4D(imageOrigGreen, imageMask);
+			ImageObjects ImagePairs  = 
+					Create4D(imageOrigGreen, imageMask, imageSegA);
+			
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
 			
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageBigMask, imageSegA, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, ImagePairs.imageBigMask, ImagePairs.imageSegA, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			
@@ -454,8 +458,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 	}
 
-	protected RandomAccessibleInterval<IntType> Create4D(RandomAccessibleInterval<FloatType> imageOrig,
-			RandomAccessibleInterval<IntType> impMask) {
+	protected ImageObjects Create4D(RandomAccessibleInterval<FloatType> imageOrig,
+			RandomAccessibleInterval<IntType> impMask,RandomAccessibleInterval<IntType> imageSegA) {
 
 		RandomAccessibleInterval<IntType> imageBigMask = new CellImgFactory<IntType>().create(imageOrig,
 				new IntType());
@@ -498,8 +502,52 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 				}
 			}
 		}
+		
+		else {
+			
+			imageBigMask = impMask;
+			
+		}
+		
+		Cursor<IntType> Bigcursor = Views.iterable(imageBigMask).localizingCursor();
+		
+		RandomAccess<FloatType> originalimage = imageOrig.randomAccess();
+		
+		RandomAccess<IntType> segimage = imageSegA.randomAccess();
+		
+		while(Bigcursor.hasNext()) {
+			
+			Bigcursor.fwd();
+			
+			if(Bigcursor.get().get() == 0 ) {
+				originalimage.get().setZero();
+				segimage.get().setZero();
+			}
+			
+		}
 
-		return imageBigMask;
+		ImageObjects images = new ImageObjects(imageOrig, imageBigMask, imageSegA);
+		return images;
+	}
+	
+	public class ImageObjects{
+	
+		final RandomAccessibleInterval<FloatType> imageOrig;
+		final RandomAccessibleInterval<IntType> imageBigMask;
+		final RandomAccessibleInterval<IntType> imageSegA;
+	
+	public ImageObjects(RandomAccessibleInterval<FloatType> imageOrig, RandomAccessibleInterval<IntType> imageBigMask,
+			RandomAccessibleInterval<IntType>imageSegA) {
+		
+		this.imageOrig = imageOrig;
+		this.imageBigMask = imageBigMask;
+		this.imageSegA = imageSegA;
+		
+	}
+		
+		
+		
+		
 	}
 
 	@SuppressWarnings("deprecation")

@@ -49,7 +49,6 @@ public class GreenCellTrack implements Runnable{
 			parent.ZTRois = new ArrayList<int[]>();
 			parent.updatePreview(ValueChange.THIRDDIMmouse);
 
-			GetPixelList(parent.CurrentViewInt);
 
 			TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
 			compute.displayCells();

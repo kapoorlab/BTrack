@@ -19,7 +19,7 @@ public class PanelZero3DCell {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Documents/TRA-1.tif");
+				.openImage("/Users/aimachine/Claudia/BTrackmate/BTrackDemoSeg-1.tif");
 		impA.show();
 		
 		

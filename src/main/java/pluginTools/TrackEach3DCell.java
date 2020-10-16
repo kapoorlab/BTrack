@@ -90,7 +90,6 @@ public class TrackEach3DCell implements Runnable {
 		String uniqueID = Integer.toString(parent.fourthDimension);
 		
 		
-		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
 
 		int nThreads = Runtime.getRuntime().availableProcessors();
@@ -99,39 +98,23 @@ public class TrackEach3DCell implements Runnable {
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 		
 		
-		while (setiter.hasNext()) {
-
-			percent++;
-			int label = setiter.next();
-
-			if (label > 0) {
 
 		
-				// Input the integer image of bud with the label and output the binary border
-				// for that label
-				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
-						parent.CurrentViewInt, label);
 
 				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-
-
 
 											// For each bud get the list of points
-											RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
 
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
 														100 * (percent) / (parent.fourthDimensionSize + parent.pixellist.size()),
 														"Collecting Cells T = " + parent.fourthDimension + "/" + parent.fourthDimensionSize );
 
-											tasks.add(Executors.callable(new ParallelLabel(parent, Greencelllist, PairCurrentViewBit, truths, centerpoint, uniqueID, label)));
+											tasks.add(Executors.callable(new ParallelLabel(parent, Greencelllist,  uniqueID)));
 
 
 
-					}
 
-      		}
 		
 		
 	try {
