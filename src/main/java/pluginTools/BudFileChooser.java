@@ -162,8 +162,6 @@ public class BudFileChooser extends JPanel {
 		ChooseRGBImage = new JComboBox<String>(blankimageNames);
 		ChoosesuperImage = new JComboBox<String>(blankimageNames);
 
-		//panelFirst.add(GoBud, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-		//		GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		CovistoOneChFileLoader original = new CovistoOneChFileLoader(chooseoriginalbudfilestring, blankimageNames);
 
@@ -178,12 +176,6 @@ public class BudFileChooser extends JPanel {
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		panelFirst.add(YellowMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		// panelFirst.add(GreenMode, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0,
-		// GridBagConstraints.EAST,
-		// GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		// panelFirst.add(RedMode, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0,
-		// GridBagConstraints.WEST,
-		// GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseBudSegstring, blankimageNames);
 		Panelfile = segmentation.SingleChannelOption();
@@ -224,8 +216,6 @@ public class BudFileChooser extends JPanel {
 		GoBud.addItemListener(new BTrackGoBudListener(this));
 		FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
 		YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
-		// GreenMode.addItemListener(new BTrackGoGreenFLListener(this));
-		// RedMode.addItemListener(new BTrackGoRedFLListener(this));
 		segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());

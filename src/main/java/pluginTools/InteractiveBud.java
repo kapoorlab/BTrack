@@ -59,6 +59,7 @@ import listeners.BTrackFilenameListener;
 import listeners.BudAlphaListener;
 import listeners.BudLinkobjectListener;
 import listeners.BudMastadonListener;
+import listeners.BudModifyListener;
 import listeners.BudPREIniSearchListener;
 import listeners.BudPRELostFrameListener;
 import listeners.BudPREMaxSearchTListener;
@@ -102,12 +103,18 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
-	public ArrayList<OvalRoi> BudOvalRois;
+	public HashMap<String, ArrayList<OvalRoi>> BudOvalRois;
 	public final String NameA;
 	public int ndims;
 	public MouseListener mvl;
 	public MouseListener tvl;
 	public MouseMotionListener tvml;
+	
+	public int BudDotsize = 10;
+	public Color BudColor = Color.PINK;
+	public Color RemoveBudColor = Color.RED;
+	public Color AddBudColor = Color.BLUE;
+	
 	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
 	public HashMap<String, ArrayList<Budobject>> AllBuds;
 	public HashMap<String, Integer> BudLastTime;
@@ -272,7 +279,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		AllBudcenter = new ArrayList<RealLocalizable>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
-		BudOvalRois = new ArrayList<OvalRoi>();
+		BudOvalRois = new HashMap<String, ArrayList<OvalRoi>>();
 		ZTRois = new ArrayList<int[]>();
 		BudVelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
@@ -558,10 +565,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			rowvalues = new Object[Finalresult.size()][colnames.length];
 
 		}
-		/*
-		 * if (Tracklist != null && Tracklist.size() > 0) { rowvalues = new
-		 * Object[Tracklist.size()][colnames.length]; }
-		 */
 
 		table = new JTable(rowvalues, colnames);
 		header = table.getTableHeader();
@@ -669,9 +672,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		panelFirst.add(Original, new GridBagConstraints(3, 1, 3, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		// panelFirst.add(Batchbutton, new GridBagConstraints(3, 2, 3, 1, 0.0, 0.0,
-		// GridBagConstraints.EAST,
-		// GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		inputFieldT.addTextListener(new BudTlocListener(this, false));
 

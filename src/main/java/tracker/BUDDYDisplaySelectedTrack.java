@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -11,20 +12,28 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
+
 import budDetector.Budpointobject;
 import budDetector.Distance;
 import ij.gui.ImageCanvas;
 import ij.gui.OvalRoi;
+import ij.gui.Overlay;
 import ij.gui.Roi;
+import net.imglib2.KDTree;
+import net.imglib2.RealPoint;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 import utility.BudChartMaker;
+import utility.FlagNode;
 import zGUI.CovistoZselectPanel;
 
 public class BUDDYDisplaySelectedTrack {
@@ -60,7 +69,7 @@ public class BUDDYDisplaySelectedTrack {
 				int y = canvas.offScreenY(e.getY());
 				parent.Clickedpoints[0] = x;
 				parent.Clickedpoints[1] = y;
-
+				ArrayList<OvalRoi> Allrois = new ArrayList<OvalRoi>();
 				if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
 				
 					
@@ -73,6 +82,50 @@ public class BUDDYDisplaySelectedTrack {
 					
 					
 				}
+				
+				// To select or deselect a point
+				if (SwingUtilities.isLeftMouseButton(e) && !e.isShiftDown()) {
+					
+						int time = parent.thirdDimension;
+						
+						ArrayList<Budpointobject> Budpointlist = parent.AllBudpoints.get(Integer.toString(time));
+						
+						
+						
+						Budpointobject nearest = getNearestBPO( Budpointlist, new double[] {x,y} );
+					
+						int X = (int)nearest.Location[0];
+						int Y = (int)nearest.Location[1];
+						
+						OvalRoi points =  new OvalRoi((int) X, (int) Y,
+								parent.BudDotsize, parent.BudDotsize);
+						
+						OvalRoi nearestroi = getNearestRois(parent.BudOvalRois.get(Integer.toString(time)), new double[] {x,y});
+						
+						if(nearestroi!=null) {
+						if (nearestroi.getStrokeColor()!=parent.RemoveBudColor)
+						points.setStrokeColor(parent.RemoveBudColor);
+						if(nearestroi.getStrokeColor() == parent.RemoveBudColor)
+							points.setStrokeColor(parent.BudColor);
+						points.setStrokeWidth(parent.BudDotsize);
+						parent.overlay.remove(nearestroi);
+						parent.overlay.add(points);
+						parent.BudOvalRois.remove(Integer.toString(parent.thirdDimension));
+				        for (int i = 0; i < parent.overlay.size(); ++i) {
+				        	
+				        	OvalRoi roi = (OvalRoi) parent.overlay.get(i);
+				        	if(roi.getStrokeColor() == parent.RemoveBudColor || roi.getStrokeColor() == parent.BudColor)
+				        	Allrois.add(roi);
+				        	
+				        }
+						
+				        parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Allrois);
+						
+						parent.imp.updateAndDraw();
+						}
+					    
+				}
+				
 				
 			}
 
@@ -88,7 +141,85 @@ public class BUDDYDisplaySelectedTrack {
 		});
 
 	}
+	
+	public static OvalRoi getNearestRois(ArrayList<OvalRoi> Allrois, double[] Clickedpoint) {
+
+		OvalRoi KDtreeroi = null;
+
+		final List<RealPoint> targetCoords = new ArrayList<RealPoint>(Allrois.size());
+		final List<FlagNode<OvalRoi>> targetNodes = new ArrayList<FlagNode<OvalRoi>>(Allrois.size());
+		for (int index = 0; index < Allrois.size(); ++index) {
+
+			Roi r = Allrois.get(index);
+			Rectangle rect = r.getBounds();
+
+			targetCoords.add(new RealPoint(rect.x + rect.width / 2.0, rect.y + rect.height / 2.0));
+
+			targetNodes.add(new FlagNode<OvalRoi>(Allrois.get(index)));
+
+		}
+
+		if (targetNodes.size() > 0 && targetCoords.size() > 0) {
+
+			final KDTree<FlagNode<OvalRoi>> Tree = new KDTree<FlagNode<OvalRoi>>(targetNodes, targetCoords);
+
+			final NNFlagsearchKDtree<OvalRoi> Search = new NNFlagsearchKDtree<OvalRoi>(Tree);
+
+			final double[] source = Clickedpoint;
+			final RealPoint sourceCoords = new RealPoint(source);
+			Search.search(sourceCoords);
+			final FlagNode<OvalRoi> targetNode = Search.getSampler().get();
+
+			KDtreeroi = targetNode.getValue();
+
+		}
+
+		return KDtreeroi;
+	}
+
 		
+	
+public static Budpointobject getNearestBPO(ArrayList<Budpointobject> Budpointlist, double[] Clickedpoint ) {
+		
+
+		
+		
+		Budpointobject KDtreeroi = null;
+
+		final List<RealPoint> targetCoords = new ArrayList<RealPoint>(Budpointlist.size());
+		final List<FlagNode<Budpointobject>> targetNodes = new ArrayList<FlagNode<Budpointobject>>(Budpointlist.size());
+		for (int index = 0; index < Budpointlist.size(); ++index) {
+
+			Budpointobject r = Budpointlist.get(index);
+			
+			 targetCoords.add( new RealPoint(r.Location) );
+			 
+
+			targetNodes.add(new FlagNode<Budpointobject>( Budpointlist.get(index)));
+
+		}
+
+		if (targetNodes.size() > 0 && targetCoords.size() > 0) {
+
+			final KDTree<FlagNode<Budpointobject>> Tree = new KDTree<FlagNode<Budpointobject>>(targetNodes, targetCoords);
+
+			final NNFlagsearchKDtree<Budpointobject> Search = new NNFlagsearchKDtree<Budpointobject>(Tree);
+
+
+				final double[] source = Clickedpoint;
+				final RealPoint sourceCoords = new RealPoint(source);
+				Search.search(sourceCoords);
+				
+				final FlagNode<Budpointobject> targetNode = Search.getSampler().get();
+
+				KDtreeroi = targetNode.getValue();
+
+		}
+		
+		return KDtreeroi;
+		
+	}
+	
        public static void Mark(final InteractiveBud parent, HashMap<Integer, HashMap<Integer,Double>>  VelocityMap) {
 
     	   

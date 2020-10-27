@@ -33,7 +33,7 @@ public class PanelZero {
 		impC.show();
 
 		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
+				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SmallSegmentedTilesTransmittedLightA.tif");
 		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();

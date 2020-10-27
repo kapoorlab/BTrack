@@ -75,7 +75,7 @@ public class DisplayListOverlay {
 		Color displayColor; 
 		
 			displayColor = Color.GREEN;
-		
+		ArrayList<OvalRoi> Allrois = new ArrayList<OvalRoi>();
 		
 		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 
@@ -92,11 +92,12 @@ public class DisplayListOverlay {
 		}
 
 		OvalRoi oval = new OvalRoi((int) Ordered.getA().getDoublePosition(0), (int) Ordered.getA().getDoublePosition(1),
-				10, 10);
-		oval.setStrokeWidth(10);
+				parent.BudDotsize, parent.BudDotsize);
+		oval.setStrokeWidth(parent.BudDotsize);
 		oval.setStrokeColor(displayColor);
 		parent.overlay.add(oval);
-		parent.BudOvalRois.add(oval);
+		
+		
 		
 		
         for (int i = 0; i < Skelpoints.size(); i++) {
@@ -105,13 +106,20 @@ public class DisplayListOverlay {
 			int Y = (int)Skelpoints.get(i).getFloatPosition(1);
 			
 			OvalRoi points =  new OvalRoi((int) X, (int) Y,
-					10, 10);
-			points.setStrokeColor(Color.PINK);
-			points.setStrokeWidth(10);
+					parent.BudDotsize, parent.BudDotsize);
+			points.setStrokeColor(parent.BudColor);
+			points.setStrokeWidth(parent.BudDotsize);
 			parent.overlay.add(points);
 		}
+        for (int i = 0; i < parent.overlay.size(); ++i) {
+        	
+        	OvalRoi roi = (OvalRoi) parent.overlay.get(i);
+        	if (roi.getStrokeColor()== parent.BudColor)
+        	Allrois.add(roi);
+        	
+        }
 		
-		
+        parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Allrois);
 		parent.imp.updateAndDraw();
 		
 	}
