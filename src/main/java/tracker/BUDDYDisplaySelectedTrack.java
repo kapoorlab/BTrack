@@ -47,9 +47,8 @@ public class BUDDYDisplaySelectedTrack {
 
 		if (parent.mvl != null)
 			parent.imp.getCanvas().removeMouseListener(parent.mvl);
-		if (parent.kvl != null)
-			parent.imp.getCanvas().removeKeyListener(parent.kvl);
-		parent.imp.getCanvas().addKeyListener(new AddBudKeyListener(parent));
+		
+	
 		parent.imp.getCanvas().addMouseListener(parent.mvl = new MouseListener() {
 
 			final ImageCanvas canvas = parent.imp.getWindow().getCanvas();
@@ -61,17 +60,11 @@ public class BUDDYDisplaySelectedTrack {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
 				int x = canvas.offScreenX(e.getX());
 				int y = canvas.offScreenY(e.getY());
 				parent.Clickedpoints[0] = x;
 				parent.Clickedpoints[1] = y;
-				ArrayList<OvalRoi> Allrois = new ArrayList<OvalRoi>();
+				ArrayList<Pair<Color,OvalRoi>> Allrois = new ArrayList<Pair<Color,OvalRoi>>();
 				int time = parent.thirdDimension;
 				if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
 
@@ -113,8 +106,7 @@ public class BUDDYDisplaySelectedTrack {
 							OvalRoi roi = (OvalRoi) parent.overlay.get(i);
 							if (roi.getStrokeColor() == parent.RemoveBudColor
 									|| roi.getStrokeColor() == parent.BudColor)
-								Allrois.add(roi);
-
+								Allrois.add(new ValuePair<Color, OvalRoi>(roi.getStrokeColor(), roi));
 						}
 
 						parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Allrois);
@@ -125,13 +117,13 @@ public class BUDDYDisplaySelectedTrack {
 				}
 
 				if (SwingUtilities.isLeftMouseButton(e) && !e.isShiftDown() && parent.AddDot == "a") {
-
+					parent.AddDot = "b";
 					RandomAccess<IntType> checkintranac = parent.CurrentViewInt.randomAccess();
 
 					checkintranac.setPosition(new int[] { x, y });
 
 					int checklabel = checkintranac.get().get();
-					parent.AddDot = "b";
+					
 					if (checklabel > 0) {
 						OvalRoi points = new OvalRoi((int) x, (int) y, parent.BudDotsize, parent.BudDotsize);
 						points.setStrokeColor(parent.BudColor);
@@ -146,7 +138,7 @@ public class BUDDYDisplaySelectedTrack {
 							OvalRoi roi = (OvalRoi) parent.overlay.get(i);
 							if (roi.getStrokeColor() == parent.RemoveBudColor
 									|| roi.getStrokeColor() == parent.BudColor)
-								Allrois.add(roi);
+								Allrois.add(new ValuePair<Color, OvalRoi>(roi.getStrokeColor(), roi));
 
 						}
 
@@ -185,19 +177,25 @@ public class BUDDYDisplaySelectedTrack {
 			}
 
 			@Override
+			public void mouseReleased(MouseEvent e) {
+
+				
+			}
+
+			@Override
 			public void mouseEntered(MouseEvent e) {
 
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-
+				
 			}
 		});
 
 	}
 
-	public static OvalRoi getNearestRois(ArrayList<OvalRoi> Allrois, double[] Clickedpoint) {
+	public static OvalRoi getNearestRois(ArrayList<Pair<Color,OvalRoi>> Allrois, double[] Clickedpoint) {
 
 		OvalRoi KDtreeroi = null;
 
@@ -205,12 +203,12 @@ public class BUDDYDisplaySelectedTrack {
 		final List<FlagNode<OvalRoi>> targetNodes = new ArrayList<FlagNode<OvalRoi>>(Allrois.size());
 		for (int index = 0; index < Allrois.size(); ++index) {
 
-			Roi r = Allrois.get(index);
+			Roi r = Allrois.get(index).getB();
 			Rectangle rect = r.getBounds();
 
 			targetCoords.add(new RealPoint(rect.x + rect.width / 2.0, rect.y + rect.height / 2.0));
 
-			targetNodes.add(new FlagNode<OvalRoi>(Allrois.get(index)));
+			targetNodes.add(new FlagNode<OvalRoi>(Allrois.get(index).getB()));
 
 		}
 

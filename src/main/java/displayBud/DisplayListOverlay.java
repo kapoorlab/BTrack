@@ -18,6 +18,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
 
@@ -75,7 +76,7 @@ public class DisplayListOverlay {
 		Color displayColor; 
 		
 			displayColor = Color.GREEN;
-		ArrayList<OvalRoi> Allrois = new ArrayList<OvalRoi>();
+		ArrayList<Pair<Color,OvalRoi>> Allrois = new ArrayList<Pair<Color,OvalRoi>>();
 		
 		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 
@@ -98,8 +99,7 @@ public class DisplayListOverlay {
 		parent.overlay.add(oval);
 		
 		
-		
-		
+		if (parent.BudOvalRois.get(uniqueID)==null) {
         for (int i = 0; i < Skelpoints.size(); i++) {
 			
 			int X = (int)Skelpoints.get(i).getFloatPosition(0);
@@ -115,11 +115,28 @@ public class DisplayListOverlay {
         	
         	OvalRoi roi = (OvalRoi) parent.overlay.get(i);
         	if (roi.getStrokeColor()== parent.BudColor)
-        	Allrois.add(roi);
+        	Allrois.add(new ValuePair<Color, OvalRoi>(parent.BudColor, roi));
         	
         }
 		
         parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Allrois);
+		}
+		else {
+				
+				ArrayList<Pair<Color,OvalRoi>> Colorrois = parent.BudOvalRois.get(Integer.toString(parent.thirdDimension));
+				
+				for(int i = 0; i < Colorrois.size(); ++i) {
+					
+					OvalRoi points = Colorrois.get(i).getB();
+				    Color color = Colorrois.get(i).getA();		
+				    points.setStrokeColor(color);
+					points.setStrokeWidth(parent.BudDotsize);
+					parent.overlay.add(points);		
+				}
+				
+			}
+		
+		
 		parent.imp.updateAndDraw();
 		
 	}

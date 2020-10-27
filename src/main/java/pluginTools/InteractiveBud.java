@@ -50,10 +50,12 @@ import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.WindowManager;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
+import listeners.AddBudKeyListener;
 import listeners.BTrackAutoEndListener;
 import listeners.BTrackFilenameListener;
 import listeners.BudAlphaListener;
@@ -80,6 +82,7 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import tracker.BUDDYBudTrackModel;
@@ -103,7 +106,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
-	public HashMap<String, ArrayList<OvalRoi>> BudOvalRois;
+	public HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois;
 	public final String NameA;
 	public int ndims;
 	public MouseListener mvl;
@@ -281,7 +284,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		AllBudcenter = new ArrayList<RealLocalizable>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
-		BudOvalRois = new HashMap<String, ArrayList<OvalRoi>>();
+		BudOvalRois = new HashMap<String, ArrayList<Pair<Color,OvalRoi>>>();
 		ZTRois = new ArrayList<int[]>();
 		BudVelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
@@ -403,6 +406,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
 						imp.getOverlay().clear();
 						imp.updateAndDraw();
+						
 						StartDisplayer();
 
 					}
@@ -459,7 +463,8 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	}
 
 	public void repaintView(RandomAccessibleInterval<FloatType> Activeimage) {
-
+		imp.getCanvas().addKeyListener(new AddBudKeyListener(this));
+		IJ.selectWindow(imp.getTitle());
 		if (imp == null || !imp.isVisible()) {
 			imp = ImageJFunctions.show(Activeimage);
 
