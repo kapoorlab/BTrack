@@ -31,7 +31,6 @@ public class CollectCells extends SwingWorker<Void, Void> {
 	public Void doInBackground() throws Exception {
 		
 		
-		parent.BudOvalRois.clear();
 		
 		// set up executor service
 		final ExecutorService taskExecutor = Executors.newCachedThreadPool();
