@@ -107,7 +107,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public final String NameA;
 	public int ndims;
 	public MouseListener mvl;
+	public KeyListener kvl;
 	public MouseListener tvl;
+	public String AddDot = "B";
 	public MouseMotionListener tvml;
 	
 	public int BudDotsize = 10;
@@ -512,6 +514,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	public Label thirdexplain = new Label("Press Esc on active image to stop calculation", Label.CENTER);
 	public Label fourthexplain = new Label("Click Skeletonize buddies after selection", Label.CENTER);
+	public Label fifthexplain = new Label("Left click to remove/re-add point. Left+a to make a new point", Label.CENTER);
 	public String timestring = "Current T";
 	public String Zstring = "Current Z";
 	
@@ -635,6 +638,8 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.add(fourthexplain, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		Timeselect.add(fifthexplain, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		Timeselect.setBorder(timeborder);
 
