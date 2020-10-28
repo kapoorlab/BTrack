@@ -46,7 +46,7 @@ public class BUDDYTrackingFunctions {
 		for (Map.Entry<String, ArrayList<Budpointobject>> entry : parent.AllBudpoints.entrySet()) {
 
 			ArrayList<Budpointobject> bloblist = entry.getValue();
-
+			ArrayList<Budpointobject> copybloblist = new ArrayList<Budpointobject>(bloblist);
 			String time = entry.getKey();
 
 			ArrayList<Pair<Color, OvalRoi>> currentlist = parent.BudOvalRois.get(time);
@@ -58,12 +58,12 @@ public class BUDDYTrackingFunctions {
 				if (currentcolor == parent.RemoveBudColor) {
 					double[] location = colorroi.getContourCentroid();
 					Budpointobject budpoint = getNearestBPO(bloblist, location);
-					bloblist.remove(budpoint);
+					copybloblist.remove(budpoint);
 				}
 			}
 
-			if (bloblist.size() > 0) {
-				colllist.add(bloblist);
+			if (copybloblist.size() > 0) {
+				colllist.add(copybloblist);
 
 			}
 

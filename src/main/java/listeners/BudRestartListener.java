@@ -43,7 +43,7 @@ public class BudRestartListener implements ActionListener {
 		parent.thirdDimension = 1;
 		parent.inputFieldT.setText(Integer.toString((int)parent.thirdDimension));
 		parent.timeslider.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
-
+        parent.BudOvalRois.clear();
 		parent.timeslider.repaint();
 		parent.timeslider.validate();
 		parent.panelFirst.validate();
