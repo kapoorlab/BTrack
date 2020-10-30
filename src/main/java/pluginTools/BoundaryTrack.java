@@ -17,6 +17,7 @@ import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud.ValueChange;
+import tracker.BUDDYDisplaySelectedTrack;
 
 
 public class BoundaryTrack {
@@ -122,6 +123,8 @@ public class BoundaryTrack {
 		percent++;
 		
 		}
+		BUDDYDisplaySelectedTrack.Select(parent, null);
+		BUDDYDisplaySelectedTrack.Mark(parent, null);
 		
 		if(parent.jpb!=null && parent.thirdDimension == parent.AutoendTime) {
 			CovistoKalmanPanel.Skeletontime.setEnabled(true);

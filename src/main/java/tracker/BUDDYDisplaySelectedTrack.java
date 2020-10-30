@@ -47,8 +47,9 @@ public class BUDDYDisplaySelectedTrack {
 
 		if (parent.mvl != null)
 			parent.imp.getCanvas().removeMouseListener(parent.mvl);
-		
-	
+		if (parent.kvl != null)
+			parent.imp.getCanvas().removeKeyListener(parent.kvl);
+		parent.imp.getCanvas().addKeyListener(new AddBudKeyListener(parent));
 		parent.imp.getCanvas().addMouseListener(parent.mvl = new MouseListener() {
 
 			final ImageCanvas canvas = parent.imp.getWindow().getCanvas();
@@ -117,7 +118,7 @@ public class BUDDYDisplaySelectedTrack {
 				}
 
 				if (SwingUtilities.isLeftMouseButton(e) && !e.isShiftDown() && parent.AddDot == "a") {
-					parent.AddDot = "b";
+
 					RandomAccess<IntType> checkintranac = parent.CurrentViewInt.randomAccess();
 
 					checkintranac.setPosition(new int[] { x, y });
@@ -451,6 +452,7 @@ public class BUDDYDisplaySelectedTrack {
 	public static void displayclicked(InteractiveBud parent, int trackindex) {
 
 		// Make something happen
+		if(parent.Tracklist.size() > 0) {
 		parent.row = trackindex;
 		String ID = (String) parent.table.getValueAt(trackindex, 0);
 		if (parent.resultimp != null)
@@ -488,6 +490,7 @@ public class BUDDYDisplaySelectedTrack {
 
 		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/min)", "Time",
 				"Velocity");
+		}
 
 	}
 
