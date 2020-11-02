@@ -41,7 +41,6 @@ import io.scif.img.ImgIOException;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoMaskFLListener;
-import listeners.BTrackGoRedFLListener;
 import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.Cursor;

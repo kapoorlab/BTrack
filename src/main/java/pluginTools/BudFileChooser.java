@@ -40,7 +40,6 @@ import io.scif.img.ImgIOException;
 import listeners.BTrackGoBudListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
-import listeners.BTrackGoRedFLListener;
 import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;

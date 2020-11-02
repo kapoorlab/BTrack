@@ -27,7 +27,6 @@ import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealPoint;
-import net.imglib2.algorithm.region.BresenhamLine;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
@@ -35,6 +34,7 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 import tracker.BUDDYTrackModel;
+import utility.BresenhamLine;
 
 public class BudSaveAllListener implements ActionListener {
 	

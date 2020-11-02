@@ -13,9 +13,6 @@ import ij.io.Opener;
 import ij.plugin.ImagesToStack;
 import io.scif.SCIFIO;
 import loci.formats.FormatException;
-import loci.plugins.in.ImagePlusReader;
-import loci.plugins.in.ImportProcess;
-import loci.plugins.in.ImporterOptions;
 import net.imagej.Dataset;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -87,26 +84,7 @@ public class SimplifiedIO {
 	 *
 	 * @see net.imagej.ImgPlus
 	 */
-	@SuppressWarnings( "rawtypes" )
-	static ImgPlus openImageWithBioFormats( final String path ) {
-		// package private to allow testing
-		try {
-			ImporterOptions options = new ImporterOptions();
-			if ( Macro.getOptions() == null ) {
-				options.loadOptions();
-			}
-			options.parseArg( path );
-			options.checkObsoleteOptions();
-			ImportProcess process = new ImportProcess( options );
-			process.execute();
-			ImagePlusReader reader = new ImagePlusReader( process );
-			ImagePlus[] imps = reader.openImagePlus();
-			ImagePlus finalImage = ImagesToStack.run( imps );
-			return ImagePlusAdapter.wrapImgPlus( finalImage );
-		} catch ( FormatException | IOException e ) {
-			throw new SimplifiedIOException( e );
-		}
-	}
+
 
 	/**
 	 * Loads an image into an ImgPlus object
@@ -130,11 +108,7 @@ public class SimplifiedIO {
 			messages.add( "SCIFIO Exception: " + e.getMessage() );
 		}
 
-		try {
-			return SimplifiedIO.openImageWithBioFormats( path );
-		} catch ( Exception e ) {
-			messages.add( "BioFormats Exception: " + e.getMessage() );
-		}
+	
 
 		if ( !new File( path ).exists() )
 			throw new SimplifiedIOException( "Image file doesn't exist: " + path );

@@ -6,14 +6,18 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -24,34 +28,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/MasterPanels"/>
-	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/net/imglib2/imglib2-algorithm-gpl/0.2.3/imglib2-algorithm-gpl-0.2.3.jar" sourcepath="/Users/aimachine/.m2/repository/net/imglib2/imglib2-algorithm-gpl/0.2.3/imglib2-algorithm-gpl-0.2.3-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="net.imglib2"/>
-			<attribute name="maven.artifactId" value="imglib2-algorithm-gpl"/>
-			<attribute name="maven.version" value="0.2.3"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/loci/loci_plugins/4.4.9/loci_plugins-4.4.9.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="loci"/>
-			<attribute name="maven.artifactId" value="loci_plugins"/>
-			<attribute name="maven.version" value="4.4.9"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/sc/fiji/3D_Viewer/4.0.2/3D_Viewer-4.0.2.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="sc.fiji"/>
-			<attribute name="maven.artifactId" value="3D_Viewer"/>
-			<attribute name="maven.version" value="4.0.2"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3.jar">
+	<classpathentry kind="lib" path="/home/vkapoor/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3.jar" sourcepath="/home/vkapoor/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3-sources.jar">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="maven.groupId" value="net.sf.jgrapht"/>

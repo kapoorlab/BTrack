@@ -121,6 +121,7 @@
 			<artifactId>j3dcore</artifactId>
 		</dependency>
 		<dependency>
+		
 			<groupId>org.scijava</groupId>
 			<artifactId>j3dutils</artifactId>
 		</dependency>
@@ -133,14 +134,39 @@
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/sc.fiji/3D_Viewer -->
+<dependency>
+    <groupId>sc.fiji</groupId>
+    <artifactId>3D_Viewer</artifactId>
+    <version>4.0.3</version>
+</dependency>
+		<!-- https://mvnrepository.com/artifact/loci/loci-common -->
+
+		<!-- https://mvnrepository.com/artifact/loci/loci_plugins -->
+
+		
 		<dependency>
 			<groupId>gov.nist.math</groupId>
 			<artifactId>jama</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.jgrapht</groupId>
-			<artifactId>jgrapht-core</artifactId>
-		</dependency>
+<!-- https://mvnrepository.com/artifact/org.jgrapht/jgrapht-core -->
+<dependency>
+    <groupId>org.jgrapht</groupId>
+    <artifactId>jgrapht-core</artifactId>
+    <version>1.5.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.imglib2/imglib2-algorithm -->
+<!-- https://mvnrepository.com/artifact/net.imglib2/imglib2-algorithm -->
+<dependency>
+    <groupId>net.imglib2</groupId>
+    <artifactId>imglib2-algorithm</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>net.imglib2</groupId>
+    <artifactId>imglib2-algorithm-gpl</artifactId>
+</dependency>
+
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-dom</artifactId>
@@ -201,10 +227,6 @@
 		</dependency>
 
 		<!-- OME dependencies -->
-		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>formats-api</artifactId>
-		</dependency>
 
 		<!-- Third party dependencies -->
 		<dependency>
@@ -236,10 +258,7 @@
 			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.tinyjee.jgraphx</groupId>
-			<artifactId>jgraphx</artifactId>
-		</dependency>
+
 
 		<!-- ImageJ dependencies -->
 		<dependency>
