@@ -28,7 +28,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/MasterPanels"/>
-	<classpathentry kind="lib" path="/home/vkapoor/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3.jar" sourcepath="/home/vkapoor/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3-sources.jar">
+	<classpathentry kind="lib" path="/home/kapoorlab/.m2/repository/net/sf/jgrapht/jgrapht/0.8.3/jgrapht-0.8.3.jar">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="maven.groupId" value="net.sf.jgrapht"/>

@@ -19,22 +19,15 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SegmentedTilesTransmittedLightA.tif");
+				.openImage("/home/kapoorlab/Downloads/Claudia/Buds/Test.tif");
 		impA.show();
 		
 		ImagePlus impB = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/Binary_WatershedSmall_Yellow_Cells.tif");
+				.openImage("/home/kapoorlab/Downloads/Claudia/Buds/Test.tif");
 		impB.show();
 	
 	
 		
-		ImagePlus impC = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/TransmittedLightA.tif");
-		impC.show();
-
-		ImagePlus impD = new Opener()
-				.openImage("/Users/aimachine/Documents/Claudia/DualBud/SmallSegmentedTilesTransmittedLightA.tif");
-		impD.show();
 
 		BudFileChooser panel = new BudFileChooser();
 

@@ -1,5 +1,6 @@
 package pluginTools;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,11 +24,13 @@ import net.imglib2.algorithm.neighborhood.DiamondShape;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import skeleton.*;
 import utility.GetNearest;
 import displayBud.DisplayListOverlay;
+import ij.gui.OvalRoi;
 
 public class TrackEachBud {
 
@@ -40,7 +43,7 @@ public class TrackEachBud {
 	final ArrayList<Budpointobject> Budpointlist;
 	final ArrayList<BCellobject> Budcelllist;
     ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
-    
+    ArrayList<Pair<Color,OvalRoi>> Totalrois = new ArrayList<Pair<Color,OvalRoi>>();
 	public TrackEachBud(final InteractiveBud parent, 
 			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, final int maxlabel,
 			final int percent) {
@@ -106,7 +109,7 @@ public class TrackEachBud {
 
 		
 		
-		String uniqueID = Integer.toString(parent.thirdDimension);
+		
 		
 		
 		Iterator<Integer> setiter = parent.pixellist.iterator();
@@ -118,6 +121,8 @@ public class TrackEachBud {
 
 			if (label > 0) {
 
+				String uniqueID = Integer.toString(parent.thirdDimension) + Integer.toString(label);
+				
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
@@ -164,6 +169,7 @@ public class TrackEachBud {
 					}
 
       		}
+		parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Totalrois);
 		
 
 	}
@@ -237,11 +243,12 @@ public class TrackEachBud {
 		
 
 
-		DisplayListOverlay.ArrowDisplay(parent,
+		ArrayList<Pair<Color,OvalRoi>> Allrois = DisplayListOverlay.ArrowDisplay(parent,
 				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,
 				uniqueID);
-
-	
+        Totalrois.addAll(Allrois);
+		
+		   
 
 	}
 

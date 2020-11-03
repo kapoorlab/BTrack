@@ -70,7 +70,7 @@ public class DisplayListOverlay {
 
 	
 	// Display the found points as arrows on the bud
-	public static void ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
+	public static ArrayList<Pair<Color,OvalRoi>>   ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
 	
 		Color displayColor; 
@@ -119,7 +119,7 @@ public class DisplayListOverlay {
         	
         }
 		
-        parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Allrois);
+     
 		}
 		else {
 				
@@ -139,6 +139,7 @@ public class DisplayListOverlay {
 		
 		parent.imp.updateAndDraw();
 		
+		return Allrois;
 	}
 	
 	

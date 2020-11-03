@@ -170,9 +170,10 @@ public class BUDDYDisplaySelectedTrack {
 							}
 
 						}
-
+						
 						parent.AllBudpoints.put(Integer.toString(time), Budpointlist);
 					}
+					parent.AddDot = "b";
 				}
 
 			}
