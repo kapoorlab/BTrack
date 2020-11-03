@@ -173,6 +173,7 @@ public class BUDDYDisplaySelectedTrack {
 						
 						parent.AllBudpoints.put(Integer.toString(time), Budpointlist);
 					}
+					//Change the keyboard click to a
 					parent.AddDot = "b";
 				}
 
