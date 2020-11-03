@@ -1,6 +1,10 @@
 package pluginTools;
 
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +33,7 @@ import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import skeleton.*;
 import utility.GetNearest;
+import utility.SavePink;
 import displayBud.DisplayListOverlay;
 import ij.gui.OvalRoi;
 
@@ -171,9 +176,11 @@ public class TrackEachBud {
       		}
 		parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Totalrois);
 		
+		SavePink pinkies = new SavePink(parent);
+		pinkies.Saver();
 
-	}
 	
+	}
 	
 	
 

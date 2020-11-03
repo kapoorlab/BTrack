@@ -18,6 +18,7 @@ import net.imglib2.RealLocalizable;
 import pluginTools.BoundaryTrack;
 import pluginTools.InteractiveBud;
 import tracker.BUDDYTrackResult;
+import utility.SavePink;
 
 
 public class BudLinkobjectListener implements ActionListener {
@@ -94,7 +95,9 @@ public class BudLinkobjectListener implements ActionListener {
 		
 		BUDDYTrackResult track = new BUDDYTrackResult(parent);
 		track.execute();
-		
+		SavePink pinkies = new SavePink(parent);
+		pinkies.Saver();
+
 		parent.Cellbutton.setEnabled(true);
 
 	}

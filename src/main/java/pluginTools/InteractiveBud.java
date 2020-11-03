@@ -118,7 +118,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public int BudDotsize = 10;
 	public Color BudColor = Color.PINK;
 	public Color RemoveBudColor = Color.RED;
-	public Color AddBudColor = Color.BLUE;
 	
 	public HashMap<String, ArrayList<Budpointobject>> AllBudpoints;
 	public HashMap<String, ArrayList<Budobject>> AllBuds;
@@ -172,6 +171,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public double calibrationZ;
 	public double timecal;
 	public File saveFile;
+	public final File defaultDirectory;
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
 	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
@@ -181,7 +181,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	// Input Bud and its segmentation
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-			final RandomAccessibleInterval<IntType> Segoriginalimg, final String NameA, final double calibrationX,
+			final RandomAccessibleInterval<IntType> Segoriginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
@@ -190,6 +190,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
 		this.calibrationZ = 1;
+		this.defaultDirectory = defaultDirectory;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
 		this.Velocitydataset = new XYSeriesCollection();
@@ -203,7 +204,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	// Input RGB and one flourescent channel segmentation images
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
-			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final String NameA, final double calibrationX,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double timecal, String inputstring) {
 
 		this.originalimg = originalimg;
@@ -212,6 +213,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.NameA = NameA;
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
+		this.defaultDirectory = defaultDirectory;
 		this.calibrationZ = 1;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
@@ -225,7 +227,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	// Input Image and one flourescent channel and mask images
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
-			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final String NameA, final double calibrationX,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
@@ -234,6 +236,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.NameA = NameA;
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
+		this.defaultDirectory = defaultDirectory;
 		this.calibrationZ = 1;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();

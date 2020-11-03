@@ -399,7 +399,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
 			
-			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, ImagePairs.imageBigMask, ImagePairs.imageSegA, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			
@@ -418,7 +418,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		if (NoMask) {
 
 			RandomAccessibleInterval<IntType> imageBigMask = CreateBorderMask(imageOrigGreen);
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageBigMask,  imageSegA, impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageBigMask,  imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 

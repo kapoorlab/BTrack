@@ -39,6 +39,7 @@ import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 import utility.BudChartMaker;
 import utility.FlagNode;
+import utility.SavePink;
 import zGUI.CovistoZselectPanel;
 
 public class BUDDYDisplaySelectedTrack {
@@ -192,6 +193,10 @@ public class BUDDYDisplaySelectedTrack {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
+				
+				SavePink pinkies = new SavePink(parent);
+				pinkies.Saver();
+
 				
 			}
 		});

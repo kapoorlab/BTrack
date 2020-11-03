@@ -3,6 +3,7 @@ package pluginTools;
 import java.awt.CardLayout;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -17,8 +18,15 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import ij.process.ImageConverter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,12 +38,16 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
+
+import org.python.antlr.PythonParser.file_input_return;
 
 import fileListeners.ChooseBudOrigMap;
 import fileListeners.ChooseBudSegAMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.OvalRoi;
 import io.scif.img.ImgIOException;
 import listeners.BTrackGoBudListener;
 import listeners.BTrackGoFreeFlListener;
@@ -45,6 +57,8 @@ import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import pluginTools.TwoDTimeCellFileChooser.CalTListener;
 import pluginTools.TwoDTimeCellFileChooser.CalXListener;
 import pluginTools.TwoDTimeCellFileChooser.CalYListener;
@@ -63,6 +77,7 @@ public class BudFileChooser extends JPanel {
 	public File impOrigfile, impOrigSecfile, impSegAfile, impSegBfile, impSegCfile;
 	public JPanel panelFirst = new JPanel();
 	public JPanel Panelfile = new JPanel();
+	public JPanel Panelcsv = new JPanel();
 	public JPanel Panelsuperfile = new JPanel();
 	public JPanel Panelfileoriginal = new JPanel();
 	public JPanel Paneldone = new JPanel();
@@ -77,7 +92,8 @@ public class BudFileChooser extends JPanel {
 	public JComboBox<String> ChooseoriginalImage;
 	public JComboBox<String> ChooseRGBImage;
 	public JButton Done = new JButton("Finished choosing files, start BTrack");
-
+	public JButton Restart = new JButton("Reload Saved Budpoints");
+	public HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois= new HashMap<String, ArrayList<Pair<Color,OvalRoi>>>();;
 	public boolean simple = false;
 	public boolean curvesuper = true;
 	public boolean curvesimple = false;
@@ -182,10 +198,16 @@ public class BudFileChooser extends JPanel {
 		panelFirst.add(Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
+		Panelcsv.add(Restart, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		panelFirst.add(Panelcsv, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
 		Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Paneldone.setBorder(LoadBtrack);
-		panelFirst.add(Paneldone, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(Paneldone, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 
@@ -221,6 +243,7 @@ public class BudFileChooser extends JPanel {
 		inputFieldcalY.addTextListener(new CalYListener());
 		FieldinputLabelcalT.addTextListener(new CalTListener());
 		Done.addActionListener(new BudDoneListener());
+		Restart.addActionListener(new ReloadListener());
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
@@ -287,6 +310,97 @@ public class BudFileChooser extends JPanel {
 
 	}
 
+	public class ReloadListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			JFileChooser csvfile = new JFileChooser();
+			FileFilter csvfilter = new FileFilter() 
+			{
+			      //Override accept method
+			      public boolean accept(File file) {
+			              
+			             //if the file extension is .log return true, else false
+			             if (file.getName().endsWith(".csv")) {
+			                return true;
+			             }
+			             return false;
+			      }
+
+				@Override
+				public String getDescription() {
+					
+					return null;
+				}
+			};
+	        String line = "";
+	        String cvsSplitBy = ",";
+			if (impOrig!=null)
+			csvfile.setCurrentDirectory(new File(impOrig.getOriginalFileInfo().directory));
+			else 
+				csvfile.setCurrentDirectory(new java.io.File("."));
+			csvfile.setDialogTitle("Pink dot file");
+			csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			csvfile.setFileFilter(csvfilter);
+			int count = 0;
+			if (csvfile.showOpenDialog(Cardframe) == JFileChooser.APPROVE_OPTION) {
+				
+				File budfile = new File(csvfile.getSelectedFile().getPath());
+				ArrayList<Pair<Color,OvalRoi>> Allrois = new ArrayList<Pair<Color,OvalRoi>>();
+				
+		        try (BufferedReader br = new BufferedReader(new FileReader(budfile))) {
+
+		            while ((line = br.readLine()) != null) {
+
+		                // use comma as separator
+		                String[] budpoints = line.split(cvsSplitBy);
+                          
+		                 if(count > 0) {
+		                
+                           if(BudOvalRois.get(budpoints[0])==null) {
+                        	    Allrois = new ArrayList<Pair<Color,OvalRoi>>();
+                        	    BudOvalRois.put(budpoints[0], Allrois);    
+                           }
+                           else
+                        	   BudOvalRois.put(budpoints[0], Allrois);
+		                OvalRoi roi = new OvalRoi(Integer.parseInt(budpoints[1]), Integer.parseInt(budpoints[2]), 10, 10);
+		                
+		                Allrois.add(new ValuePair<Color, OvalRoi> (Color.PINK, roi));
+		         
+		            }
+		                 count = count +  1;
+		            }
+		            
+		            
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        
+		        
+			}
+			else
+				csvfile = null;
+			
+		
+            for (Map.Entry<String, ArrayList<Pair<Color, OvalRoi>>> timeroi: BudOvalRois.entrySet()) {
+           	   
+							String time =   timeroi.getKey();
+							
+							ArrayList<Pair<Color, OvalRoi>> Totalrois = timeroi.getValue();
+				            System.out.println("Pink dots at Time: " + time + "are" + Totalrois.size());			
+		        }
+		          
+		
+  
+		
+		
+	}
+		
+	}
+	
+
+	
 	public void DoneCurrBud(Frame parent) throws ImgIOException {
 
 		// Tracking and Measurement is done with imageA
@@ -307,10 +421,14 @@ public class BudFileChooser extends JPanel {
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
-		if (!DoYellow && !DoGreen && !DoRed)
+		if (!DoYellow && !DoGreen && !DoRed) {
 
-			new InteractiveBud(imageOrig, imageSegA, impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
-					name, true).run(null);
+			InteractiveBud masterparent = new InteractiveBud(imageOrig, imageSegA, new File(impOrig.getOriginalFileInfo().directory) , impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
+					name, true);
+		
+		masterparent.run(null);
+		
+		}
 
 		if (DoYellow) {
 
@@ -319,8 +437,10 @@ public class BudFileChooser extends JPanel {
 
 			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			new InteractiveBud(imageOrig, imageSegA, imageSegB, impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-					FrameInterval, name).run(null);
+			InteractiveBud masterparent =  new InteractiveBud(imageOrig, imageSegA, imageSegB, new File(impOrig.getOriginalFileInfo().directory) ,impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+					FrameInterval, name);
+			
+			masterparent.run(null);
 
 		}
 
