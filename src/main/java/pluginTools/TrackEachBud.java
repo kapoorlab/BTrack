@@ -115,7 +115,6 @@ public class TrackEachBud {
 			if (label > 0) {
 
 				
-				
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
@@ -133,12 +132,20 @@ public class TrackEachBud {
 								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
 										+ (parent.pixellist.size() ));
-					Allrois = Common(PairCurrentViewBit, truths,  currentpoint, uniqueID, label);
+					Common(PairCurrentViewBit, truths,  currentpoint, uniqueID, label);
 
 
 					}
 
       		}
+		
+	       for (int i = 0; i < parent.overlay.size(); ++i) {
+	        	
+	        	OvalRoi roi = (OvalRoi) parent.overlay.get(i);
+	        	if (roi.getStrokeColor()== parent.BudColor)
+	        	Allrois.add(new ValuePair<Color, OvalRoi>(parent.BudColor, roi));
+	        	
+	        }
 	
 			parent.BudOvalRois.put(uniqueID, Allrois);
 
@@ -150,7 +157,7 @@ public class TrackEachBud {
 	
 	
 
-	public  ArrayList<Pair<Color,OvalRoi>> Common(Budregionobject  PairCurrentViewBit,
+	public  void Common(Budregionobject  PairCurrentViewBit,
 			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
 			int label) {
 
@@ -228,13 +235,12 @@ public class TrackEachBud {
 		
 
 
-		 ArrayList<Pair<Color,OvalRoi>> Totalrois  = DisplayListOverlay.ArrowDisplay(parent,
+		  DisplayListOverlay.ArrowDisplay(parent,
 				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,
 				uniqueID);
 		
 		
-		   return Totalrois;
-
+		 
 	}
 
 

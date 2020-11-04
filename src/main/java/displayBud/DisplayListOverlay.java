@@ -70,13 +70,12 @@ public class DisplayListOverlay {
 
 	
 	// Display the found points as arrows on the bud
-	public static ArrayList<Pair<Color,OvalRoi>>   ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
+	public static void  ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
 		
 	
 		Color displayColor; 
 		
 			displayColor = Color.GREEN;
-		ArrayList<Pair<Color,OvalRoi>> Allrois = new ArrayList<Pair<Color,OvalRoi>>();
 		
 		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
 
@@ -111,20 +110,14 @@ public class DisplayListOverlay {
 			points.setStrokeWidth(parent.BudDotsize);
 			parent.overlay.add(points);
 		}
-        for (int i = 0; i < parent.overlay.size(); ++i) {
-        	
-        	OvalRoi roi = (OvalRoi) parent.overlay.get(i);
-        	if (roi.getStrokeColor()== parent.BudColor)
-        	Allrois.add(new ValuePair<Color, OvalRoi>(parent.BudColor, roi));
-        	
-        }
+ 
 		
 	
 		
 		
 		parent.imp.updateAndDraw();
 		
-		return Allrois;
+		
 	}
 	
 	
