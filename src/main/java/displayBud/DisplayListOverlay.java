@@ -99,7 +99,7 @@ public class DisplayListOverlay {
 		parent.overlay.add(oval);
 		
 		
-		if (parent.BudOvalRois.get(uniqueID)==null) {
+		
         for (int i = 0; i < Skelpoints.size(); i++) {
 			
 			int X = (int)Skelpoints.get(i).getFloatPosition(0);
@@ -120,21 +120,8 @@ public class DisplayListOverlay {
         }
 		
      
-		}
-		else {
-				
-				ArrayList<Pair<Color,OvalRoi>> Colorrois = parent.BudOvalRois.get(Integer.toString(parent.thirdDimension));
-				
-				for(int i = 0; i < Colorrois.size(); ++i) {
-					
-					OvalRoi points = Colorrois.get(i).getB();
-				    Color color = Colorrois.get(i).getA();		
-				    points.setStrokeColor(color);
-					points.setStrokeWidth(parent.BudDotsize);
-					parent.overlay.add(points);		
-				}
-				
-			}
+		
+	
 		
 		
 		parent.imp.updateAndDraw();

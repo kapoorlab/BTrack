@@ -289,7 +289,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		AllBudcenter = new ArrayList<RealLocalizable>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
-		BudOvalRois = new HashMap<String, ArrayList<Pair<Color,OvalRoi>>>();
+		
 		ZTRois = new ArrayList<int[]>();
 		BudVelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();

@@ -1,6 +1,7 @@
 package utility;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -30,8 +31,8 @@ public class SavePink {
 		try {
 		    File budfile = new File(parent.defaultDirectory + "//" + "RestartTrack" + ".csv");
 				
-				
-				
+				if(budfile.exists())
+				budfile.delete();
 				FileWriter fwbud = new FileWriter(budfile);
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
@@ -46,8 +47,9 @@ public class SavePink {
 							Pair<Color, OvalRoi> roi = Totalrois.get(i);
 							
 							if(roi.getA() == parent.BudColor) {
-						double LocationX = roi.getB().getContourCentroid()[0];
-						double LocationY = roi.getB().getContourCentroid()[1];
+								Rectangle rect = roi.getB().getBounds();
+						double LocationX = rect.x + rect.width / 2.0;
+						double LocationY = rect.y + rect.height / 2.0;
 					    
 						bwbud.write(time + "," 
 								+ parent.nf.format(LocationX) + "," 

@@ -28,9 +28,9 @@ public class SkeletonizeBuds extends SwingWorker<Void, Void> {
 
 		parent.jpb.setIndeterminate(false);
 		parent.Cardframe.validate();
-
-		
-		
+        parent.overlay.clear();
+		parent.imp.updateAndDraw();
+		parent.BudOvalRois.clear();
 		
 		BoundaryTrack newtrack = new BoundaryTrack(parent, parent.jpb);
 		newtrack.ShowBoundaryTime();
