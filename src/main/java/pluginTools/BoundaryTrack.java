@@ -131,7 +131,7 @@ public class BoundaryTrack {
 			CovistoKalmanPanel.Timetrack.setEnabled(true);
 			parent.SaveAllbutton.setEnabled(true);
 			parent.Savebutton.setEnabled(true);
-			
+			parent.Checkpointbutton.setEnabled(true);
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Skeletons Created, Push Track Buddies Button" );
 			parent.AllRefcords = new HashMap<String, RealLocalizable>();

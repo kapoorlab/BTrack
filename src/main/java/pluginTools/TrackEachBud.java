@@ -139,7 +139,6 @@ public class TrackEachBud {
 				// Get the center point of each bud
 				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(truths);
 
-				if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
 					
 					if (parent.jpb != null)
 						utility.BudProgressBar.SetProgressBar(parent.jpb,
@@ -148,36 +147,16 @@ public class TrackEachBud {
 										+ (parent.pixellist.size() ));
 					Common(PairCurrentViewBit, truths,  currentpoint, uniqueID, label);
 
-				}
 
 
-								RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
-								intranac.setPosition(new long[] { (long) currentpoint.getFloatPosition(0),
-										(long) currentpoint.getFloatPosition(1) });
-
-											PairCurrentViewBit = BudCurrentLabelBinaryImage(parent.CurrentViewInt, label);
-											// For each bud get the list of points
-											truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-											RealLocalizable centerpoint = budDetector.Listordering.getMeanCord(truths);
-
-											if (parent.jpb != null)
-												utility.BudProgressBar.SetProgressBar(parent.jpb,
-														100 * (percent)
-																/ (parent.thirdDimensionSize + parent.pixellist.size()),
-														"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize
-																+ " Total Buddies = " + (parent.pixellist.size()));
-
-											Common(PairCurrentViewBit, truths,  centerpoint, uniqueID, label);
-
+								
 
 
 					}
 
       		}
 		parent.BudOvalRois.put(Integer.toString(parent.thirdDimension), Totalrois);
-		
-		SavePink pinkies = new SavePink(parent);
-		pinkies.Saver();
+
 
 	
 	}
@@ -194,14 +173,32 @@ public class TrackEachBud {
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
 	
-		
+		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
+		if(parent.BudOvalRois.get(Integer.toString(parent.thirdDimension))==null) {
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>((RandomAccessibleInterval<BitType>) ops.morphology().dilate(PairCurrentViewBit.Interiorimage, new DiamondShape(4)), ops);
 		skelmake.setClosingRadius(0);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 
-		List<RealLocalizable> skeletonEndPoints = AnalyzeSkeleton(Allskeletons,truths, ops);
+		skeletonEndPoints = AnalyzeSkeleton(Allskeletons,truths, ops);
 		
+		}
+		
+		else {
+			
+		ArrayList<Pair<Color, OvalRoi>> rois = 	parent.BudOvalRois.get(Integer.toString(parent.thirdDimension));
+		
+		for (Pair<Color, OvalRoi> currentroi: rois) {
+			
+			
+			RealPoint point = new RealPoint(currentroi.getB().getContourCentroid());
+			
+			skeletonEndPoints.add(point);
+			
+		}
+			
+			
+		}
 		
 		
 		if (parent.SegYelloworiginalimg != null) 
@@ -250,10 +247,10 @@ public class TrackEachBud {
 		
 
 
-		ArrayList<Pair<Color,OvalRoi>> Allrois = DisplayListOverlay.ArrowDisplay(parent,
+		 Totalrois = DisplayListOverlay.ArrowDisplay(parent,
 				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,
 				uniqueID);
-        Totalrois.addAll(Allrois);
+		
 		
 		   
 

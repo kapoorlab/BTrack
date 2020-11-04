@@ -423,7 +423,7 @@ public class BudFileChooser extends JPanel {
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 		if (!DoYellow && !DoGreen && !DoRed) {
 
-			InteractiveBud masterparent = new InteractiveBud(imageOrig, imageSegA, new File(impOrig.getOriginalFileInfo().directory) , impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
+			InteractiveBud masterparent = new InteractiveBud(imageOrig, imageSegA,BudOvalRois, new File(impOrig.getOriginalFileInfo().directory) , impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
 					name, true);
 		
 		masterparent.run(null);

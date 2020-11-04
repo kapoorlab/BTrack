@@ -59,6 +59,7 @@ import listeners.AddBudKeyListener;
 import listeners.BTrackAutoEndListener;
 import listeners.BTrackFilenameListener;
 import listeners.BudAlphaListener;
+import listeners.BudCheckpointListener;
 import listeners.BudLinkobjectListener;
 import listeners.BudMastadonListener;
 import listeners.BudModifyListener;
@@ -106,7 +107,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
-	public HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois;
+	public HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois = new HashMap<String, ArrayList<Pair<Color,OvalRoi>>>();;
 	public final String NameA;
 	public int ndims;
 	public MouseListener mvl;
@@ -181,7 +182,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	// Input Bud and its segmentation
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-			final RandomAccessibleInterval<IntType> Segoriginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
+			final RandomAccessibleInterval<IntType> Segoriginalimg, final HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois,final File defaultDirectory, final String NameA, final double calibrationX,
 			double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
@@ -189,6 +190,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.NameA = NameA;
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
+		this.BudOvalRois = BudOvalRois;
 		this.calibrationZ = 1;
 		this.defaultDirectory = defaultDirectory;
 		this.timecal = timecal;
@@ -537,6 +539,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public JButton Savebutton = new JButton("Save Track");
 	public JButton Cellbutton = new JButton("Enter BTrackmate");
 	public JButton Restartbutton = new JButton("Restart");
+	public JButton Checkpointbutton = new JButton("Checkpoint Save");
 	public JButton Batchbutton = new JButton("Save Parameters for batch mode and exit");
 	public JButton SaveAllbutton = new JButton("Save All Tracks");
 	public Border timeborder = new CompoundBorder(new TitledBorder("Select time"), new EmptyBorder(c.insets));
@@ -679,6 +682,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 		Original.add(SaveAllbutton, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		Original.add(Checkpointbutton, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
 		Original.setBorder(origborder);
 
@@ -725,6 +731,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		Batchbutton.addActionListener(new BudSaveBatchListener(this));
 		inputField.addTextListener(new BTrackFilenameListener(this));
 		Savebutton.addActionListener(new BudSaveListener(this));
+		Checkpointbutton.addActionListener(new BudCheckpointListener(this));
 		Cellbutton.addActionListener(new BudMastadonListener(this));
 		SaveAllbutton.addActionListener(new BudSaveAllListener(this));
 		ChooseDirectory.addActionListener(new BTrackSaveDirectoryListener(this));

@@ -36,7 +36,6 @@ public class SavePink {
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
 						"Time, LocationX , LocationY \n");
-				
                for (Map.Entry<String, ArrayList<Pair<Color, OvalRoi>>> timeroi: parent.BudOvalRois.entrySet()) {
             	   
 						String time =   timeroi.getKey();
@@ -45,6 +44,7 @@ public class SavePink {
 						for(int i = 0; i < Totalrois.size(); ++i) {
 							
 							Pair<Color, OvalRoi> roi = Totalrois.get(i);
+							
 							if(roi.getA() == parent.BudColor) {
 						double LocationX = roi.getB().getContourCentroid()[0];
 						double LocationY = roi.getB().getContourCentroid()[1];

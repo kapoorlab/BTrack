@@ -49,6 +49,7 @@ public class BudSkeletonListener implements ActionListener {
 		CovistoKalmanPanel.Timetrack.setEnabled(false);
 		parent.SaveAllbutton.setEnabled(false);
 		parent.Savebutton.setEnabled(false);
+		parent.Checkpointbutton.setEnabled(false);
 		
 		SkeletonizeBuds skeleton = new SkeletonizeBuds(parent);
 		skeleton.execute();

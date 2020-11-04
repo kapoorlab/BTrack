@@ -194,8 +194,6 @@ public class BUDDYDisplaySelectedTrack {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				
-				SavePink pinkies = new SavePink(parent);
-				pinkies.Saver();
 
 				
 			}
