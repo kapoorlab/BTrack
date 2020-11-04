@@ -1,6 +1,7 @@
 package pluginTools;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -132,12 +133,50 @@ public class TrackEachBud {
 								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
 										+ (parent.pixellist.size() ));
+					if(parent.BudOvalRois.get(uniqueID)==null)
 					Common(PairCurrentViewBit, truths,  currentpoint, uniqueID, label);
 
 
 					}
 
       		}
+		
+		 if(parent.BudOvalRois.get(uniqueID)!=null) {
+			
+				List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
+					ArrayList<Pair<Color, OvalRoi>> rois = 	parent.BudOvalRois.get(Integer.toString(parent.thirdDimension));
+					
+					for (Pair<Color, OvalRoi> currentroi: rois) {
+						
+						if(currentroi.getA() == parent.BudColor) {
+							
+							Rectangle rect = currentroi.getB().getBounds();
+							double LocationX = rect.x + rect.width / 2.0;
+							double LocationY = rect.y + rect.height / 2.0;
+							
+						RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
+						
+						skeletonEndPoints.add(point);
+						
+					}
+					}
+					
+					  for (int i = 0; i < skeletonEndPoints.size(); i++) {
+							
+							int X = (int)skeletonEndPoints.get(i).getFloatPosition(0);
+							int Y = (int)skeletonEndPoints.get(i).getFloatPosition(1);
+							
+							OvalRoi points =  new OvalRoi((int) X, (int) Y,
+									parent.BudDotsize, parent.BudDotsize);
+							points.setStrokeColor(parent.BudColor);
+							points.setStrokeWidth(parent.BudDotsize);
+							parent.overlay.add(points);
+						}
+					
+		 }
+						
+					
+		
 		
 	       for (int i = 0; i < parent.overlay.size(); ++i) {
 	        	
@@ -176,21 +215,7 @@ public class TrackEachBud {
 		
 		}
 		
-		else {
-			
-		ArrayList<Pair<Color, OvalRoi>> rois = 	parent.BudOvalRois.get(Integer.toString(parent.thirdDimension));
-		
-		for (Pair<Color, OvalRoi> currentroi: rois) {
-			
-			if(currentroi.getA() == parent.BudColor) {
-			RealPoint point = new RealPoint(currentroi.getB().getContourCentroid());
-			
-			skeletonEndPoints.add(point);
-			
-		}
-		}
-			
-		}
+	
 		
 		
 		
