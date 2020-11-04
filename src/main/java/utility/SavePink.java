@@ -29,7 +29,7 @@ public class SavePink {
 		
 		
 		try {
-		    File budfile = new File(parent.defaultDirectory + "//" + "RestartTrack" + ".csv");
+		    File budfile = new File(parent.defaultDirectory + "//" + parent.NameA.replaceFirst("[.][^.]+$", "") + "RestartTrack"+ ".csv");
 				
 				if(budfile.exists())
 				budfile.delete();

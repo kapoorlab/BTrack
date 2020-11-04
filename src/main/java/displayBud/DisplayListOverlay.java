@@ -119,8 +119,6 @@ public class DisplayListOverlay {
         	
         }
 		
-     
-		
 	
 		
 		

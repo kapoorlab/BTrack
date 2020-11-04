@@ -74,18 +74,7 @@ public class TrackEachBud {
         this.Budcelllist = Budcelllist;
 	}
 
-	public TrackEachBud(final InteractiveBud parent, 
-			final int t, final int maxlabel, final int percent) {
 
-		this.parent = parent;
-		this.t = t;
-		this.maxlabel = maxlabel;
-		this.percent = percent;
-		this.Budlist = null;
-		this.Budpointlist = null;
-        this.Budcelllist = null;
-
-	}
 	
 
 	
@@ -197,10 +186,7 @@ public class TrackEachBud {
 		}
 		
 		
-		if (parent.SegYelloworiginalimg != null) 
-	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
 		
-		if(Budpointlist!=null & Budlist!=null) {
 		for (RealLocalizable budpoints : skeletonEndPoints) {
 
 			Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
@@ -239,7 +225,6 @@ public class TrackEachBud {
 		
 		}
 		
-		}
 		
 
 

@@ -277,6 +277,7 @@ public class BUDDYDisplaySelectedTrack {
 
 		parent.Drawcolor = Color.ORANGE;
 
+		if (parent.table!=null) 
 		parent.table.addMouseListener(parent.tvl = new MouseListener() {
 
 			@Override

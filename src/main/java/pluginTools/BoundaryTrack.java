@@ -39,25 +39,8 @@ public class BoundaryTrack {
 		
 		int percent = 0;
 		
-		
-		GetPixelList(parent.CurrentViewInt);
-		IntType min = new IntType();
-		IntType max = new IntType();
-		computeMinMax(Views.iterable(parent.CurrentViewInt), min, max);
-		
-		
-		if(parent.SegYelloworiginalimg!=null) {
-			
-		    TrackEachBud compute = new TrackEachBud(parent,  parent.thirdDimension, max.get(), percent);
-		    compute.displayBuds();
-		}
-		
-		else {
-		  TrackEachBud compute = new TrackEachBud(parent,  parent.thirdDimension, max.get(), percent);
-			
-		  compute.displayBuds();
-		}
-		
+
+		Common(percent);
 	}
 	
 	
@@ -66,10 +49,12 @@ public class BoundaryTrack {
 		int percent = 0;
 		for(int t = 1; t <= parent.AutoendTime; ++t) {
 			
+			
 			if (parent.mvl != null) {
 				parent.imp.getCanvas().removeMouseListener(parent.mvl);
 			    parent.mouseremoved = true;	
 			}
+			
 			
 			if(parent.EscapePressed) {
 
@@ -92,37 +77,13 @@ public class BoundaryTrack {
 		parent.panelFirst.validate();
 		parent.panelFirst.repaint();
 		
-		
-		RandomAccessibleInterval<IntType> BudSeg = utility.BudSlicer.getCurrentBudView(parent.Segoriginalimg,(int) parent.thirdDimension,
-				(int)parent.thirdDimensionSize);
-		GetPixelList(BudSeg);
-		IntType min = new IntType();
-		IntType max = new IntType();
-		computeMinMax(Views.iterable(BudSeg), min, max);
-		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
-		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
-		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
-		if(parent.SegYelloworiginalimg!=null) {
-			
-		    TrackEachBud compute = new TrackEachBud(parent,  Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
-		    compute.displayBuds();
-		}
-		
-		else {
-		  TrackEachBud compute = new TrackEachBud(parent, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
-			
-		  compute.displayBuds();
-		}
-		
-			parent.AllBuds.put(Integer.toString(t), Budlist);
-			
-
-			parent.AllBudpoints.put(Integer.toString(t), Budpointlist);
+		Common(percent);
 			
 		
 		percent++;
 		
 		}
+		
 		BUDDYDisplaySelectedTrack.Select(parent, null);
 		BUDDYDisplaySelectedTrack.Mark(parent, null);
 		
@@ -141,6 +102,41 @@ public class BoundaryTrack {
 		}
 	}
 	
+	public void Common(int percent) {
+
+	
+		
+
+	
+	RandomAccessibleInterval<IntType> BudSeg = utility.BudSlicer.getCurrentBudView(parent.Segoriginalimg,(int) parent.thirdDimension,
+			(int)parent.thirdDimensionSize);
+	GetPixelList(BudSeg);
+	IntType min = new IntType();
+	IntType max = new IntType();
+	computeMinMax(Views.iterable(BudSeg), min, max);
+	ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
+	ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
+	ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
+	if(parent.SegYelloworiginalimg!=null) {
+		
+	    TrackEachBud compute = new TrackEachBud(parent,  Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
+	    compute.displayBuds();
+	}
+	
+	else {
+	  TrackEachBud compute = new TrackEachBud(parent, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
+		
+	  compute.displayBuds();
+	}
+	
+		parent.AllBuds.put(Integer.toString(parent.thirdDimension), Budlist);
+		
+
+		parent.AllBudpoints.put(Integer.toString(parent.thirdDimension), Budpointlist);
+		
+		
+		
+	}
 	public  void GetPixelList(RandomAccessibleInterval<IntType> intimg) {
 
 		IntType min = new IntType();

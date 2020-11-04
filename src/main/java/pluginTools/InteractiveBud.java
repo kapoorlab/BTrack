@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
+import java.awt.Rectangle;
 import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.awt.event.KeyEvent;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -88,6 +90,7 @@ import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import tracker.BUDDYBudTrackModel;
 import tracker.BUDDYCostFunction;
+import tracker.BUDDYDisplaySelectedTrack;
 import tracker.BUDDYTrackModel;
 
 public class InteractiveBud extends JPanel implements PlugIn {
@@ -283,7 +286,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	@Override
 	public void run(String arg0) {
 
-	
+      
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
@@ -448,7 +451,11 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	}
 
 	public void StartDisplayer() {
-
+		
+		
+		BUDDYDisplaySelectedTrack.Select(this, null);
+		BUDDYDisplaySelectedTrack.Mark(this, null);
+		
 		ComputeBorder display = new ComputeBorder(this, jpb);
 
 		display.execute();
