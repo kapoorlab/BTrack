@@ -65,6 +65,7 @@ public class BudLinkobjectListener implements ActionListener {
 		parent.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		parent.PanelSelectFile.add(parent.scrollPane, BorderLayout.CENTER);
 
+		if (parent.imp.getOverlay()!=null) {
 		Roi[] rois = parent.imp.getOverlay().toArray();
 		
 		for(int i = 0; i<rois.length;++i) {
@@ -76,7 +77,7 @@ public class BudLinkobjectListener implements ActionListener {
 				
 				
 		}
-		
+		}
 		parent.imp.updateAndDraw();		
 		parent.PanelSelectFile.setBorder(parent.selectfile);
 		int size = 100;

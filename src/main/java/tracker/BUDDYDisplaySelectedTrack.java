@@ -106,7 +106,6 @@ public class BUDDYDisplaySelectedTrack {
 						parent.overlay.remove(nearestroi.roi);
 						parent.overlay.add(points);
 						
-						parent.BudOvalRois.remove(Integer.toString(parent.thirdDimension));
 						for (int i = 0; i < parent.overlay.size(); ++i) {
 
 							OvalRoi roi = (OvalRoi) parent.overlay.get(i);
@@ -121,7 +120,7 @@ public class BUDDYDisplaySelectedTrack {
 							
 							if (roi.getStrokeColor() == parent.RemoveBudColor
 									|| roi.getStrokeColor() == parent.BudColor)
-								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), intranac.get().get()));
+								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), Math.max(1,intranac.get().get())));
 
 						}
 
@@ -140,8 +139,7 @@ public class BUDDYDisplaySelectedTrack {
 					checkintranac.setPosition(new int[] { x, y });
 
 					int checklabel = checkintranac.get().get();
-					
-					if (checklabel > 0) {
+					if(checklabel > 0) {
 						OvalRoi points = new OvalRoi((int) x, (int) y, parent.BudDotsize, parent.BudDotsize);
 						points.setStrokeColor(parent.BudColor);
 						points.setStrokeWidth(parent.BudDotsize);
@@ -149,7 +147,6 @@ public class BUDDYDisplaySelectedTrack {
 
 						
 
-						parent.BudOvalRois.remove(Integer.toString(parent.thirdDimension));
 						for (int i = 0; i < parent.overlay.size(); ++i) {
 
 							OvalRoi roi = (OvalRoi) parent.overlay.get(i);
@@ -164,7 +161,7 @@ public class BUDDYDisplaySelectedTrack {
 							
 							if (roi.getStrokeColor() == parent.RemoveBudColor
 									|| roi.getStrokeColor() == parent.BudColor)
-								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), intranac.get().get()));
+								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), Math.max(1,intranac.get().get())));
 
 						}
 
@@ -194,9 +191,9 @@ public class BUDDYDisplaySelectedTrack {
 							}
 
 						}
-						
-						parent.AllBudpoints.put(Integer.toString(time), Budpointlist);
 					}
+						parent.AllBudpoints.put(Integer.toString(time), Budpointlist);
+					
 					//Change the keyboard click to a
 					parent.AddDot = "b";
 				

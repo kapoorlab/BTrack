@@ -153,7 +153,7 @@ public class TrackEachBud {
 							List<RealLocalizable> rejskel = new ArrayList<RealLocalizable>();
 							for (Roiobject currentroi: rois) {
 								
-								if(currentroi.color == parent.BudColor && currentroi.Label == label) {
+								if(currentroi.color == parent.BudColor && (currentroi.Label == label  )) {
 									
 									double LocationX = currentroi.point.getDoublePosition(0);
 									double LocationY = currentroi.point.getDoublePosition(1);
@@ -164,7 +164,7 @@ public class TrackEachBud {
 								
 							}
 								
-	                       if(currentroi.color == parent.RemoveBudColor && currentroi.Label == label) {
+	                       if(currentroi.color == parent.RemoveBudColor && currentroi.Label == label   ) {
 									
 									double LocationX = currentroi.point.getDoublePosition(0);
 									double LocationY = currentroi.point.getDoublePosition(1);
