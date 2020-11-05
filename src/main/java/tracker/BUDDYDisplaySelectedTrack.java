@@ -3,7 +3,6 @@ package tracker;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -32,11 +31,17 @@ import ij.gui.Overlay;
 import ij.gui.Roi;
 import listeners.AddBudKeyListener;
 import net.imglib2.KDTree;
+import net.imglib2.Localizable;
+import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RealPoint;
+import net.imglib2.algorithm.region.hypersphere.HyperSphere;
+import net.imglib2.algorithm.region.hypersphere.HyperSphereCursor;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
+import net.imglib2.view.Views;
 import pluginTools.ComputeBorder;
 import pluginTools.InteractiveBud;
 import utility.BudChartMaker;
@@ -114,13 +119,24 @@ public class BUDDYDisplaySelectedTrack {
 							
 							Budpointobject nearestBPO = getNearestBPO(Budpointlist, point);
 							
-							int[] labelpoint = new int[] {(int)nearestBPO.Budcenter.getDoublePosition(0), (int)nearestBPO.Budcenter.getDoublePosition(1)};
-							RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
-							intranac.setPosition(labelpoint);
+							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});
 							
+							  HyperSphere< IntType > hyperSphere =
+							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, 50 );
+							  HyperSphereCursor< IntType > cursor = hyperSphere.cursor();
+							  int label = 0;
+							  while(cursor.hasNext()) {
+								  
+								  cursor.fwd();
+								  
+								  if(cursor.get().get() > 0) {
+									  label = cursor.get().get();
+								      break;
+								  }
+							  }
 							if (roi.getStrokeColor() == parent.RemoveBudColor
 									|| roi.getStrokeColor() == parent.BudColor)
-								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), Math.max(1,intranac.get().get())));
+								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), label));
 
 						}
 
@@ -154,14 +170,26 @@ public class BUDDYDisplaySelectedTrack {
 	                            double[] point = roi.getContourCentroid();
 							
 							Budpointobject nearestBPO = getNearestBPO(Budpointlist, point);
+							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});
 							
-							int[] labelpoint = new int[] {(int)nearestBPO.Budcenter.getDoublePosition(0), (int)nearestBPO.Budcenter.getDoublePosition(1)};
-							RandomAccess<IntType> intranac = parent.CurrentViewInt.randomAccess();
-							intranac.setPosition(labelpoint);
+							  HyperSphere< IntType > hyperSphere =
+							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, 50 );
+							  HyperSphereCursor< IntType > cursor = hyperSphere.cursor();
+							  int label = 0;
+							  while(cursor.hasNext()) {
+								  
+								  cursor.fwd();
+								  
+								  if(cursor.get().get() > 0) {
+									  label = cursor.get().get();
+								      break;
+								  }
+								  
+							  }
 							
 							if (roi.getStrokeColor() == parent.RemoveBudColor
 									|| roi.getStrokeColor() == parent.BudColor)
-								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), Math.max(1,intranac.get().get())));
+								Allrois.add(new Roiobject(roi.getStrokeColor(), roi, new RealPoint(roi.getContourCentroid()), label));
 
 						}
 
@@ -318,7 +346,7 @@ public class BUDDYDisplaySelectedTrack {
 				}
 				parent.imp.updateAndDraw();
 
-				Point point = event.getPoint();
+				java.awt.Point point = event.getPoint();
 				int row = parent.table.rowAtPoint(point);
 
 				parent.rowchoice = row;
