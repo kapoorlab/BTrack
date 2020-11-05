@@ -17,6 +17,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Roiobject;
 import ij.gui.OvalRoi;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.KDTree;
@@ -49,12 +50,12 @@ public class BUDDYTrackingFunctions {
 			ArrayList<Budpointobject> copybloblist = new ArrayList<Budpointobject>(bloblist);
 			String time = entry.getKey();
 
-			ArrayList<Pair<Color, OvalRoi>> currentlist = parent.BudOvalRois.get(time);
+			ArrayList<Roiobject> currentlist = parent.BudOvalRois.get(time);
 
-			for (Pair<Color, OvalRoi> timelist : currentlist) {
+			for (Roiobject timelist : currentlist) {
 
-				Color currentcolor = timelist.getA();
-				OvalRoi colorroi = timelist.getB();
+				Color currentcolor = timelist.color;
+				OvalRoi colorroi = timelist.roi;
 				if (currentcolor == parent.RemoveBudColor) {
 					double[] location = colorroi.getContourCentroid();
 					Budpointobject budpoint = getNearestBPO(bloblist, location);

@@ -18,20 +18,35 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Roiobject;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Line;
+import ij.gui.OvalRoi;
 import ij.gui.TextRoi;
 import ij.io.FileSaver;
+import ij.process.ColorProcessor;
+import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
+import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.algorithm.neighborhood.DiamondShape;
+import net.imglib2.algorithm.region.hypersphere.HyperSphere;
+import net.imglib2.algorithm.region.hypersphere.HyperSphereCursor;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.ARGBDoubleType;
+import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
+import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
 import tracker.BUDDYTrackModel;
 import utility.BresenhamLine;
@@ -61,7 +76,7 @@ public class BudSaveAllListener implements ActionListener {
 	
 		parent.saveFile.mkdir();
 				
-
+		savePinks(parent);
 			
 					
 					try {
@@ -188,6 +203,7 @@ public class BudSaveAllListener implements ActionListener {
 		
 			
 			saveTrackMovie(parent, ID);
+		
 			}
 		}
 }
@@ -195,13 +211,57 @@ public class BudSaveAllListener implements ActionListener {
 		
 
 
+	public static void savePinks(InteractiveBud parent) {
+		
+		ImagePlus Localimp = ImageJFunctions.wrapFloat(parent.originalimg, "Pink");
+		
+		RandomAccessibleInterval<FloatType> TrackMovie = new CellImgFactory().create(new long[] {parent.originalimg.dimension(0), parent.originalimg.dimension(1), parent.originalimg.dimension(2)}, new FloatType());
+		
+		
+		RandomAccess<FloatType> ranac = TrackMovie.randomAccess();
+		
+		
+		 for(int i = 1; i< parent.AutoendTime; ++i) {
+			 
+
+			  ArrayList<Roiobject> Allrois = parent.BudOvalRois.get(Integer.toString(i));
+			  
+			  for(Roiobject roi: Allrois) {
+				  
+				  Color color = roi.color;
+				  int Label = roi.Label;
+				  Localizable point = new Point(new long[] {(long)roi.point.getDoublePosition(0), (long)roi.point.getDoublePosition(1)});
+				  OvalRoi currentroi = roi.roi;
+				  HyperSphere< FloatType > hyperSphere =
+				            new HyperSphere<FloatType>( Views.hyperSlice(TrackMovie,2, i - 1), point, 5 );
+				  HyperSphereCursor< FloatType > cursor = hyperSphere.cursor();
+				  
+				  while(cursor.hasNext()) {
+					  
+					  cursor.fwd();
+					  
+					  cursor.get().setReal(255);
+					  
+					  
+				  }
+			  }
+			 
+		 }
+			ImagePlus Trackimp = ImageJFunctions.wrapFloat(TrackMovie, "Pink");
+
+			FileSaver DistfsC = new FileSaver(Trackimp);
+
+			DistfsC.saveAsTiff(parent.saveFile + "//"  + parent.inputstring.replaceFirst("[.][^.]+$", "")
+			+ parent.addToName + "Pink"  + ".tif");
+		
+	}
 
 
 	public static void saveTrackMovie(InteractiveBud parent, String ID) {
 		
-		RandomAccessibleInterval<FloatType> TrackMovie = new ArrayImgFactory().create(new long[] {parent.originalimg.dimension(0), parent.originalimg.dimension(1)}, new FloatType());
+		RandomAccessibleInterval<FloatType> TrackMovie = new ArrayImgFactory().create(new long[] {parent.originalimg.dimension(0), parent.originalimg.dimension(1), parent.originalimg.dimension(2)}, new FloatType());
 		
-		
+		OpService ops = parent.ij.op();
 		// Get the corresponding set for each id
 		Integer id = Integer.parseInt(ID);
 		BUDDYTrackModel model = parent.Globalmodel;
@@ -231,8 +291,8 @@ public class BudSaveAllListener implements ActionListener {
 		}
 		Collections.sort(list, ThirdDimcomparison);
 
-		
-		RandomAccess<FloatType> ranac = TrackMovie.randomAccess();
+		for(int i = 1; i < TrackMovie.dimension(2); ++i) {
+		RandomAccess<FloatType> ranac = Views.hyperSlice(TrackMovie,2,i - 1).randomAccess();
 		
 		for (DefaultWeightedEdge e : model.edgeSet()) {
 
@@ -260,10 +320,9 @@ public class BudSaveAllListener implements ActionListener {
 
 			}
 		
-		
-		
-		
 	}
+		}
+		
 		
 		ImagePlus Trackimp = ImageJFunctions.wrapFloat(TrackMovie, ID);
 

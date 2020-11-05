@@ -15,6 +15,7 @@ import budDetector.Budpointobject;
 import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
+import budDetector.Roiobject;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
@@ -42,7 +43,6 @@ public class TrackEachBud {
 
 
 	final InteractiveBud parent;
-	final int t;
 	final int maxlabel;
 	int percent;
 	final ArrayList<Budobject> Budlist;
@@ -50,11 +50,10 @@ public class TrackEachBud {
 	final ArrayList<BCellobject> Budcelllist;
     ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
 	public TrackEachBud(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int t, final int maxlabel,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, final int maxlabel,
 			final int percent) {
 
 		this.parent = parent;
-		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
 		this.Budlist = Budlist;
@@ -63,11 +62,10 @@ public class TrackEachBud {
 	}
 	
 	public TrackEachBud(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist, final int t, final int maxlabel,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist,final int maxlabel,
 			final int percent) {
 
 		this.parent = parent;
-		this.t = t;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
 		this.Budlist = Budlist;
@@ -104,10 +102,11 @@ public class TrackEachBud {
 		
 		
 		
-		 ArrayList<Pair<Color,OvalRoi>> Allrois = new ArrayList<Pair<Color,OvalRoi>>();
+		 ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 		String uniqueID = Integer.toString(parent.thirdDimension);
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
+		
 		while (setiter.hasNext()) {
 
 			percent++;
@@ -116,6 +115,8 @@ public class TrackEachBud {
 			if (label > 0) {
 
 				
+				ArrayList<Roiobject> currentrois = new ArrayList<Roiobject>();
+				ArrayList<Roiobject> rejrois = new ArrayList<Roiobject>();
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
 				Budregionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
@@ -126,86 +127,86 @@ public class TrackEachBud {
 
 				// Get the center point of each bud
 				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(truths);
-
+				
+				DisplayListOverlay.BoundaryCenterDisplay(parent, truths, currentpoint);
+				if (parent.jpb != null)
+					utility.BudProgressBar.SetProgressBar(parent.jpb,
+							100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
+							"Computing Skeletons = " + parent.thirdDimension + "/" + parent.thirdDimensionSize + " Total Buddies = "
+									+ (parent.pixellist.size() ));
+				// If we did not compute the skeletons before we compute it for each label
+				if(parent.BudOvalRois.get(uniqueID)==null) {
+				    
 					
-					if (parent.jpb != null)
-						utility.BudProgressBar.SetProgressBar(parent.jpb,
-								100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
-								"Computing Skeletons = " + t + "/" + parent.thirdDimensionSize + " Total Buddies = "
-										+ (parent.pixellist.size() ));
-					if(parent.BudOvalRois.get(uniqueID)==null)
-					Common(PairCurrentViewBit, truths,  currentpoint, uniqueID, label);
+					
+					List<RealLocalizable> currentskel = SkeletonCreator(PairCurrentViewBit, truths);
+					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
+					FillArrays(currentskel,truths, currentpoint, label);
+					
+				}
+				
+				// If we have a pre-computation/manual marked skeleton point we load it for the current label
+				if (parent.BudOvalRois.get(uniqueID)!=null){
+					
+							ArrayList<Roiobject> rois = 	parent.BudOvalRois.get(uniqueID);
+							List<RealLocalizable> currentskel = new ArrayList<RealLocalizable>();
+							List<RealLocalizable> rejskel = new ArrayList<RealLocalizable>();
+							for (Roiobject currentroi: rois) {
+								
+								if(currentroi.color == parent.BudColor && currentroi.Label == label) {
+									
+									double LocationX = currentroi.point.getDoublePosition(0);
+									double LocationY = currentroi.point.getDoublePosition(1);
+									
+								RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
+								
+								currentskel.add(point);
+								
+							}
+								
+	                       if(currentroi.color == parent.RemoveBudColor && currentroi.Label == label) {
+									
+									double LocationX = currentroi.point.getDoublePosition(0);
+									double LocationY = currentroi.point.getDoublePosition(1);
+									
+								RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
+								
+								rejskel.add(point);
+								
+							}
+								
+							}
+							
+							currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
+							rejrois = DisplayListOverlay.SkeletonEndDisplay(parent, rejskel, label, parent.RemoveBudColor);
 
-
-					}
-
-      		}
-		
-		 if(parent.BudOvalRois.get(uniqueID)!=null) {
+							FillArrays(currentskel,truths, currentpoint, label);
+				 }
+				 
+				 currentrois.addAll(rejrois);
+				
+				 Allrois.addAll(currentrois);
+				
+			}
 			
-				List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
-					ArrayList<Pair<Color, OvalRoi>> rois = 	parent.BudOvalRois.get(Integer.toString(parent.thirdDimension));
-					
-					for (Pair<Color, OvalRoi> currentroi: rois) {
-						
-						if(currentroi.getA() == parent.BudColor) {
-							
-							Rectangle rect = currentroi.getB().getBounds();
-							double LocationX = rect.x + rect.width / 2.0;
-							double LocationY = rect.y + rect.height / 2.0;
-							
-						RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
-						
-						skeletonEndPoints.add(point);
-						
-					}
-					}
-					
-					  for (int i = 0; i < skeletonEndPoints.size(); i++) {
-							
-							int X = (int)skeletonEndPoints.get(i).getFloatPosition(0);
-							int Y = (int)skeletonEndPoints.get(i).getFloatPosition(1);
-							
-							OvalRoi points =  new OvalRoi((int) X, (int) Y,
-									parent.BudDotsize, parent.BudDotsize);
-							points.setStrokeColor(parent.BudColor);
-							points.setStrokeWidth(parent.BudDotsize);
-							parent.overlay.add(points);
-						}
-					
-		 }
-						
-					
-		
-		
-	       for (int i = 0; i < parent.overlay.size(); ++i) {
-	        	
-	        	OvalRoi roi = (OvalRoi) parent.overlay.get(i);
-	        	if (roi.getStrokeColor()== parent.BudColor)
-	        	Allrois.add(new ValuePair<Color, OvalRoi>(parent.BudColor, roi));
-	        	
-	        }
+		}
 	
+		 
 			parent.BudOvalRois.put(uniqueID, Allrois);
 
+			parent.imp.updateAndDraw();
 	
 	}
 	
 	
 
 	
-	
-
-	public  void Common(Budregionobject  PairCurrentViewBit,
-			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
-			int label) {
-
+	public List<RealLocalizable> SkeletonCreator(Budregionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
+		
+		
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
-	
 		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
-		if(parent.BudOvalRois.get(Integer.toString(parent.thirdDimension))==null) {
-			
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>((RandomAccessibleInterval<BitType>) ops.morphology().dilate(PairCurrentViewBit.Interiorimage, new DiamondShape(4)), ops);
 		skelmake.setClosingRadius(0);
 		skelmake.run();
@@ -213,11 +214,15 @@ public class TrackEachBud {
 
 		skeletonEndPoints = AnalyzeSkeleton(Allskeletons,truths, ops);
 		
-		}
+		return skeletonEndPoints;
 		
-	
-		
-		
+	}
+
+
+
+
+	public void FillArrays(List<RealLocalizable> skeletonEndPoints,
+			List<RealLocalizable> truths, RealLocalizable centerpoint, int label) {
 		
 		for (RealLocalizable budpoints : skeletonEndPoints) {
 
@@ -229,7 +234,7 @@ public class TrackEachBud {
 			Budpointlist.add(Budpoint);
 
 		}
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, t, label,
+		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
 				truths.size() * parent.calibrationX);
 		Budlist.add(Curreentbud);
 		if (parent.SegYelloworiginalimg != null) {
@@ -250,25 +255,16 @@ public class TrackEachBud {
 			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, t);
-            parent.budcells.add(budncell, t);  
+			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, parent.thirdDimension);
+            parent.budcells.add(budncell, parent.thirdDimension);  
 		}
 		
 		
 		}
 		
 		
-
-
-		  DisplayListOverlay.ArrowDisplay(parent,
-				new ValuePair<RealLocalizable, List<RealLocalizable>>(centerpoint, truths), skeletonEndPoints,
-				uniqueID);
 		
-		
-		 
 	}
-
-
 
 	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
 			OpService ops) {
@@ -289,7 +285,6 @@ public class TrackEachBud {
 				RealPoint addPoint = new RealPoint(skelcursor);
 				if (skelcursor.get().getInteger() > 0) {
 					
-					//RealLocalizable nearest = 	GetNearest.getNearestskelPoint(truths, addPoint);
 					
 					endPoints.add(addPoint);
 
@@ -298,9 +293,6 @@ public class TrackEachBud {
 			}
 			
 			
-			
-			
-
 		}
 		return endPoints;
 

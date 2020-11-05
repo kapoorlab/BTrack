@@ -23,9 +23,7 @@ public class BudStandardMouseListener implements MouseListener
 	public void mouseReleased( MouseEvent arg0 )
 	{
 		
-		
-		parent.updatePreview(change);
-		
+		parent.updatePreview(change); 
 
 		
 	}
@@ -34,7 +32,6 @@ public class BudStandardMouseListener implements MouseListener
 	public void mousePressed( MouseEvent arg0 ){
 		
 		
-		parent.updatePreview(change);
 	}
 
 	@Override
@@ -47,8 +44,12 @@ public class BudStandardMouseListener implements MouseListener
 	}
 
 	@Override
-	public void mouseClicked( MouseEvent arg0 ) {parent.updatePreview(change);}
-}
+	public void mouseClicked( MouseEvent arg0 ) {
+		
+		
+
+	}
+	}
 
 
 

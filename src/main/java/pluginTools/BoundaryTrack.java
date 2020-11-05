@@ -119,12 +119,12 @@ public class BoundaryTrack {
 	ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
 	if(parent.SegYelloworiginalimg!=null) {
 		
-	    TrackEachBud compute = new TrackEachBud(parent,  Budlist,Budpointlist, Budcelllist, parent.thirdDimension, max.get(), percent);
+	    TrackEachBud compute = new TrackEachBud(parent,  Budlist,Budpointlist, Budcelllist,max.get(), percent);
 	    compute.displayBuds();
 	}
 	
 	else {
-	  TrackEachBud compute = new TrackEachBud(parent, Budlist,Budpointlist, parent.thirdDimension, max.get(), percent);
+	  TrackEachBud compute = new TrackEachBud(parent, Budlist,Budpointlist, max.get(), percent);
 		
 	  compute.displayBuds();
 	}

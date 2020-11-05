@@ -36,6 +36,7 @@ public class BudSaveListener implements ActionListener {
 	
 		parent.saveFile.mkdir();
 		String ID = parent.selectedID;
+		BudSaveAllListener.savePinks(parent);
 		if(ID!=null) {
 
 			

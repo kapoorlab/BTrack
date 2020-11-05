@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import budDetector.Distance;
+import budDetector.Roiobject;
 import ij.IJ;
 import ij.gui.Arrow;
 import ij.gui.Line;
@@ -68,19 +69,17 @@ public class DisplayListOverlay {
 	
 
 
-	
-	// Display the found points as arrows on the bud
-	public static void  ArrowDisplay(final InteractiveBud parent,Pair<RealLocalizable, List<RealLocalizable>> Ordered,List<RealLocalizable> Skelpoints, String uniqueID) {
+	public static void BoundaryCenterDisplay(InteractiveBud parent, List<RealLocalizable> truths, RealLocalizable currentpoint) {
 		
-	
+		
 		Color displayColor; 
 		
-			displayColor = Color.GREEN;
+		displayColor = Color.GREEN;
 		
-		for (int i = 0; i < Ordered.getB().size() ; i += 1) {
+		for (int i = 0; i < truths.size() ; i += 1) {
 
-			double X = Ordered.getB().get(i).getDoublePosition(0);
-			double Y = Ordered.getB().get(i).getDoublePosition(1);
+			double X = Math.round(truths.get(i).getDoublePosition(0));
+			double Y = Math.round(truths.get(i).getDoublePosition(1));
 
 
 			OvalRoi points =  new OvalRoi((int) X, (int) Y,
@@ -91,34 +90,35 @@ public class DisplayListOverlay {
 		
 		}
 
-		OvalRoi oval = new OvalRoi((int) Ordered.getA().getDoublePosition(0), (int) Ordered.getA().getDoublePosition(1),
+		OvalRoi oval = new OvalRoi((int) currentpoint.getDoublePosition(0), (int) currentpoint.getDoublePosition(1),
 				parent.BudDotsize, parent.BudDotsize);
 		oval.setStrokeWidth(parent.BudDotsize);
 		oval.setStrokeColor(displayColor);
 		parent.overlay.add(oval);
-		
-		
-		
-        for (int i = 0; i < Skelpoints.size(); i++) {
-			
-			int X = (int)Skelpoints.get(i).getFloatPosition(0);
-			int Y = (int)Skelpoints.get(i).getFloatPosition(1);
-			
-			OvalRoi points =  new OvalRoi((int) X, (int) Y,
-					parent.BudDotsize, parent.BudDotsize);
-			points.setStrokeColor(parent.BudColor);
-			points.setStrokeWidth(parent.BudDotsize);
-			parent.overlay.add(points);
-		}
- 
-		
-	
-		
-		
 		parent.imp.updateAndDraw();
-		
-		
 	}
+	
+	public static ArrayList<Roiobject> SkeletonEndDisplay(InteractiveBud parent, List<RealLocalizable> skeletonEndPoints, int label, Color color) {
+		
+		
+		 ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
+		  for (int i = 0; i < skeletonEndPoints.size(); i++) {
+				
+				double X = Math.round(skeletonEndPoints.get(i).getFloatPosition(0));
+				double Y = Math.round(skeletonEndPoints.get(i).getFloatPosition(1));
+				
+				OvalRoi points =  new OvalRoi((int) X, (int) Y,
+						parent.BudDotsize, parent.BudDotsize);
+				points.setStrokeColor(color);
+				points.setStrokeWidth(parent.BudDotsize);
+				parent.overlay.add(points);
+				Roiobject roicolor = new Roiobject(color, points, new RealPoint(new double[] {X,Y}), label);
+		        		Allrois.add(roicolor);
+			}
+		  parent.imp.updateAndDraw();
+		return Allrois;
+	}
+
 	
 	
 	

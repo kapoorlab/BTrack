@@ -47,6 +47,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Roiobject;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
@@ -110,7 +111,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
-	public HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois = new HashMap<String, ArrayList<Pair<Color,OvalRoi>>>();;
+	public HashMap<String, ArrayList<Roiobject>> BudOvalRois = new HashMap<String, ArrayList<Roiobject>>();;
 	public final String NameA;
 	public int ndims;
 	public MouseListener mvl;
@@ -119,7 +120,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public String AddDot = "B";
 	public MouseMotionListener tvml;
 	
-	public int BudDotsize = 10;
+	public int BudDotsize = 6;
 	public Color BudColor = Color.PINK;
 	public Color RemoveBudColor = Color.RED;
 	
@@ -185,7 +186,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	// Input Bud and its segmentation
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
-			final RandomAccessibleInterval<IntType> Segoriginalimg, final HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois,final File defaultDirectory, final String NameA, final double calibrationX,
+			final RandomAccessibleInterval<IntType> Segoriginalimg, final HashMap<String,ArrayList<Roiobject>> BudOvalRois,final File defaultDirectory, final String NameA, final double calibrationX,
 			double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
@@ -455,6 +456,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		
 		BUDDYDisplaySelectedTrack.Select(this, null);
 		BUDDYDisplaySelectedTrack.Mark(this, null);
+		
 		
 		ComputeBorder display = new ComputeBorder(this, jpb);
 

@@ -42,6 +42,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.python.antlr.PythonParser.file_input_return;
 
+import budDetector.Roiobject;
 import fileListeners.ChooseBudOrigMap;
 import fileListeners.ChooseBudSegAMap;
 import ij.IJ;
@@ -55,6 +56,7 @@ import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoYellowFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealPoint;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
@@ -93,7 +95,7 @@ public class BudFileChooser extends JPanel {
 	public JComboBox<String> ChooseRGBImage;
 	public JButton Done = new JButton("Finished choosing files, start BTrack");
 	public JButton Restart = new JButton("Reload Saved Budpoints");
-	public HashMap<String, ArrayList<Pair<Color,OvalRoi>>> BudOvalRois= new HashMap<String, ArrayList<Pair<Color,OvalRoi>>>();;
+	public HashMap<String, ArrayList<Roiobject>> BudOvalRois= new HashMap<String, ArrayList<Roiobject>>();
 	public boolean simple = false;
 	public boolean curvesuper = true;
 	public boolean curvesimple = false;
@@ -347,7 +349,7 @@ public class BudFileChooser extends JPanel {
 			if (csvfile.showOpenDialog(Cardframe) == JFileChooser.APPROVE_OPTION) {
 				
 				File budfile = new File(csvfile.getSelectedFile().getPath());
-				ArrayList<Pair<Color,OvalRoi>> Allrois = new ArrayList<Pair<Color,OvalRoi>>();
+				ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 				
 		        try (BufferedReader br = new BufferedReader(new FileReader(budfile))) {
 
@@ -359,14 +361,15 @@ public class BudFileChooser extends JPanel {
 		                 if(count > 0) {
 		                
                            if(BudOvalRois.get(budpoints[0])==null) {
-                        	    Allrois = new ArrayList<Pair<Color,OvalRoi>>();
+                        	    Allrois = new ArrayList<Roiobject>();
                         	    BudOvalRois.put(budpoints[0], Allrois);    
                            }
                            else
                         	   BudOvalRois.put(budpoints[0], Allrois);
 		                OvalRoi roi = new OvalRoi(Integer.parseInt(budpoints[1]), Integer.parseInt(budpoints[2]), 10, 10);
 		                
-		                Allrois.add(new ValuePair<Color, OvalRoi> (Color.PINK, roi));
+		                Allrois.add(new Roiobject (Color.PINK, roi, 
+		                		new RealPoint(new double[] {Float.parseFloat(budpoints[1]), Float.parseFloat(budpoints[2])}), Integer.parseInt(budpoints[3])));
 		         
 		            }
 		                 count = count +  1;
@@ -382,17 +385,6 @@ public class BudFileChooser extends JPanel {
 			else
 				csvfile = null;
 			
-		
-            for (Map.Entry<String, ArrayList<Pair<Color, OvalRoi>>> timeroi: BudOvalRois.entrySet()) {
-           	   
-							String time =   timeroi.getKey();
-							
-							ArrayList<Pair<Color, OvalRoi>> Totalrois = timeroi.getValue();
-				            System.out.println("Pink dots at Time: " + time + "are" + Totalrois.size());			
-		        }
-		          
-		
-  
 		
 		
 	}

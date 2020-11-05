@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import budDetector.Roiobject;
 import ij.gui.OvalRoi;
 import net.imglib2.util.Pair;
 import pluginTools.InteractiveBud;
@@ -37,23 +38,23 @@ public class SavePink {
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
 						"Time, LocationX , LocationY \n");
-               for (Map.Entry<String, ArrayList<Pair<Color, OvalRoi>>> timeroi: parent.BudOvalRois.entrySet()) {
+               for (Map.Entry<String, ArrayList<Roiobject>> timeroi: parent.BudOvalRois.entrySet()) {
             	   
 						String time =   timeroi.getKey();
 						
-						ArrayList<Pair<Color, OvalRoi>> Totalrois = timeroi.getValue();
+						ArrayList<Roiobject> Totalrois = timeroi.getValue();
 						for(int i = 0; i < Totalrois.size(); ++i) {
 							
-							Pair<Color, OvalRoi> roi = Totalrois.get(i);
+							Roiobject roi = Totalrois.get(i);
 							
-							if(roi.getA() == parent.BudColor) {
-								Rectangle rect = roi.getB().getBounds();
-						double LocationX = rect.x + rect.width / 2.0;
-						double LocationY = rect.y + rect.height / 2.0;
-					    
+							if(roi.color == parent.BudColor) {
+						double LocationX = roi.point.getDoublePosition(0);
+						double LocationY = roi.point.getDoublePosition(1);
+					    int Label = roi.Label;
 						bwbud.write(time + "," 
 								+ parent.nf.format(LocationX) + "," 
-								+ parent.nf.format(LocationY) +  
+								+ parent.nf.format(LocationY) +  "," 
+								+ parent.nf.format(Label) +
 								"\n");
 					
 						}
