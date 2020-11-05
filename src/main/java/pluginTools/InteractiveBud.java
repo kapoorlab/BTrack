@@ -326,9 +326,14 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			setTime(thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-			if (SegYelloworiginalimg != null)
+			 
+			       
+			
+			if (SegYelloworiginalimg != null) {
 				CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
 						thirdDimensionSize);
+
+			}
 			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 
@@ -364,11 +369,13 @@ public class InteractiveBud extends JPanel implements PlugIn {
 					fourthDimension, fourthDimensionSize);
 			CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize,
 					fourthDimension, fourthDimensionSize);
-			if (SegYelloworiginalimg != null)
+		
+			  
+			if (SegYelloworiginalimg != null) {
 				CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
 						thirdDimensionSize, fourthDimension, fourthDimensionSize);
-			
-			
+				
+			}
 			imp = ImageJFunctions.show(utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize), "Original Image");
 			
 			
@@ -402,11 +409,10 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		}
 
 		if (change == ValueChange.THIRDDIMmouse) {
-		       Interval interval = Intervals.expand( CurrentView, borderexpand );
+		
 		       
 		        // create a view on the source with this interval
-		       CurrentView = Views.interval( CurrentView, interval );
-		       CurrentViewInt = Views.interval( CurrentViewInt, interval );
+		      
 			if (ndims == 3) {
 				imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 				String TID = Integer.toString(thirdDimension);
@@ -414,10 +420,14 @@ public class InteractiveBud extends JPanel implements PlugIn {
 				CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 				CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize);
+		
+				
+			       
+			       
 				if (SegYelloworiginalimg != null) {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize);
-					 CurrentViewYellowInt = Views.interval( CurrentViewYellowInt, interval );				}
+							}
 				repaintView(CurrentView);
 				if (BudAnalysis) {
 					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
@@ -447,12 +457,12 @@ public class InteractiveBud extends JPanel implements PlugIn {
 				CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize, fourthDimension, fourthDimensionSize);
 				
+			 
 				
 				if (SegYelloworiginalimg != null) {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize, fourthDimension, fourthDimensionSize);
 				
-					 CurrentViewYellowInt = Views.interval( CurrentViewYellowInt, interval );
 				}
 				repaintView( utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize));
 				

@@ -30,6 +30,7 @@ import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import listeners.AddBudKeyListener;
+import net.imglib2.Interval;
 import net.imglib2.KDTree;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
@@ -39,6 +40,7 @@ import net.imglib2.algorithm.region.hypersphere.HyperSphere;
 import net.imglib2.algorithm.region.hypersphere.HyperSphereCursor;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Intervals;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
@@ -120,9 +122,11 @@ public class BUDDYDisplaySelectedTrack {
 							Budpointobject nearestBPO = getNearestBPO(Budpointlist, point);
 							
 							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});
-							
+							  Interval interval = Intervals.expand(  parent.CurrentViewInt, -parent.borderexpand );
+							  
+						        // create a view on the source with this interval
 							  HyperSphere< IntType > hyperSphere =
-							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, parent.borderexpand - 1 );
+							            new HyperSphere<IntType>( Views.interval(  parent.CurrentViewInt, interval ), labelpoint, parent.borderexpand - 1 );
 							  HyperSphereCursor< IntType > cursor = hyperSphere.cursor();
 							  int label = 0;
 							  while(cursor.hasNext()) {
@@ -171,9 +175,11 @@ public class BUDDYDisplaySelectedTrack {
 							
 							Budpointobject nearestBPO = getNearestBPO(Budpointlist, point);
 							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});
-							
-							  HyperSphere< IntType > hyperSphere =
-							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, parent.borderexpand - 1 );
+							Interval interval = Intervals.expand(  parent.CurrentViewInt, -parent.borderexpand );
+							  
+					        // create a view on the source with this interval
+						  HyperSphere< IntType > hyperSphere =
+						            new HyperSphere<IntType>( Views.interval(  parent.CurrentViewInt, interval ), labelpoint, parent.borderexpand - 1 );
 							  HyperSphereCursor< IntType > cursor = hyperSphere.cursor();
 							  int label = 0;
 							  while(cursor.hasNext()) {
