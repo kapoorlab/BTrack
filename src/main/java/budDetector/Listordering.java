@@ -1,6 +1,8 @@
 package budDetector;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -105,20 +107,34 @@ public class Listordering {
 	public static RealLocalizable getMeanCord(List<RealLocalizable> truths) {
 
 		
-		Iterator<RealLocalizable> iter = truths.iterator();
+
+		Comparator<RealLocalizable> comp = new Comparator<RealLocalizable>() {
+
+			@Override
+			public int compare(final RealLocalizable A, final RealLocalizable B) {
+                 
+				int i = 0;
+				while (i < A.numDimensions()) {
+					if (A.getDoublePosition(i) != B.getDoublePosition(i)) {
+						return (int) Math.signum(A.getDoublePosition(i) - B.getDoublePosition(i));
+					}
+					i++;
+				}
+				
+			
+				return A.hashCode() - B.hashCode();
+
+			}
+			};
 		
-		double Xmean = 0, Ymean = 0;
-		while (iter.hasNext()) {
+		
+		 Collections.sort(truths,comp);
+	
+			int middle = truths.size()/2;
 
-			RealLocalizable currentpair = iter.next();
 
-			RealLocalizable currentpoint = currentpair;
-
-			Xmean += currentpoint.getDoublePosition(0);
-			Ymean += currentpoint.getDoublePosition(1);
-
-		}
-		RealPoint meanCord = new RealPoint(new double[] { Xmean / truths.size(), Ymean / truths.size() });
+		
+		RealPoint meanCord = new RealPoint(new double[] { truths.get(middle).getDoublePosition(0), truths.get(middle).getDoublePosition(1) });
 
 		return meanCord;
 	}

@@ -124,9 +124,9 @@ public class TrackEachBud {
 
 				// For each bud get the list of points
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-
+				List<RealLocalizable> bodytruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
 				// Get the center point of each bud
-				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(truths);
+				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(bodytruths);
 				
 				DisplayListOverlay.BoundaryCenterDisplay(parent, truths, currentpoint);
 				if (parent.jpb != null)
