@@ -81,11 +81,13 @@ import listeners.BudTrackidListener;
 import listeners.BudZListener;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
+import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Intervals;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
@@ -400,10 +402,11 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		}
 
 		if (change == ValueChange.THIRDDIMmouse) {
-			
-			CurrentView = Views.expandBorder(CurrentView, borderexpand);
-			CurrentViewInt = Views.expandBorder(CurrentViewInt, borderexpand);
-			
+		       Interval interval = Intervals.expand( CurrentView, borderexpand );
+		       
+		        // create a view on the source with this interval
+		       CurrentView = Views.interval( CurrentView, interval );
+		       CurrentViewInt = Views.interval( CurrentViewInt, interval );
 			if (ndims == 3) {
 				imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 				String TID = Integer.toString(thirdDimension);
@@ -414,8 +417,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 				if (SegYelloworiginalimg != null) {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize);
-					CurrentViewYellowInt = Views.expandBorder(CurrentViewYellowInt, borderexpand);	
-				}
+					 CurrentViewYellowInt = Views.interval( CurrentViewYellowInt, interval );				}
 				repaintView(CurrentView);
 				if (BudAnalysis) {
 					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
@@ -450,7 +452,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize, fourthDimension, fourthDimensionSize);
 				
-					CurrentViewYellowInt = Views.expandBorder(CurrentViewYellowInt, borderexpand);	
+					 CurrentViewYellowInt = Views.interval( CurrentViewYellowInt, interval );
 				}
 				repaintView( utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize));
 				
