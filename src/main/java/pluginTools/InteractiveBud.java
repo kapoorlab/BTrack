@@ -119,7 +119,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public MouseListener tvl;
 	public String AddDot = "B";
 	public MouseMotionListener tvml;
-	
+	public int borderexpand = 100;
 	public int BudDotsize = 6;
 	public Color BudColor = Color.PINK;
 	public Color RemoveBudColor = Color.RED;
@@ -400,6 +400,10 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		}
 
 		if (change == ValueChange.THIRDDIMmouse) {
+			
+			CurrentView = Views.expandBorder(CurrentView, borderexpand);
+			CurrentViewInt = Views.expandBorder(CurrentViewInt, borderexpand);
+			
 			if (ndims == 3) {
 				imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 				String TID = Integer.toString(thirdDimension);
@@ -407,9 +411,11 @@ public class InteractiveBud extends JPanel implements PlugIn {
 				CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
 				CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize);
-				if (SegYelloworiginalimg != null)
+				if (SegYelloworiginalimg != null) {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentBudView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize);
+					CurrentViewYellowInt = Views.expandBorder(CurrentViewYellowInt, borderexpand);	
+				}
 				repaintView(CurrentView);
 				if (BudAnalysis) {
 					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
@@ -438,9 +444,14 @@ public class InteractiveBud extends JPanel implements PlugIn {
 						fourthDimension, fourthDimensionSize);
 				CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize, fourthDimension, fourthDimensionSize);
-				if (SegYelloworiginalimg != null)
+				
+				
+				if (SegYelloworiginalimg != null) {
 					CurrentViewYellowInt = utility.BudSlicer.getCurrentGreenView(SegYelloworiginalimg, thirdDimension,
 							thirdDimensionSize, fourthDimension, fourthDimensionSize);
+				
+					CurrentViewYellowInt = Views.expandBorder(CurrentViewYellowInt, borderexpand);	
+				}
 				repaintView( utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize));
 				
 			

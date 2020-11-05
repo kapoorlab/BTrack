@@ -122,7 +122,7 @@ public class BUDDYDisplaySelectedTrack {
 							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});
 							
 							  HyperSphere< IntType > hyperSphere =
-							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, 50 );
+							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, parent.borderexpand - 1 );
 							  HyperSphereCursor< IntType > cursor = hyperSphere.cursor();
 							  int label = 0;
 							  while(cursor.hasNext()) {
@@ -173,7 +173,7 @@ public class BUDDYDisplaySelectedTrack {
 							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});
 							
 							  HyperSphere< IntType > hyperSphere =
-							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, 50 );
+							            new HyperSphere<IntType>( parent.CurrentViewInt, labelpoint, parent.borderexpand - 1 );
 							  HyperSphereCursor< IntType > cursor = hyperSphere.cursor();
 							  int label = 0;
 							  while(cursor.hasNext()) {
