@@ -113,7 +113,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
-	public HashMap<String, ArrayList<Roiobject>> BudOvalRois = new HashMap<String, ArrayList<Roiobject>>();;
+	public HashMap<String, ArrayList<Roiobject>> BudOvalRois = new HashMap<String, ArrayList<Roiobject>>();
 	public final String NameA;
 	public int ndims;
 	public MouseListener mvl;

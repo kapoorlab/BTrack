@@ -19,6 +19,7 @@ import budDetector.Roiobject;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
+import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
@@ -430,11 +431,11 @@ public class TrackEachBud {
 		}
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
-
-	
+        
+	    RandomAccessibleInterval<BitType> smalloutimg = Views.interval(outimg, minVal, maxVal);
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
+		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(smalloutimg);
 		
 		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
 		return region;
