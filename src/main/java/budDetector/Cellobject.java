@@ -17,6 +17,8 @@ public class Cellobject {
 	
 	public final int time;
 	
+	public final int label;
+	
 	public final double[] extents;
 	
 	public final double totalIntensity;
@@ -24,12 +26,14 @@ public class Cellobject {
 	
 	
 	
-	public Cellobject( Localizable location, int time, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
+	public Cellobject( Localizable location, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
 		
 		
 		this.Location = location;
 		
 		this.time = time;
+		
+		this.label = label;
 		
 		this.cellVolume = cellVolume;
 		

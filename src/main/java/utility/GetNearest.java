@@ -164,7 +164,7 @@ public class GetNearest {
 				double intensity = getIntensity(parent, PairCurrentViewBit.Boundaryimage);
 				double[] Extents = radiusXY(PairCurrentViewBit.Boundaryimage);
 
-				Cellobject insidecells = new Cellobject(cellcenterpoint, parent.fourthDimension,
+				Cellobject insidecells = new Cellobject(cellcenterpoint, parent.fourthDimension, labelyellow,
 						intensity, cellArea, cellPerimeter, Extents);
 				Allcells.add(insidecells);
 

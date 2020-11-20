@@ -51,7 +51,7 @@ public class ObjectMaker implements Runnable {
 		Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
 		double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
 		double[] Extents = radiusXYZ( SmallBigPairCurrentViewBit.getA().Boundaryimage);
-		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.fourthDimension, intensity, cellArea, cellPerimeter, Extents); 
+		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.fourthDimension, labelgreen, intensity, cellArea, cellPerimeter, Extents); 
 		Allcells.add(insideGreencells);
 		
 

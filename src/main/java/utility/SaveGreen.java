@@ -36,7 +36,7 @@ public class SaveGreen {
 				FileWriter fwbud = new FileWriter(budfile);
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
-						"T, X , Y, Z,  \n");
+						"T, X , Y, Z, Label,  \n");
                for (Map.Entry<Integer, ArrayList<Cellobject>> timeroi: parent.CSVGreen.entrySet()) {
             	   
 						Integer time =   timeroi.getKey();
@@ -47,10 +47,12 @@ public class SaveGreen {
 						double LocationX = roi.Location.getDoublePosition(0);
 						double LocationY = roi.Location.getDoublePosition(1);
 						double LocationZ = roi.Location.getDoublePosition(2);
+						int Label = roi.label;
 						bwbud.write(time + "," 
 								+ parent.nf.format(LocationX) + "," 
 								+ parent.nf.format(LocationY) +  "," 
-								+ parent.nf.format(LocationZ) +
+								+ parent.nf.format(LocationZ) + ","
+								+ parent.nf.format(Label) + "," + 
 								"\n");
 						}
 						}
