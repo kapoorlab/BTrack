@@ -34,7 +34,6 @@ public class ParallelLabel implements Runnable {
 	}
 	
 	
-	
 	@Override
 	public void run() {
 	
@@ -44,11 +43,8 @@ public class ParallelLabel implements Runnable {
 		Budobject Curreentbud = new Budobject(null, null, null, parent.fourthDimension, 1,
 				0);
 	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
-
-	      
 	      
      	for(Cellobject currentbudcell:Greencelllist) {
-			
 			
 			// and the distance
 			double closestBudPoint = 0;

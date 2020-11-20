@@ -51,14 +51,9 @@ public class TrackEach3DCell implements Runnable {
 		return Greencelllist;
 	}
 	
-
-	
-	
 	public void displayCells() {
-
 		
 		String uniqueID = Integer.toString(parent.fourthDimension);
-		
 		
 		parent.overlay.clear();
 
@@ -66,11 +61,6 @@ public class TrackEach3DCell implements Runnable {
 		// set up executor service
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
-		
-		
-
-		
-
 				// For each bud get the list of points
 
 											// For each bud get the list of points
@@ -81,12 +71,6 @@ public class TrackEach3DCell implements Runnable {
 														"Collecting Cells T = " + parent.fourthDimension + "/" + parent.fourthDimensionSize );
 
 											tasks.add(Executors.callable(new ParallelLabel(parent, Greencelllist,  uniqueID)));
-
-
-
-
-		
-		
 	try {
 			
 			taskExecutor.invokeAll(tasks);
@@ -99,13 +83,6 @@ public class TrackEach3DCell implements Runnable {
 
 	}
 	
-	
-	
-
-	
-	
-	
-
 	public void Common(Budregionobject  PairCurrentViewBit,
 			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
 			int label) {
@@ -138,13 +115,6 @@ public class TrackEach3DCell implements Runnable {
             parent.budcells.add(budncell, parent.fourthDimension);  
 		}
 		
-	      
-	      
-		
-		
-		
-		
-
 	}
 
 
@@ -273,9 +243,6 @@ public class TrackEach3DCell implements Runnable {
 		return region;
 
 	}
-
-
-
 
 
 	@Override

@@ -33,7 +33,7 @@ public class ObjectMaker implements Runnable {
 		this.parent = parent;
 		this.GreenCellSeg = GreenCellSeg;
 		this.labelgreen = labelgreen;
-         this.Allcells = Allcells;
+        this.Allcells = Allcells;
 		
 		
 	}
@@ -46,13 +46,12 @@ public class ObjectMaker implements Runnable {
 		
 		// For each bud get the list of points
 		List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
-		List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
 		double cellArea = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		double cellPerimeter = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
 		double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
 		double[] Extents = radiusXYZ( SmallBigPairCurrentViewBit.getA().Boundaryimage);
-		Cellobject insideGreencells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents); 
+		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.fourthDimension, intensity, cellArea, cellPerimeter, Extents); 
 		Allcells.add(insideGreencells);
 		
 

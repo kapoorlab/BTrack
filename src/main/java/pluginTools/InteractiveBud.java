@@ -47,6 +47,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import budDetector.BCellobject;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import budDetector.Cellobject;
 import budDetector.Roiobject;
 import Buddy.plugin.trackmate.BCellobjectCollection;
 import fileListeners.BTrackSaveDirectoryListener;
@@ -168,6 +169,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public int fourthDimensionSize;
 	public JProgressBar jpb;
 	public ArrayList<int[]> ZTRois;
+	public HashMap<Integer, ArrayList<Cellobject>> CSVGreen;
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public XYSeriesCollection Velocitydataset;
@@ -295,7 +297,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		AllBudcenter = new ArrayList<RealLocalizable>();
 		ChosenBudcenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, Budpointobject>();
-		
+		CSVGreen = new HashMap<Integer, ArrayList<Cellobject>>();
 		ZTRois = new ArrayList<int[]>();
 		BudVelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();

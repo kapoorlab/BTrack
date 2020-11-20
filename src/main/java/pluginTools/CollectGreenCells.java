@@ -4,6 +4,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 import Buddy.plugin.trackmate.TrackMatePlugIn_;
+import utility.SaveGreen;
 
 
 public class CollectGreenCells extends SwingWorker<Void, Void> {
@@ -42,6 +43,9 @@ public class CollectGreenCells extends SwingWorker<Void, Void> {
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
 					"Collected all cells, starting TrackMate");
 		
+		// Save the cell colllection as btrack compatiable csv file
+		SaveGreen savecsv = new SaveGreen(parent);
+		savecsv.Saver();
 		
 		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
 		plugin.run("threeD");

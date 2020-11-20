@@ -15,23 +15,21 @@ public class Cellobject {
 	
 	public final Localizable Location;
 	
+	public final int time;
+	
 	public final double[] extents;
 	
 	public final double totalIntensity;
 	
-	public final List<RealLocalizable> boundarylist;
-	
-	public final List<RealLocalizable> interiorlist;
 	
 	
 	
-	public Cellobject(List<RealLocalizable> interiorlist, List<RealLocalizable> boundarylist, Localizable location, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
+	public Cellobject( Localizable location, int time, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
 		
-		this.interiorlist = interiorlist;
-		
-		this.boundarylist = boundarylist;
 		
 		this.Location = location;
+		
+		this.time = time;
 		
 		this.cellVolume = cellVolume;
 		
