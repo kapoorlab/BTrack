@@ -258,6 +258,27 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	}
 
+	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
+			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
+
+		this.originalimg = originalimg;
+		this.SegYelloworiginalimg = SegYelloworiginalimg;
+		this.NameA = NameA;
+		this.calibrationX = calibrationX;
+		this.calibrationY = calibrationY;
+		this.defaultDirectory = defaultDirectory;
+		this.calibrationZ = 1;
+		this.timecal = timecal;
+		this.ndims = originalimg.numDimensions();
+		this.Velocitydataset = new XYSeriesCollection();
+		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
+		this.jFreeChartFrameRate.setVisible(false);
+		this.inputstring = inputstring;
+		this.BudAnalysis = BudAnalysis;
+
+	}
+	
 	public ImageStack prestack;
 	public JTable table;
 	public JTableHeader header;
@@ -327,6 +348,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 			setTime(thirdDimension);
 			CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+			if (Segoriginalimg!=null)
 			CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension, thirdDimensionSize);
 			 
 			       
@@ -369,6 +391,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 			CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize,
 					fourthDimension, fourthDimensionSize);
+			if (Segoriginalimg!=null)
 			CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension, thirdDimensionSize,
 					fourthDimension, fourthDimensionSize);
 		
@@ -420,9 +443,13 @@ public class InteractiveBud extends JPanel implements PlugIn {
 				String TID = Integer.toString(thirdDimension);
 				AccountedT.put(TID, thirdDimension);
 				CurrentView = utility.BudSlicer.getCurrentBudView(originalimg, thirdDimension, thirdDimensionSize);
+				if (Segoriginalimg!=null)
 				CurrentViewInt = utility.BudSlicer.getCurrentBudView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize);
-		
+                else {
+					
+					CurrentViewInt = null;
+				}
 				
 			       
 			       
@@ -456,9 +483,13 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 				CurrentView = utility.BudSlicer.getCurrentGreenView(originalimg, thirdDimension, thirdDimensionSize,
 						fourthDimension, fourthDimensionSize);
+				if (Segoriginalimg!=null)
 				CurrentViewInt = utility.BudSlicer.getCurrentGreenView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize, fourthDimension, fourthDimensionSize);
-				
+				else {
+					
+					CurrentViewInt = null;
+				}
 			 
 				
 				if (SegYelloworiginalimg != null) {

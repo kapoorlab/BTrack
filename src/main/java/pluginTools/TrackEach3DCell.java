@@ -96,7 +96,7 @@ public class TrackEach3DCell implements Runnable {
 
 		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.fourthDimension, label,
 				truths.size() * parent.calibrationX);
-	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
+	      Greencelllist  = GetNearest.getAllInterior3DCells(parent,  parent.CurrentViewYellowInt);
 
 	      
 	      

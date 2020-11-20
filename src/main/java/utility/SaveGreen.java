@@ -36,7 +36,7 @@ public class SaveGreen {
 				FileWriter fwbud = new FileWriter(budfile);
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
-						"T, X , Y, Z, Label,  \n");
+						"T, X , Y, Z, Label  \n");
                for (Map.Entry<Integer, ArrayList<Cellobject>> timeroi: parent.CSVGreen.entrySet()) {
             	   
 						Integer time =   timeroi.getKey();

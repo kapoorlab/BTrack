@@ -42,7 +42,8 @@ public class ParallelLabel implements Runnable {
 
 		Budobject Curreentbud = new Budobject(null, null, null, parent.fourthDimension, 1,
 				0);
-	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
+		  
+	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewYellowInt);
 	      
      	for(Cellobject currentbudcell:Greencelllist) {
 			

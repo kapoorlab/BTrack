@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,6 +33,9 @@ import javax.swing.border.TitledBorder;
 
 import org.jgrapht.generate.EmptyGraphGenerator;
 
+import budDetector.Cellobject;
+import budDetector.Roiobject;
+
 import javax.swing.JOptionPane;
 
 import fileListeners.ChooseCellSegAMap;
@@ -44,7 +49,9 @@ import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoMaskFLListener;
 import listeners.BTrackGoYellowFLListener;
+import listeners.BudCheckpointListener;
 import listeners.BudZListener;
+import listeners.GreenCheckpointListener;
 import listeners.ThreeDCellGoFreeFLListener;
 import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
@@ -89,7 +96,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
 	public JButton Done = new JButton("Collect Cells and Start Tracker");
-
+	public HashMap<Integer, ArrayList<Cellobject>> CSVGreen = new HashMap<Integer, ArrayList<Cellobject>>(); 
 	public String chooseCellSegstring = "3D + time Segmentation for Cells";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
 
@@ -122,7 +129,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			new EmptyBorder(c.insets));
 	public boolean DoMask = false;
 	public boolean NoMask = true;
-
+	public JButton Checkpointbutton = new JButton("Load Cells From CSV");
 	public CheckboxGroup cellmode = new CheckboxGroup();
 	public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 	public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
@@ -200,9 +207,15 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		panelFirst.add(Panelfile, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		
+		Paneldone.add(Checkpointbutton, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		Paneldone.add(Done, new GridBagConstraints(1, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Paneldone.setBorder(LoadBtrack);
+		
+		
+		
 		panelFirst.add(Paneldone, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
@@ -253,6 +266,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		inputFieldcalX.addTextListener(new CalXListener());
 		inputFieldcalY.addTextListener(new CalYListener());
 		FieldinputLabelcalT.addTextListener(new CalTListener());
+		Checkpointbutton.addActionListener(new GreenCheckpointListener(this));
 		inputFieldT.addTextListener(new InputTListener());
 		Done.addActionListener(new GreenDoneListener());
 		panelFirst.setVisible(true);
@@ -417,8 +431,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 		if (NoMask) {
 
-			RandomAccessibleInterval<IntType> imageBigMask = CreateBorderMask(imageOrigGreen);
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, imageBigMask,  imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen,  imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 
