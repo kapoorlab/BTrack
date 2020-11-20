@@ -18,6 +18,7 @@ import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
 
 public class ObjectMaker implements Runnable {
@@ -39,18 +40,18 @@ public class ObjectMaker implements Runnable {
 	
 	@Override
 	public void run() {
-		Budregionobject PairCurrentViewBit = TrackEachBud
+		Pair<Budregionobject, Budregionobject> SmallBigPairCurrentViewBit = TrackEachBud
 				.BudCurrentLabelBinaryImage3D(GreenCellSeg, labelgreen);
 		
 		
 		// For each bud get the list of points
-		List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-		List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-		double cellArea = Volume(PairCurrentViewBit.Boundaryimage);
-		double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
+		List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
+		List<RealLocalizable> interiorcelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
+		double cellArea = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
+		double cellPerimeter = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
-		double intensity = getIntensity(parent, PairCurrentViewBit.Interiorimage);
-		double[] Extents = radiusXYZ( PairCurrentViewBit.Boundaryimage);
+		double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
+		double[] Extents = radiusXYZ( SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		Cellobject insideGreencells = new Cellobject(interiorcelltruths, bordercelltruths, cellcenterpoint, intensity, cellArea, cellPerimeter, Extents); 
 		Allcells.add(insideGreencells);
 		

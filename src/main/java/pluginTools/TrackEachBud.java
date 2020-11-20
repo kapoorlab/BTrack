@@ -393,7 +393,7 @@ public class TrackEachBud {
 
 	}
 	
-	public static Budregionobject BudCurrentLabelBinaryImage3D(
+	public static Pair<Budregionobject,Budregionobject> BudCurrentLabelBinaryImage3D(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
@@ -436,9 +436,10 @@ public class TrackEachBud {
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);
+		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
 		Budregionobject smallregion = new Budregionobject(smallgradimg, smalloutimg, min,  size);
-		
-		return smallregion;
+		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
+		return new ValuePair<Budregionobject, Budregionobject>( smallregion, region);
 
 	}
 	public static Budregionobject YellowCurrentLabelBinaryImage(
