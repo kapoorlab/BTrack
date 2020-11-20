@@ -432,13 +432,13 @@ public class TrackEachBud {
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
         
-	    RandomAccessibleInterval<BitType> smalloutimg = Views.interval(outimg, minVal, maxVal);
+	    RandomAccessibleInterval<BitType> smalloutimg = Views.offsetInterval(outimg, minVal, maxVal);
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(smalloutimg);
+		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);
+		Budregionobject smallregion = new Budregionobject(smallgradimg, smalloutimg, min,  size);
 		
-		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
-		return region;
+		return smallregion;
 
 	}
 	public static Budregionobject YellowCurrentLabelBinaryImage(

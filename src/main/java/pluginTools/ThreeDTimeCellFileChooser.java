@@ -151,7 +151,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		inputFieldT.setText("1");
 		
 		
-		inputZ = new Label("Z point = 1");
+		inputZ = new Label("Current Z = 1");
 		inputFieldZ = new TextField(5);
 		inputFieldZ.setText("1");
 		
@@ -212,10 +212,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalY, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalY, new GridBagConstraints(3, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(inputFieldcalY, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputFieldcalY, new GridBagConstraints(3, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.add(inputLabelcalZ, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -224,10 +224,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		Microscope.add(inputFieldcalZ, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalT, new GridBagConstraints(3, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 7, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(3, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 		
 		Microscope.add(inputT, new GridBagConstraints(0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
