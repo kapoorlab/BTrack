@@ -50,28 +50,8 @@ public class BudZListener implements AdjustmentListener {
 		.setValue(utility.BudSlicer.computeScrollbarPositionFromValue(parent.thirdDimension, min, max, scrollbarSize));
 		
 		parent.overlay.clear();
-		ArrayList<int[]> copylist = new ArrayList<int[]>(parent.ZTRois);
 		
-		
-		for(int[] points: copylist) {
-			
-			
-			int xPoint = points[0];
-			int yPoint = points[1];
-			int zPoint = points[2];
-			
-			if (zPoint == parent.thirdDimension) {
-				
-				OvalRoi roi = new OvalRoi(xPoint, yPoint, 2, 2);
-				parent.overlay.add(roi);
-				
-				parent.imp.setZ(zPoint);
-				parent.imp.updateAndDraw();
-				
-			}
-			
-			
-		}
+
 		label.setText(string +  " = "  + parent.thirdDimension);
 	
 		parent.panelFirst.validate();

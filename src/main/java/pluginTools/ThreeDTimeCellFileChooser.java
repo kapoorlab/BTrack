@@ -210,7 +210,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		
 		Paneldone.add(Checkpointbutton, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		Paneldone.add(Done, new GridBagConstraints(1, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Paneldone.add(Done, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Paneldone.setBorder(LoadBtrack);
 		
@@ -371,6 +371,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 		
 		Done.setEnabled(false);
+		Checkpointbutton.setEnabled(false);
 		RandomAccessibleInterval<FloatType> imageOrigGreen = SimplifiedIO.openImage(
 				impOrigGreen.getOriginalFileInfo().directory + impOrigGreen.getOriginalFileInfo().fileName,
 				new FloatType());

@@ -36,7 +36,7 @@ public class SaveGreen {
 				FileWriter fwbud = new FileWriter(budfile);
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
-						"T, X , Y, Z, Label  \n");
+						"T, X , Y, Z, Label, Perimeter, Volume, Intensity  \n");
                for (Map.Entry<Integer, ArrayList<Cellobject>> timeroi: parent.CSVGreen.entrySet()) {
             	   
 						Integer time =   timeroi.getKey();
@@ -48,11 +48,24 @@ public class SaveGreen {
 						double LocationY = roi.Location.getDoublePosition(1);
 						double LocationZ = roi.Location.getDoublePosition(2);
 						int Label = roi.label;
+						double Area = roi.cellVolume;
+						double Perimeter = roi.cellPerimeter;
+						double Intensity = roi.totalIntensity;
+						double sizeX = roi.extents[0];
+						double sizeY = roi.extents[1];
+						double sizeZ = roi.extents[2];
 						bwbud.write(time + "," 
 								+ parent.nf.format(LocationX) + "," 
 								+ parent.nf.format(LocationY) +  "," 
 								+ parent.nf.format(LocationZ) + ","
-								+ parent.nf.format(Label) + "," + 
+								+ parent.nf.format(Label) + "," 
+								+ parent.nf.format(Perimeter) +  "," 
+								+ parent.nf.format(Area) + ","
+								+ parent.nf.format(Intensity) + "," 
+								+ parent.nf.format(sizeX) +  "," 
+								+ parent.nf.format(sizeY) + ","
+								+ parent.nf.format(sizeZ) + "," +
+								
 								"\n");
 						}
 						}

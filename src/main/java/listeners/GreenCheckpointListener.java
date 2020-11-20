@@ -73,17 +73,26 @@ public class GreenCheckpointListener implements ActionListener {
 	                // use comma as separator
 	                String[] budpoints = line.split(cvsSplitBy);
                      
-	                int time = Integer.parseInt(budpoints[0]);
-	                double X = Double.parseDouble(budpoints[1]);
-	                double Y = Double.parseDouble(budpoints[2]);
-	                double Z = Double.parseDouble(budpoints[3]);
-	                int Label = Integer.parseInt(budpoints[4]);
-	                
-	                Point point = new Point(new long[] {(long)X,(long)Y,(long)Z});
-	                
-	                
-	                Cellobject currentcell = new Cellobject(point, time, Label, 0, 0, 0, null);
+
 	                if(count > 0) {
+	                	
+		                int time = Integer.parseInt(budpoints[0]);
+		                double X = Double.parseDouble(budpoints[1]);
+		                double Y = Double.parseDouble(budpoints[2]);
+		                double Z = Double.parseDouble(budpoints[3]);
+		                int Label = Integer.parseInt(budpoints[4]);
+		                double Perimeter = Double.parseDouble(budpoints[5]);
+		                double Area = Double.parseDouble(budpoints[6]);
+		                int Intensity = Integer.parseInt(budpoints[7]);
+		                double sizeX =  Double.parseDouble(budpoints[8]);
+		                double sizeY = Double.parseDouble(budpoints[9]);
+		                double sizeZ = Double.parseDouble(budpoints[10]);
+		                
+		                double[] extents = new double[] {sizeX, sizeY, sizeZ};
+		                Point point = new Point(new long[] {(long)X,(long)Y,(long)Z});
+		                
+		                
+		                Cellobject currentcell = new Cellobject(point, time, Label, Perimeter, Area, Intensity, extents);
 		                
                         if(parent.CSVGreen.get(time)==null) {
                         	reloadcell = new ArrayList<Cellobject>();

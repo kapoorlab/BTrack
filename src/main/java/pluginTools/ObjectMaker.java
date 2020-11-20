@@ -54,16 +54,6 @@ public class ObjectMaker implements Runnable {
 		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.fourthDimension, labelgreen, intensity, cellArea, cellPerimeter, Extents); 
 		Allcells.add(insideGreencells);
 		
-
-		for (RealLocalizable insidetruth : bordercelltruths) {
-
-			Integer xPts = (int) insidetruth.getFloatPosition(0);
-			Integer yPts = (int) insidetruth.getFloatPosition(1);
-			Integer zPts = (int) insidetruth.getFloatPosition(2);
-			parent.ZTRois.add(new int[] {xPts, yPts, zPts});
-		
-		}
-		
 	}
 	public static < T extends RealType< T > > double[] radiusXYZ( final RandomAccessibleInterval< T > img)
 	{

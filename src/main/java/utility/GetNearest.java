@@ -183,6 +183,7 @@ public class GetNearest {
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 
+		if(parent.CSVGreen.get(parent.fourthDimension)!=null) {
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();
@@ -214,6 +215,17 @@ public class GetNearest {
 
 		}
 		parent.CSVGreen.put(parent.fourthDimension, Allcells);
+		
+		}
+		
+		else {
+			
+			Allcells = parent.CSVGreen.get(parent.fourthDimension);
+			
+			
+			
+		}
+		
 		
 		return Allcells;
 
