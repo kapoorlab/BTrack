@@ -76,7 +76,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JFrame Cardframe = new JFrame("ThreeD + time Cell Tracker");
+	public JFrame Cardframe = new JFrame("XYZT Cell Tracker");
 	public JPanel panelCont = new JPanel();
 	public ImagePlus impOrigGreen, impSegGreen, impMask;
 	public File impOrigGreenfile;

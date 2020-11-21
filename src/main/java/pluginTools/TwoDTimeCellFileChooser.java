@@ -60,7 +60,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JFrame Cardframe = new JFrame("TwoD + time Cell tracker");
+	public JFrame Cardframe = new JFrame("XYT Cell Tracker");
 	public JPanel panelCont = new JPanel();
 	public ImagePlus impOrig, impSegA, impSegB, impSegC;
 	public File impOrigfile,  impSegAfile, impSegBfile, impSegCfile;
