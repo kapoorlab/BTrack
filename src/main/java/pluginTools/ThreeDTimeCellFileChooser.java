@@ -414,11 +414,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
 			
-			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			
-		
+	
+			 
 
 			CellCollection.run(null);
 			jpb = CellCollection.jpb;
@@ -427,12 +428,15 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
 			
 			CellCollection.Zslider = Zslider;
+			
+			 if(CSVGreen!=null)
+				 CellCollection.CSVGreen = CSVGreen;
 					
 		}
 
 		if (NoMask) {
 
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen,  imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, CSVGreen, imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 

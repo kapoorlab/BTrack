@@ -236,6 +236,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	// Input Image and one flourescent channel and mask images
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+			final HashMap<Integer,ArrayList<Cellobject>> CSVGreen,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
@@ -244,6 +245,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.Segoriginalimg = Segoriginalimg;
 		this.SegYelloworiginalimg = SegYelloworiginalimg;
 		this.NameA = NameA;
+		this.CSVGreen = CSVGreen;
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
 		this.defaultDirectory = defaultDirectory;
@@ -259,12 +261,14 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	}
 
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+			final HashMap<Integer,ArrayList<Cellobject>> CSVGreen,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
 		this.SegYelloworiginalimg = SegYelloworiginalimg;
 		this.NameA = NameA;
+		this.CSVGreen = CSVGreen;
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
 		this.defaultDirectory = defaultDirectory;

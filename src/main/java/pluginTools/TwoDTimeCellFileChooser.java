@@ -312,7 +312,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 			
 			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrig, null, imageSegB, imageSegA, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			CellCollection.run(null);
@@ -323,7 +323,7 @@ public class TwoDTimeCellFileChooser extends JPanel {
 		if(NoMask) {
 			
 			RandomAccessibleInterval<IntType> imageSegB = CreateBorderMask(imageOrig);
-			InteractiveBud CellCollection = new InteractiveBud(imageOrig, imageSegB, imageSegA, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrig, null, imageSegB, imageSegA, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name, false);
 			
 			CellCollection.run(null);
