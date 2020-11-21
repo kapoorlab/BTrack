@@ -83,7 +83,7 @@ public class ObjectMaker implements Runnable {
 	  while(cur.hasNext()) {
 		  
 		  cur.fwd();
-		  if(cur.get().getRealFloat() > 0)
+		  if(cur.get().getRealFloat() > 0.5)
 		       Vol++;
 	  }
 	  
