@@ -220,6 +220,7 @@ public class GetNearest {
 		
 		else {
 			
+			System.out.println("Loading from checkpoint" +  parent.fourthDimension);
 			Allcells = parent.CSVGreen.get(parent.fourthDimension);
 			
 			

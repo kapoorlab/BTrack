@@ -56,7 +56,7 @@ public class GreenCheckpointListener implements ActionListener {
 		csvfile.setCurrentDirectory(new File(parent.impOrigGreen.getOriginalFileInfo().directory));
 		else 
 			csvfile.setCurrentDirectory(new java.io.File("."));
-		csvfile.setDialogTitle("Pink dot file");
+		csvfile.setDialogTitle("Green Cell CSV file");
 		csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		csvfile.setFileFilter(csvfilter);
 		int count = 0;

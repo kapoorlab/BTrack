@@ -429,8 +429,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			CellCollection.Zslider = Zslider;
 			
-			 if(CSVGreen!=null)
-				 CellCollection.CSVGreen = CSVGreen;
+		
 					
 		}
 
