@@ -10,6 +10,8 @@ import javax.swing.JComboBox;
 
 import ij.IJ;
 import ij.WindowManager;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.BudFileChooser;
 import pluginTools.ThreeDTimeCellFileChooser;
 
@@ -38,12 +40,18 @@ public class ChooseGreenOrigMap implements ActionListener {
 		
     	parent.impOrigGreen = WindowManager.getImage(imagename);
     	if(parent.impOrigGreen!=null) {
-			
-    		    parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;
+    		parent.imageOrigGreen = SimplifiedIO.openImage(
+    				parent.impOrigGreen.getOriginalFileInfo().directory + parent.impOrigGreen.getOriginalFileInfo().fileName,
+    				new FloatType());
+    		if (parent.imageOrigGreen.numDimensions() < 4) 
+
+    			parent.imageOrigGreen = parent.copyUpImage(parent.imageOrigGreen);
+    			
+    		parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;
 			parent.calibrationY = parent.impOrigGreen.getCalibration().pixelHeight;
 			parent.calibrationZ = parent.impOrigGreen.getCalibration().pixelDepth;
 			parent.FrameInterval = parent.impOrigGreen.getCalibration().frameInterval;
-			parent.TimeTotal = parent.impOrigGreen.getNFrames();
+			parent.TimeTotal = parent.imageOrigGreen.dimension(3);
 			
 			
 			if (parent.FrameInterval == 0)

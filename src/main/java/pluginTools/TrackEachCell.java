@@ -105,7 +105,6 @@ public class TrackEachCell {
 		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
 		int nThreads = Runtime.getRuntime().availableProcessors();
-		System.out.println("Starting threads:" + nThreads);
 		// set up executor service
 		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();

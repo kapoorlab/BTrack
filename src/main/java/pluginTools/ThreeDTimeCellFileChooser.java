@@ -16,8 +16,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -56,6 +59,7 @@ import listeners.ThreeDCellGoFreeFLListener;
 import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.Cursor;
+import net.imglib2.Dimensions;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.cell.CellImgFactory;
@@ -63,6 +67,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.Type;
 import net.imglib2.type.logic.BitType;
+import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
@@ -110,7 +115,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			scrollbarSize + 10);
 	
 	
-	
+	public RandomAccessibleInterval<FloatType> imageOrigGreen;
+	public RandomAccessibleInterval<IntType> imageSegA;
 	public String chooseoriginalCellfilestring = "Cells are tracked inside a region";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
 			new EmptyBorder(c.insets));
@@ -372,25 +378,16 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		
 		Done.setEnabled(false);
 		Checkpointbutton.setEnabled(false);
-		RandomAccessibleInterval<FloatType> imageOrigGreen = SimplifiedIO.openImage(
-				impOrigGreen.getOriginalFileInfo().directory + impOrigGreen.getOriginalFileInfo().fileName,
-				new FloatType());
+		
 		// Segmentation image for green cells
-		RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(
-				impSegGreen.getOriginalFileInfo().directory + impSegGreen.getOriginalFileInfo().fileName,
-				new IntType());
+
 
 		String name = impOrigGreen.getOriginalFileInfo().fileName;
 		//WindowManager.closeAllWindows();
 		// Image -> Mask -> Cell Mask
 		Cardframe.remove(jpb);
 
-		if (imageOrigGreen.numDimensions() < 4) {
-
-			JOptionPane.showMessageDialog(new JFrame(),
-					"This tracker is for 3D + time images only, your image has lower dimensionality");
-
-		}
+	
 
 		if (imageOrigGreen.numDimensions() > 4) {
 
@@ -398,23 +395,31 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					"This tracker is for 3D + time images only, your image has higher dimensionality, split the channels perhaps?");
 
 		}
-		
+		if(imageOrigGreen.dimension(2) > 2) {
 		Microscope.add(inputZ, new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		Microscope.add(Zslider, new GridBagConstraints(0, 11, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
 
+		Microscope.repaint();
+		Microscope.validate();
+
+		}
 		if (DoMask) {
 
 			RandomAccessibleInterval<IntType> imageMask = SimplifiedIO.openImage(
 					impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
+			
+			
 			ImageObjects ImagePairs  = 
 					Create4D(imageOrigGreen, imageMask, imageSegA);
 			
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
 			
-			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), 
+					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 					FrameInterval, name, false);
 			
 			
@@ -422,20 +427,22 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			 
 
 			CellCollection.run(null);
+			
 			jpb = CellCollection.jpb;
+			
+			
 			
 			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
 					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
 			
 			CellCollection.Zslider = Zslider;
 			
-		
 					
 		}
 
 		if (NoMask) {
 
-			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, CSVGreen, imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, CSVGreen, imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 					FrameInterval, name, false);
 			
 
@@ -443,11 +450,13 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 			jpb = CellCollection.jpb;
 			
+			
 			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
 					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
 			
 			CellCollection.Zslider = Zslider;
 
+			
 		}
 		
 		
@@ -456,8 +465,6 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		
 
 		
-		Microscope.repaint();
-		Microscope.validate();
 		
 		Cardframe.add(jpb, "Last");
 		Cardframe.repaint();
@@ -644,4 +651,95 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	        // return the copy
 	        return output;
 	    }
+	    
+	   public RandomAccessibleInterval<FloatType> copyUpImage(final RandomAccessibleInterval<FloatType> input) 
+	   {
+		   
+		
+        long[] newDim = new long[] {input.dimension(0), input.dimension(1), 2, input.dimension(2)};
+        
+		RandomAccessibleInterval<FloatType> output = new CellImgFactory<FloatType>().create(newDim, new FloatType());
+		
+		
+		RandomAccessibleInterval<FloatType> Slicedoutput = Views.hyperSlice(output, 2, 0);
+		Cursor<FloatType> cursorInput = Views.iterable(input).localizingCursor();
+		RandomAccess<FloatType> randomAccess = Slicedoutput.randomAccess();
+		
+		while(cursorInput.hasNext()) {
+			
+			
+			cursorInput.fwd();
+			
+			randomAccess.setPosition(cursorInput);
+			
+			randomAccess.get().set(cursorInput.get());
+			
+		}
+		
+		
+		Slicedoutput = Views.hyperSlice(output, 2, 1);
+		 cursorInput = Views.iterable(input).localizingCursor();
+		 randomAccess = Slicedoutput.randomAccess();
+		
+		while(cursorInput.hasNext()) {
+			
+			
+			cursorInput.fwd();
+			
+			randomAccess.setPosition(cursorInput);
+			
+			randomAccess.get().set(cursorInput.get());
+			
+		}
+		
+		ImageJFunctions.show(output);
+		   return output;
+		   
+	   }
+		   
+	    
+	   public RandomAccessibleInterval<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input) 
+	   {
+		   
+		
+       long[] newDim = new long[] {input.dimension(0), input.dimension(1), 2, input.dimension(2)};
+       
+		RandomAccessibleInterval<IntType> output = new CellImgFactory<IntType>().create(newDim, new IntType());
+		
+		
+		RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, 0);
+		Cursor<IntType> cursorInput = Views.iterable(input).localizingCursor();
+		RandomAccess<IntType> randomAccess = Slicedoutput.randomAccess();
+		
+		while(cursorInput.hasNext()) {
+			
+			
+			cursorInput.fwd();
+			
+			randomAccess.setPosition(cursorInput);
+			
+			randomAccess.get().set(cursorInput.get());
+			
+		}
+		
+		Slicedoutput = Views.hyperSlice(output, 2, 1);
+		cursorInput = Views.iterable(input).localizingCursor();
+		randomAccess = Slicedoutput.randomAccess();
+		
+		while(cursorInput.hasNext()) {
+			
+			
+			cursorInput.fwd();
+			
+			randomAccess.setPosition(cursorInput);
+			
+			randomAccess.get().set(cursorInput.get());
+			
+		}
+		
+		   return output;
+		   
+	   }
+		
+	    
 }

@@ -171,9 +171,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public HashMap<Integer, ArrayList<Cellobject>> CSVGreen = new HashMap<Integer, ArrayList<Cellobject>>();
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
-	public XYSeriesCollection Velocitydataset;
 	public ImageJ ij;
-	public JFreeChart chartVelocity;
 	public double calibrationX;
 	public double calibrationY;
 	public double calibrationZ;
@@ -202,9 +200,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.defaultDirectory = defaultDirectory;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
-		this.Velocitydataset = new XYSeriesCollection();
-		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-		this.jFreeChartFrameRate.setVisible(false);
 		this.inputstring = inputstring;
 		this.BudAnalysis = BudAnalysis;
 
@@ -226,9 +221,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.calibrationZ = 1;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
-		this.Velocitydataset = new XYSeriesCollection();
-		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-		this.jFreeChartFrameRate.setVisible(false);
 		this.inputstring = inputstring;
 
 	}
@@ -238,7 +230,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			final HashMap<Integer,ArrayList<Cellobject>> CSVGreen,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
-			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
+			final double calibrationY, final double calibrationZ, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
 		this.Segoriginalimg = Segoriginalimg;
@@ -248,12 +240,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
 		this.defaultDirectory = defaultDirectory;
-		this.calibrationZ = 1;
+		this.calibrationZ = calibrationZ;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
-		this.Velocitydataset = new XYSeriesCollection();
-		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-		this.jFreeChartFrameRate.setVisible(false);
 		this.inputstring = inputstring;
 		this.BudAnalysis = BudAnalysis;
 
@@ -262,7 +251,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
 			final HashMap<Integer,ArrayList<Cellobject>> CSVGreen,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
-			final double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
+			final double calibrationY, final double calibrationZ, final double timecal, String inputstring, Boolean BudAnalysis) {
 
 		this.originalimg = originalimg;
 		this.SegYelloworiginalimg = SegYelloworiginalimg;
@@ -271,12 +260,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		this.calibrationX = calibrationX;
 		this.calibrationY = calibrationY;
 		this.defaultDirectory = defaultDirectory;
-		this.calibrationZ = 1;
+		this.calibrationZ = calibrationZ;
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
-		this.Velocitydataset = new XYSeriesCollection();
-		this.jFreeChartFrameRate = utility.BudChartMaker.display(chartVelocity, new Dimension(500, 500));
-		this.jFreeChartFrameRate.setVisible(false);
 		this.inputstring = inputstring;
 		this.BudAnalysis = BudAnalysis;
 
@@ -371,12 +357,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 			}
 
-			else {
-
-				System.out.println("Cell collector");
-				CellCollector();
-
-			}
 		}
 
 		if (ndims > 3) {
@@ -411,7 +391,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
 
 		
-			System.out.println("Green Cell collector");
 			GreenCellCollector();
 
 		}
@@ -522,12 +501,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		display.execute();
 	}
 
-	public void CellCollector() {
-
-		CollectCells display = new CollectCells(this, jpb);
-		display.execute();
-
-	}
 
 	public void GreenCellCollector() {
 

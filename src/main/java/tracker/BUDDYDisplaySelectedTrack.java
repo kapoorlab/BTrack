@@ -82,9 +82,6 @@ public class BUDDYDisplaySelectedTrack {
 					// Still to write this function
 					displayclicked(parent, parent.rowchoice);
 
-					if (!parent.jFreeChartFrameRate.isVisible())
-						parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartVelocity,
-								new Dimension(500, 500));
 
 				}
 
@@ -377,9 +374,6 @@ public class BUDDYDisplaySelectedTrack {
 				}
 				parent.imp.updateAndDraw();
 				displayclicked(parent, row);
-				if (!parent.jFreeChartFrameRate.isVisible())
-					parent.jFreeChartFrameRate = utility.BudChartMaker.display(parent.chartVelocity,
-							new Dimension(500, 500));
 				parent.table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 					@Override
 					public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -547,12 +541,6 @@ public class BUDDYDisplaySelectedTrack {
 			parent.imp.updateAndDraw();
 		}
 
-		if (parent.Velocitydataset != null)
-			parent.Velocitydataset.removeAllSeries();
-		parent.Velocitydataset.addSeries(BudChartMaker.drawVelocity(Trackinfo, "Track Velocity"));
-
-		parent.chartVelocity = utility.BudChartMaker.makeChart(parent.Velocitydataset, "Bud Velocity (um/min)", "Time",
-				"Velocity");
 		}
 
 	}

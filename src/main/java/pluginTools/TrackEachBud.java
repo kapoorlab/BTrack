@@ -337,7 +337,7 @@ public class TrackEachBud {
 
 			}
 
-			cursor.get().setInteger((int)(Math.sqrt(gradient)));
+			cursor.get().setReal((Math.sqrt(gradient)));
 
 		}
 

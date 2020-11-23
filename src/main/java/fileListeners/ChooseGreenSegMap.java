@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 import ij.WindowManager;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.numeric.integer.IntType;
 import pluginTools.ThreeDTimeCellFileChooser;
 
 public class ChooseGreenSegMap implements ActionListener {
@@ -30,8 +32,15 @@ public class ChooseGreenSegMap implements ActionListener {
 		String imagename = (String) choice.getSelectedItem();
       	parent.impSegGreen = WindowManager.getImage(imagename);
     	
+      	parent.imageSegA = SimplifiedIO.openImage(
+      			parent.impSegGreen.getOriginalFileInfo().directory + parent.impSegGreen.getOriginalFileInfo().fileName,
+				new IntType());
 
-		
+
+		if (parent.imageSegA.numDimensions() < 4) 
+
+			parent.imageSegA = parent.copyUpIntImage(parent.imageSegA);
+
 	}
 	
 

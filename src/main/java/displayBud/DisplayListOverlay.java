@@ -33,13 +33,7 @@ public class DisplayListOverlay {
 
 		ArrayList<RealLocalizable> coordinatelist = new ArrayList<RealLocalizable>();
 		int ndims = actualRoiimg.numDimensions();
-		
-
-
 		final Cursor<BitType> center = Views.iterable(actualRoiimg).localizingCursor();
-
-		
-
 		while(center.hasNext()) {
 			
 			center.fwd();
@@ -50,9 +44,6 @@ public class DisplayListOverlay {
 		
 			if(center.get().getInteger() > 0) {
 				
-				if (ndims == 2)
-					coordinatelist.add(new RealPoint(rpos.getDoublePosition(0), rpos.getDoublePosition(1), 1));
-				else
 					
 				coordinatelist.add(rpos);
 				
