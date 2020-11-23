@@ -26,17 +26,13 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	
 	public final Cellobject currentcell;
 
-	// Distance from center of cell to nearest bud growth point
-	public double closestGrowthPoint;
-	// Distance from center of cell to nearest bud point
-	public double closestBudPoint;
 	
 	public int time;
 	private final int ID;
 	
 	/** A user-supplied name for this cell. */
 	private String name;
-	
+	static int totalfeatures = 9;
 	
 	public BCellobject( final RealLocalizable currentcell) {
 		
@@ -53,14 +49,10 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( Size, Double.valueOf( 1));
 		putFeature( INTENSITY, Double.valueOf( 1) );
 		
-		putFeature( distBud, Double.valueOf( closestBudPoint ) );
-		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
 		
 		this.mybud = null;
 		this.mybudpoints = null;
 		this.currentcell = null;
-		this.closestGrowthPoint = 0;
-		this.closestBudPoint = 0;
 		this.name = "ID" + ID;
 		
 	}
@@ -80,14 +72,10 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + Double.valueOf( currentcell.extents[2] ) )/3 );
 		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
-		putFeature( distBud, Double.valueOf( closestBudPoint ) );
-		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
 		
 		this.mybud = null;
 		this.mybudpoints = null;
 		this.currentcell = currentcell;
-		this.closestGrowthPoint = 0;
-		this.closestBudPoint = 0;
 		this.time = time;
 		this.name = "ID" + ID;
 		
@@ -108,13 +96,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + Double.valueOf( currentcell.extents[2] ) )/3 );
 		putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 		putFeature( POSITION_T, Double.valueOf( time) );
-		putFeature( distBud, Double.valueOf( closestBudPoint ) );
-		putFeature( distDynamicBud, Double.valueOf( closestGrowthPoint) );
 		this.mybud = mybud;
 		this.mybudpoints = mybudpoints;
 		this.currentcell = currentcell;
-		this.closestGrowthPoint = closestGrowthPoint;
-		this.closestBudPoint = closestBudPoint;
 		this.time = time;
 		this.name = "ID" + ID;
 		
@@ -135,8 +119,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		this.mybud = null;
 		this.mybudpoints = null;
 		this.currentcell = null;
-		this.closestGrowthPoint = 0;
-		this.closestBudPoint = 0;
 	}
 	
 	
@@ -160,16 +142,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		this.mybud = null;
 		this.mybudpoints = null;
 		this.currentcell = null;
-		this.closestGrowthPoint = 0;
-		this.closestBudPoint = 0;
 	}
 
 	
-	/** The name of the cell X position feature. */
-	public static final String distBud = "distclosestBudPoint";
-
-	/** The name of the cell Y position feature. */
-	public static final String distDynamicBud = "distclosestGrowthPoint";
 	
 	/** The name of the cell X position feature. */
 	public static final String POSITION_X = "POSITION_X";
@@ -204,7 +179,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	/** The position features. */
 	public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y, POSITION_Z};
 
-	static int totalfeatures = 11;
+	
 	public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
 
 	/** The 4 privileged cell feature names. */
@@ -246,12 +221,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURES.add( Radi_Y );
 		FEATURES.add( Radi_Z );
 		FEATURES.add( INTENSITY );
-		FEATURES.add( distBud );
-		FEATURES.add( distDynamicBud );
 		FEATURES.add( Size );
 		
-		FEATURE_NAMES.put( distBud, "DistBud" );
-		FEATURE_NAMES.put( distDynamicBud, "DistDynamicBud" );
 		FEATURE_NAMES.put( POSITION_X, "X" );
 		FEATURE_NAMES.put( POSITION_Y, "Y" );
 		FEATURE_NAMES.put( POSITION_Z, "Z" );
@@ -262,8 +233,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_NAMES.put( INTENSITY, "Intensity" );
 		FEATURE_NAMES.put( Size, "Size" );
 		
-		FEATURE_SHORT_NAMES.put( distBud, "DistBud" );
-		FEATURE_SHORT_NAMES.put( distDynamicBud, "DistDynamicBud" );
 		FEATURE_SHORT_NAMES.put( POSITION_X, "X" );
 		FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
 		FEATURE_SHORT_NAMES.put( POSITION_Z, "Z" );
@@ -274,8 +243,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_SHORT_NAMES.put( INTENSITY, "I" );
 		FEATURE_SHORT_NAMES.put( Size, "Size" );
 		
-		FEATURE_DIMENSIONS.put( distBud, Dimension.distBud );
-		FEATURE_DIMENSIONS.put( distDynamicBud, Dimension.distDynamicBud );
 		FEATURE_DIMENSIONS.put( POSITION_X, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_Y, Dimension.POSITION );
 		FEATURE_DIMENSIONS.put( POSITION_Z, Dimension.POSITION );
@@ -286,8 +253,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		FEATURE_DIMENSIONS.put( Size, Dimension.LENGTH );
 		FEATURE_DIMENSIONS.put( INTENSITY, Dimension.LENGTH );
 		
-		IS_INT.put( distBud, Boolean.FALSE );
-		IS_INT.put( distDynamicBud, Boolean.FALSE );
 		IS_INT.put( POSITION_X, Boolean.FALSE );
 		IS_INT.put( POSITION_Y, Boolean.FALSE );
 		IS_INT.put( POSITION_Z, Boolean.FALSE );
