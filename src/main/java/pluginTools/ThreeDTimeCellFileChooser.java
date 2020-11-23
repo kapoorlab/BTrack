@@ -41,7 +41,6 @@ import budDetector.Roiobject;
 
 import javax.swing.JOptionPane;
 
-import fileListeners.ChooseCellSegAMap;
 import fileListeners.ChooseGreenOrigMap;
 import fileListeners.ChooseGreenSegMap;
 import ij.ImagePlus;
@@ -50,13 +49,11 @@ import io.scif.img.ImgIOException;
 import listeners.BTrackGo3DMaskFLListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
-import listeners.BTrackGoMaskFLListener;
 import listeners.BTrackGoYellowFLListener;
 import listeners.BudCheckpointListener;
 import listeners.BudZListener;
 import listeners.GreenCheckpointListener;
 import listeners.ThreeDCellGoFreeFLListener;
-import listeners.TwoDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.Cursor;
 import net.imglib2.Dimensions;
@@ -104,7 +101,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public HashMap<Integer, ArrayList<Cellobject>> CSVGreen = new HashMap<Integer, ArrayList<Cellobject>>(); 
 	public String chooseCellSegstring = "3D + time Segmentation for Cells";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
-
+    public int fakedim = 2;
 	public String chooseMaskSegstring = "Segmentation for Cells and  Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
 	public JProgressBar jpb = new JProgressBar();
@@ -656,12 +653,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	   {
 		   
 		
-        long[] newDim = new long[] {input.dimension(0), input.dimension(1), 2, input.dimension(2)};
+        long[] newDim = new long[] {input.dimension(0), input.dimension(1), fakedim, input.dimension(2)};
         
 		RandomAccessibleInterval<FloatType> output = new CellImgFactory<FloatType>().create(newDim, new FloatType());
 		
-		
-		RandomAccessibleInterval<FloatType> Slicedoutput = Views.hyperSlice(output, 2, 0);
+		for(int i = 0; i < fakedim; ++i ) {
+		RandomAccessibleInterval<FloatType> Slicedoutput = Views.hyperSlice(output, 2, i);
 		Cursor<FloatType> cursorInput = Views.iterable(input).localizingCursor();
 		RandomAccess<FloatType> randomAccess = Slicedoutput.randomAccess();
 		
@@ -676,23 +673,9 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 		}
 		
-		
-		Slicedoutput = Views.hyperSlice(output, 2, 1);
-		 cursorInput = Views.iterable(input).localizingCursor();
-		 randomAccess = Slicedoutput.randomAccess();
-		
-		while(cursorInput.hasNext()) {
-			
-			
-			cursorInput.fwd();
-			
-			randomAccess.setPosition(cursorInput);
-			
-			randomAccess.get().set(cursorInput.get());
-			
 		}
+
 		
-		ImageJFunctions.show(output);
 		   return output;
 		   
 	   }
@@ -706,8 +689,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
        
 		RandomAccessibleInterval<IntType> output = new CellImgFactory<IntType>().create(newDim, new IntType());
 		
-		
-		RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, 0);
+		for(int i = 0; i < fakedim; ++i ) {
+		RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, i);
 		Cursor<IntType> cursorInput = Views.iterable(input).localizingCursor();
 		RandomAccess<IntType> randomAccess = Slicedoutput.randomAccess();
 		
@@ -722,20 +705,9 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 		}
 		
-		Slicedoutput = Views.hyperSlice(output, 2, 1);
-		cursorInput = Views.iterable(input).localizingCursor();
-		randomAccess = Slicedoutput.randomAccess();
-		
-		while(cursorInput.hasNext()) {
-			
-			
-			cursorInput.fwd();
-			
-			randomAccess.setPosition(cursorInput);
-			
-			randomAccess.get().set(cursorInput.get());
-			
 		}
+		
+		
 		
 		   return output;
 		   

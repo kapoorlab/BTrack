@@ -77,7 +77,6 @@ public class TrackEach3DCell implements Runnable {
 	
 	} catch (InterruptedException e1) {
 
-		System.out.println(e1 + " Task not executed");
 		
 	}
 

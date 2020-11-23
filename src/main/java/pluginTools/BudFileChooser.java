@@ -61,9 +61,6 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
-import pluginTools.TwoDTimeCellFileChooser.CalTListener;
-import pluginTools.TwoDTimeCellFileChooser.CalXListener;
-import pluginTools.TwoDTimeCellFileChooser.CalYListener;
 import fileListeners.SimplifiedIO;
 
 
