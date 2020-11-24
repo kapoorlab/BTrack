@@ -37,7 +37,8 @@ public class ChooseGreenSegMap implements ActionListener {
 				new IntType());
 
 
-		if (parent.imageSegA.numDimensions() < 4) 
+      	
+		if (parent.imageSegA.numDimensions() <= 3) 
 
 			parent.imageSegA = parent.copyUpIntImage(parent.imageSegA);
 
