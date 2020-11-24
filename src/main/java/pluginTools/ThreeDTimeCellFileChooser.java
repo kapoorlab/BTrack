@@ -66,7 +66,7 @@ import net.imglib2.type.Type;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
-import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
@@ -112,7 +112,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			scrollbarSize + 10);
 	
 	
-	public RandomAccessibleInterval<FloatType> imageOrigGreen;
+	public RandomAccessibleInterval<UnsignedByteType> imageOrigGreen;
 	public RandomAccessibleInterval<IntType> imageSegA;
 	public String chooseoriginalCellfilestring = "Cells are tracked inside a region";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
@@ -480,7 +480,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 	}
 
-	protected ImageObjects Create4D(RandomAccessibleInterval<FloatType> imageOrig,
+	protected ImageObjects Create4D(RandomAccessibleInterval<UnsignedByteType> imageOrig,
 			RandomAccessibleInterval<IntType> impMask,RandomAccessibleInterval<IntType> imageSegA) {
 
 		RandomAccessibleInterval<IntType> imageBigMask = new CellImgFactory<IntType>().create(imageOrig,
@@ -555,11 +555,11 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	
 	public class ImageObjects{
 	
-		final RandomAccessibleInterval<FloatType> imageOrig;
+		final RandomAccessibleInterval<UnsignedByteType> imageOrig;
 		final RandomAccessibleInterval<IntType> imageBigMask;
 		final RandomAccessibleInterval<IntType> imageSegA;
 	
-	public ImageObjects(RandomAccessibleInterval<FloatType> imageOrig, RandomAccessibleInterval<IntType> imageBigMask,
+	public ImageObjects(RandomAccessibleInterval<UnsignedByteType> imageOrig, RandomAccessibleInterval<IntType> imageBigMask,
 			RandomAccessibleInterval<IntType>imageSegA) {
 		
 		this.imageOrig = imageOrig;
@@ -574,13 +574,13 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	}
 
 	@SuppressWarnings("deprecation")
-	protected RandomAccessibleInterval<IntType> CreateBorderMask(RandomAccessibleInterval<FloatType> imageOrig) {
+	protected RandomAccessibleInterval<IntType> CreateBorderMask(RandomAccessibleInterval<UnsignedByteType> imageOrig) {
 
 		RandomAccessibleInterval<IntType> imageSegB = new CellImgFactory<IntType>().create(imageOrig, new IntType());
 
 		RandomAccess<IntType> ranac = imageSegB.randomAccess();
 
-		Cursor<FloatType> cur = Views.iterable(imageOrig).localizingCursor();
+		Cursor<UnsignedByteType> cur = Views.iterable(imageOrig).localizingCursor();
 
 		while (cur.hasNext()) {
 
@@ -649,18 +649,18 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	        return output;
 	    }
 	    
-	   public RandomAccessibleInterval<FloatType> copyUpImage(final RandomAccessibleInterval<FloatType> input) 
+	   public RandomAccessibleInterval<UnsignedByteType> copyUpImage(final RandomAccessibleInterval<UnsignedByteType> input) 
 	   {
 		   
 		
         long[] newDim = new long[] {input.dimension(0), input.dimension(1), fakedim, input.dimension(2)};
         
-		RandomAccessibleInterval<FloatType> output = new CellImgFactory<FloatType>().create(newDim, new FloatType());
+		RandomAccessibleInterval<UnsignedByteType> output = new CellImgFactory<UnsignedByteType>().create(newDim, new UnsignedByteType());
 		
 		for(int i = 0; i < fakedim; ++i ) {
-		RandomAccessibleInterval<FloatType> Slicedoutput = Views.hyperSlice(output, 2, i);
-		Cursor<FloatType> cursorInput = Views.iterable(input).localizingCursor();
-		RandomAccess<FloatType> randomAccess = Slicedoutput.randomAccess();
+		RandomAccessibleInterval<UnsignedByteType> Slicedoutput = Views.hyperSlice(output, 2, i);
+		Cursor<UnsignedByteType> cursorInput = Views.iterable(input).localizingCursor();
+		RandomAccess<UnsignedByteType> randomAccess = Slicedoutput.randomAccess();
 		
 		while(cursorInput.hasNext()) {
 			

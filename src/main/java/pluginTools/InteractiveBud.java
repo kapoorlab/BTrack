@@ -86,7 +86,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.IntType;
-import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.util.Intervals;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
@@ -106,11 +106,11 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public Set<Integer> pixellist;
 	public NumberFormat nf;
 	public Color Drawcolor;
-	public RandomAccessibleInterval<FloatType> originalimg;
-	public RandomAccessibleInterval<FloatType> originalSecimg;
+	public RandomAccessibleInterval<UnsignedByteType> originalimg;
+	public RandomAccessibleInterval<UnsignedByteType> originalSecimg;
 	public RandomAccessibleInterval<IntType> Segoriginalimg;
-	public RandomAccessibleInterval<FloatType> SegSecoriginalimg;
-	public RandomAccessibleInterval<FloatType> CurrentView;
+	public RandomAccessibleInterval<UnsignedByteType> SegSecoriginalimg;
+	public RandomAccessibleInterval<UnsignedByteType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
 	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
 	public HashMap<String, ArrayList<Roiobject>> BudOvalRois = new HashMap<String, ArrayList<Roiobject>>();
@@ -186,7 +186,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public HashMap<String, Budpointobject> Finalresult;
 
 	// Input Bud and its segmentation
-	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+	public InteractiveBud(final RandomAccessibleInterval<UnsignedByteType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg, final HashMap<String,ArrayList<Roiobject>> BudOvalRois,final File defaultDirectory, final String NameA, final double calibrationX,
 			double calibrationY, final double timecal, String inputstring, Boolean BudAnalysis) {
 
@@ -206,7 +206,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	}
 
 	// Input RGB and one flourescent channel segmentation images
-	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+	public InteractiveBud(final RandomAccessibleInterval<UnsignedByteType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double timecal, String inputstring) {
@@ -226,7 +226,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	}
 
 	// Input Image and one flourescent channel and mask images
-	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+	public InteractiveBud(final RandomAccessibleInterval<UnsignedByteType> originalimg,
 			final HashMap<Integer,ArrayList<Cellobject>> CSVGreen,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
@@ -248,7 +248,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	}
 
-	public InteractiveBud(final RandomAccessibleInterval<FloatType> originalimg,
+	public InteractiveBud(final RandomAccessibleInterval<UnsignedByteType> originalimg,
 			final HashMap<Integer,ArrayList<Cellobject>> CSVGreen,
 			final RandomAccessibleInterval<IntType> SegYelloworiginalimg, final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double calibrationZ, final double timecal, String inputstring, Boolean BudAnalysis) {
@@ -508,7 +508,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		display.execute();
 	}
 
-	public void repaintView(RandomAccessibleInterval<FloatType> Activeimage) {
+	public void repaintView(RandomAccessibleInterval<UnsignedByteType> Activeimage) {
 		imp.getCanvas().addKeyListener(new AddBudKeyListener(this));
 		IJ.selectWindow(imp.getTitle());
 		if (imp == null || !imp.isVisible()) {
@@ -520,7 +520,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			try {
 				final float[] pixels = (float[]) imp.getProcessor().getPixels();
 
-				final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
+				final Cursor<UnsignedByteType> c = Views.iterable(Activeimage).cursor();
 
 				for (int i = 0; i < pixels.length; ++i)
 					pixels[i] = c.next().get();
@@ -528,7 +528,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 			} catch (Exception e) {
 
 				final float[] pixels = (float[]) imp.getProcessor().getPixels();
-				final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
+				final Cursor<UnsignedByteType> c = Views.iterable(Activeimage).cursor();
 
 				for (int i = 0; i < pixels.length; ++i)
 					pixels[i] = c.next().get();

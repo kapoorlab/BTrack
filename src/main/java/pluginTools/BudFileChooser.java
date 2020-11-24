@@ -58,7 +58,7 @@ import loadfile.CovistoOneChFileLoader;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.type.numeric.integer.IntType;
-import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import fileListeners.SimplifiedIO;
@@ -394,8 +394,8 @@ public class BudFileChooser extends JPanel {
 
 		// Tracking and Measurement is done with imageA
 
-		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
-				impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new FloatType());
+		RandomAccessibleInterval<UnsignedByteType> imageOrig = SimplifiedIO.openImage(
+				impOrig.getOriginalFileInfo().directory + impOrig.getOriginalFileInfo().fileName, new UnsignedByteType());
 
 		RandomAccessibleInterval<IntType> imageSegA = SimplifiedIO.openImage(
 				impSegA.getOriginalFileInfo().directory + impSegA.getOriginalFileInfo().fileName, new IntType());

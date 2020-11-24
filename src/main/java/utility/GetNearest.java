@@ -29,6 +29,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveBud;
@@ -268,7 +269,7 @@ public class GetNearest {
 
 		Cursor<BitType> cursor = Views.iterable(Regionimage).localizingCursor();
 
-		RandomAccess<FloatType> intran = parent.CurrentView.randomAccess();
+		RandomAccess<UnsignedByteType> intran = parent.CurrentView.randomAccess();
 
 		while (cursor.hasNext()) {
 
