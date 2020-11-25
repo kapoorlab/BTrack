@@ -34,7 +34,7 @@ public class GreenCellTrack implements Runnable{
 
 		int percent = 0;
 		// set up executor service
-		for (int t = 1; t <= parent.fourthDimensionSize; ++t) {
+		for (int t = 0; t < parent.fourthDimensionSize; ++t) {
 
 			parent.fourthDimension = t;
 			if(parent.imp.getOverlay()!=null)

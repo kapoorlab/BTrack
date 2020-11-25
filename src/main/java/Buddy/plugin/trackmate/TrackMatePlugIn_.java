@@ -10,6 +10,7 @@ import ij.plugin.PlugIn;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.InteractiveBud;
 
 public class TrackMatePlugIn_ implements PlugIn {
@@ -26,7 +27,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 
 		this.parent = parent;
 	}
-	public static ImagePlus Reshape(RandomAccessibleInterval<UnsignedByteType> image, String title) {
+	public static ImagePlus Reshape(RandomAccessibleInterval<FloatType> image, String title) {
 		
 		int channels, frames;
 		
@@ -51,7 +52,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 		
 	}
 	
-	public static ImagePlus Reshape3D(RandomAccessibleInterval<UnsignedByteType> image, String title) {
+	public static ImagePlus Reshape3D(RandomAccessibleInterval<FloatType> image, String title) {
 		
 		int channels, frames;
 		

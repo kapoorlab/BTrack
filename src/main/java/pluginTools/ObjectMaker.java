@@ -101,7 +101,7 @@ public class ObjectMaker implements Runnable {
 			
 			Cursor<BitType> cursor =  Views.iterable(Regionimage).localizingCursor();
 			
-			RandomAccess<UnsignedByteType> intran = parent.CurrentView.randomAccess();
+			RandomAccess<FloatType> intran = parent.CurrentView.randomAccess();
 			
 			while(cursor.hasNext()) {
 				

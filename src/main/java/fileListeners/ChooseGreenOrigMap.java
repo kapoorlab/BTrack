@@ -43,7 +43,7 @@ public class ChooseGreenOrigMap implements ActionListener {
     	if(parent.impOrigGreen!=null) {
     		parent.imageOrigGreen = SimplifiedIO.openImage(
     				parent.impOrigGreen.getOriginalFileInfo().directory + parent.impOrigGreen.getOriginalFileInfo().fileName,
-    				new UnsignedByteType());
+    				new FloatType());
     		if (parent.imageOrigGreen.numDimensions() <= 3) 
 
     			parent.imageOrigGreen = parent.copyUpImage(parent.imageOrigGreen);

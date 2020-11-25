@@ -269,7 +269,7 @@ public class GetNearest {
 
 		Cursor<BitType> cursor = Views.iterable(Regionimage).localizingCursor();
 
-		RandomAccess<UnsignedByteType> intran = parent.CurrentView.randomAccess();
+		RandomAccess<FloatType> intran = parent.CurrentView.randomAccess();
 
 		while (cursor.hasNext()) {
 
