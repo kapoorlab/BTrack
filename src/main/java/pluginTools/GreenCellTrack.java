@@ -42,7 +42,7 @@ public class GreenCellTrack implements Runnable{
 			
 			 parent.thirdDimension = parent.Zslider.getValue();
 			
-			 
+			 //we start from zero
 			parent.ZTRois = new ArrayList<int[]>();
 			parent.updatePreview(ValueChange.THIRDDIMmouse);
 
