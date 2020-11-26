@@ -180,11 +180,15 @@ public class GetNearest {
 
 	public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveBud parent, final RandomAccessibleInterval<IntType> GreenCellSeg) {
 
-		Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
+		
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 
 		if(parent.CSVGreen.get(parent.fourthDimension)==null) {
+			
+			Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
+			
+			
 		while (intcursor.hasNext()) {
 
 			intcursor.fwd();

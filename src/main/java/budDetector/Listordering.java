@@ -106,32 +106,8 @@ public class Listordering {
 	
 	public static RealLocalizable getMeanCord(List<RealLocalizable> truths) {
 
-		
-
-		Comparator<RealLocalizable> comp = new Comparator<RealLocalizable>() {
-
-			@Override
-			public int compare(final RealLocalizable A, final RealLocalizable B) {
-                 
-				int i = 0;
-				while (i < A.numDimensions()) {
-					if (A.getDoublePosition(i) != B.getDoublePosition(i)) {
-						return (int) Math.signum(A.getDoublePosition(i) - B.getDoublePosition(i));
-					}
-					i++;
-				}
-				
-			
-				return A.hashCode() - B.hashCode();
-
-			}
-			};
-		
-		
-		 Collections.sort(truths,comp);
 	
-			int middle = truths.size()/2;
-
+			int middle = 0;
 
 		
 		RealPoint meanCord = new RealPoint(new double[] { truths.get(middle).getDoublePosition(0), truths.get(middle).getDoublePosition(1) });

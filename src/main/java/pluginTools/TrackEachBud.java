@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import budDetector.BCellobject;
@@ -126,6 +128,29 @@ public class TrackEachBud {
 				// For each bud get the list of points
 				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
 				List<RealLocalizable> bodytruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+				
+				Comparator<RealLocalizable> comp = new Comparator<RealLocalizable>() {
+
+					@Override
+					public int compare(final RealLocalizable A, final RealLocalizable B) {
+		                 
+						int i = 0;
+						while (i < A.numDimensions()) {
+							if (A.getDoublePosition(i) != B.getDoublePosition(i)) {
+								return (int) Math.signum(A.getDoublePosition(i) - B.getDoublePosition(i));
+							}
+							i++;
+						}
+						
+					
+						return A.hashCode() - B.hashCode();
+
+					}
+					};
+				
+				
+				 Collections.sort(truths,comp);
+					 Collections.sort(bodytruths,comp);
 				// Get the center point of each bud
 				RealLocalizable currentpoint = budDetector.Listordering.getMeanCord(bodytruths);
 				
@@ -209,8 +234,8 @@ public class TrackEachBud {
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
 		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
-		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>((RandomAccessibleInterval<BitType>) ops.morphology().dilate(PairCurrentViewBit.Interiorimage, new DiamondShape(4)), ops);
-		skelmake.setClosingRadius(0);
+		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
+		skelmake.setClosingRadius(10);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 

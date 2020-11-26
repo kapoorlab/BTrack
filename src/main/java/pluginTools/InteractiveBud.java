@@ -267,6 +267,8 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	}
 	
+
+	
 	public ImageStack prestack;
 	public JTable table;
 	public JTableHeader header;
