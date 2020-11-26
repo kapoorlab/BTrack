@@ -40,6 +40,7 @@ import skeleton.*;
 import utility.GetNearest;
 import utility.SavePink;
 import displayBud.DisplayListOverlay;
+import ij.IJ;
 import ij.gui.OvalRoi;
 
 public class TrackEachBud {
@@ -235,7 +236,7 @@ public class TrackEachBud {
 		OpService ops = parent.ij.op();
 		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
-		skelmake.setClosingRadius(10);
+		skelmake.setClosingRadius(0);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 
@@ -304,7 +305,6 @@ public class TrackEachBud {
 			RandomAccessibleInterval<BitType> Ends = skelanalyze.getEndpoints();
 
 			Cursor<BitType> skelcursor = Views.iterable(Ends).localizingCursor();
-
 			while (skelcursor.hasNext()) {
 
 				skelcursor.next();
@@ -321,9 +321,43 @@ public class TrackEachBud {
 			
 			
 		}
-		return endPoints;
+		
+		
+		
+		ArrayList<RealLocalizable> farPoints = RemoveClose( endPoints, 20);
+		
+		
+		return farPoints;
 
 	}
+	
+	public static ArrayList<RealLocalizable> RemoveClose(ArrayList<RealLocalizable> endPoints, double mindist) {
+		
+		ArrayList<RealLocalizable> farPoints = new ArrayList<RealLocalizable>(endPoints);
+		
+		
+		for(RealLocalizable addPoint:endPoints) {
+			
+			
+			farPoints.remove(addPoint);
+			
+			RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(farPoints, addPoint);
+			
+			farPoints.add(addPoint);
+			
+			
+			double closestGrowthPoint = Distance.DistanceSqrt(addPoint, closestdynamicskel);
+			if (closestGrowthPoint < mindist && closestGrowthPoint!=0)
+				farPoints.remove(closestdynamicskel);
+				
+		}
+		
+
+		return farPoints;
+		
+	}
+	
+	
 
 	public static RandomAccessibleInterval<BitType> GradientmagnitudeImage(RandomAccessibleInterval<BitType> inputimg) {
 
