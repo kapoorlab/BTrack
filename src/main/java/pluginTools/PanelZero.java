@@ -19,7 +19,7 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/home/kapoorlab/Downloads/Claudia/Buds84/BinaryMask.tif");
+				.openImage("/home/kapoorlab/Downloads/BinaryConcatLast17.tif");
 		impA.show();
 		
 	
