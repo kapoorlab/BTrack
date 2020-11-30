@@ -44,7 +44,6 @@ public class SavePink {
 						
 						ArrayList<Roiobject> Totalrois = timeroi.getValue();
 						
-						System.out.println(time + " " + Totalrois.size() );
 						for(int i = 0; i < Totalrois.size(); ++i) {
 							
 							Roiobject roi = Totalrois.get(i);
