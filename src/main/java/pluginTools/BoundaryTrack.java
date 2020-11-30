@@ -47,7 +47,7 @@ public class BoundaryTrack {
 	public void ShowBoundaryTime() {
 		
 		int percent = 0;
-		for(int t = 1; t <= parent.AutoendTime; ++t) {
+		for(int t = parent.AutostartTime; t <= parent.AutoendTime; ++t) {
 			
 			
 			if (parent.mvl != null) {

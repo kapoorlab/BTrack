@@ -60,6 +60,7 @@ import ij.plugin.PlugIn;
 import kalmanGUI.CovistoKalmanPanel;
 import listeners.AddBudKeyListener;
 import listeners.BTrackAutoEndListener;
+import listeners.BTrackAutoStartListener;
 import listeners.BTrackFilenameListener;
 import listeners.BudAlphaListener;
 import listeners.BudCheckpointListener;
@@ -683,9 +684,16 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 		Timeselect.add(inputFieldT, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		Timeselect.add(autoTend, new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		
+		Timeselect.add(autoTstart, new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		Timeselect.add(endT, new GridBagConstraints(2, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Timeselect.add(startT, new GridBagConstraints(2, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
+		
+		Timeselect.add(autoTend, new GridBagConstraints(2, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		Timeselect.add(endT, new GridBagConstraints(2, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
 		Timeselect.add(thirdexplain, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
@@ -746,7 +754,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		
 		
 		endT.addTextListener(new BTrackAutoEndListener(this));
-
+		startT.addTextListener(new BTrackAutoStartListener(this));
 		CovistoKalmanPanel.Skeletontime.addActionListener(new BudSkeletonListener(this));
 		CovistoKalmanPanel.Restart.addActionListener(new BudRestartListener(this));
 		CovistoKalmanPanel.Timetrack.addActionListener(new BudLinkobjectListener(this));

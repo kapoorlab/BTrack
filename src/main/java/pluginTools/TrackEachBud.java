@@ -76,10 +76,6 @@ public class TrackEachBud {
 		this.Budpointlist = Budpointlist;
         this.Budcelllist = Budcelllist;
 	}
-
-
-	
-
 	
 	
 	public ArrayList<Budobject> returnBudlist(){
