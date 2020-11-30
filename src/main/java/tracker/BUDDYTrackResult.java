@@ -149,7 +149,7 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 			final HashSet<Budpointobject> Angleset = model.getTrackModel().trackBudpointobjects(id);
 			
 			int tracklength = Angleset.size();
-			if(tracklength >= CovistoKalmanPanel.trackduration * (parent.AutoendTime - parent.AutostartTime)/100)
+			//if(tracklength >= CovistoKalmanPanel.trackduration * (parent.AutoendTime - parent.AutostartTime)/100)
 			parent.IDlist.put(id, tracklength);
 			
 		}
