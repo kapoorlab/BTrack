@@ -201,6 +201,15 @@ public class BUDDYTrackResult extends SwingWorker<Void, Void> {
 				double trackmeanspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MEAN_SPEED);
 				double trackmaxspeed = model.getFeatureModel().getTrackFeature(id, BudTrackVelocityAnalyzer.TRACK_MAX_SPEED);
 				
+				trackmeanspeed = trackmeanspeed* (parent.calibrationX/parent.timecal);
+				if(trackmeanspeed == Double.NaN)
+					trackmeanspeed = 0;
+				
+				trackmaxspeed = trackmaxspeed* (parent.calibrationX/parent.timecal);
+				if(trackmaxspeed == Double.NaN)
+					trackmaxspeed = 0;
+					
+				
 				parent.TrackMeanVelocitylist.put(ID, trackmeanspeed* (parent.calibrationX/parent.timecal));
 				parent.TrackMaxVelocitylist.put(ID, trackmaxspeed* (parent.calibrationX/parent.timecal));
 				

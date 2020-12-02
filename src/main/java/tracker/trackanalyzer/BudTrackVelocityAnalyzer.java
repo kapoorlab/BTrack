@@ -175,6 +175,8 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 							final double d2 = source.squareDistanceTo( target );
 							final double dt = source.diffTo( target, Budpointobject.POSITION_T );
 							val = Math.sqrt( d2 ) / Math.abs( dt );
+							if (parent.timecal == 0)
+								parent.timecal = 1;
 							VelocityList.put((int)source.t, val* (parent.calibrationX/parent.timecal));
 							
 							// For median, min and max
@@ -201,7 +203,7 @@ public class BudTrackVelocityAnalyzer implements BudTrackAnalyzer {
 						final double median = velocities[ track.size() / 2 ];
 						final double min = velocities[ 0 ];
 						final double max = velocities[ track.size() - 1 ];
-						mean = sum / track.size();
+						mean = sum / Math.max(track.size(), 1);
 						final double variance = M2 / ( track.size() - 1 );
 						// double kurtosis = (n*M4) / (M2*M2) - 3;
 						// double skewness = Math.sqrt(n) * M3 / Math.pow(M2,
