@@ -470,50 +470,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 				new IntType());
 		RandomAccessibleInterval<IntType> imageBigSeg = copyImage(imageSegA);
 
-		if (impMask.numDimensions() < imageOrig.numDimensions()) {
 
-			for (int fourthDimension = 1; fourthDimension < imageBigMask.dimension(3); ++fourthDimension) {
-
-				RandomAccessibleInterval<IntType> EmptyXYZimage = Views.hyperSlice(imageBigMask, imageBigMask.numDimensions() - 1,
-						fourthDimension - 1);
-
-				for (int thirdDimension = 1; thirdDimension < impMask.dimension(2); ++thirdDimension) {
-
-					RandomAccessibleInterval<IntType> XYimage = Views.hyperSlice(impMask, impMask.numDimensions() - 1, thirdDimension - 1);
-
-					for (int ZDimension = 1; ZDimension < imageBigMask.dimension(2); ++ZDimension) {
-					
-					RandomAccessibleInterval<IntType> EmptyXYimage = Views.hyperSlice(EmptyXYZimage, EmptyXYZimage.numDimensions() - 1,
-							ZDimension - 1);
-					
-					
-					Cursor<IntType> XYimagecursor = Views.iterable(XYimage).localizingCursor();
-					
-					RandomAccess<IntType> EmptyXYimageranac = EmptyXYimage.randomAccess();
-					
-					while(XYimagecursor.hasNext()) {
-						
-						XYimagecursor.fwd();
-						
-						EmptyXYimageranac.setPosition(XYimagecursor);
-						
-						
-						EmptyXYimageranac.get().set(XYimagecursor.get());
-						
-						
-					}
-
-					
-					}
-				}
-			}
-		}
-		
-		else {
-			
-			imageBigMask = impMask;
-			
-		}
+		imageBigMask = copyUpIntImage(imageBigMask); 
 		
 		Cursor<IntType> Bigcursor = Views.iterable(imageBigMask).localizingCursor();
 		
