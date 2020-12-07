@@ -18,9 +18,9 @@ public class PanelZero3DCell {
 
 	    new ImageJ();
 	
-	//	ImagePlus impA = new Opener()
-		//		.openImage("/Users/aimachine/Claudia/BTrackmate/BTrackDemoSeg-1.tif");
-		//impA.show();
+		ImagePlus impA = new Opener()
+			.openImage("/home/kapoorlab/Downloads/Tracking_Segmentation_Projection.tif");
+		impA.show();
 		
 		
 		ThreeDTimeCellFileChooser panel = new ThreeDTimeCellFileChooser();

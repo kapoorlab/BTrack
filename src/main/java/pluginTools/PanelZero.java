@@ -19,7 +19,7 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/home/kapoorlab/Downloads/BinaryConcatLast17.tif");
+				.openImage("/home/kapoorlab/Downloads/Tracking_Segmentation_Projection.tif");
 		impA.show();
 		
 	

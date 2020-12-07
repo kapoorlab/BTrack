@@ -64,7 +64,6 @@ public class TrackEach3DCell implements Runnable {
 				// For each bud get the list of points
 
 											// For each bud get the list of points
-
 											if (parent.jpb != null)
 												utility.BudProgressBar.SetProgressBar(parent.jpb,
 														100 * (percent) / (parent.fourthDimensionSize + parent.pixellist.size()),

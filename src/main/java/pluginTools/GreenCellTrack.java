@@ -35,17 +35,13 @@ public class GreenCellTrack implements Runnable{
 		int percent = 0;
 		// set up executor service
 		for (int t = 0; t < parent.fourthDimensionSize; ++t) {
-
+			System.out.println("Out1"+ parent.fourthDimension);
 			parent.fourthDimension = t;
 			if(parent.imp.getOverlay()!=null)
 				parent.overlay.clear();
-			
-			 parent.thirdDimension = parent.Zslider.getValue();
-			
 			 //we start from zero
 			parent.ZTRois = new ArrayList<int[]>();
 			parent.updatePreview(ValueChange.THIRDDIMmouse);
-
 
 			TrackEach3DCell compute = new TrackEach3DCell(parent, percent);
 			compute.displayCells();

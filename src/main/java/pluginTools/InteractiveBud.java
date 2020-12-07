@@ -511,6 +511,8 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	}
 
 	public void repaintView(RandomAccessibleInterval<FloatType> Activeimage) {
+		
+	
 		imp.getCanvas().addKeyListener(new AddBudKeyListener(this));
 		IJ.selectWindow(imp.getTitle());
 		if (imp == null || !imp.isVisible()) {
