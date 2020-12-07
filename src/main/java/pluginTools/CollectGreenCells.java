@@ -46,7 +46,7 @@ public class CollectGreenCells extends SwingWorker<Void, Void> {
 		// Save the cell colllection as btrack compatiable csv file
 		SaveGreen savecsv = new SaveGreen(parent);
 		savecsv.Saver();
-		
+		parent.imp.close();
 		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
 		plugin.run("threeD");
 		

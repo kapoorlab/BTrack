@@ -419,9 +419,6 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 					FrameInterval, name, false);
 			
-			
-	
-			 
 
 			CellCollection.run(null);
 			
@@ -429,17 +426,13 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			
 			
-			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
-					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
-			
-			CellCollection.Zslider = Zslider;
 			
 					
 		}
 
 		if (NoMask) {
 			ImageObjects ImagePairs  = 
-					Create4D(imageOrigGreen, null, imageSegA);
+					Create4D(imageOrigGreen, imageSegA, imageSegA);
 			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 					FrameInterval, name, false);
 			
@@ -449,19 +442,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			jpb = CellCollection.jpb;
 			
 			
-			Zslider.addAdjustmentListener(new BudZListener(CellCollection, inputZ, "Current Z", thirdDimensionsliderInit,
-					(int)imageOrigGreen.dimension(2), scrollbarSize, Zslider));
-			
-			CellCollection.Zslider = Zslider;
-
-			
 		}
 		
-		
-
-
-		
-
 		
 		
 		Cardframe.add(jpb, "Last");

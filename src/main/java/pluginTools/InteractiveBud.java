@@ -56,7 +56,9 @@ import ij.ImageStack;
 import ij.WindowManager;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
+import ij.plugin.HyperStackConverter;
 import ij.plugin.PlugIn;
+import ij.process.ImageProcessor;
 import kalmanGUI.CovistoKalmanPanel;
 import listeners.AddBudKeyListener;
 import listeners.BTrackAutoEndListener;
@@ -303,7 +305,6 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	@Override
 	public void run(String arg0) {
 
-      
 		BudLastTime = new HashMap<String, Integer>();
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		AllBudcenter = new ArrayList<RealLocalizable>();
@@ -330,7 +331,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		ij.ui().showUI();
 		if (ndims == 3) {
 
-			thirdDimension = 0;
+			thirdDimension = 1;
 
 			thirdDimensionSize = (int) originalimg.dimension(2);
 			AutostartTime = thirdDimension;
@@ -386,10 +387,9 @@ public class InteractiveBud extends JPanel implements PlugIn {
 						thirdDimensionSize, fourthDimension, fourthDimensionSize);
 				
 			}
-			imp = ImageJFunctions.show(utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize), "Original Image");
+			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			
 			
-			imp.setDimensions(1, fourthDimensionSize, 1);
 			imp.setTitle("Active Image" + " " + "time point : " + fourthDimension);
 
 		
@@ -481,10 +481,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 							thirdDimensionSize, fourthDimension, fourthDimensionSize);
 				
 				}
-				repaintView( utility.BudSlicer.getCurrentBudView(CurrentView,thirdDimension, thirdDimensionSize));
-				
-			
-
+				repaintView( CurrentView);
 			}
 
 		}
@@ -521,27 +518,23 @@ public class InteractiveBud extends JPanel implements PlugIn {
 		}
 
 		else {
-			try {
+			
+			     
 				final float[] pixels = (float[]) imp.getProcessor().getPixels();
 
 				final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
 
+			
 				for (int i = 0; i < pixels.length; ++i)
+				
 					pixels[i] = c.next().get();
 
-			} catch (Exception e) {
-
-				final float[] pixels = (float[]) imp.getProcessor().getPixels();
-				final Cursor<FloatType> c = Views.iterable(Activeimage).cursor();
-
-				for (int i = 0; i < pixels.length; ++i)
-					pixels[i] = c.next().get();
-
-			}
+		
 
 			imp.updateAndDraw();
 
 		}
+		
 
 	}
 

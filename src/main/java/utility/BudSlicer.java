@@ -47,9 +47,7 @@ public class BudSlicer {
 		final ImgFactory<T> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
 		RandomAccessibleInterval<T> totalimg = factory.create(dim, type);
 
-
 			totalimg = Views.hyperSlice(originalimg, originalimg.numDimensions() - 1, fourthDimension - 1);
-
 		return totalimg;
 
 	}
