@@ -194,7 +194,7 @@ public class GetNearest {
 			intcursor.fwd();
 
 			int labelyellow = intcursor.get().get();
-
+            if (labelyellow > 0)  
 			InsideCellList.put(labelyellow, true);
 
 		}
