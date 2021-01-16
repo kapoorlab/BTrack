@@ -31,7 +31,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 		
 		int channels, frames;
 		
-		ImagePlus imp = ImageJFunctions.wrapUnsignedByte(image, title);
+		ImagePlus imp = ImageJFunctions.wrapFloat(image, title);
 		if(imp.getNChannels() > imp.getNFrames()) {
 			channels = imp.getNFrames();
 		    frames = imp.getNChannels();
@@ -56,7 +56,7 @@ public class TrackMatePlugIn_ implements PlugIn {
 		
 		int channels, frames;
 		
-		ImagePlus imp = ImageJFunctions.wrapUnsignedByte(image, title);
+		ImagePlus imp = ImageJFunctions.wrapFloat(image, title);
 		if(imp.getNChannels() > imp.getNFrames()) {
 			channels = imp.getNFrames();
 		    frames = imp.getNChannels();
