@@ -404,13 +404,25 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		Microscope.validate();
 
 		}
+		
+		if (imageOrigGreen.numDimensions() <= 3) 
+
+			imageOrigGreen = copyUpImage(imageOrigGreen);
+		
 		if (DoMask) {
 
+			
 			RandomAccessibleInterval<IntType> imageMask = SimplifiedIO.openImage(
 					impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
 			
 			
-				
+            if(imageSegA!=null) {				
+            	
+            	if (imageSegA.numDimensions() <= 3) 
+
+        			imageSegA = copyUpIntImage(imageSegA);
+            	
+            	
 				ImageObjects ImagePairs  = 
 					Create4D(imageOrigGreen, imageMask, imageSegA);
 			
@@ -426,7 +438,28 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			
 			jpb = CellCollection.jpb;
 			
-			
+            }
+            
+            else if (CSVGreen!=null && CSVGreen.size() > 0) {
+            	
+            	
+            	
+            	ImageObjects ImagePairs  = 
+    					Create4D(imageOrigGreen, imageMask, imageMask);
+    			
+    			
+    			
+    			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, null, new File(impOrigGreen.getOriginalFileInfo().directory), 
+    					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
+    					FrameInterval, name, false);
+    			
+
+    			CellCollection.run(null);
+    			
+    			jpb = CellCollection.jpb;
+            	
+            	
+            }
 			
 			
 					
@@ -435,6 +468,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		if (NoMask) {
 			
 			if(imageSegA!=null) {
+				
+				
+				if (imageSegA.numDimensions() <= 3) 
+
+        			imageSegA = copyUpIntImage(imageSegA);
+				
 			ImageObjects ImagePairs  = 
 					Create4D(imageOrigGreen, imageSegA, imageSegA);
 			

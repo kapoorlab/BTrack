@@ -44,9 +44,7 @@ public class ChooseGreenOrigMap implements ActionListener {
     		parent.imageOrigGreen = SimplifiedIO.openImage(
     				parent.impOrigGreen.getOriginalFileInfo().directory + parent.impOrigGreen.getOriginalFileInfo().fileName,
     				new FloatType());
-    		if (parent.imageOrigGreen.numDimensions() <= 3) 
-
-    			parent.imageOrigGreen = parent.copyUpImage(parent.imageOrigGreen);
+    		
     			
     		parent.calibrationX = parent.impOrigGreen.getCalibration().pixelWidth;
 			parent.calibrationY = parent.impOrigGreen.getCalibration().pixelHeight;
