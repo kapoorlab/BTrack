@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>29.2.1</version>
+		<version>25.0.0</version>
 		<relativePath />
 	</parent>
 
@@ -167,10 +167,12 @@
     <groupId>net.imglib2</groupId>
     <artifactId>imglib2-algorithm-gpl</artifactId>
 </dependency>
+<!-- https://mvnrepository.com/artifact/com.mxgraph/jgraphx -->
 <dependency>
-			<groupId>com.github.vlsi.mxgraph</groupId>
+			<groupId>org.tinyjee.jgraphx</groupId>
 			<artifactId>jgraphx</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-dom</artifactId>
