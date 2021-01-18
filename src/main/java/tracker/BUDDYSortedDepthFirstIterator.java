@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.event.ConnectedComponentTraversalEvent;
@@ -272,14 +271,10 @@ public class BUDDYSortedDepthFirstIterator< V, E > extends AbstractGraphIterator
 
 	private static < V, E > Specifics< V, E > createGraphSpecifics( final Graph< V, E > g )
 	{
-		if ( g instanceof DirectedGraph )
-		{
-			return new DirectedSpecifics< V, E >( ( DirectedGraph< V, E > ) g );
-		}
-		else
-		{
-			return new UndirectedSpecifics< V, E >( g );
-		}
+		if (g.getType().isDirected())
+			return new DirectedSpecifics< >( g );
+
+		return new UndirectedSpecifics< >( g );
 	}
 
 	/**
@@ -459,43 +454,9 @@ public class BUDDYSortedDepthFirstIterator< V, E > extends AbstractGraphIterator
 		public abstract Set< ? extends EE > edgesOf( VV vertex );
 	}
 
-	
-	/**
-	 * A reusable vertex event.
-	 *
-	 * @author Barak Naveh
-	 * @since Aug 11, 2003
-	 */
-	private static class FlyweightVertexEvent< VV > extends VertexTraversalEvent< VV >
-	{
-		private static final long serialVersionUID = 3834024753848399924L;
-
-		/**
-		 * @see VertexTraversalEvent#VertexTraversalEvent(Object, Object)
-		 */
-		public FlyweightVertexEvent( final Object eventSource, final VV vertex )
-		{
-			super( eventSource, vertex );
-		}
-
-		/**
-		 * Sets the vertex of this event.
-		 *
-		 * @param vertex
-		 *            the vertex to be set.
-		 */
-		protected void setVertex( final VV vertex )
-		{
-			this.vertex = vertex;
-		}
-	}
-
-	/**
-	 * An implementation of {@link Specifics} for a directed graph.
-	 */
 	private static class DirectedSpecifics< VV, EE > extends Specifics< VV, EE >
 	{
-		private final DirectedGraph< VV, EE > graph;
+		private final Graph< VV, EE > graph;
 
 		/**
 		 * Creates a new DirectedSpecifics object.
@@ -503,7 +464,7 @@ public class BUDDYSortedDepthFirstIterator< V, E > extends AbstractGraphIterator
 		 * @param g
 		 *            the graph for which this specifics object to be created.
 		 */
-		public DirectedSpecifics( final DirectedGraph< VV, EE > g )
+		public DirectedSpecifics( final Graph< VV, EE > g )
 		{
 			graph = g;
 		}
@@ -515,10 +476,6 @@ public class BUDDYSortedDepthFirstIterator< V, E > extends AbstractGraphIterator
 		}
 	}
 
-	/**
-	 * An implementation of {@link Specifics} in which edge direction (if any)
-	 * is ignored.
-	 */
 	private static class UndirectedSpecifics< VV, EE > extends Specifics< VV, EE >
 	{
 		private final Graph< VV, EE > graph;

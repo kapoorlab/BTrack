@@ -40,7 +40,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
-import org.python.antlr.PythonParser.file_input_return;
 
 import budDetector.Roiobject;
 import fileListeners.ChooseBudOrigMap;

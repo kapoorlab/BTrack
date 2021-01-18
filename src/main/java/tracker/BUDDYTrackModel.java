@@ -13,17 +13,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.function.Supplier;
 import org.jgrapht.event.ConnectedComponentTraversalEvent;
 import org.jgrapht.event.EdgeTraversalEvent;
-import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
 import org.jgrapht.event.GraphVertexChangeEvent;
 import org.jgrapht.event.TraversalListener;
 import org.jgrapht.event.TraversalListenerAdapter;
 import org.jgrapht.event.VertexTraversalEvent;
-import org.jgrapht.VertexFactory;
 import org.jgrapht.graph.AsUnweightedGraph;
 import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -327,7 +326,7 @@ public class BUDDYTrackModel {
 	 *            the type of the vertices.
 	 * @return a new {@link SimpleDirectedWeightedGraph}.
 	 */
-	public <V> SimpleDirectedWeightedGraph<V, DefaultWeightedEdge> copy(final VertexFactory<V> factory,
+	public <V> SimpleDirectedWeightedGraph<V, DefaultWeightedEdge> copy(final Supplier<V> factory,
 			final Function1<Budpointobject, V> function, final Map<Budpointobject, V> mappings) {
 		final SimpleDirectedWeightedGraph<V, DefaultWeightedEdge> copy = new SimpleDirectedWeightedGraph<V, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
@@ -342,7 +341,7 @@ public class BUDDYTrackModel {
 
 		// Generate new vertices
 		for (final Budpointobject Budpointobject : Collections.unmodifiableCollection(Budpointobjects)) {
-			final V vertex = factory.createVertex();
+			final V vertex = factory.get();
 			function.compute(Budpointobject, vertex);
 			map.put(Budpointobject, vertex);
 			copy.addVertex(vertex);
@@ -795,9 +794,8 @@ public class BUDDYTrackModel {
 		}
 		final AsUnweightedGraph<Budpointobject, DefaultWeightedEdge> unWeightedGrah = new AsUnweightedGraph<Budpointobject, DefaultWeightedEdge>(
 				graph);
-		final DijkstraShortestPath<Budpointobject, DefaultWeightedEdge> pathFinder = new DijkstraShortestPath<Budpointobject, DefaultWeightedEdge>(
-				unWeightedGrah, source, target);
-		final List<DefaultWeightedEdge> path = pathFinder.getPathEdgeList();
+		final DijkstraShortestPath< Budpointobject, DefaultWeightedEdge > pathFinder = new DijkstraShortestPath< >( unWeightedGrah );
+		final List< DefaultWeightedEdge > path = pathFinder.getPath( source, target ).getEdgeList();
 		return path;
 	}
 

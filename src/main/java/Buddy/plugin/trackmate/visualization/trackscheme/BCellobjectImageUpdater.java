@@ -4,7 +4,6 @@ import Buddy.plugin.trackmate.Settings;
 import Buddy.plugin.trackmate.util.TMUtils;
 import budDetector.BCellobject;
 import net.imagej.ImgPlus;
-import net.imglib2.meta.view.HyperSliceImgPlus;
 
 @SuppressWarnings( "deprecation" )
 public class BCellobjectImageUpdater
@@ -45,9 +44,9 @@ public class BCellobjectImageUpdater
 	 * @return the image string.
 	 */
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
-	public String getImageString( final BCellobject BCellobject, final double radiusFactor )
+	public String getImageString( final BCellobject spot, final double radiusFactor )
 	{
-		final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+		final int frame = spot.getFeature( BCellobject.POSITION_T ).intValue();
 		final int targetChannel = settings.imp.getC() - 1;
 		if ( frame == previousFrame && targetChannel == previousChannel )
 		{
@@ -56,13 +55,13 @@ public class BCellobjectImageUpdater
 		else
 		{
 			final ImgPlus img = TMUtils.rawWraps( settings.imp );
-			final ImgPlus fixChannelAxis = HyperSliceImgPlus.fixChannelAxis( img, targetChannel );
-			final ImgPlus< ? > imgCT = HyperSliceImgPlus.fixTimeAxis(
-					fixChannelAxis, frame );
+			final ImgPlus< ? > imgCT = TMUtils.hyperSlice( img, targetChannel, frame );
+
 			grabber = new BCellobjectIconGrabber( imgCT );
 			previousFrame = frame;
 			previousChannel = targetChannel;
 		}
-		return grabber.getImageString( BCellobject, radiusFactor );
+		return grabber.getImageString( spot, radiusFactor );
 	}
+
 }

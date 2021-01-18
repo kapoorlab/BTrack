@@ -24,6 +24,7 @@ import net.imagej.axis.AxisType;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.img.ImagePlusAdapter;
+import net.imglib2.type.Type;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.Util;
 import pluginTools.InteractiveBud;
@@ -33,7 +34,7 @@ import org.scijava.Context;
 import Buddy.plugin.trackmate.Dimension;
 import Buddy.plugin.trackmate.Settings;
 import budDetector.BCellobject;
-
+import net.imglib2.img.display.imagej.ImgPlusViews;
 /**
  * List of static utilities for {@link Buddy.plugin.trackmate.TrackMate}.
  */
@@ -681,4 +682,11 @@ public class TMUtils
 
 	private TMUtils()
 	{}
+
+	public static < T extends Type< T > > ImgPlus< T > hyperSlice( final ImgPlus< T > img, final long channel, final long frame )
+	{
+		final ImgPlus< T > imgT = ImgPlusViews.hyperSlice( img, img.dimensionIndex( Axes.TIME ), frame );
+		final ImgPlus< T > imgTC = ImgPlusViews.hyperSlice( imgT, imgT.dimensionIndex( Axes.CHANNEL ), channel );
+		return imgTC;
+	}
 }

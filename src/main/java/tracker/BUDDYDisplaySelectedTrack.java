@@ -20,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
 
 import budDetector.Budpointobject;
 import budDetector.Distance;

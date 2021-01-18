@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.NeighborIndex;
+import org.jgrapht.alg.util.NeighborCache;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphVertexChangeEvent;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -25,7 +25,7 @@ import budDetector.Budobject;
 
 
 
-public class BUDDYBudTimeDirectedNeighborIndex extends NeighborIndex< Budobject, DefaultWeightedEdge >
+public class BUDDYBudTimeDirectedNeighborIndex extends NeighborCache< Budobject, DefaultWeightedEdge >
 {
 
 	// ~ Instance fields
