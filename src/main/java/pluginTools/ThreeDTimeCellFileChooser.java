@@ -527,10 +527,9 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	}
 
 	protected ImageObjects Create4D(RandomAccessibleInterval<FloatType> imageOrig,
-			RandomAccessibleInterval<IntType> impMask,RandomAccessibleInterval<IntType> imageSegA) {
+			RandomAccessibleInterval<IntType> imageMask,RandomAccessibleInterval<IntType> imageSegA) {
 
-		RandomAccessibleInterval<IntType> imageBigMask = new CellImgFactory<IntType>().create(imageOrig,
-				new IntType());
+		RandomAccessibleInterval<IntType> imageBigMask = copyImage(imageMask);
 		RandomAccessibleInterval<IntType> imageBigSeg = copyImage(imageSegA);
 
 
