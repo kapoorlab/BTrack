@@ -81,39 +81,7 @@ public class TrackEach3DCell implements Runnable {
 
 	}
 	
-	public void Common(Budregionobject  PairCurrentViewBit,
-			List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
-			int label) {
 
-		
-		// Corner points of region
-				OpService ops = parent.ij.op();
-				
-		List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
-		
-
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.fourthDimension, label,
-				truths.size() * parent.calibrationX);
-	      Greencelllist  = GetNearest.getAllInterior3DCells(parent,  parent.CurrentViewYellowInt);
-
-	      
-	      
-     	for(Cellobject currentbudcell:Greencelllist) {
-			
-			
-			Localizable centercell = currentbudcell.Location;
-			
-			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
-			// and the distance
-			double closestBudPoint = 0;
-			if(closestskel!=null)
-				closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
-			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
-            parent.budcells.add(budncell, parent.fourthDimension);  
-		}
-		
-	}
 
 
 

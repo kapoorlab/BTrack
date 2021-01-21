@@ -29,15 +29,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/MasterPanels"/>
-	<classpathentry kind="lib" path="/Users/aimachine/.m2/repository/org/scijava/jython-shaded/2.7.1.1/jython-shaded-2.7.1.1.jar" sourcepath="/Users/aimachine/.m2/repository/org/scijava/jython-shaded/2.7.1.1/jython-shaded-2.7.1.1-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="test" value="true"/>
-			<attribute name="maven.groupId" value="org.scijava"/>
-			<attribute name="maven.artifactId" value="jython-shaded"/>
-			<attribute name="maven.version" value="2.7.1.1"/>
-			<attribute name="maven.scope" value="runtime"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -487,7 +487,7 @@ public class TrackEachBud {
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
         
-	    RandomAccessibleInterval<BitType> smalloutimg = Views.offsetInterval(outimg, minVal, maxVal);
+	    RandomAccessibleInterval<BitType> smalloutimg = Views.interval(outimg, minVal, maxVal);
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);
