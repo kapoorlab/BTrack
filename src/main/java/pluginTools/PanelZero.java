@@ -19,7 +19,7 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/home/kapoorlab/Downloads/Tracking_Segmentation_Projection.tif");
+				.openImage("/run/media/kapoorlab/TRANSCEND/Claudia/BudDeepLearning/MaskDualBud-1.tif");
 		impA.show();
 		
 	
