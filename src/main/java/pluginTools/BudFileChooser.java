@@ -96,7 +96,7 @@ public class BudFileChooser extends JPanel {
 	public boolean curvesuper = true;
 	public boolean curvesimple = false;
 	public boolean twochannel = false;
-    public int BudDotsize = 10;
+    public int BudDotsize = 5;
 	public String chooseBudSegstring = "Segmentation Image for buds";
 	public Border chooseBudSeg = new CompoundBorder(new TitledBorder(chooseBudSegstring), new EmptyBorder(c.insets));
 
