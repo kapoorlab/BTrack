@@ -49,8 +49,8 @@ public class SavePink {
 							Roiobject roi = Totalrois.get(i);
 							
 							if(roi.color == parent.BudColor) {
-						double LocationX = roi.point.getDoublePosition(0);
-						double LocationY = roi.point.getDoublePosition(1);
+						double LocationX = roi.point.getDoublePosition(0) + parent.BudDotsize/2;
+						double LocationY = roi.point.getDoublePosition(1) + parent.BudDotsize/2;
 					    int Label = roi.Label;
 						bwbud.write(time + "," 
 								+ parent.nf.format(LocationX) + "," 
