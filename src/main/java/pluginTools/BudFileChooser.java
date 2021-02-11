@@ -96,7 +96,7 @@ public class BudFileChooser extends JPanel {
 	public boolean curvesuper = true;
 	public boolean curvesimple = false;
 	public boolean twochannel = false;
-
+    public int BudDotsize = 10;
 	public String chooseBudSegstring = "Segmentation Image for buds";
 	public Border chooseBudSeg = new CompoundBorder(new TitledBorder(chooseBudSegstring), new EmptyBorder(c.insets));
 
@@ -362,10 +362,10 @@ public class BudFileChooser extends JPanel {
                            }
                            else
                         	   BudOvalRois.put(budpoints[0], Allrois);
-		                OvalRoi roi = new OvalRoi(Integer.parseInt(budpoints[1]), Integer.parseInt(budpoints[2]), 10, 10);
+		                OvalRoi roi = new OvalRoi(Integer.parseInt(budpoints[1]) - BudDotsize/2, Integer.parseInt(budpoints[2]) - BudDotsize/2, BudDotsize, BudDotsize);
 		                
 		                Allrois.add(new Roiobject (Color.PINK, roi, 
-		                		new RealPoint(new double[] {Float.parseFloat(budpoints[1]), Float.parseFloat(budpoints[2])}), Integer.parseInt(budpoints[3])));
+		                		new RealPoint(new double[] {Float.parseFloat(budpoints[1])- BudDotsize/2, Float.parseFloat(budpoints[2])- BudDotsize/2}), Integer.parseInt(budpoints[3])));
 		         
 		            }
 		                 count = count +  1;
@@ -413,7 +413,7 @@ public class BudFileChooser extends JPanel {
 
 			InteractiveBud masterparent = new InteractiveBud(imageOrig, imageSegA,BudOvalRois, new File(impOrig.getOriginalFileInfo().directory) , impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
 					name, true);
-		
+		masterparent.BudDotsize = BudDotsize;
 		masterparent.run(null);
 		
 		}
@@ -427,7 +427,7 @@ public class BudFileChooser extends JPanel {
 			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
 			InteractiveBud masterparent =  new InteractiveBud(imageOrig, imageSegA, imageSegB, new File(impOrig.getOriginalFileInfo().directory) ,impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name);
-			
+			masterparent.BudDotsize = BudDotsize;
 			masterparent.run(null);
 
 		}
