@@ -95,7 +95,7 @@ public class BUDDYDisplaySelectedTrack {
 					int Y = (int) Math.round(nearest.Location[1]);
 
 
-					OvalRoi points = new OvalRoi((int) X, (int) Y , parent.BudDotsize, parent.BudDotsize);
+					OvalRoi points = new OvalRoi((int) X- parent.BudDotsize/2, (int) Y- parent.BudDotsize/2 , parent.BudDotsize, parent.BudDotsize);
 
 					Roiobject nearestroi = getNearestRois(parent.BudOvalRois.get(Integer.toString(time)),
 							new double[] { X, Y });
@@ -113,7 +113,7 @@ public class BUDDYDisplaySelectedTrack {
 
 							OvalRoi roi = (OvalRoi) parent.overlay.get(i);
 							
-							double[] point = new double[] {roi.getContourCentroid()[0] - parent.BudDotsize/2, roi.getContourCentroid()[1] - parent.BudDotsize / 2};
+							double[] point = new double[] {roi.getContourCentroid()[0] , roi.getContourCentroid()[1] };
 							
 							Budpointobject nearestBPO = getNearestBPO(Budpointlist, point);
 							
@@ -167,7 +167,7 @@ public class BUDDYDisplaySelectedTrack {
 
 							OvalRoi roi = (OvalRoi) parent.overlay.get(i);
 							
-	                            double[] point = new double[] {roi.getContourCentroid()[0] - parent.BudDotsize/2, roi.getContourCentroid()[1] - parent.BudDotsize / 2};
+	                            double[] point = new double[] {roi.getContourCentroid()[0] , roi.getContourCentroid()[1] };
 							
 							Budpointobject nearestBPO = getNearestBPO(Budpointlist, point);
 							Localizable labelpoint = new Point(new long[] {(long)nearestBPO.Budcenter.getDoublePosition(0),(long)nearestBPO.Budcenter.getDoublePosition(1)});

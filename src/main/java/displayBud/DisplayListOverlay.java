@@ -98,7 +98,7 @@ public class DisplayListOverlay {
 				double X = Math.round(skeletonEndPoints.get(i).getFloatPosition(0));
 				double Y = Math.round(skeletonEndPoints.get(i).getFloatPosition(1));
 				
-				OvalRoi points =  new OvalRoi((int) X, (int) Y,
+				OvalRoi points =  new OvalRoi((int) X- parent.BudDotsize/2, (int) Y- parent.BudDotsize/2,
 						parent.BudDotsize, parent.BudDotsize);
 				points.setStrokeColor(color);
 				points.setStrokeWidth(parent.BudDotsize);
