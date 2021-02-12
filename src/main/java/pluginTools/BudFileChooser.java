@@ -362,10 +362,10 @@ public class BudFileChooser extends JPanel {
                            }
                            else
                         	   BudOvalRois.put(budpoints[0], Allrois);
-		                OvalRoi roi = new OvalRoi(Integer.parseInt(budpoints[1]) - BudDotsize/2, Integer.parseInt(budpoints[2]) - BudDotsize/2, BudDotsize, BudDotsize);
+		                OvalRoi roi = new OvalRoi(Integer.parseInt(budpoints[1]) , Integer.parseInt(budpoints[2]) , BudDotsize, BudDotsize);
 		                
 		                Allrois.add(new Roiobject (Color.PINK, roi, 
-		                		new RealPoint(new double[] {Float.parseFloat(budpoints[1])- BudDotsize/2, Float.parseFloat(budpoints[2])- BudDotsize/2}), Integer.parseInt(budpoints[3])));
+		                		new RealPoint(new double[] {Float.parseFloat(budpoints[1]), Float.parseFloat(budpoints[2])}), Integer.parseInt(budpoints[3])));
 		         
 		            }
 		                 count = count +  1;
