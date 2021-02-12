@@ -19,7 +19,7 @@ public class PanelZero {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/run/media/kapoorlab/TRANSCEND/Claudia/BudDeepLearning/MaskDualBud-1.tif");
+				.openImage("/Users/aimachine/Image0.tif");
 		impA.show();
 		
 	

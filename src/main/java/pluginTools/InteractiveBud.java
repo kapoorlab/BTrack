@@ -130,7 +130,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public MouseListener tvl;
 	public String AddDot = "B";
 	public MouseMotionListener tvml;
-	public int borderexpand = 100;
+	public int borderexpand = 20;
 	public int BudDotsize = 6;
 	public Color BudColor = Color.PINK;
 	public Color RemoveBudColor = Color.RED;
