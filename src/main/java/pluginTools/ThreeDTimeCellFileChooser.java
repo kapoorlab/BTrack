@@ -52,7 +52,9 @@ import listeners.BTrackGoGreenFLListener;
 import listeners.BTrackGoYellowFLListener;
 import listeners.BudCheckpointListener;
 import listeners.BudZListener;
+import listeners.CsvLoader;
 import listeners.GreenCheckpointListener;
+import listeners.ImageLoader;
 import listeners.ThreeDCellGoFreeFLListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.Cursor;
@@ -97,12 +99,12 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public JComboBox<String> ChooseImage;
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
-	public JButton Done = new JButton("Collect Cells and Start Tracker");
+	public JButton Done = new JButton("Start Tracker");
 	public HashMap<Integer, ArrayList<Cellobject>> CSVGreen = new HashMap<Integer, ArrayList<Cellobject>>(); 
-	public String chooseCellSegstring = "3D + time Segmentation for Cells";
+	public String chooseCellSegstring = "Input segmentation image for cells";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
     public int fakedim = 2;
-	public String chooseMaskSegstring = "Segmentation for Cells and  Mask";
+	public String chooseMaskSegstring = "Input segmentation image for Cells and  Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
 	public JProgressBar jpb = new JProgressBar();
 
@@ -114,15 +116,14 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	
 	public RandomAccessibleInterval<FloatType> imageOrigGreen;
 	public RandomAccessibleInterval<IntType> imageSegA;
-	public String chooseoriginalCellfilestring = "Cells are tracked inside a region";
+	public String chooseoriginalCellfilestring = "Input Image";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
 			new EmptyBorder(c.insets));
 
 	public String donestring = "Done Selection";
 	public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring), new EmptyBorder(c.insets));
 
-	public Label inputLabelcalX, inputLabelcalY, inputLabelcalZ, inputLabelcalT;
-	public double calibrationX, calibrationY, calibrationZ, FrameInterval, TimeTotal;
+	public double  TimeTotal;
 	
 	public Label inputZ, inputT;
 	public TextField inputFieldZ, inputFieldT;
@@ -132,28 +133,21 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			new EmptyBorder(c.insets));
 	public boolean DoMask = false;
 	public boolean NoMask = true;
-	public JButton Checkpointbutton = new JButton("Load Cells From CSV");
+	public JButton Checkpointbutton = new JButton("Load Data From CSV");
+	
+	public boolean LoadImage = false;
+	public boolean LoadCSV = true;
+	public CheckboxGroup SegLoadmode = new CheckboxGroup();
+	public Checkbox ImageMode = new Checkbox("Load Segmentation Data as tif images", LoadImage, SegLoadmode);
+	public Checkbox CsvMode = new Checkbox("Load Segmentation Data as csv", LoadCSV, SegLoadmode);
+	
 	public CheckboxGroup cellmode = new CheckboxGroup();
 	public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 	public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
 
 	public ThreeDTimeCellFileChooser() {
 
-		inputLabelcalX = new Label("Pixel calibration in X(um)");
-		inputFieldcalX = new TextField(5);
-		inputFieldcalX.setText("1");
-
-		inputLabelcalY = new Label("Pixel calibration in Y(um)");
-		inputFieldcalY = new TextField(5);
-		inputFieldcalY.setText("1");
-
-		inputLabelcalZ = new Label("Pixel calibration in Z(um)");
-		inputFieldcalZ = new TextField(5);
-		inputFieldcalZ.setText("1");
-
-		inputLabelcalT = new Label("Pixel calibration in T (min)");
-		FieldinputLabelcalT = new TextField(5);
-		FieldinputLabelcalT.setText("1");
+		
 		panelFirst.setLayout(layout);
 		
 		inputT = new Label("Total TimePoints");
@@ -171,11 +165,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		Paneldone.setLayout(layout);
 		Microscope.setLayout(layout);
 		CardLayout cl = new CardLayout();
-		calibrationX = Float.parseFloat(inputFieldcalX.getText());
-		calibrationY = Float.parseFloat(inputFieldcalY.getText());
-		calibrationZ = Float.parseFloat(inputFieldcalZ.getText());
 
-		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 
 		panelCont.setLayout(cl);
 		panelCont.add(panelFirst, "1");
@@ -194,25 +184,21 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 		Panelfileoriginal = original.SingleChannelOption();
 
+		panelFirst.add(ImageMode, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		panelFirst.add(CsvMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
 		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		original.ChooseImage.addActionListener(new ChooseGreenOrigMap(this, original.ChooseImage));
 
-		panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		panelFirst.add(MaskMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseCellSegstring, blankimageNames);
-		Panelfile = segmentation.SingleChannelOption();
 
-		panelFirst.add(Panelfile, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
-		
 		Paneldone.add(Checkpointbutton, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		
 		Paneldone.add(Done, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Paneldone.setBorder(LoadBtrack);
@@ -222,53 +208,13 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		panelFirst.add(Paneldone, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+	
 
-		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalY, new GridBagConstraints(3, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
-		Microscope.add(inputFieldcalY, new GridBagConstraints(3, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.add(inputLabelcalZ, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
-		Microscope.add(inputFieldcalZ, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.add(inputLabelcalT, new GridBagConstraints(3, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(3, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-		
-		Microscope.add(inputT, new GridBagConstraints(0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.add(inputFieldT, new GridBagConstraints(0, 9, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-
-		Microscope.setBorder(microborder);
-		
-		
-		
-		panelFirst.add(Microscope, new GridBagConstraints(0, 9, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
-				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-
-		// Listeneres
-
+		ImageMode.addItemListener(new ImageLoader(this)); 
+		CsvMode.addItemListener(new CsvLoader(this));
 		FreeMode.addItemListener(new ThreeDCellGoFreeFLListener(this));
 		MaskMode.addItemListener(new BTrackGo3DMaskFLListener(this));
-
-		segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(this, segmentation.ChooseImage));
-
-		inputFieldcalX.addTextListener(new CalXListener());
-		inputFieldcalY.addTextListener(new CalYListener());
-		FieldinputLabelcalT.addTextListener(new CalTListener());
 		Checkpointbutton.addActionListener(new GreenCheckpointListener(this));
 		inputFieldT.addTextListener(new InputTListener());
 		Done.addActionListener(new GreenDoneListener());
@@ -283,58 +229,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		Cardframe.setVisible(true);
 	}
 
-	public class CalXListener implements TextListener {
-
-		@Override
-		public void textValueChanged(TextEvent e) {
-			final TextComponent tc = (TextComponent) e.getSource();
-			String s = tc.getText();
-
-			if (s.length() > 0)
-				calibrationX = Double.parseDouble(s);
-		}
-
-	}
-
-	public class CalYListener implements TextListener {
-
-		@Override
-		public void textValueChanged(TextEvent e) {
-			final TextComponent tc = (TextComponent) e.getSource();
-			String s = tc.getText();
-
-			if (s.length() > 0)
-				calibrationY = Double.parseDouble(s);
-		}
-
-	}
-
-	public class CalZListener implements TextListener {
-
-		@Override
-		public void textValueChanged(TextEvent e) {
-			final TextComponent tc = (TextComponent) e.getSource();
-			String s = tc.getText();
-
-			if (s.length() > 0)
-				calibrationZ = Double.parseDouble(s);
-		}
-
-	}
-
-	public class CalTListener implements TextListener {
-
-		@Override
-		public void textValueChanged(TextEvent e) {
-			final TextComponent tc = (TextComponent) e.getSource();
-			String s = tc.getText();
-
-			if (s.length() > 0)
-				FrameInterval = Float.parseFloat(s);
-
-		}
-
-	}
+	
+	
 	
 	public class InputTListener implements TextListener {
 
@@ -355,7 +251,10 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+		
+			Done.setText("Thank you");
+			Done.validate();
+			Done.repaint();
 			try {
 				DoneCurrGreen(Cardframe);
 			} catch (ImgIOException e1) {
@@ -368,23 +267,14 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 	public void DoneCurrGreen(Frame parent) throws ImgIOException {
 
 		
-		
-		WindowManager.closeAllWindows();
+
 		// Tracking and Measurement is done with imageA
 
 		
 		Done.setEnabled(false);
 		Checkpointbutton.setEnabled(false);
 		
-		// Segmentation image for green cells
-
-
 		String name = impOrigGreen.getOriginalFileInfo().fileName;
-		//WindowManager.closeAllWindows();
-		// Image -> Mask -> Cell Mask
-		Cardframe.remove(jpb);
-
-	
 
 		if (imageOrigGreen.numDimensions() > 4) {
 
@@ -392,18 +282,7 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					"This tracker is for 3D + time images only, your image has higher dimensionality, split the channels perhaps?");
 
 		}
-		if(imageOrigGreen.dimension(2) > 2) {
-		Microscope.add(inputZ, new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(Zslider, new GridBagConstraints(0, 11, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		
-
-		Microscope.repaint();
-		Microscope.validate();
-
-		}
 		
 		if (imageOrigGreen.numDimensions() <= 3) 
 
@@ -430,8 +309,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
 			
 			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), 
-					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
-					FrameInterval, name, false);
+					impOrigGreen.getOriginalFileInfo().fileName, 1, 1, 1,
+					1, name, false);
 			
 
 			CellCollection.run(null);
@@ -450,8 +329,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
     			
     			
     			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, null, new File(impOrigGreen.getOriginalFileInfo().directory), 
-    					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
-    					FrameInterval, name, false);
+    					impOrigGreen.getOriginalFileInfo().fileName, 1, 1, 1,
+    					1, name, false);
     			
 
     			CellCollection.run(null);
@@ -478,8 +357,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 					Create4D(imageOrigGreen, imageSegA, imageSegA);
 			
 			
-			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
-					FrameInterval, name, false);
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, 1, 1, 1,
+					1, name, false);
 			
 
 			CellCollection.run(null);
@@ -491,8 +370,8 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 			else if (CSVGreen!=null && CSVGreen.size() > 0) {
 				
 				
-				InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, CSVGreen, null, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
-						FrameInterval, name, false);
+				InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, CSVGreen, null, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, 1, 1, 1,
+						1, name, false);
 				
 
 				CellCollection.run(null);
@@ -508,15 +387,15 @@ public class ThreeDTimeCellFileChooser extends JPanel {
 		}
 		
 		
+		Done.setEnabled(true);
+		Checkpointbutton.setEnabled(true);
 		
 		Cardframe.add(jpb, "Last");
 		Cardframe.repaint();
 		Cardframe.validate();
+		
+		
 
-		calibrationX = Float.parseFloat(inputFieldcalX.getText());
-		calibrationY = Float.parseFloat(inputFieldcalY.getText());
-		calibrationZ = Float.parseFloat(inputFieldcalZ.getText());
-		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 
 	}
 

@@ -24,6 +24,10 @@ public class BTrackGo3DMaskFLListener implements ItemListener {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			
 			parent.panelFirst.remove(parent.Panelfile);
+			parent.Panelfile.removeAll();
+			parent.Panelfile.validate();
+			parent.Panelfile.repaint();
+			
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
 			
@@ -50,7 +54,8 @@ public class BTrackGo3DMaskFLListener implements ItemListener {
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			
 
-			
+			parent.DoMask = false;
+			parent.NoMask = true;
 			
 		}
 		
