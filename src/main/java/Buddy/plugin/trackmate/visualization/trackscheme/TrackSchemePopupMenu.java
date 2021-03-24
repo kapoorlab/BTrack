@@ -1,14 +1,5 @@
 package Buddy.plugin.trackmate.visualization.trackscheme;
 
-import com.mxgraph.model.mxCell;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxEventSource.mxIEventListener;
-
-import Buddy.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import budDetector.BCellobject;
-
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -22,6 +13,17 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+
+import com.mxgraph.model.mxCell;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource.mxIEventListener;
+
+import Buddy.plugin.trackmate.features.manual.ManualBCellobjectColorAnalyzerFactory;
+import Buddy.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
+import budDetector.BCellobject;
+
 
 public class TrackSchemePopupMenu extends JPopupMenu
 {
@@ -70,7 +72,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		{
 			final BCellobject BCellobject = trackScheme.getGraph().getBCellobjectFor( mxCell );
 			final Double value = Double.valueOf( previousColor.getRGB() );
-			BCellobject.putFeature( ManualEdgeColorAnalyzer.FEATURE, value );
+			BCellobject.putFeature( ManualBCellobjectColorAnalyzerFactory.FEATURE, value );
 		}
 	}
 
@@ -346,6 +348,34 @@ public class TrackSchemePopupMenu extends JPopupMenu
 				}
 			} );
 		}
+		
+		
+		add( new AbstractAction( "Clear manual color of selection" )
+		{
+			@Override
+			public void actionPerformed( final ActionEvent e )
+			{
+				for ( final mxCell mxCell : vertices )
+				{
+					final BCellobject BCellobject = trackScheme.getGraph().getBCellobjectFor( mxCell );
+					BCellobject.getFeatures().remove( ManualBCellobjectColorAnalyzerFactory.FEATURE );
+				}
+				for ( final mxCell mxCell : edges )
+				{
+					final DefaultWeightedEdge edge = trackScheme.getGraph().getEdgeFor( mxCell );
+					trackScheme.getModel().getFeatureModel().removeEdgeFeature( edge, ManualEdgeColorAnalyzer.FEATURE );
+				}
+				
+				SwingUtilities.invokeLater( new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						trackScheme.doTrackStyle();
+					}
+				} );
+			}
+		} );
 
 
 		// Remove

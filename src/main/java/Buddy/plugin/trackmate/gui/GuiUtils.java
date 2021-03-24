@@ -7,26 +7,55 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 
 public class GuiUtils
 {
-	
+
+	private static final FocusListener selectAllFocusListener = new FocusListener()
+	{
+
+		@Override
+		public void focusLost( final FocusEvent e )
+		{}
+
+		@Override
+		public void focusGained( final FocusEvent fe )
+		{
+			if ( !( fe.getSource() instanceof JTextField ) )
+				return;
+			final JTextField txt = ( JTextField ) fe.getSource();
+			SwingUtilities.invokeLater( () -> txt.selectAll() );
+		}
+	};
+
+	public static final void selectAllOnFocus( final JTextField tf )
+	{
+		tf.addFocusListener( selectAllFocusListener );
+	}
+
 	/**
 	 * Returns the black color or white color depending on the specified
 	 * background color, to ensure proper readability of the text on said
 	 * background.
-	 * 
+	 *
 	 * @param backgroundColor
 	 *            the background color.
 	 * @return the black or white color.
 	 */
-	public static Color textColorForBackground( Color backgroundColor )
+	public static Color textColorForBackground( final Color backgroundColor )
 	{
 		if ( ( backgroundColor.getRed() * 0.299
 				+ backgroundColor.getGreen() * 0.587
@@ -87,7 +116,12 @@ public class GuiUtils
 		final int[] dims = imp.getDimensions();
 		if ( dims[ 4 ] == 1 && dims[ 3 ] > 1 )
 		{
-			switch ( JOptionPane.showConfirmDialog( null, "It appears this image has 1 timepoint but " + dims[ 3 ] + " slices.\n" + "Do you want to swap Z and T?", "Z/T swapped?", JOptionPane.YES_NO_CANCEL_OPTION ) )
+			switch ( JOptionPane.showConfirmDialog( null,
+					"It appears this image has 1 timepoint but "
+							+ dims[ 3 ]
+							+ " slices.\n"
+							+ "Do you want to swap Z and T?",
+					"Z/T swapped?", JOptionPane.YES_NO_CANCEL_OPTION ) )
 			{
 			case JOptionPane.YES_OPTION:
 				imp.setDimensions( dims[ 2 ], dims[ 4 ], dims[ 3 ] );
@@ -105,4 +139,19 @@ public class GuiUtils
 		}
 	}
 
+	public static void setSystemLookAndFeel()
+	{
+		if ( IJ.isMacOSX() || IJ.isWindows() )
+		{
+			try
+			{
+				UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+			}
+			catch ( ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e )
+			{
+				e.printStackTrace();
+			}
+
+		}
+	}
 }

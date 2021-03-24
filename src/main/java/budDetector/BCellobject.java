@@ -429,6 +429,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			return comparator.compare( o1.getName(), o2.getName() );
 		}
 	};
+	public static final String QUALITY = null;
 
 
 	/**

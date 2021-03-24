@@ -1,7 +1,6 @@
 package Buddy.plugin.trackmate;
 
 import Buddy.plugin.trackmate.gui.GuiUtils;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
@@ -101,13 +100,20 @@ public class TrackMatePlugIn_ implements PlugIn {
 		model = createModel();
 		model.setBCellobjects(parent.budcells, true);
 		trackmate = createTrackMate();
+		final SelectionModel selectionModel = new SelectionModel( model );
+		final DisplaySettings displaySettings = createDisplaySettings();
+
 
 		/*
 		 * Launch GUI.
 		 */
 
-		final TrackMateGUIController controller = new TrackMateGUIController(parent, trackmate);
-		GuiUtils.positionWindow(controller.getGUI(), imp.getWindow());
+		// Wizard.
+		final WizardSequence sequence = createSequence( trackmate, selectionModel, displaySettings );
+		final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
+		frame.setIconImage( TRACKMATE_ICON.getImage() );
+		GuiUtils.positionWindow( frame, imp.getWindow() );
+		frame.setVisible( true );
 	}
 
 	/*
@@ -121,7 +127,20 @@ public class TrackMatePlugIn_ implements PlugIn {
 	 *
 	 * @return a new {@link Model} instance.
 	 */
-
+	/**
+	 * Hook for subclassers: <br>
+	 * Will create and position the sequence that will be played by the wizard
+	 * launched by this plugin.
+	 * 
+	 * @param trackmate
+	 * @param selectionModel
+	 * @param displaySettings
+	 * @return
+	 */
+	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	{
+		return new TrackMateWizardSequence( trackmate, selectionModel, displaySettings );
+	}
 	public InteractiveBud getparent() {
 
 		return parent;
