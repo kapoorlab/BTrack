@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate;
+package fiji.plugin.trackmate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,19 +12,16 @@ import java.util.Stack;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.traverse.GraphIterator;
 
-import budDetector.Spot;
-
 /**
- * A component of {@link Model} that handles Spot and edges selection.
- * 
+ * A component of {@link Model} that handles spot and edges selection.
  * @author Jean-Yves Tinevez
  */
 public class SelectionModel {
 
 	private static final boolean DEBUG = false;
 
-	/** The Spot current selection. */
-	private Set<Spot> SpotSelection = new HashSet<>();
+	/** The spot current selection. */
+	private Set<Spot> spotSelection = new HashSet<>();
 	/** The edge current selection. */
 	private Set<DefaultWeightedEdge> edgeSelection = new HashSet<>();
 	/** The list of listener listening to change in selection. */
@@ -64,13 +61,13 @@ public class SelectionModel {
 		if (DEBUG)
 			System.out.println("[SelectionModel] Clearing selection");
 		// Prepare event
-		Map<Spot, Boolean> SpotMap = new HashMap<>(SpotSelection.size());
-		for (Spot Spot : SpotSelection)
-			SpotMap.put(Spot, false);
+		Map<Spot, Boolean> spotMap = new HashMap<>(spotSelection.size());
+		for (Spot spot : spotSelection)
+			spotMap.put(spot, false);
 		Map<DefaultWeightedEdge, Boolean> edgeMap = new HashMap<>(edgeSelection.size());
 		for (DefaultWeightedEdge edge : edgeSelection)
 			edgeMap.put(edge, false);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, SpotMap, edgeMap);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, edgeMap);
 		// Clear fields
 		clearSpotSelection();
 		clearEdgeSelection();
@@ -81,14 +78,14 @@ public class SelectionModel {
 
 	public void clearSpotSelection() {
 		if (DEBUG)
-			System.out.println("[SelectionModel] Clearing Spot selection");
+			System.out.println("[SelectionModel] Clearing spot selection");
 		// Prepare event
-		Map<Spot, Boolean> SpotMap = new HashMap<>(SpotSelection.size());
-		for (Spot Spot : SpotSelection)
-			SpotMap.put(Spot, false);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, SpotMap, null);
+		Map<Spot, Boolean> spotMap = new HashMap<>(spotSelection.size());
+		for (Spot spot : spotSelection)
+			spotMap.put(spot, false);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
 		// Clear field
-		SpotSelection.clear();
+		spotSelection.clear();
 		// Fire event
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
@@ -109,59 +106,58 @@ public class SelectionModel {
 			listener.selectionChanged(event);
 	}
 
-	public void addSpotToSelection(final Spot Spot) {
-		if (!SpotSelection.add(Spot))
+	public void addSpotToSelection(final Spot spot) {
+		if (!spotSelection.add(spot))
 			return; // Do nothing if already present in selection
 		if (DEBUG)
-			System.out.println("[SelectionModel] Adding Spot " + Spot + " to selection");
-		Map<Spot, Boolean> SpotMap = new HashMap<>(1);
-		SpotMap.put(Spot, true);
+			System.out.println("[SelectionModel] Adding spot " + spot + " to selection");
+		Map<Spot, Boolean> spotMap = new HashMap<>(1);
+		spotMap.put(spot, true);
 		if (DEBUG)
-			System.out.println("[SelectionModel] Seding event to listeners: " + selectionChangeListeners);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, SpotMap, null);
+			System.out.println("[SelectionModel] Seding event to listeners: "+selectionChangeListeners);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void removeSpotFromSelection(final Spot Spot) {
-		if (!SpotSelection.remove(Spot))
+	public void removeSpotFromSelection(final Spot spot) {
+		if (!spotSelection.remove(spot))
 			return; // Do nothing was not already present in selection
 		if (DEBUG)
-			System.out.println("[SelectionModel] Removing Spot " + Spot + " from selection");
-		Map<Spot, Boolean> SpotMap = new HashMap<>(1);
-		SpotMap.put(Spot, false);
-		SelectionChangeEvent event = new SelectionChangeEvent(this, SpotMap, null);
+			System.out.println("[SelectionModel] Removing spot " + spot + " from selection");
+		Map<Spot, Boolean> spotMap = new HashMap<>(1);
+		spotMap.put(spot, false);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void addSpotToSelection(final Collection<Spot> Spots) {
-		Map<Spot, Boolean> SpotMap = new HashMap<>(Spots.size());
-		for (Spot Spot : Spots) {
-			if (SpotSelection.add(Spot)) {
-				SpotMap.put(Spot, true);
+	public void addSpotToSelection(final Collection<Spot> spots) {
+		Map<Spot, Boolean> spotMap = new HashMap<>(spots.size());
+		for (Spot spot : spots) {
+			if (spotSelection.add(spot)) {
+				spotMap.put(spot, true);
 				if (DEBUG)
-					System.out.println("[SelectionModel] Adding Spot " + Spot + " to selection");
+					System.out.println("[SelectionModel] Adding spot " + spot + " to selection");
 			}
 		}
-		SelectionChangeEvent event = new SelectionChangeEvent(this, SpotMap, null);
-		if (DEBUG)
-			System.out.println("[SelectionModel] Seding event " + event.hashCode() + " to "
-					+ selectionChangeListeners.size() + " listeners: " + selectionChangeListeners);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
+		if (DEBUG) 
+			System.out.println("[SelectionModel] Seding event "+event.hashCode()+" to "+selectionChangeListeners.size()+" listeners: "+selectionChangeListeners);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
 
-	public void removeSpotFromSelection(final Collection<Spot> Spots) {
-		Map<Spot, Boolean> SpotMap = new HashMap<>(Spots.size());
-		for (Spot Spot : Spots) {
-			if (SpotSelection.remove(Spot)) {
-				SpotMap.put(Spot, false);
+	public void removeSpotFromSelection(final Collection<Spot> spots) {
+		Map<Spot, Boolean> spotMap = new HashMap<>(spots.size());
+		for (Spot spot : spots) {
+			if (spotSelection.remove(spot)) {
+				spotMap.put(spot, false);
 				if (DEBUG)
-					System.out.println("[SelectionModel] Removing Spot " + Spot + " from selection");
+					System.out.println("[SelectionModel] Removing spot " + spot + " from selection");
 			}
 		}
-		SelectionChangeEvent event = new SelectionChangeEvent(this, SpotMap, null);
+		SelectionChangeEvent event = new SelectionChangeEvent(this, spotMap, null);
 		for (SelectionChangeListener listener : selectionChangeListeners)
 			listener.selectionChanged(event);
 	}
@@ -221,7 +217,7 @@ public class SelectionModel {
 	}
 
 	public Set<Spot> getSpotSelection() {
-		return SpotSelection;
+		return spotSelection;
 	}
 
 	public Set<DefaultWeightedEdge> getEdgeSelection() {
@@ -232,69 +228,60 @@ public class SelectionModel {
 	 * SPECIAL METHODS
 	 */
 
+
 	/**
-	 * Search and add all Spots and links belonging to the same track(s) that
-	 * of given <code>Spots</code> and <code>edges</code> to current
-	 * selection. A <code>direction</code> parameter allow specifying whether we
-	 * should include only parts upwards in time, downwards in time or all the way
-	 * through.
-	 * 
-	 * @param Spots
-	 *            the Spots to include in search
-	 * @param edges
-	 *            the edges to include in search
-	 * @param direction
-	 *            the direction to go when searching. Positive integers will result
-	 *            in searching upwards in time, negative integers downwards in time
-	 *            and 0 all the way through.
+	 * Search and add all spots and links belonging to the same track(s) that of given <code>spots</code> and 
+	 * <code>edges</code> to current selection. A <code>direction</code> parameter allow specifying
+	 * whether we should include only parts upwards in time, downwards in time or all the way through. 
+	 * @param spots  the spots to include in search
+	 * @param edges  the edges to include in search
+	 * @param direction  the direction to go when searching. Positive integers will result in searching
+	 * upwards in time, negative integers downwards in time and 0 all the way through.
 	 */
-	public void selectTrack(final Collection<Spot> Spots, final Collection<DefaultWeightedEdge> edges,
-			final int direction) {
+	public void selectTrack(final Collection<Spot> spots, final Collection<DefaultWeightedEdge> edges, final int direction) {
 
-		HashSet<Spot> inspectionSpots = new HashSet<>(Spots);
+		HashSet<Spot> inspectionSpots = new HashSet<>(spots);
 
-		for (DefaultWeightedEdge edge : edges) {
-			// We add connected Spots to the list of Spots to inspect
+		for(DefaultWeightedEdge edge : edges) {
+			// We add connected spots to the list of spots to inspect
 			inspectionSpots.add(model.getTrackModel().getEdgeSource(edge));
 			inspectionSpots.add(model.getTrackModel().getEdgeTarget(edge));
 		}
 
 		// Walk across tracks to build selection
-		final HashSet<Spot> lSpotSelection = new HashSet<>();
-		final HashSet<DefaultWeightedEdge> lEdgeSelection = new HashSet<>();
+		final HashSet<Spot> lSpotSelection 					= new HashSet<>();
+		final HashSet<DefaultWeightedEdge> lEdgeSelection 	= new HashSet<>();
 
 		if (direction == 0) { // Unconditionally
-			for (Spot Spot : inspectionSpots) {
-				lSpotSelection.add(Spot);
-				GraphIterator<Spot, DefaultWeightedEdge> walker = model.getTrackModel()
-						.getDepthFirstIterator(Spot, false);
-				while (walker.hasNext()) {
+			for (Spot spot : inspectionSpots) {
+				lSpotSelection.add(spot);
+				GraphIterator<Spot, DefaultWeightedEdge> walker = model.getTrackModel().getDepthFirstIterator(spot, false);
+				while (walker.hasNext()) { 
 					Spot target = walker.next();
-					lSpotSelection.add(target);
+					lSpotSelection.add(target); 
 					// Deal with edges
 					Set<DefaultWeightedEdge> targetEdges = model.getTrackModel().edgesOf(target);
-					for (DefaultWeightedEdge targetEdge : targetEdges) {
+					for(DefaultWeightedEdge targetEdge : targetEdges) {
 						lEdgeSelection.add(targetEdge);
 					}
 				}
 			}
 
-		} else { // Only upward or backward in time
-			for (Spot Spot : inspectionSpots) {
-				lSpotSelection.add(Spot);
+		} else { // Only upward or backward in time 
+			for (Spot spot : inspectionSpots) {
+				lSpotSelection.add(spot);
 
 				// A bit more complicated: we want to walk in only one direction,
 				// when branching is occurring, we do not want to get back in time.
 				Stack<Spot> stack = new Stack<>();
-				stack.add(Spot);
-				while (!stack.isEmpty()) {
+				stack.add(spot);
+				while (!stack.isEmpty()) { 
 					Spot inspected = stack.pop();
 					Set<DefaultWeightedEdge> targetEdges = model.getTrackModel().edgesOf(inspected);
-					for (DefaultWeightedEdge targetEdge : targetEdges) {
+					for(DefaultWeightedEdge targetEdge : targetEdges) {
 						Spot other;
 						if (direction > 0) {
-							// Upward in time: we just have to search through edges using their source
-							// Spots
+							// Upward in time: we just have to search through edges using their source spots
 							other = model.getTrackModel().getEdgeSource(targetEdge);
 						} else {
 							other = model.getTrackModel().getEdgeTarget(targetEdge);
@@ -310,14 +297,13 @@ public class SelectionModel {
 			}
 		}
 
-		// Cut "tail": remove the first an last edges in time, so that the selection
-		// only has conencted
+		// Cut "tail": remove the first an last edges in time, so that the selection only has conencted 
 		// edges in it.
 		ArrayList<DefaultWeightedEdge> edgesToRemove = new ArrayList<>();
-		for (DefaultWeightedEdge edge : lEdgeSelection) {
+		for(DefaultWeightedEdge edge : lEdgeSelection) {
 			Spot source = model.getTrackModel().getEdgeSource(edge);
 			Spot target = model.getTrackModel().getEdgeTarget(edge);
-			if (!(lSpotSelection.contains(source) && lSpotSelection.contains(target))) {
+			if ( !(lSpotSelection.contains(source) && lSpotSelection.contains(target)) ) {
 				edgesToRemove.add(edge);
 			}
 		}

@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.features;
+package fiji.plugin.trackmate.features;
 
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -19,19 +19,21 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.Dimension;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.util.ExportableChartPanel;
-import Buddy.plugin.trackmate.util.TMUtils;
-import Buddy.plugin.trackmate.util.XYEdgeRenderer;
-import Buddy.plugin.trackmate.util.XYEdgeSeries;
-import Buddy.plugin.trackmate.util.XYEdgeSeriesCollection;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.gui.displaysettings.Colormap;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.util.ExportableChartPanel;
+import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.util.XYEdgeRenderer;
+import fiji.plugin.trackmate.util.XYEdgeSeries;
+import fiji.plugin.trackmate.util.XYEdgeSeriesCollection;
 
-public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
+public class SpotFeatureGrapher extends AbstractFeatureGrapher
 {
 
-	private final Collection< BCellobject > BCellobjects;
+	private final Collection< Spot > spots;
 
 	private final Dimension xDimension;
 
@@ -43,13 +45,13 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 	 * CONSTRUCTOR
 	 */
 
-	public BCellobjectFeatureGrapher( final String xFeature, final Set< String > yFeatures, final Collection< BCellobject > BCellobjects, final Model model )
+	public SpotFeatureGrapher( final String xFeature, final Set< String > yFeatures, final Collection< Spot > spots, final Model model, final DisplaySettings displaySettings )
 	{
-		super( xFeature, yFeatures, model );
-		this.BCellobjects = BCellobjects;
-		this.xDimension = model.getFeatureModel().getBCellobjectFeatureDimensions().get( xFeature );
-		this.yDimensions = model.getFeatureModel().getBCellobjectFeatureDimensions();
-		this.featureNames = model.getFeatureModel().getBCellobjectFeatureNames();
+		super( xFeature, yFeatures, model, displaySettings );
+		this.spots = spots;
+		this.xDimension = model.getFeatureModel().getSpotFeatureDimensions().get( xFeature );
+		this.yDimensions = model.getFeatureModel().getSpotFeatureDimensions();
+		this.featureNames = model.getFeatureModel().getSpotFeatureNames();
 	}
 
 	/*
@@ -59,6 +61,7 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 	@Override
 	public void render()
 	{
+		final Colormap colormap = displaySettings.getColormap();
 
 		// X label
 		final String xAxisLabel = xFeature + " (" + TMUtils.getUnitsFor( xDimension, model.getSpaceUnits(), model.getTimeUnits() ) + ")";
@@ -81,7 +84,7 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 			final String title = buildPlotTitle( featuresThisDimension, featureNames );
 
 			// Data-set for points (easy)
-			final XYSeriesCollection pointDataset = buildBCellobjectDataSet( featuresThisDimension, BCellobjects );
+			final XYSeriesCollection pointDataset = buildSpotDataSet( featuresThisDimension, spots );
 
 			// Point renderer
 			final XYLineAndShapeRenderer pointRenderer = new XYLineAndShapeRenderer();
@@ -90,7 +93,7 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 			final XYEdgeRenderer edgeRenderer = new XYEdgeRenderer();
 
 			// Data-set for edges
-			final XYEdgeSeriesCollection edgeDataset = buildEdgeDataSet( featuresThisDimension, BCellobjects );
+			final XYEdgeSeriesCollection edgeDataset = buildEdgeDataSet( featuresThisDimension, spots );
 
 			// The chart
 			final JFreeChart chart = ChartFactory.createXYLineChart( title, xAxisLabel, yAxisLabel, pointDataset, PlotOrientation.VERTICAL, true, true, false );
@@ -115,8 +118,8 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 				pointRenderer.setSeriesOutlinePaint( i, Color.black );
 				pointRenderer.setSeriesLinesVisible( i, false );
 				pointRenderer.setSeriesShape( i, DEFAULT_SHAPE, false );
-				pointRenderer.setSeriesPaint( i, paints.getPaint( ( double ) i / nseries ), false );
-				edgeRenderer.setSeriesPaint( i, paints.getPaint( ( double ) i / nseries ), false );
+				pointRenderer.setSeriesPaint( i, colormap.getPaint( ( double ) i / nseries ), false );
+				edgeRenderer.setSeriesPaint( i, colormap.getPaint( ( double ) i / nseries ), false );
 			}
 
 			// The panel
@@ -130,18 +133,18 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 
 	/**
 	 * @return a new dataset that contains the values, specified from the given
-	 *         feature, and extracted from all the given BCellobjects.
+	 *         feature, and extracted from all the given spots.
 	 */
-	private XYSeriesCollection buildBCellobjectDataSet( final Iterable< String > targetYFeatures, final Iterable< BCellobject > lBCellobjects )
+	private XYSeriesCollection buildSpotDataSet( final Iterable< String > targetYFeatures, final Iterable< Spot > lSpots )
 	{
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		for ( final String feature : targetYFeatures )
 		{
 			final XYSeries series = new XYSeries( featureNames.get( feature ) );
-			for ( final BCellobject BCellobject : lBCellobjects )
+			for ( final Spot spot : lSpots )
 			{
-				final Double x = BCellobject.getFeature( xFeature );
-				final Double y = BCellobject.getFeature( feature );
+				final Double x = spot.getFeature( xFeature );
+				final Double y = spot.getFeature( feature );
 				if ( null == x || null == y )
 					continue;
 
@@ -154,20 +157,20 @@ public class BCellobjectFeatureGrapher extends AbstractFeatureGrapher
 
 	/**
 	 * @return a new dataset that contains the values, specified from the given
-	 *         feature, and extracted from all the given BCellobjects. The dataset
+	 *         feature, and extracted from all the given spots. The dataset
 	 *         returned is a {@link XYEdgeSeriesCollection}, made to plot the
-	 *         lines between 2 points representing 2 BCellobject. We therefore retrieve
+	 *         lines between 2 points representing 2 spot. We therefore retrieve
 	 */
-	private XYEdgeSeriesCollection buildEdgeDataSet( final Iterable< String > targetYFeatures, final Collection< BCellobject > lBCellobjects )
+	private XYEdgeSeriesCollection buildEdgeDataSet( final Iterable< String > targetYFeatures, final Collection< Spot > lSpots )
 	{
 		// Collect edges
-		final List< DefaultWeightedEdge > edges = getInsideEdges( lBCellobjects );
+		final List< DefaultWeightedEdge > edges = getInsideEdges( lSpots );
 
 		// Build dataset
 		final XYEdgeSeriesCollection edgeDataset = new XYEdgeSeriesCollection();
 		Double x0, x1, y0, y1;
 		XYEdgeSeries edgeSeries;
-		BCellobject source, target;
+		Spot source, target;
 		for ( final String yFeature : targetYFeatures )
 		{
 			edgeSeries = new XYEdgeSeries( featureNames.get( yFeature ) );

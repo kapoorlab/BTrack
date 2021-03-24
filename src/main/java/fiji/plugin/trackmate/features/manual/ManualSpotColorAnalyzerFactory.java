@@ -1,27 +1,28 @@
 package fiji.plugin.trackmate.features.manual;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
+import fiji.plugin.trackmate.features.spot.SpotAnalyzer;
+import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import net.imagej.ImgPlus;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
-@Plugin( type = EdgeAnalyzer.class )
-public class ManualEdgeColorAnalyzer implements EdgeAnalyzer
+@Plugin( type = SpotAnalyzerFactory.class )
+public class ManualSpotColorAnalyzerFactory< T extends RealType< T > & NativeType< T > > implements SpotAnalyzerFactory< T >
 {
 
-	public static final String FEATURE = "MANUAL_EGE_COLOR";
+	public static final String FEATURE = "MANUAL_SPOT_COLOR";
 
-	public static final String KEY = "Manual edge color";
+	public static final String KEY = "Manual spot color";
 
 	static final List< String > FEATURES = new ArrayList<>( 1 );
 
@@ -33,25 +34,17 @@ public class ManualEdgeColorAnalyzer implements EdgeAnalyzer
 
 	static final Map< String, Boolean > IS_INT = new HashMap<>( 1 );
 
-	static final String INFO_TEXT = "<html>A dummy analyzer for the feature that stores the color manually assigned to each edge.</html>";
+	static final String INFO_TEXT = "<html>A dummy analyzer for the feature that stores the color manually assigned to each spot.</html>";
 
 	static final String NAME = KEY;
 
 	static
 	{
 		FEATURES.add( FEATURE );
-		FEATURE_SHORT_NAMES.put( FEATURE, "Edge color" );
-		FEATURE_NAMES.put( FEATURE, "Manual edge color" );
+		FEATURE_SHORT_NAMES.put( FEATURE, "Spot color" );
+		FEATURE_NAMES.put( FEATURE, "Manual spot color" );
 		FEATURE_DIMENSIONS.put( FEATURE, Dimension.NONE );
 		IS_INT.put( FEATURE, Boolean.TRUE );
-	}
-
-	private long processingTime;
-
-	@Override
-	public long getProcessingTime()
-	{
-		return processingTime;
 	}
 
 	@Override
@@ -85,29 +78,21 @@ public class ManualEdgeColorAnalyzer implements EdgeAnalyzer
 	}
 
 	@Override
+	public String getInfoText()
+	{
+		return INFO_TEXT;
+	}
+
+	@Override
 	public Map< String, Boolean > getIsIntFeature()
 	{
 		return IS_INT;
 	}
 
 	@Override
-	public void setNumThreads()
-	{}
-
-	@Override
-	public void setNumThreads( final int numThreads )
-	{}
-
-	@Override
-	public int getNumThreads()
+	public boolean isManualFeature()
 	{
-		return 1;
-	}
-
-	@Override
-	public String getInfoText()
-	{
-		return INFO_TEXT;
+		return true;
 	}
 
 	@Override
@@ -123,18 +108,8 @@ public class ManualEdgeColorAnalyzer implements EdgeAnalyzer
 	}
 
 	@Override
-	public void process( final Collection< DefaultWeightedEdge > edges, final Model model )
-	{}
-
-	@Override
-	public boolean isLocal()
+	public SpotAnalyzer< T > getAnalyzer( final ImgPlus< T > img, final int frame, final int channel )
 	{
-		return true;
-	}
-
-	@Override
-	public boolean isManualFeature()
-	{
-		return true;
+		return SpotAnalyzer.dummyAnalyzer();
 	}
 }

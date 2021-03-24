@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate;
+package fiji.plugin.trackmate;
 
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;

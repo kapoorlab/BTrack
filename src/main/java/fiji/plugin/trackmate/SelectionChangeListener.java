@@ -1,7 +1,7 @@
 /**
  * 
  */
-package Buddy.plugin.trackmate;
+package fiji.plugin.trackmate;
 
 import java.util.EventListener;
 
@@ -12,10 +12,9 @@ public interface SelectionChangeListener extends EventListener {
 
 	/**
 	 * Called whenever the value of the selection changes.
-	 * 
-	 * @param event
-	 *            the event that characterizes the change.
+	 * @param event  the event that characterizes the change.
 	 */
 	public void selectionChanged(SelectionChangeEvent event);
+
 
 }

@@ -1,6 +1,6 @@
-package Buddy.plugin.trackmate.features;
+package fiji.plugin.trackmate.features;
 
-import static Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme.TRACK_SCHEME_ICON;
+import static fiji.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -19,21 +19,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import org.jfree.chart.renderer.InterpolatePaintScale;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackMateOptionUtils;
-import Buddy.plugin.trackmate.TrackModel;
-import Buddy.plugin.trackmate.util.ExportableChartPanel;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.util.ExportableChartPanel;
 
 public abstract class AbstractFeatureGrapher
 {
 
 	protected static final Shape DEFAULT_SHAPE = new Ellipse2D.Double( -3, -3, 6, 6 );
-
-	protected final InterpolatePaintScale paints = TrackMateOptionUtils.getOptions().getPaintScale();
 
 	protected final String xFeature;
 
@@ -41,11 +38,14 @@ public abstract class AbstractFeatureGrapher
 
 	protected final Model model;
 
-	public AbstractFeatureGrapher( final String xFeature, final Set< String > yFeatures, final Model model )
+	protected final DisplaySettings displaySettings;
+
+	public AbstractFeatureGrapher( final String xFeature, final Set< String > yFeatures, final Model model, final DisplaySettings displaySettings )
 	{
 		this.xFeature = xFeature;
 		this.yFeatures = yFeatures;
 		this.model = model;
+		this.displaySettings = displaySettings;
 	}
 
 	/**
@@ -145,18 +145,18 @@ public abstract class AbstractFeatureGrapher
 
 	/**
 	 * @return the list of links that have their source and target in the given
-	 *         BCellobject list.
+	 *         spot list.
 	 */
-	protected final List< DefaultWeightedEdge > getInsideEdges( final Collection< BCellobject > BCellobjects )
+	protected final List< DefaultWeightedEdge > getInsideEdges( final Collection< Spot > spots )
 	{
-		final int nBCellobjects = BCellobjects.size();
-		final ArrayList< DefaultWeightedEdge > edges = new ArrayList<>( nBCellobjects );
+		final int nspots = spots.size();
+		final ArrayList< DefaultWeightedEdge > edges = new ArrayList<>( nspots );
 		final TrackModel trackModel = model.getTrackModel();
 		for ( final DefaultWeightedEdge edge : trackModel.edgeSet() )
 		{
-			final BCellobject source = trackModel.getEdgeSource( edge );
-			final BCellobject target = trackModel.getEdgeTarget( edge );
-			if ( BCellobjects.contains( source ) && BCellobjects.contains( target ) )
+			final Spot source = trackModel.getEdgeSource( edge );
+			final Spot target = trackModel.getEdgeTarget( edge );
+			if ( spots.contains( source ) && spots.contains( target ) )
 				edges.add( edge );
 
 		}

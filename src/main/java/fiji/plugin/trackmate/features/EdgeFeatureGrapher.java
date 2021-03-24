@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.features;
+package fiji.plugin.trackmate.features;
 
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -18,14 +18,16 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.Dimension;
-import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.util.ExportableChartPanel;
-import Buddy.plugin.trackmate.util.TMUtils;
-import Buddy.plugin.trackmate.util.XYEdgeRenderer;
-import Buddy.plugin.trackmate.util.XYEdgeSeries;
-import Buddy.plugin.trackmate.util.XYEdgeSeriesCollection;
+import fiji.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.FeatureModel;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.gui.displaysettings.Colormap;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.util.ExportableChartPanel;
+import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.util.XYEdgeRenderer;
+import fiji.plugin.trackmate.util.XYEdgeSeries;
+import fiji.plugin.trackmate.util.XYEdgeSeriesCollection;
 
 public class EdgeFeatureGrapher extends AbstractFeatureGrapher
 {
@@ -38,9 +40,9 @@ public class EdgeFeatureGrapher extends AbstractFeatureGrapher
 
 	private final Map< String, String > featureNames;
 
-	public EdgeFeatureGrapher( final String xFeature, final Set< String > yFeatures, final List< DefaultWeightedEdge > edges, final Model model )
+	public EdgeFeatureGrapher( final String xFeature, final Set< String > yFeatures, final List< DefaultWeightedEdge > edges, final Model model, final DisplaySettings displaySettings )
 	{
-		super( xFeature, yFeatures, model );
+		super( xFeature, yFeatures, model, displaySettings );
 		this.edges = edges;
 		this.xDimension = model.getFeatureModel().getEdgeFeatureDimensions().get( xFeature );
 		this.yDimensions = model.getFeatureModel().getEdgeFeatureDimensions();
@@ -50,6 +52,7 @@ public class EdgeFeatureGrapher extends AbstractFeatureGrapher
 	@Override
 	public void render()
 	{
+		final Colormap colormap = displaySettings.getColormap();
 
 		// Check x units
 		final String xdim = TMUtils.getUnitsFor( xDimension, model.getSpaceUnits(), model.getTimeUnits() );
@@ -119,8 +122,8 @@ public class EdgeFeatureGrapher extends AbstractFeatureGrapher
 				pointRenderer.setSeriesOutlinePaint( i, Color.black );
 				pointRenderer.setSeriesLinesVisible( i, false );
 				pointRenderer.setSeriesShape( i, DEFAULT_SHAPE, false );
-				pointRenderer.setSeriesPaint( i, paints.getPaint( ( double ) i / nseries ), false );
-				edgeRenderer.setSeriesPaint( i, paints.getPaint( ( double ) i / nseries ), false );
+				pointRenderer.setSeriesPaint( i, colormap.getPaint( ( double ) i / nseries ), false );
+				edgeRenderer.setSeriesPaint( i, colormap.getPaint( ( double ) i / nseries ), false );
 			}
 
 			// The panel

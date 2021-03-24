@@ -1,72 +1,71 @@
-package Buddy.plugin.trackmate;
+package fiji.plugin.trackmate;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
-import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
-import budDetector.Spot;
+import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
+import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 
 /**
  * This class represents the part of the {@link Model} that is in charge of
- * dealing with Spot features and track features.
+ * dealing with spot features and track features.
  *
- * @author Jean-Yves Tinevez, 2011, 2012
+ * @author Jean-Yves Tinevez, 2011, 2012. Revised December 2020.
  *
  */
-public class FeatureModel {
+public class FeatureModel
+{
 
 	/*
 	 * FIELDS
 	 */
 
-	private final Collection<String> trackFeatures = new LinkedHashSet<>();
+	private final Collection< String > trackFeatures = new LinkedHashSet<>();
 
-	private final Map<String, String> trackFeatureNames = new HashMap<>();
+	private final Map< String, String > trackFeatureNames = new HashMap<>();
 
-	private final Map<String, String> trackFeatureShortNames = new HashMap<>();
+	private final Map< String, String > trackFeatureShortNames = new HashMap<>();
 
-	private final Map<String, Dimension> trackFeatureDimensions = new HashMap<>();
+	private final Map< String, Dimension > trackFeatureDimensions = new HashMap<>();
 
-	private final Map<String, Boolean> trackFeatureIsInt = new HashMap<>();
+	private final Map< String, Boolean > trackFeatureIsInt = new HashMap<>();
 
 	/**
-	 * Feature storage. We use a Map of Map as a 2D Map. The list maps each track to
-	 * its feature map. The feature map maps each feature to the double value for
-	 * the specified feature.
+	 * Feature storage. We use a Map of Map as a 2D Map. The list maps each
+	 * track to its feature map. The feature map maps each feature to the double
+	 * value for the specified feature.
 	 */
-	Map<Integer, Map<String, Double>> trackFeatureValues = new ConcurrentHashMap<>();
+	Map< Integer, Map< String, Double > > trackFeatureValues = new ConcurrentHashMap<>();
 
 	/**
 	 * Feature storage for edges.
 	 */
-	private final ConcurrentHashMap<DefaultWeightedEdge, ConcurrentHashMap<String, Double>> edgeFeatureValues = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap< DefaultWeightedEdge, ConcurrentHashMap< String, Double > > edgeFeatureValues = new ConcurrentHashMap<>();
 
-	private final Collection<String> edgeFeatures = new LinkedHashSet<>();
+	private final Collection< String > edgeFeatures = new LinkedHashSet<>();
 
-	private final Map<String, String> edgeFeatureNames = new HashMap<>();
+	private final Map< String, String > edgeFeatureNames = new HashMap<>();
 
-	private final Map<String, String> edgeFeatureShortNames = new HashMap<>();
+	private final Map< String, String > edgeFeatureShortNames = new HashMap<>();
 
-	private final Map<String, Dimension> edgeFeatureDimensions = new HashMap<>();
+	private final Map< String, Dimension > edgeFeatureDimensions = new HashMap<>();
 
-	private final Map<String, Boolean> edgeFeatureIsInt = new HashMap<>();
+	private final Map< String, Boolean > edgeFeatureIsInt = new HashMap<>();
 
-	private final Collection<String> SpotFeatures = new LinkedHashSet<>();
+	private final Collection< String > spotFeatures = new LinkedHashSet<>();
 
-	private final Map<String, String> SpotFeatureNames = new HashMap<>();
+	private final Map< String, String > spotFeatureNames = new HashMap<>();
 
-	private final Map<String, String> SpotFeatureShortNames = new HashMap<>();
+	private final Map< String, String > spotFeatureShortNames = new HashMap<>();
 
-	private final Map<String, Dimension> SpotFeatureDimensions = new HashMap<>();
+	private final Map< String, Dimension > spotFeatureDimensions = new HashMap<>();
 
-	private final Map<String, Boolean> SpotFeatureIsInt = new HashMap<>();
+	private final Map< String, Boolean > spotFeatureIsInt = new HashMap<>();
 
 	private final Model model;
 
@@ -75,19 +74,23 @@ public class FeatureModel {
 	 */
 
 	/**
-	 * Instantiates a new feature model. The basic Spot features (POSITON_*,
-	 * RADIUS, FRAME, QUALITY) are declared. Edge and track feature declarations are
-	 * left blank.
+	 * Instantiates a new feature model. The basic spot features (POSITON_*,
+	 * RADIUS, FRAME, QUALITY) are declared. Edge and track feature declarations
+	 * are left blank.
 	 *
 	 * @param model
 	 *            the parent {@link Model}.
 	 */
-	protected FeatureModel(final Model model) {
+	protected FeatureModel( final Model model )
+	{
 		this.model = model;
-		// Adds the base Spot features
-		declareSpotFeatures(Spot.FEATURES, Spot.FEATURE_NAMES, Spot.FEATURE_SHORT_NAMES,
-				Spot.FEATURE_DIMENSIONS, Spot.IS_INT);
-		
+		// Adds the base spot, edge & track features
+		declareSpotFeatures(
+				Spot.FEATURES,
+				Spot.FEATURE_NAMES,
+				Spot.FEATURE_SHORT_NAMES,
+				Spot.FEATURE_DIMENSIONS,
+				Spot.IS_INT );
 		declareEdgeFeatures(
 				EdgeTargetAnalyzer.FEATURES,
 				EdgeTargetAnalyzer.FEATURE_NAMES,
@@ -450,17 +453,17 @@ public class FeatureModel {
 	}
 
 	/*
-	 * Spot FEATURES the Spot features are stored in the Spot object themselves,
+	 * SPOT FEATURES the spot features are stored in the Spot object themselves,
 	 * but we declare them here.
 	 */
 
 	/**
-	 * Declares Spot features, by specifying their names, short name and
+	 * Declares spot features, by specifying their names, short name and
 	 * dimension. An {@link IllegalArgumentException} will be thrown if any of
 	 * the map misses a feature.
 	 *
 	 * @param features
-	 *            the list of Spot feature to register.
+	 *            the list of spot feature to register.
 	 * @param featureNames
 	 *            the name of these features.
 	 * @param featureShortNames
@@ -474,74 +477,74 @@ public class FeatureModel {
 	 */
 	public void declareSpotFeatures( final Collection< String > features, final Map< String, String > featureNames, final Map< String, String > featureShortNames, final Map< String, Dimension > featureDimensions, final Map< String, Boolean > isIntFeature )
 	{
-		SpotFeatures.addAll( features );
+		spotFeatures.addAll( features );
 		for ( final String feature : features )
 		{
 
 			final String name = featureNames.get( feature );
 			if ( null == name )
 				throw new IllegalArgumentException( "Feature " + feature + " misses a name." );
-			SpotFeatureNames.put( feature, name );
+			spotFeatureNames.put( feature, name );
 
 			final String shortName = featureShortNames.get( feature );
 			if ( null == shortName )
 				throw new IllegalArgumentException( "Feature " + feature + " misses a short name." );
-			SpotFeatureShortNames.put( feature, shortName );
+			spotFeatureShortNames.put( feature, shortName );
 
 			final Dimension dimension = featureDimensions.get( feature );
 			if ( null == dimension )
 				throw new IllegalArgumentException( "Feature " + feature + " misses a dimension." );
-			SpotFeatureDimensions.put( feature, dimension );
+			spotFeatureDimensions.put( feature, dimension );
 
 			final Boolean isInt = isIntFeature.get( feature );
 			if ( null == isInt )
 				throw new IllegalArgumentException( "Feature " + feature + " misses the isInt flag." );
-			SpotFeatureIsInt.put( feature, isInt );
+			spotFeatureIsInt.put( feature, isInt );
 
 		}
 	}
 
 	/**
-	 * Returns Spot features as declared in this model.
+	 * Returns spot features as declared in this model.
 	 *
-	 * @return the Spot features.
+	 * @return the spot features.
 	 */
 	public Collection< String > getSpotFeatures()
 	{
-		return SpotFeatures;
+		return spotFeatures;
 	}
 
 	/**
-	 * Returns the name mapping of the Spot features that are dealt with in this
+	 * Returns the name mapping of the spot features that are dealt with in this
 	 * model.
 	 *
-	 * @return the map of Spot feature names.
+	 * @return the map of spot feature names.
 	 */
 	public Map< String, String > getSpotFeatureNames()
 	{
-		return SpotFeatureNames;
+		return spotFeatureNames;
 	}
 
 	/**
-	 * Returns the short name mapping of the Spot features that are dealt with
+	 * Returns the short name mapping of the spot features that are dealt with
 	 * in this model.
 	 *
-	 * @return the map of Spot short names.
+	 * @return the map of spot short names.
 	 */
 	public Map< String, String > getSpotFeatureShortNames()
 	{
-		return SpotFeatureShortNames;
+		return spotFeatureShortNames;
 	}
 
 	/**
-	 * Returns the dimension mapping of the Spot features that are dealt with in
+	 * Returns the dimension mapping of the spot features that are dealt with in
 	 * this model.
 	 *
-	 * @return the map of Spot feature dimensions.
+	 * @return the map of spot feature dimensions.
 	 */
 	public Map< String, Dimension > getSpotFeatureDimensions()
 	{
-		return SpotFeatureDimensions;
+		return spotFeatureDimensions;
 	}
 
 	/**
@@ -552,7 +555,7 @@ public class FeatureModel {
 	 */
 	public Map< String, Boolean > getSpotFeatureIsInt()
 	{
-		return SpotFeatureIsInt;
+		return spotFeatureIsInt;
 	}
 
 	@Override
@@ -562,7 +565,7 @@ public class FeatureModel {
 
 		// Spots
 		str.append( "Spot features declared:\n" );
-		appendFeatureDeclarations( str, SpotFeatures, SpotFeatureNames, SpotFeatureShortNames, SpotFeatureDimensions, SpotFeatureIsInt );
+		appendFeatureDeclarations( str, spotFeatures, spotFeatureNames, spotFeatureShortNames, spotFeatureDimensions, spotFeatureIsInt );
 		str.append( '\n' );
 
 		// Edges
@@ -590,7 +593,7 @@ public class FeatureModel {
 		// Spots
 		str.append( "Spot features:\n" );
 		str.append( " - Declared:\n" );
-		appendFeatureDeclarations( str, SpotFeatures, SpotFeatureNames, SpotFeatureShortNames, SpotFeatureDimensions, SpotFeatureIsInt );
+		appendFeatureDeclarations( str, spotFeatures, spotFeatureNames, spotFeatureShortNames, spotFeatureDimensions, spotFeatureIsInt );
 		str.append( '\n' );
 
 		// Edges

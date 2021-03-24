@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import Buddy.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.Dimension;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import tracker.BUDDYDimension;

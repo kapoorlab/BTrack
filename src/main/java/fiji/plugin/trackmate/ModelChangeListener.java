@@ -1,11 +1,10 @@
-package Buddy.plugin.trackmate;
+package fiji.plugin.trackmate;
 
 import java.util.EventListener;
 
 /**
- * An interface for listeners that will be notified when a {@link Model} is been
- * changed.
- * 
+ * An interface for listeners that will be notified when a {@link Model}
+ * is been changed.
  * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt; May 30, 2011
  *
  */
@@ -18,4 +17,5 @@ public interface ModelChangeListener extends EventListener {
 	 *            the {@link ModelChangeEvent}.
 	 */
 	public void modelChanged(final ModelChangeEvent event);
+	
 }

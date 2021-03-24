@@ -1,11 +1,11 @@
-package Buddy.plugin.trackmate.features.edges;
+package fiji.plugin.trackmate.features.edges;
 
 import java.util.Collection;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.features.FeatureAnalyzer;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.features.FeatureAnalyzer;
 import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
 
@@ -21,7 +21,7 @@ public interface EdgeAnalyzer extends Benchmark, FeatureAnalyzer, MultiThreaded
 
 	/**
 	 * Scores a collection of link between two spots. The results must be stored
-	 * in the {@link Buddy.plugin.trackmate.FeatureModel}.
+	 * in the {@link fiji.plugin.trackmate.FeatureModel}.
 	 * <p>
 	 * Note: ideally concrete implementation should work in a multi-threaded
 	 * fashion for performance reason, when possible.

@@ -1,18 +1,27 @@
-package Buddy.plugin.trackmate;
+package fiji.plugin.trackmate;
 
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Buddy.plugin.trackmate.features.FeatureAnalyzer;
-import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.features.Spot.SpotAnalyzerFactory;
-import Buddy.plugin.trackmate.features.edges.EdgeAnalyzer;
-import Buddy.plugin.trackmate.features.track.TrackAnalyzer;
-import Buddy.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.detection.DetectionUtils;
+import fiji.plugin.trackmate.detection.DetectorKeys;
+import fiji.plugin.trackmate.detection.LogDetectorFactory;
+import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
+import fiji.plugin.trackmate.features.FeatureAnalyzer;
+import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
+import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactoryBase;
+import fiji.plugin.trackmate.features.track.TrackAnalyzer;
+import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
+import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
+import fiji.plugin.trackmate.providers.SpotMorphologyAnalyzerProvider;
+import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
+import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.io.FileInfo;
@@ -21,25 +30,19 @@ import ij.io.FileInfo;
  * This class is used to store user settings for the {@link TrackMate}
  * trackmate. It is simply made of public fields
  */
-public class Settings {
+public class Settings
+{
 
 	/**
 	 * The ImagePlus to operate on. Will also be used by some
-	 * {@link Buddy.plugin.trackmate.visualization.TrackMateModelView} as a GUI
+	 * {@link fiji.plugin.trackmate.visualization.TrackMateModelView} as a GUI
 	 * target.
 	 */
 	public ImagePlus imp;
 
 	/**
-	 * The polygon of interest. This will be used to crop the image and to discard
-	 * found Spots out of the polygon. If <code>null</code>, the whole image
-	 * is considered.
-	 */
-	public Polygon polygon;
-
-	/**
 	 * The region of interest (ROI). This will be used to crop the image and to
-	 * discard found Spots outside the ROI. If <code>null</code>, the whole
+	 * discard found spots outside the ROI. If <code>null</code>, the whole
 	 * image is considered.
 	 */
 	public Roi roi;
@@ -110,90 +113,94 @@ public class Settings {
 
 	/**
 	 * The name of the detector factory to use. It will be used to generate
-	 * {@link Buddy.plugin.trackmate.detection.SpotDetector} for each target
+	 * {@link fiji.plugin.trackmate.detection.SpotDetector} for each target
 	 * frame.
 	 */
+	public SpotDetectorFactoryBase< ? > detectorFactory;
 
 	/** The the tracker to use. */
 	public SpotTrackerFactory trackerFactory;
 
 	/**
-	 * Settings map for {@link Buddy.plugin.trackmate.detection.SpotDetector}.
-	 * 
-	 * @see Buddy.plugin.trackmate.detection.DetectorKeys
+	 * Settings map for {@link fiji.plugin.trackmate.detection.SpotDetector}.
+	 *
+	 * @see fiji.plugin.trackmate.detection.DetectorKeys
 	 */
-	public Map<String, Object> detectorSettings = new HashMap<>();
+	public Map< String, Object > detectorSettings = new HashMap<>();
 
 	/**
-	 * Settings map for {@link Buddy.plugin.trackmate.tracking.SpotTracker}.
-	 * 
-	 * @see Buddy.plugin.trackmate.tracking.TrackerKeys
+	 * Settings map for {@link fiji.plugin.trackmate.tracking.SpotTracker}.
+	 *
+	 * @see fiji.plugin.trackmate.tracking.TrackerKeys
 	 */
-	public Map<String, Object> trackerSettings = new HashMap<>();
+	public Map< String, Object > trackerSettings = new HashMap<>();
 
 	// Filters
 
 	/**
 	 * The feature filter list.
 	 */
-	protected List<FeatureFilter> SpotFilters = new ArrayList<>();
+	protected List< FeatureFilter > spotFilters = new ArrayList<>();
 
 	/**
-	 * The initial quality filter value that is used to clip Spots of low
-	 * quality from Spots.
+	 * The initial quality filter value that is used to clip spots of low
+	 * quality from spots.
 	 */
-	public Double initialSpotFilterValue = Double.valueOf(0);
+	public Double initialSpotFilterValue = Double.valueOf( 0 );
 
-	/** The track filter list that is used to prune track and Spots. */
-	protected List<FeatureFilter> trackFilters = new ArrayList<>();
+	/** The track filter list that is used to prune track and spots. */
+	protected List< FeatureFilter > trackFilters = new ArrayList<>();
 
 	protected String errorMessage;
 
 	// Spot features
 
 	/**
-	 * The {@link SpotAnalyzerFactory}s that will be used to compute
-	 * Spot features. They are ordered in a {@link List} in case some
-	 * analyzers requires the results of another analyzer to proceed.
+	 * The {@link SpotAnalyzerFactory}s that will be used to compute spot
+	 * features. They are ordered in a {@link List} in case some analyzers
+	 * requires the results of another analyzer to proceed.
 	 */
-	protected List<SpotAnalyzerFactory<?>> SpotAnalyzerFactories = new ArrayList<>();
+	protected List< SpotAnalyzerFactoryBase< ? > > spotAnalyzerFactories = new ArrayList<>();
 
 	// Edge features
 
 	/**
-	 * The {@link EdgeAnalyzer}s that will be used to compute edge features. They
-	 * are ordered in a {@link List} in case some analyzers requires the results of
-	 * another analyzer to proceed.
+	 * The {@link EdgeAnalyzer}s that will be used to compute edge features.
+	 * They are ordered in a {@link List} in case some analyzers requires the
+	 * results of another analyzer to proceed.
 	 */
-	protected List<EdgeAnalyzer> edgeAnalyzers = new ArrayList<>();
+	protected List< EdgeAnalyzer > edgeAnalyzers = new ArrayList<>();
 
 	// Track features
 
 	/**
-	 * The {@link TrackAnalyzer}s that will be used to compute track features. They
-	 * are ordered in a {@link List} in case some analyzers requires the results of
-	 * another analyzer to proceed.
+	 * The {@link TrackAnalyzer}s that will be used to compute track features.
+	 * They are ordered in a {@link List} in case some analyzers requires the
+	 * results of another analyzer to proceed.
 	 */
-	protected List<TrackAnalyzer> trackAnalyzers = new ArrayList<>();
+	protected List< TrackAnalyzer > trackAnalyzers = new ArrayList<>();
 
 	/*
 	 * METHODS
 	 */
 
-	public void setFrom(final ImagePlus imp) {
+	public void setFrom( final ImagePlus imp )
+	{
 		// Source image
 		this.imp = imp;
 
-		if (null == imp) {
+		if ( null == imp )
 			return; // we leave field default values
-		}
 
 		// File info
 		final FileInfo fileInfo = imp.getOriginalFileInfo();
-		if (null != fileInfo) {
+		if ( null != fileInfo )
+		{
 			this.imageFileName = fileInfo.fileName;
 			this.imageFolder = fileInfo.directory;
-		} else {
+		}
+		else
+		{
 			this.imageFileName = imp.getShortTitle();
 			this.imageFolder = "";
 
@@ -203,14 +210,13 @@ public class Settings {
 		this.height = imp.getHeight();
 		this.nslices = imp.getNSlices();
 		this.nframes = imp.getNFrames();
-		this.dx = (float) imp.getCalibration().pixelWidth;
-		this.dy = (float) imp.getCalibration().pixelHeight;
-		this.dz = (float) imp.getCalibration().pixelDepth;
-		this.dt = (float) imp.getCalibration().frameInterval;
+		this.dx = imp.getCalibration().pixelWidth;
+		this.dy = imp.getCalibration().pixelHeight;
+		this.dz = imp.getCalibration().pixelDepth;
+		this.dt = imp.getCalibration().frameInterval;
 
-		if (dt == 0) {
-			dt = 1;
-		}
+		if ( dt == 0 )
+			dt = 1.;
 
 		// Crop cube
 		this.zstart = 0;
@@ -218,20 +224,20 @@ public class Settings {
 		this.tstart = 0;
 		this.tend = imp.getNFrames() - 1;
 		this.roi = imp.getRoi();
-		if (roi == null) {
+		if ( roi == null )
+		{
 			this.xstart = 0;
 			this.xend = width - 1;
 			this.ystart = 0;
 			this.yend = height - 1;
-			this.polygon = null;
-		} else {
+		}
+		else
+		{
 			final Rectangle boundingRect = roi.getBounds();
 			this.xstart = boundingRect.x;
 			this.xend = boundingRect.width + boundingRect.x;
 			this.ystart = boundingRect.y;
 			this.yend = boundingRect.height + boundingRect.y;
-			this.polygon = roi.getPolygon();
-
 		}
 		// The rest is left to the user
 	}
@@ -242,212 +248,349 @@ public class Settings {
 
 	/**
 	 * Returns a string description of the target image.
-	 * 
+	 *
 	 * @return a string representation of the target image.
 	 */
-	public String toStringImageInfo() {
+	public String toStringImageInfo()
+	{
 		final StringBuilder str = new StringBuilder();
 
-		str.append("Image data:\n");
-		if (null == imp) {
-			str.append("Source image not set.\n");
-		} else {
-			str.append("For the image named: " + imp.getTitle() + ".\n");
+		str.append( "Image data:\n" );
+		if ( null == imp )
+		{
+			str.append( "Source image not set.\n" );
 		}
-		if (imageFileName == null || imageFileName == "") {
-			str.append("Not matching any file.\n");
-		} else {
-			str.append("Matching file " + imageFileName + " ");
-			if (imageFolder == null || imageFolder == "") {
-				str.append("in current folder.\n");
-			} else {
-				str.append("in folder: " + imageFolder + "\n");
+		else
+		{
+			str.append( "For the image named: " + imp.getTitle() + ".\n" );
+		}
+		if ( imageFileName == null || imageFileName == "" )
+		{
+			str.append( "Not matching any file.\n" );
+		}
+		else
+		{
+			str.append( "Matching file " + imageFileName + " " );
+			if ( imageFolder == null || imageFolder == "" )
+			{
+				str.append( "in current folder.\n" );
+			}
+			else
+			{
+				str.append( "in folder: " + imageFolder + "\n" );
 			}
 		}
 
-		str.append("Geometry:\n");
-		str.append(String.format("  X = %4d - %4d, dx = %g\n", xstart, xend, dx));
-		str.append(String.format("  Y = %4d - %4d, dy = %g\n", ystart, yend, dy));
-		str.append(String.format("  T = %4d - %4d, dt = %g\n", tstart, tend, dt));
+		str.append( "Geometry:\n" );
+		str.append( String.format( "  X = %4d - %4d, dx = %g\n", xstart, xend, dx ) );
+		str.append( String.format( "  Y = %4d - %4d, dy = %g\n", ystart, yend, dy ) );
+		str.append( String.format( "  Z = %4d - %4d, dz = %g\n", zstart, zend, dz ) );
+		str.append( String.format( "  T = %4d - %4d, dt = %g\n", tstart, tend, dt ) );
 
 		return str.toString();
 	}
 
-	public String toStringFeatureAnalyzersInfo() {
+	public String toStringFeatureAnalyzersInfo()
+	{
 		final StringBuilder str = new StringBuilder();
 
-		if (SpotAnalyzerFactories.isEmpty()) {
-			str.append("No Spot feature analyzers.\n");
-		} else {
-			str.append("Spot feature analyzers:\n");
-			prettyPrintFeatureAnalyzer(SpotAnalyzerFactories, str);
+		if ( spotAnalyzerFactories.isEmpty() )
+		{
+			str.append( "No spot feature analyzers.\n" );
+		}
+		else
+		{
+			str.append( "Spot feature analyzers:\n" );
+			prettyPrintFeatureAnalyzer( spotAnalyzerFactories, str );
 		}
 
-		if (edgeAnalyzers.isEmpty()) {
-			str.append("No edge feature analyzers.\n");
-		} else {
-			str.append("Edge feature analyzers:\n");
-			prettyPrintFeatureAnalyzer(edgeAnalyzers, str);
+		if ( edgeAnalyzers.isEmpty() )
+		{
+			str.append( "No edge feature analyzers.\n" );
+		}
+		else
+		{
+			str.append( "Edge feature analyzers:\n" );
+			prettyPrintFeatureAnalyzer( edgeAnalyzers, str );
 		}
 
-		if (trackAnalyzers.isEmpty()) {
-			str.append("No track feature analyzers.\n");
-		} else {
-			str.append("Track feature analyzers:\n");
-			prettyPrintFeatureAnalyzer(trackAnalyzers, str);
+		if ( trackAnalyzers.isEmpty() )
+		{
+			str.append( "No track feature analyzers.\n" );
+		}
+		else
+		{
+			str.append( "Track feature analyzers:\n" );
+			prettyPrintFeatureAnalyzer( trackAnalyzers, str );
 		}
 
 		return str.toString();
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		final StringBuilder str = new StringBuilder();
 
-		str.append(toStringImageInfo());
+		str.append( toStringImageInfo() );
 
-		str.append('\n');
-		str.append("Spot detection:\n");
-
-		str.append('\n');
-		str.append(toStringFeatureAnalyzersInfo());
-
-		str.append('\n');
-		str.append("Initial Spot filter:\n");
-		if (null == initialSpotFilterValue) {
-			str.append("No initial quality filter.\n");
-		} else {
-			str.append("Initial quality filter value: " + initialSpotFilterValue + ".\n");
+		str.append( '\n' );
+		str.append( "Spot detection:\n" );
+		if ( null == detectorFactory )
+		{
+			str.append( "No detector factory set.\n" );
 		}
-
-		str.append('\n');
-		str.append("Spot feature filters:\n");
-		if (SpotFilters == null || SpotFilters.size() == 0) {
-			str.append("No Spot feature filters.\n");
-		} else {
-			str.append("Set with " + SpotFilters.size() + " Spot feature filters:\n");
-			for (final FeatureFilter featureFilter : SpotFilters) {
-				str.append(" - " + featureFilter + "\n");
+		else
+		{
+			str.append( "Detector: " + detectorFactory.toString() + ".\n" );
+			if ( null == detectorSettings )
+			{
+				str.append( "No detector settings found.\n" );
+			}
+			else
+			{
+				str.append( "Detector settings:\n" );
+				str.append( detectorSettings );
+				str.append( '\n' );
 			}
 		}
 
-		str.append('\n');
-		str.append("Particle linking:\n");
-		if (null == trackerFactory) {
-			str.append("No Spot tracker set.\n");
-		} else {
-			str.append("Tracker: " + trackerFactory.toString() + ".\n");
-			if (null == trackerSettings) {
-				str.append("No tracker settings found.\n");
-			} else {
-				str.append("Tracker settings:\n");
-				str.append(trackerSettings);
-				str.append('\n');
+		str.append( '\n' );
+		str.append( toStringFeatureAnalyzersInfo() );
+
+		str.append( '\n' );
+		str.append( "Initial spot filter:\n" );
+		if ( null == initialSpotFilterValue )
+		{
+			str.append( "No initial quality filter.\n" );
+		}
+		else
+		{
+			str.append( "Initial quality filter value: " + initialSpotFilterValue + ".\n" );
+		}
+
+		str.append( '\n' );
+		str.append( "Spot feature filters:\n" );
+		if ( spotFilters == null || spotFilters.size() == 0 )
+		{
+			str.append( "No spot feature filters.\n" );
+		}
+		else
+		{
+			str.append( "Set with " + spotFilters.size() + " spot feature filters:\n" );
+			for ( final FeatureFilter featureFilter : spotFilters )
+			{
+				str.append( " - " + featureFilter + "\n" );
 			}
 		}
 
-		str.append('\n');
-		str.append("Track feature filters:\n");
-		if (trackFilters == null || trackFilters.size() == 0) {
-			str.append("No track feature filters.\n");
-		} else {
-			str.append("Set with " + trackFilters.size() + " track feature filters:\n");
-			for (final FeatureFilter featureFilter : trackFilters) {
-				str.append(" - " + featureFilter + "\n");
+		str.append( '\n' );
+		str.append( "Particle linking:\n" );
+		if ( null == trackerFactory )
+		{
+			str.append( "No spot tracker set.\n" );
+		}
+		else
+		{
+			str.append( "Tracker: " + trackerFactory.toString() + ".\n" );
+			if ( null == trackerSettings )
+			{
+				str.append( "No tracker settings found.\n" );
+			}
+			else
+			{
+				str.append( "Tracker settings:\n" );
+				str.append( trackerSettings );
+				str.append( '\n' );
+			}
+		}
+
+		str.append( '\n' );
+		str.append( "Track feature filters:\n" );
+		if ( trackFilters == null || trackFilters.size() == 0 )
+		{
+			str.append( "No track feature filters.\n" );
+		}
+		else
+		{
+			str.append( "Set with " + trackFilters.size() + " track feature filters:\n" );
+			for ( final FeatureFilter featureFilter : trackFilters )
+			{
+				str.append( " - " + featureFilter + "\n" );
 			}
 		}
 
 		return str.toString();
 	}
 
-	public boolean checkValidity() {
-		if (null == imp) {
+	public boolean checkValidity()
+	{
+		if ( null == imp )
+		{
 			errorMessage = "The source image is null.\n";
 			return false;
 		}
-
-		if (null == initialSpotFilterValue) {
-			errorMessage = "Initial Spot quality threshold is not set.\n";
+		if ( null == detectorFactory )
+		{
+			errorMessage = "The detector factory is null.\n";
 			return false;
 		}
-		if (null == trackerFactory) {
+		if ( null == detectorSettings )
+		{
+			errorMessage = "The detector settings is null.\n";
+			return false;
+		}
+		if ( null == initialSpotFilterValue )
+		{
+			errorMessage = "Initial spot quality threshold is not set.\n";
+			return false;
+		}
+		if ( null == trackerFactory )
+		{
 			errorMessage = "The tracker factory is null.\n";
 			return false;
 		}
-		if (!trackerFactory.checkSettingsValidity(trackerSettings)) {
+		if ( !trackerFactory.checkSettingsValidity( trackerSettings ) )
+		{
 			errorMessage = "The tracker has invalid input:\n" + trackerFactory.getErrorMessage();
 			return false;
 		}
 		return true;
 	}
 
-	public String getErrorMessage() {
+	public String getErrorMessage()
+	{
 		return errorMessage;
 	}
 
 	/*
-	 * Spot FEATURES
+	 * ALL FEATURES.
+	 */
+
+	/**
+	 * All the spot analyzers, edge analyzers and track analyzers discovered at
+	 * runtime. This method is a convenience for scripting, that simply
+	 * discovers and adds all the analyzers it can find.
+	 */
+	public void addAllAnalyzers()
+	{
+		final SpotAnalyzerProvider spotAnalyzerProvider = new SpotAnalyzerProvider( imp == null ? 1 : imp.getNChannels() );
+		final List< String > spotAnalyzerKeys = spotAnalyzerProvider.getKeys();
+		for ( final String key : spotAnalyzerKeys )
+			addSpotAnalyzerFactory( spotAnalyzerProvider.getFactory( key ) );
+
+		if ( imp != null && DetectionUtils.is2D( imp ) && detectorFactory != null && detectorFactory.has2Dsegmentation() )
+		{
+			final SpotMorphologyAnalyzerProvider spotMorphologyAnalyzerProvider = new SpotMorphologyAnalyzerProvider( imp.getNChannels() );
+			final List< String > spotMorphologyAnaylyzerKeys = spotMorphologyAnalyzerProvider.getKeys();
+			for ( final String key : spotMorphologyAnaylyzerKeys )
+				addSpotAnalyzerFactory( spotMorphologyAnalyzerProvider.getFactory( key ) );
+		}
+
+		final EdgeAnalyzerProvider edgeAnalyzerProvider = new EdgeAnalyzerProvider();
+		final List< String > edgeAnalyzerKeys = edgeAnalyzerProvider.getKeys();
+		for ( final String key : edgeAnalyzerKeys )
+			addEdgeAnalyzer( edgeAnalyzerProvider.getFactory( key ) );
+
+		final TrackAnalyzerProvider trackAnalyzerProvider = new TrackAnalyzerProvider();
+		final List< String > trackAnalyzerKeys = trackAnalyzerProvider.getKeys();
+		for ( final String key : trackAnalyzerKeys )
+			addTrackAnalyzer( trackAnalyzerProvider.getFactory( key ) );
+	}
+
+	/**
+	 * Initialize the detection and tracking part with default parameters. These
+	 * parameters are not mean to be used for all cases and need to be tuned for
+	 * the actual tracking problem.
+	 */
+	public void defaultParameters()
+	{
+		this.detectorFactory = new LogDetectorFactory<>();
+		this.detectorSettings = detectorFactory.getDefaultSettings();
+		detectorSettings.put( DetectorKeys.KEY_RADIUS, 2.5 );
+		this.trackerFactory = new SimpleSparseLAPTrackerFactory();
+		this.trackerSettings = trackerFactory.getDefaultSettings();
+		this.initialSpotFilterValue = 20.;
+	}
+
+	/*
+	 * SPOT FEATURES
 	 */
 
 	/**
 	 * Remove any {@link SpotAnalyzerFactory} to this object.
 	 */
-	public void clearSpotAnalyzerFactories() {
-		SpotAnalyzerFactories.clear();
+	public void clearSpotAnalyzerFactories()
+	{
+		spotAnalyzerFactories.clear();
 	}
 
 	/**
-	 * Returns a copy of the list of {@link SpotAnalyzerFactory}s configured
-	 * in this settings object. They are returned in an ordered list, to enforce
+	 * Returns a copy of the list of {@link SpotAnalyzerFactory}s configured in
+	 * this settings object. They are returned in an ordered list, to enforce
 	 * processing order in case some analyzers requires the results of another
 	 * analyzers to proceed.
 	 *
 	 * @return the list of {@link SpotAnalyzerFactory}s.
 	 */
-	public List<SpotAnalyzerFactory<?>> getSpotAnalyzerFactories() {
-		return new ArrayList<>(SpotAnalyzerFactories);
+	public List< SpotAnalyzerFactoryBase< ? > > getSpotAnalyzerFactories()
+	{
+		return new ArrayList<>( spotAnalyzerFactories );
 	}
 
 	/**
-	 * Adds a {@link SpotAnalyzerFactory} to the {@link List} of Spot
-	 * analyzers configured.
+	 * Adds a {@link SpotAnalyzerFactory} to the {@link List} of spot analyzers
+	 * configured.
 	 *
-	 * @param SpotAnalyzer
-	 *            the
-	 *            {@link Buddy.plugin.trackmate.features.Spot.SpotAnalyzer}
+	 * @param spotAnalyzer
+	 *            the {@link fiji.plugin.trackmate.features.spot.SpotAnalyzer}
 	 *            to add, at the end of the list.
 	 */
-	public void addSpotAnalyzerFactory(final SpotAnalyzerFactory<?> SpotAnalyzer) {
-		SpotAnalyzerFactories.add(SpotAnalyzer);
+	public void addSpotAnalyzerFactory( final SpotAnalyzerFactoryBase< ? > spotAnalyzer )
+	{
+		if ( contains( spotAnalyzer ) )
+			return;
+		spotAnalyzerFactories.add( spotAnalyzer );
 	}
 
 	/**
-	 * Adds a {@link SpotAnalyzerFactory} to the {@link List} of Spot
-	 * analyzers configured, at the specified index.
+	 * Adds a {@link SpotAnalyzerFactory} to the {@link List} of spot analyzers
+	 * configured, at the specified index.
 	 *
 	 * @param index
 	 *            index at which the analyzer is to be inserted.
-	 * @param SpotAnalyzer
-	 *            the
-	 *            {@link Buddy.plugin.trackmate.features.Spot.SpotAnalyzer}
+	 * @param spotAnalyzer
+	 *            the {@link fiji.plugin.trackmate.features.spot.SpotAnalyzer}
 	 *            to add, at the specified index in the list.
 	 */
-	public void addSpotAnalyzerFactory(final int index,
-			final SpotAnalyzerFactory<?> SpotAnalyzer) {
-		SpotAnalyzerFactories.add(index, SpotAnalyzer);
+	public void addSpotAnalyzerFactory( final int index, final SpotAnalyzerFactory< ? > spotAnalyzer )
+	{
+		if ( contains( spotAnalyzer ) )
+			return;
+		spotAnalyzerFactories.add( index, spotAnalyzer );
 	}
 
 	/**
 	 * Removes the specified {@link SpotAnalyzerFactory} from the analyzers
 	 * configured.
 	 *
-	 * @param SpotAnalyzer
+	 * @param spotAnalyzer
 	 *            the {@link SpotAnalyzerFactory} to remove.
-	 * @return true if the specified {@link SpotAnalyzerFactory} was in the
-	 *         list and was removed.
+	 * @return true if the specified {@link SpotAnalyzerFactory} was in the list
+	 *         and was removed.
 	 */
-	public boolean removeSpotAnalyzerFactory(final SpotAnalyzerFactory<?> SpotAnalyzer) {
-		return SpotAnalyzerFactories.remove(SpotAnalyzer);
+	public boolean removeSpotAnalyzerFactory( final SpotAnalyzerFactory< ? > spotAnalyzer )
+	{
+		return spotAnalyzerFactories.remove( spotAnalyzer );
+	}
+
+	private boolean contains( final SpotAnalyzerFactoryBase< ? > spotAnalyzer )
+	{
+		for ( final SpotAnalyzerFactoryBase< ? > saf : spotAnalyzerFactories )
+			if ( saf.getKey().equals( spotAnalyzer.getKey() ) )
+				return true;
+
+		return false;
 	}
 
 	/*
@@ -457,45 +600,54 @@ public class Settings {
 	/**
 	 * Remove any {@link EdgeAnalyzer} to this object.
 	 */
-	public void clearEdgeAnalyzers() {
+	public void clearEdgeAnalyzers()
+	{
 		edgeAnalyzers.clear();
 	}
 
 	/**
 	 * Returns a copy of the list of {@link EdgeAnalyzer}s configured in this
-	 * settings object. They are returned in an ordered list, to enforce processing
-	 * order in case some analyzers requires the results of another analyzers to
-	 * proceed.
+	 * settings object. They are returned in an ordered list, to enforce
+	 * processing order in case some analyzers requires the results of another
+	 * analyzers to proceed.
 	 *
 	 * @return the list of {@link EdgeAnalyzer}s.
 	 */
-	public List<EdgeAnalyzer> getEdgeAnalyzers() {
-		return new ArrayList<>(edgeAnalyzers);
+	public List< EdgeAnalyzer > getEdgeAnalyzers()
+	{
+		return new ArrayList<>( edgeAnalyzers );
 	}
 
 	/**
-	 * Adds a {@link EdgeAnalyzer} to the {@link List} of edge analyzers configured.
+	 * Adds a {@link EdgeAnalyzer} to the {@link List} of edge analyzers
+	 * configured.
 	 *
 	 * @param edgeAnalyzer
 	 *            the {@link EdgeAnalyzer} to add, at the end of the list.
 	 */
-	public void addEdgeAnalyzer(final EdgeAnalyzer edgeAnalyzer) {
-		edgeAnalyzers.add(edgeAnalyzer);
+	public void addEdgeAnalyzer( final EdgeAnalyzer edgeAnalyzer )
+	{
+		if ( contains( edgeAnalyzer ) )
+			return;
+		edgeAnalyzers.add( edgeAnalyzer );
 	}
 
 	/**
-	 * Adds a {@link EdgeAnalyzer} to the {@link List} of edge analyzers configured,
-	 * at the specified index.
-	 * 
+	 * Adds a {@link EdgeAnalyzer} to the {@link List} of edge analyzers
+	 * configured, at the specified index.
+	 *
 	 * @param index
 	 *            index at which the analyzer is to be inserted.
-	 * 
+	 *
 	 * @param edgeAnalyzer
 	 *            the {@link EdgeAnalyzer} to add, at the specified index in the
 	 *            list.
 	 */
-	public void addEdgeAnalyzer(final int index, final EdgeAnalyzer edgeAnalyzer) {
-		edgeAnalyzers.add(index, edgeAnalyzer);
+	public void addEdgeAnalyzer( final int index, final EdgeAnalyzer edgeAnalyzer )
+	{
+		if ( contains( edgeAnalyzer ) )
+			return;
+		edgeAnalyzers.add( index, edgeAnalyzer );
 	}
 
 	/**
@@ -503,11 +655,21 @@ public class Settings {
 	 *
 	 * @param edgeAnalyzer
 	 *            the {@link EdgeAnalyzer} to remove.
-	 * @return true if the specified {@link EdgeAnalyzer} was in the list and was
-	 *         removed.
+	 * @return true if the specified {@link EdgeAnalyzer} was in the list and
+	 *         was removed.
 	 */
-	public boolean removeEdgeAnalyzer(final EdgeAnalyzer edgeAnalyzer) {
-		return edgeAnalyzers.remove(edgeAnalyzer);
+	public boolean removeEdgeAnalyzer( final EdgeAnalyzer edgeAnalyzer )
+	{
+		return edgeAnalyzers.remove( edgeAnalyzer );
+	}
+
+	private boolean contains( final EdgeAnalyzer edgeAnalyzer )
+	{
+		for ( final EdgeAnalyzer ea : edgeAnalyzers )
+			if ( ea.getKey().equals( edgeAnalyzer.getKey() ) )
+				return true;
+
+		return false;
 	}
 
 	/*
@@ -517,20 +679,22 @@ public class Settings {
 	/**
 	 * Remove any {@link TrackAnalyzer} to this object.
 	 */
-	public void clearTrackAnalyzers() {
+	public void clearTrackAnalyzers()
+	{
 		trackAnalyzers.clear();
 	}
 
 	/**
 	 * Returns a copy of the list of {@link TrackAnalyzer}s configured in this
-	 * settings object. They are returned in an ordered list, to enforce processing
-	 * order in case some analyzers requires the results of another analyzers to
-	 * proceed.
+	 * settings object. They are returned in an ordered list, to enforce
+	 * processing order in case some analyzers requires the results of another
+	 * analyzers to proceed.
 	 *
 	 * @return the list of {@link TrackAnalyzer}s.
 	 */
-	public List<TrackAnalyzer> getTrackAnalyzers() {
-		return new ArrayList<>(trackAnalyzers);
+	public List< TrackAnalyzer > getTrackAnalyzers()
+	{
+		return new ArrayList<>( trackAnalyzers );
 	}
 
 	/**
@@ -540,35 +704,52 @@ public class Settings {
 	 * @param trackAnalyzer
 	 *            the {@link TrackAnalyzer} to add, at the end of the list.
 	 */
-	public void addTrackAnalyzer(final TrackAnalyzer trackAnalyzer) {
-		trackAnalyzers.add(trackAnalyzer);
+	public void addTrackAnalyzer( final TrackAnalyzer trackAnalyzer )
+	{
+		if ( contains( trackAnalyzer ) )
+			return;
+		trackAnalyzers.add( trackAnalyzer );
 	}
 
 	/**
 	 * Adds a {@link TrackAnalyzer} to the {@link List} of track analyzers
 	 * configured, at the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            index at which the analyzer is to be inserted.
-	 * 
+	 *
 	 * @param trackAnalyzer
-	 *            the {@link TrackAnalyzer} to add, at the specified index in the
-	 *            list.
+	 *            the {@link TrackAnalyzer} to add, at the specified index in
+	 *            the list.
 	 */
-	public void addTrackAnalyzer(final int index, final TrackAnalyzer trackAnalyzer) {
-		trackAnalyzers.add(index, trackAnalyzer);
+	public void addTrackAnalyzer( final int index, final TrackAnalyzer trackAnalyzer )
+	{
+		if ( contains( trackAnalyzer ) )
+			return;
+		trackAnalyzers.add( index, trackAnalyzer );
 	}
 
 	/**
-	 * Removes the specified {@link TrackAnalyzer} from the analyzers configured.
+	 * Removes the specified {@link TrackAnalyzer} from the analyzers
+	 * configured.
 	 *
 	 * @param trackAnalyzer
 	 *            the {@link TrackAnalyzer} to remove.
-	 * @return true if the specified {@link TrackAnalyzer} was in the list and was
-	 *         removed.
+	 * @return true if the specified {@link TrackAnalyzer} was in the list and
+	 *         was removed.
 	 */
-	public boolean removeTrackAnalyzer(final TrackAnalyzer trackAnalyzer) {
-		return trackAnalyzers.remove(trackAnalyzer);
+	public boolean removeTrackAnalyzer( final TrackAnalyzer trackAnalyzer )
+	{
+		return trackAnalyzers.remove( trackAnalyzer );
+	}
+
+	private boolean contains( final TrackAnalyzer trackAnalyzer )
+	{
+		for ( final TrackAnalyzer ta : trackAnalyzers )
+			if ( ta.getKey().equals( trackAnalyzer.getKey() ) )
+				return true;
+
+		return false;
 	}
 
 	/*
@@ -576,56 +757,66 @@ public class Settings {
 	 */
 
 	/**
-	 * Add a filter to the list of Spot filters.
-	 * 
+	 * Add a filter to the list of spot filters.
+	 *
 	 * @param filter
 	 *            the filter to add.
 	 */
-	public void addSpotFilter(final FeatureFilter filter) {
-		SpotFilters.add(filter);
+	public void addSpotFilter( final FeatureFilter filter )
+	{
+		spotFilters.add( filter );
 	}
 
-	public void removeSpotFilter(final FeatureFilter filter) {
-		SpotFilters.remove(filter);
+	public void removeSpotFilter( final FeatureFilter filter )
+	{
+		spotFilters.remove( filter );
 	}
 
-	/** Remove all Spot filters stored in this model. */
-	public void clearSpotFilters() {
-		SpotFilters.clear();
+	/** Remove all spot filters stored in this model. */
+	public void clearSpotFilters()
+	{
+		spotFilters.clear();
 	}
 
-	public List<FeatureFilter> getSpotFilters() {
-		return SpotFilters;
+	public List< FeatureFilter > getSpotFilters()
+	{
+		return spotFilters;
 	}
 
-	public void setSpotFilters(final List<FeatureFilter> SpotFilters) {
-		this.SpotFilters = SpotFilters;
+	public void setSpotFilters( final List< FeatureFilter > spotFilters )
+	{
+		this.spotFilters = spotFilters;
 	}
 
 	/**
 	 * Add a filter to the list of track filters.
-	 * 
+	 *
 	 * @param filter
 	 *            the filter to add.
 	 */
-	public void addTrackFilter(final FeatureFilter filter) {
-		trackFilters.add(filter);
+	public void addTrackFilter( final FeatureFilter filter )
+	{
+		trackFilters.add( filter );
 	}
 
-	public void removeTrackFilter(final FeatureFilter filter) {
-		trackFilters.remove(filter);
+	public void removeTrackFilter( final FeatureFilter filter )
+	{
+		trackFilters.remove( filter );
 	}
 
 	/** Remove all track filters stored in this model. */
-	public void clearTrackFilters() {
+	public void clearTrackFilters()
+	{
 		trackFilters.clear();
 	}
 
-	public List<FeatureFilter> getTrackFilters() {
+	public List< FeatureFilter > getTrackFilters()
+	{
 		return trackFilters;
 	}
 
-	public void setTrackFilters(final List<FeatureFilter> trackFilters) {
+	public void setTrackFilters( final List< FeatureFilter > trackFilters )
+	{
 		this.trackFilters = trackFilters;
 	}
 
@@ -633,26 +824,27 @@ public class Settings {
 	 * PRIVATE METHODS
 	 */
 
-	private final void prettyPrintFeatureAnalyzer(final List<? extends FeatureAnalyzer> analyzers,
-			final StringBuilder str) {
-		for (final FeatureAnalyzer analyzer : analyzers) {
-			str.append(" - " + analyzer.getName() + " provides: ");
-			for (final String feature : analyzer.getFeatures()) {
-				str.append(analyzer.getFeatureShortNames().get(feature) + ", ");
-			}
-			str.deleteCharAt(str.length() - 1);
-			str.deleteCharAt(str.length() - 1);
+	public static final void prettyPrintFeatureAnalyzer( final List< ? extends FeatureAnalyzer > analyzers, final StringBuilder str )
+	{
+		for ( final FeatureAnalyzer analyzer : analyzers )
+		{
+			str.append( " - " + analyzer.getName() + " provides: " );
+			for ( final String feature : analyzer.getFeatures() )
+				str.append( analyzer.getFeatureShortNames().get( feature ) + ", " );
+
+			str.deleteCharAt( str.length() - 1 );
+			str.deleteCharAt( str.length() - 1 );
 			// be precise
-			if (str.charAt(str.length() - 1) != '.') {
-				str.append('.');
-			}
+			if ( str.charAt( str.length() - 1 ) != '.' )
+				str.append( '.' );
+
 			// manual?
-			if (analyzer.isManualFeature()) {
-				str.deleteCharAt(str.length() - 1);
-				str.append("; is manual.");
+			if ( analyzer.isManualFeature() )
+			{
+				str.deleteCharAt( str.length() - 1 );
+				str.append( "; is manual." );
 			}
-			str.append('\n');
+			str.append( '\n' );
 		}
 	}
-
 }

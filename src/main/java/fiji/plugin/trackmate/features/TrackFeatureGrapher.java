@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.features;
+package fiji.plugin.trackmate.features;
 
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -17,11 +17,13 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import Buddy.plugin.trackmate.Dimension;
-import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.util.ExportableChartPanel;
-import Buddy.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.FeatureModel;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.gui.displaysettings.Colormap;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.util.ExportableChartPanel;
+import fiji.plugin.trackmate.util.TMUtils;
 
 public class TrackFeatureGrapher extends AbstractFeatureGrapher
 {
@@ -32,9 +34,9 @@ public class TrackFeatureGrapher extends AbstractFeatureGrapher
 
 	private final Map< String, String > featureNames;
 
-	public TrackFeatureGrapher( final String xFeature, final Set< String > yFeatures, final Model model )
+	public TrackFeatureGrapher( final String xFeature, final Set< String > yFeatures, final Model model, final DisplaySettings displaySettings )
 	{
-		super( xFeature, yFeatures, model );
+		super( xFeature, yFeatures, model, displaySettings );
 		this.xDimension = model.getFeatureModel().getTrackFeatureDimensions().get( xFeature );
 		this.yDimensions = model.getFeatureModel().getTrackFeatureDimensions();
 		this.featureNames = model.getFeatureModel().getTrackFeatureNames();
@@ -43,6 +45,7 @@ public class TrackFeatureGrapher extends AbstractFeatureGrapher
 	@Override
 	public void render()
 	{
+		final Colormap colormap = displaySettings.getColormap();
 
 		// Check x units
 		final String xdim = TMUtils.getUnitsFor( xDimension, model.getSpaceUnits(), model.getTimeUnits() );
@@ -104,7 +107,7 @@ public class TrackFeatureGrapher extends AbstractFeatureGrapher
 				pointRenderer.setSeriesOutlinePaint( i, Color.black );
 				pointRenderer.setSeriesLinesVisible( i, false );
 				pointRenderer.setSeriesShape( i, DEFAULT_SHAPE, false );
-				pointRenderer.setSeriesPaint( i, paints.getPaint( ( double ) i / nseries ), false );
+				pointRenderer.setSeriesPaint( i, colormap.getPaint( ( double ) i / nseries ), false );
 			}
 
 			// The panel
