@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.tracking.sparselap.costmatrix;
+package fiji.plugin.trackmate.tracking.sparselap.costmatrix;
 
 import java.util.Arrays;
 

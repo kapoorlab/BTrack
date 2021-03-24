@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package Buddy.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.trackmate.gui.displaysettings;
 
 /**
  * A <code>int</code> variable that can take any value in a given range. A

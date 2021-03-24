@@ -1,9 +1,9 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import java.io.File;
 
-import Buddy.plugin.trackmate.gui.components.LogPanel;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.gui.components.LogPanel;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 
 /**
  * An abstract class made for describing panels that generate a dialog, like

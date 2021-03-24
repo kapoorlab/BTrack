@@ -1,12 +1,12 @@
-package Buddy.plugin.trackmate.gui.components;
+package fiji.plugin.trackmate.gui.components;
 
-import static Buddy.plugin.trackmate.features.FeatureUtils.collectFeatureKeys;
-import static Buddy.plugin.trackmate.features.FeatureUtils.collectFeatureValues;
-import static Buddy.plugin.trackmate.features.FeatureUtils.nObjects;
-import static Buddy.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static Buddy.plugin.trackmate.gui.Icons.ADD_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.REMOVE_ICON;
+import static fiji.plugin.trackmate.features.FeatureUtils.collectFeatureKeys;
+import static fiji.plugin.trackmate.features.FeatureUtils.collectFeatureValues;
+import static fiji.plugin.trackmate.features.FeatureUtils.nObjects;
+import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.trackmate.gui.Icons.ADD_ICON;
+import static fiji.plugin.trackmate.gui.Icons.REMOVE_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -32,11 +32,11 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
-import Buddy.plugin.trackmate.util.OnRequestUpdater;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.trackmate.util.OnRequestUpdater;
 
 public class FilterGuiPanel extends JPanel implements ChangeListener
 {

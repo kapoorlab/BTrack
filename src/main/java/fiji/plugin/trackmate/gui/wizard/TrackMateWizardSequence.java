@@ -1,8 +1,8 @@
-package Buddy.plugin.trackmate.gui.wizard;
+package fiji.plugin.trackmate.gui.wizard;
 
-import static Buddy.plugin.trackmate.gui.Icons.SPOT_TABLE_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON_16x16;
-import static Buddy.plugin.trackmate.gui.Icons.TRACK_TABLES_ICON;
+import static fiji.plugin.trackmate.gui.Icons.SPOT_TABLE_ICON;
+import static fiji.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON_16x16;
+import static fiji.plugin.trackmate.gui.Icons.TRACK_TABLES_ICON;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
@@ -12,35 +12,44 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.action.AbstractTMAction;
-import Buddy.plugin.trackmate.action.ExportAllBCellobjectsStatsAction;
-import Buddy.plugin.trackmate.action.ExportStatsTablesAction;
-import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.gui.components.ConfigurationPanel;
-import Buddy.plugin.trackmate.gui.components.FeatureDisplaySelector;
-import Buddy.plugin.trackmate.gui.components.LogPanel;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.ActionChooserDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.ChooseTrackerDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.ExecuteDetectionDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.ExecuteTrackingDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.GrapherDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.SaveDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.BCellobjectTrackerDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.StartDialogDescriptor;
-import Buddy.plugin.trackmate.gui.wizard.descriptors.TrackFilterDescriptor;
-import Buddy.plugin.trackmate.providers.ActionProvider;
-import Buddy.plugin.trackmate.providers.TrackerProvider;
-import Buddy.plugin.trackmate.tracking.ManualTrackerFactory;
-import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
-import Buddy.plugin.trackmate.visualization.trackscheme.BCellobjectImageUpdater;
-import Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.action.AbstractTMAction;
+import fiji.plugin.trackmate.action.ExportAllSpotsStatsAction;
+import fiji.plugin.trackmate.action.ExportStatsTablesAction;
+import fiji.plugin.trackmate.detection.ManualDetectorFactory;
+import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
+import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.trackmate.gui.components.FeatureDisplaySelector;
+import fiji.plugin.trackmate.gui.components.LogPanel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.wizard.descriptors.ActionChooserDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.ChooseDetectorDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.ChooseTrackerDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.ExecuteDetectionDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.ExecuteTrackingDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.GrapherDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.InitFilterDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.LogPanelDescriptor2;
+import fiji.plugin.trackmate.gui.wizard.descriptors.SaveDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.SpotDetectorDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.SpotFilterDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.SpotTrackerDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.StartDialogDescriptor;
+import fiji.plugin.trackmate.gui.wizard.descriptors.TrackFilterDescriptor;
+import fiji.plugin.trackmate.providers.ActionProvider;
+import fiji.plugin.trackmate.providers.DetectorProvider;
+import fiji.plugin.trackmate.providers.TrackerProvider;
+import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
+import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.visualization.trackscheme.SpotImageUpdater;
+import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 
 public class TrackMateWizardSequence implements WizardSequence
 {
@@ -59,10 +68,15 @@ public class TrackMateWizardSequence implements WizardSequence
 
 	private final Map< WizardPanelDescriptor, WizardPanelDescriptor > previous;
 
+	private final LogPanelDescriptor2 logDescriptor;
 
+	private final ChooseDetectorDescriptor chooseDetectorDescriptor;
 
 	private final ExecuteDetectionDescriptor executeDetectionDescriptor;
 
+	private final InitFilterDescriptor initFilterDescriptor;
+
+	private final SpotFilterDescriptor spotFilterDescriptor;
 
 	private final ChooseTrackerDescriptor chooseTrackerDescriptor;
 
@@ -91,16 +105,20 @@ public class TrackMateWizardSequence implements WizardSequence
 		model.setLogger( logger );
 
 		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
-		final FeatureFilter initialFilter = new FeatureFilter( BCellobject.QUALITY, settings.initialBCellobjectFilterValue.doubleValue(), true );
-		final List< FeatureFilter > BCellobjectFilters = settings.getBCellobjectFilters();
+		final FeatureFilter initialFilter = new FeatureFilter( Spot.QUALITY, settings.initialSpotFilterValue.doubleValue(), true );
+		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 
+		logDescriptor = new LogPanelDescriptor2( logPanel );
 		startDialogDescriptor = new StartDialogDescriptor( settings, logger );
+		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), trackmate );
 		executeDetectionDescriptor = new ExecuteDetectionDescriptor( trackmate, logPanel );
+		initFilterDescriptor = new InitFilterDescriptor( trackmate, initialFilter );
+		spotFilterDescriptor = new SpotFilterDescriptor( trackmate, spotFilters, featureSelector );
 		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), trackmate );
 		executeTrackingDescriptor = new ExecuteTrackingDescriptor( trackmate, logPanel );
 		trackFilterDescriptor = new TrackFilterDescriptor( trackmate, trackFilters, featureSelector );
-		configureViewsDescriptor = new ConfigureViewsDescriptor( displaySettings, featureSelector, new LaunchTrackSchemeAction(), new ShowTrackTablesAction(), new ShowBCellobjectTableAction(), model.getSpaceUnits() );
+		configureViewsDescriptor = new ConfigureViewsDescriptor( displaySettings, featureSelector, new LaunchTrackSchemeAction(), new ShowTrackTablesAction(), new ShowSpotTableAction(), model.getSpaceUnits() );
 		grapherDescriptor = new GrapherDescriptor( trackmate, displaySettings );
 		actionChooserDescriptor = new ActionChooserDescriptor( new ActionProvider(), trackmate, selectionModel, displaySettings );
 		saveDescriptor = new SaveDescriptor( trackmate, displaySettings, this );
@@ -130,7 +148,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		if ( current == trackFilterDescriptor )
 			getTrackerConfigDescriptor();
 
-		if ( current == BCellobjectFilterDescriptor )
+		if ( current == spotFilterDescriptor )
 			getDetectorConfigDescriptor();
 
 		current = previous.get( current );
@@ -179,7 +197,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		final Map< WizardPanelDescriptor, WizardPanelDescriptor > map = new HashMap<>();
 		map.put( startDialogDescriptor, null );
 		map.put( chooseDetectorDescriptor, startDialogDescriptor );
-		map.put( chooseTrackerDescriptor, BCellobjectFilterDescriptor );
+		map.put( chooseTrackerDescriptor, spotFilterDescriptor );
 		map.put( configureViewsDescriptor, trackFilterDescriptor );
 		map.put( grapherDescriptor, configureViewsDescriptor );
 		map.put( actionChooserDescriptor, grapherDescriptor );
@@ -191,8 +209,8 @@ public class TrackMateWizardSequence implements WizardSequence
 		final Map< WizardPanelDescriptor, WizardPanelDescriptor > map = new HashMap<>();
 		map.put( startDialogDescriptor, chooseDetectorDescriptor );
 		map.put( executeDetectionDescriptor, initFilterDescriptor );
-		map.put( initFilterDescriptor, BCellobjectFilterDescriptor );
-		map.put( BCellobjectFilterDescriptor, chooseTrackerDescriptor );
+		map.put( initFilterDescriptor, spotFilterDescriptor );
+		map.put( spotFilterDescriptor, chooseTrackerDescriptor );
 		map.put( executeTrackingDescriptor, trackFilterDescriptor );
 		map.put( trackFilterDescriptor, configureViewsDescriptor );
 		map.put( configureViewsDescriptor, grapherDescriptor );
@@ -203,13 +221,13 @@ public class TrackMateWizardSequence implements WizardSequence
 	@Override
 	public void setCurrent( final String panelIdentifier )
 	{
-		if ( panelIdentifier.equals( BCellobjectDetectorDescriptor.KEY ) )
+		if ( panelIdentifier.equals( SpotDetectorDescriptor.KEY ) )
 		{
 			current = getDetectorConfigDescriptor();
 			return;
 		}
 
-		if ( panelIdentifier.equals( BCellobjectTrackerDescriptor.KEY ) )
+		if ( panelIdentifier.equals( SpotTrackerDescriptor.KEY ) )
 		{
 			current = getTrackerConfigDescriptor();
 			return;
@@ -227,7 +245,7 @@ public class TrackMateWizardSequence implements WizardSequence
 				chooseDetectorDescriptor,
 				executeDetectionDescriptor,
 				initFilterDescriptor,
-				BCellobjectFilterDescriptor,
+				spotFilterDescriptor,
 				chooseTrackerDescriptor,
 				executeTrackingDescriptor,
 				trackFilterDescriptor,
@@ -250,11 +268,11 @@ public class TrackMateWizardSequence implements WizardSequence
 	 * Determines and registers the descriptor used to configure the detector
 	 * chosen in the {@link ChooseDetectorDescriptor}.
 	 *
-	 * @return a suitable {@link BCellobjectDetectorDescriptor}.
+	 * @return a suitable {@link SpotDetectorDescriptor}.
 	 */
-	private BCellobjectDetectorDescriptor getDetectorConfigDescriptor()
+	private SpotDetectorDescriptor getDetectorConfigDescriptor()
 	{
-		final BCellobjectDetectorFactoryBase< ? > detectorFactory = trackmate.getSettings().detectorFactory;
+		final SpotDetectorFactoryBase< ? > detectorFactory = trackmate.getSettings().detectorFactory;
 
 		/*
 		 * Special case: are we dealing with the manual detector? If yes, no
@@ -263,8 +281,8 @@ public class TrackMateWizardSequence implements WizardSequence
 		if ( detectorFactory.getKey().equals( ManualDetectorFactory.DETECTOR_KEY ) )
 		{
 			// Position sequence next and previous.
-			next.put( chooseDetectorDescriptor, BCellobjectFilterDescriptor );
-			previous.put( BCellobjectFilterDescriptor, chooseDetectorDescriptor );
+			next.put( chooseDetectorDescriptor, spotFilterDescriptor );
+			previous.put( spotFilterDescriptor, chooseDetectorDescriptor );
 			previous.put( executeDetectionDescriptor, chooseDetectorDescriptor );
 			previous.put( initFilterDescriptor, chooseDetectorDescriptor );
 			return null;
@@ -279,10 +297,10 @@ public class TrackMateWizardSequence implements WizardSequence
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
 		final WizardPanelDescriptor previousDescriptor = next.get( chooseDetectorDescriptor );
-		if ( previousDescriptor != null && previousDescriptor instanceof BCellobjectDetectorDescriptor )
+		if ( previousDescriptor != null && previousDescriptor instanceof SpotDetectorDescriptor )
 		{
-			final BCellobjectDetectorDescriptor previousBCellobjectDetectorDescriptor = ( BCellobjectDetectorDescriptor ) previousDescriptor;
-			final ConfigurationPanel detectorConfigPanel = ( ConfigurationPanel ) previousBCellobjectDetectorDescriptor.targetPanel;
+			final SpotDetectorDescriptor previousSpotDetectorDescriptor = ( SpotDetectorDescriptor ) previousDescriptor;
+			final ConfigurationPanel detectorConfigPanel = ( ConfigurationPanel ) previousSpotDetectorDescriptor.targetPanel;
 			oldSettings2.putAll( detectorConfigPanel.getSettings() );
 		}
 
@@ -299,7 +317,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		final ConfigurationPanel detectorConfigurationPanel = detectorFactory.getDetectorConfigurationPanel( trackmate.getSettings(), trackmate.getModel() );
 		detectorConfigurationPanel.setSettings( defaultSettings );
 		trackmate.getSettings().detectorSettings = defaultSettings;
-		final BCellobjectDetectorDescriptor configDescriptor = new BCellobjectDetectorDescriptor( trackmate.getSettings(), detectorConfigurationPanel, trackmate.getModel().getLogger() );
+		final SpotDetectorDescriptor configDescriptor = new SpotDetectorDescriptor( trackmate.getSettings(), detectorConfigurationPanel, trackmate.getModel().getLogger() );
 
 		// Position sequence next and previous.
 		next.put( chooseDetectorDescriptor, configDescriptor );
@@ -307,7 +325,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		previous.put( configDescriptor, chooseDetectorDescriptor );
 		previous.put( executeDetectionDescriptor, configDescriptor );
 		previous.put( initFilterDescriptor, configDescriptor );
-		previous.put( BCellobjectFilterDescriptor, configDescriptor );
+		previous.put( spotFilterDescriptor, configDescriptor );
 
 		return configDescriptor;
 	}
@@ -316,11 +334,11 @@ public class TrackMateWizardSequence implements WizardSequence
 	 * Determines and registers the descriptor used to configure the tracker
 	 * chosen in the {@link ChooseTrackerDescriptor}.
 	 *
-	 * @return a suitable {@link BCellobjectTrackerDescriptor}.
+	 * @return a suitable {@link SpotTrackerDescriptor}.
 	 */
-	private BCellobjectTrackerDescriptor getTrackerConfigDescriptor()
+	private SpotTrackerDescriptor getTrackerConfigDescriptor()
 	{
-		final BCellobjectTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
+		final SpotTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
 
 		/*
 		 * Special case: are we dealing with the manual tracker? If yes, no
@@ -343,9 +361,9 @@ public class TrackMateWizardSequence implements WizardSequence
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
 		final WizardPanelDescriptor previousDescriptor = next.get( chooseTrackerDescriptor );
-		if ( previousDescriptor != null && previousDescriptor instanceof BCellobjectTrackerDescriptor )
+		if ( previousDescriptor != null && previousDescriptor instanceof SpotTrackerDescriptor )
 		{
-			final BCellobjectTrackerDescriptor previousTrackerDetectorDescriptor = ( BCellobjectTrackerDescriptor ) previousDescriptor;
+			final SpotTrackerDescriptor previousTrackerDetectorDescriptor = ( SpotTrackerDescriptor ) previousDescriptor;
 			final ConfigurationPanel detectorConfigPanel = ( ConfigurationPanel ) previousTrackerDetectorDescriptor.targetPanel;
 			oldSettings2.putAll( detectorConfigPanel.getSettings() );
 		}
@@ -363,7 +381,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		final ConfigurationPanel trackerConfigurationPanel = trackerFactory.getTrackerConfigurationPanel( trackmate.getModel() );
 		trackerConfigurationPanel.setSettings( defaultSettings );
 		trackmate.getSettings().trackerSettings = defaultSettings;
-		final BCellobjectTrackerDescriptor configDescriptor = new BCellobjectTrackerDescriptor( trackmate.getSettings(), trackerConfigurationPanel, trackmate.getModel().getLogger() );
+		final SpotTrackerDescriptor configDescriptor = new SpotTrackerDescriptor( trackmate.getSettings(), trackerConfigurationPanel, trackmate.getModel().getLogger() );
 
 		// Position sequence next and previous.
 		next.put( chooseTrackerDescriptor, configDescriptor );
@@ -377,10 +395,10 @@ public class TrackMateWizardSequence implements WizardSequence
 
 	private static final String TRACK_TABLES_BUTTON_TOOLTIP = "<html>"
 			+ "Export the features of all tracks, edges and all <br>"
-			+ "BCellobjects belonging to a track to ImageJ tables."
+			+ "spots belonging to a track to ImageJ tables."
 			+ "</html>";
 
-	private static final String BCellobject_TABLE_BUTTON_TOOLTIP = "Export the features of all BCellobjects to ImageJ tables.";
+	private static final String SPOT_TABLE_BUTTON_TOOLTIP = "Export the features of all spots to ImageJ tables.";
 
 	private static final String TRACKSCHEME_BUTTON_TOOLTIP = "<html>Launch a new instance of TrackScheme.</html>";
 
@@ -403,8 +421,8 @@ public class TrackMateWizardSequence implements WizardSequence
 				public void run()
 				{
 					final TrackScheme trackscheme = new TrackScheme( trackmate.getModel(), selectionModel, displaySettings );
-					final BCellobjectImageUpdater thumbnailUpdater = new BCellobjectImageUpdater( trackmate.getSettings() );
-					trackscheme.setBCellobjectImageUpdater( thumbnailUpdater );
+					final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( trackmate.getSettings() );
+					trackscheme.setSpotImageUpdater( thumbnailUpdater );
 					trackscheme.render();
 				}
 			}.start();
@@ -428,14 +446,14 @@ public class TrackMateWizardSequence implements WizardSequence
 		}
 	}
 
-	private class ShowBCellobjectTableAction extends AbstractAction
+	private class ShowSpotTableAction extends AbstractAction
 	{
 		private static final long serialVersionUID = 1L;
 
-		private ShowBCellobjectTableAction()
+		private ShowSpotTableAction()
 		{
-			super( "BCellobjects", BCellobject_TABLE_ICON );
-			putValue( SHORT_DESCRIPTION, BCellobject_TABLE_BUTTON_TOOLTIP );
+			super( "Spots", SPOT_TABLE_ICON );
+			putValue( SHORT_DESCRIPTION, SPOT_TABLE_BUTTON_TOOLTIP );
 		}
 
 		@Override
@@ -445,7 +463,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		}
 	}
 
-	private void showTables( final boolean showBCellobjectTable )
+	private void showTables( final boolean showSpotTable )
 	{
 		new Thread( "TrackMate table thread." )
 		{
@@ -453,8 +471,8 @@ public class TrackMateWizardSequence implements WizardSequence
 			public void run()
 			{
 				AbstractTMAction action;
-				if ( showBCellobjectTable )
-					action = new ExportAllBCellobjectsStatsAction();
+				if ( showSpotTable )
+					action = new ExportAllSpotsStatsAction();
 				else
 					action = new ExportStatsTablesAction();
 

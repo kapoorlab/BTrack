@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.gui.components.tracker;
+package fiji.plugin.trackmate.gui.components.tracker;
 
-import static Buddy.plugin.trackmate.gui.Icons.ADD_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.REMOVE_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ADD_ICON;
+import static fiji.plugin.trackmate.gui.Icons.REMOVE_ICON;
 
 import java.awt.Component;
 import java.awt.Dimension;

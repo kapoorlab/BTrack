@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.components;
+package fiji.plugin.trackmate.gui.components;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -47,9 +47,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 
-import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.util.TMUtils;
-import Buddy.util.NumberParser;
+import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.trackmate.util.TMUtils;
+import fiji.util.NumberParser;
 
 /**
  *

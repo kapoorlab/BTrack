@@ -1,6 +1,6 @@
-package Buddy.plugin.trackmate.providers;
+package fiji.plugin.trackmate.providers;
 
-import Buddy.plugin.trackmate.action.TrackMateActionFactory;
+import fiji.plugin.trackmate.action.TrackMateActionFactory;
 
 public class ActionProvider extends AbstractProvider< TrackMateActionFactory >
 {

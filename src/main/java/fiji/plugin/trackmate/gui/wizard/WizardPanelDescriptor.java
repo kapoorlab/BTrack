@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.wizard;
+package fiji.plugin.trackmate.gui.wizard;
 
 import java.awt.Component;
 

@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.tracking;
+package fiji.plugin.trackmate.tracking;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class TrackerKeys
 	 * <code>Map&lt;String, Double&gt;</code> where the map keys are spot
 	 * feature names.
 	 * 
-	 * @see Buddy.plugin.trackmate.Spot#getFeature(String)
+	 * @see fiji.plugin.trackmate.Spot#getFeature(String)
 	 */
 	public static final String KEY_LINKING_FEATURE_PENALTIES = "LINKING_FEATURE_PENALTIES";
 
@@ -116,7 +116,7 @@ public class TrackerKeys
 	 * <code>Map&lt;String, Double&gt;</code> where the map keys are spot
 	 * feature names.
 	 * 
-	 * @see Buddy.plugin.trackmate.Spot#getFeature(String)
+	 * @see fiji.plugin.trackmate.Spot#getFeature(String)
 	 */
 	public static final String KEY_GAP_CLOSING_FEATURE_PENALTIES = "GAP_CLOSING_FEATURE_PENALTIES";
 
@@ -152,7 +152,7 @@ public class TrackerKeys
 	 * <code>Map&lt;String, Double&gt;</code> where the map keys are spot
 	 * feature names.
 	 * 
-	 * @see Buddy.plugin.trackmate.Spot#getFeature(String)
+	 * @see fiji.plugin.trackmate.Spot#getFeature(String)
 	 */
 	public static final String KEY_MERGING_FEATURE_PENALTIES = "MERGING_FEATURE_PENALTIES";
 
@@ -193,7 +193,7 @@ public class TrackerKeys
 	 * <code>Map&lt;String, Double&gt;</code> where the map keys are spot
 	 * feature names.
 	 * 
-	 * @see Buddy.plugin.trackmate.Spot#getFeature(String)
+	 * @see fiji.plugin.trackmate.Spot#getFeature(String)
 	 */
 	public static final String KEY_SPLITTING_FEATURE_PENALTIES = "SPLITTING_FEATURE_PENALTIES";
 

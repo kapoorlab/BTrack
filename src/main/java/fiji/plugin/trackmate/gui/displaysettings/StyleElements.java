@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.trackmate.gui.displaysettings;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -38,11 +38,11 @@ import javax.swing.border.EmptyBorder;
 
 import org.drjekyll.fontchooser.FontDialog;
 
-import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.gui.GuiUtils;
-import Buddy.plugin.trackmate.gui.components.CategoryJComboBox;
-import Buddy.plugin.trackmate.gui.components.FeatureDisplaySelector;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.gui.GuiUtils;
+import fiji.plugin.trackmate.gui.components.CategoryJComboBox;
+import fiji.plugin.trackmate.gui.components.FeatureDisplaySelector;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
 
 public class StyleElements
 {

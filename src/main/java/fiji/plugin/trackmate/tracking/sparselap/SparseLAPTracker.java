@@ -1,23 +1,23 @@
-package Buddy.plugin.trackmate.tracking.sparselap;
+package fiji.plugin.trackmate.tracking.sparselap;
 
-import static Buddy.plugin.trackmate.tracking.LAPUtils.checkFeatureMap;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_BLOCKING_VALUE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_CUTOFF_PERCENTILE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.util.TMUtils.checkMapKeys;
-import static Buddy.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.trackmate.tracking.LAPUtils.checkFeatureMap;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_BLOCKING_VALUE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_CUTOFF_PERCENTILE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.util.TMUtils.checkMapKeys;
+import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,33 +26,40 @@ import java.util.Map;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.scijava.Cancelable;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Logger.SlaveLogger;
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Logger.SlaveLogger;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.tracking.SpotTracker;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
-public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements BCellobjectTracker
+public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements SpotTracker, Cancelable
 {
 	private final static String BASE_ERROR_MESSAGE = "[SparseLAPTracker] ";
 
-	private SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
+	private SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
 
 	private Logger logger = Logger.VOID_LOGGER;
 
-	private final BCellobjectCollection BCellobjects;
+	private final SpotCollection spots;
 
 	private final Map< String, Object > settings;
+
+	private boolean isCanceled;
+
+	private String cancelReason;
+
+	private Cancelable cancelable;
 
 	/*
 	 * CONSTRUCTOR
 	 */
 
-	public SparseLAPTracker( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public SparseLAPTracker( final SpotCollection spots, final Map< String, Object > settings )
 	{
-		this.BCellobjects = BCellobjects;
+		this.spots = spots;
 		this.settings = settings;
 	}
 
@@ -61,7 +68,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 	 */
 
 	@Override
-	public SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > getResult()
+	public SimpleWeightedGraph< Spot, DefaultWeightedEdge > getResult()
 	{
 		return graph;
 	}
@@ -75,30 +82,33 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 	@Override
 	public boolean process()
 	{
+		isCanceled = false;
+		cancelReason = null;
+		cancelable = null;
 
 		/*
 		 * Check input now.
 		 */
 
 		// Check that the objects list itself isn't null
-		if ( null == BCellobjects )
+		if ( null == spots )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is null.";
+			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is null.";
 			return false;
 		}
 
 		// Check that the objects list contains inner collections.
-		if ( BCellobjects.keySet().isEmpty() )
+		if ( spots.keySet().isEmpty() )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
 			return false;
 		}
 
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
-		for ( final int frame : BCellobjects.keySet() )
+		for ( final int frame : spots.keySet() )
 		{
-			if ( BCellobjects.getNBCellobjects( frame ) > 0 )
+			if ( spots.getNSpots( frame, true ) > 0 )
 			{
 				empty = false;
 				break;
@@ -106,7 +116,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		}
 		if ( empty )
 		{
-			errorMessage = BASE_ERROR_MESSAGE + "The BCellobject collection is empty.";
+			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
 			return false;
 		}
 		// Check parameters
@@ -134,7 +144,8 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		ftfSettings.put( KEY_ALTERNATIVE_LINKING_COST_FACTOR, settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR ) );
 		ftfSettings.put( KEY_LINKING_FEATURE_PENALTIES, settings.get( KEY_LINKING_FEATURE_PENALTIES ) );
 
-		final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( BCellobjects, ftfSettings );
+		final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( spots, ftfSettings );
+		cancelable = frameToFrameLinker;
 		frameToFrameLinker.setNumThreads( numThreads );
 		final SlaveLogger ftfLogger = new SlaveLogger( logger, 0, 0.5 );
 		frameToFrameLinker.setLogger( ftfLogger );
@@ -146,6 +157,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		}
 
 		graph = frameToFrameLinker.getResult();
+		cancelable = null;
 
 		/*
 		 * 2. Gap-closing, merging and splitting.
@@ -247,5 +259,28 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		ok = ok & checkMapKeys( settings, mandatoryKeys, optionalKeys, str );
 
 		return ok;
+	}
+
+	// --- org.scijava.Cancelable methods ---
+
+	@Override
+	public boolean isCanceled()
+	{
+		return isCanceled;
+	}
+
+	@Override
+	public void cancel( final String reason )
+	{
+		isCanceled = true;
+		cancelReason = reason;
+		if ( cancelable != null )
+			cancelable.cancel( reason );
+	}
+
+	@Override
+	public String getCancelReason()
+	{
+		return cancelReason;
 	}
 }

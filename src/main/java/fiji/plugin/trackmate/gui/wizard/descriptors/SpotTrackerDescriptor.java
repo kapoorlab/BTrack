@@ -1,11 +1,11 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.gui.components.ConfigurationPanel;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
-import Buddy.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.util.TMUtils;
 
 public class SpotTrackerDescriptor extends WizardPanelDescriptor
 {

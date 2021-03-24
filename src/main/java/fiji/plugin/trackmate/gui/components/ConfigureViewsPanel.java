@@ -1,9 +1,9 @@
-package Buddy.plugin.trackmate.gui.components;
+package fiji.plugin.trackmate.gui.components;
 
-import static Buddy.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static Buddy.plugin.trackmate.gui.Icons.EDIT_SETTINGS_ICON;
+import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.trackmate.gui.Icons.EDIT_SETTINGS_ICON;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -28,15 +28,15 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import Buddy.plugin.trackmate.gui.GuiUtils;
-import Buddy.plugin.trackmate.gui.displaysettings.ConfigTrackMateDisplaySettings;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.UpdateListener;
+import fiji.plugin.trackmate.gui.GuiUtils;
+import fiji.plugin.trackmate.gui.displaysettings.ConfigTrackMateDisplaySettings;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.UpdateListener;
 
 /**
  * A configuration panel used to tune the aspect of spots and tracks in multiple
- * {@link Buddy.plugin.trackmate.visualization.AbstractTrackMateModelView}. This
+ * {@link fiji.plugin.trackmate.visualization.AbstractTrackMateModelView}. This
  * GUI takes the role of a controller.
  *
  * @author Jean-Yves Tinevez
@@ -48,7 +48,7 @@ public class ConfigureViewsPanel extends JPanel
 
 	private static final Color BORDER_COLOR = new java.awt.Color( 192, 192, 192 );
 
-	/*s
+	/*
 	 * CONSTRUCTOR
 	 */
 

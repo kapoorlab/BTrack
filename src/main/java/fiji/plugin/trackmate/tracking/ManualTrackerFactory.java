@@ -1,8 +1,8 @@
-package Buddy.plugin.trackmate.tracking;
+package fiji.plugin.trackmate.tracking;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.gui.ConfigurationPanel;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
 
 import java.util.Map;
 
@@ -12,14 +12,14 @@ import org.jdom2.Element;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.EXTREMELY_LOW ,visible = false)
-public class ManualTrackerFactory implements BCellobjectTrackerFactory
+@Plugin( type = SpotTrackerFactory.class, priority = Priority.HIGH )
+public class ManualTrackerFactory implements SpotTrackerFactory
 {
 	public static final String TRACKER_KEY = "MANUAL_TRACKER";
 
 	public static final String NAME = "Manual tracking";
 
-	public static final String INFO_TEXT = "<html>" + "Not a valid choice for BTrackMate.</html>";
+	public static final String INFO_TEXT = "<html>" + "Choosing this tracker skips the automated tracking step <br>" + "and keeps the current annotation.</html>";
 
 	private String errorMessage;
 
@@ -48,7 +48,7 @@ public class ManualTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings )
 	{
 		return null;
 	}

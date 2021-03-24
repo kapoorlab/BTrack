@@ -1,14 +1,14 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import java.util.IntSummaryStatistics;
 
 import org.scijava.Cancelable;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.TrackModel;
-import Buddy.plugin.trackmate.gui.components.LogPanel;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.trackmate.gui.components.LogPanel;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 
 public class ExecuteTrackingDescriptor extends WizardPanelDescriptor
 {
@@ -37,7 +37,7 @@ public class ExecuteTrackingDescriptor extends WizardPanelDescriptor
 			final TrackModel trackModel = trackmate.getModel().getTrackModel();
 			final int nTracks = trackModel.nTracks( false );
 			final IntSummaryStatistics stats = trackModel.unsortedTrackIDs( false ).stream()
-					.mapToInt( id -> trackModel.trackBCellobjects( id ).size() )
+					.mapToInt( id -> trackModel.trackSpots( id ).size() )
 					.summaryStatistics();
 			logger.log( "Found " + nTracks + " tracks.\n" );
 			logger.log( String.format( "  - avg size: %.1f spots.\n", stats.getAverage() ) );

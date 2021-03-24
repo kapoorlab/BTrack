@@ -1,5 +1,6 @@
-package Buddy.plugin.trackmate.tracking.sparselap.costmatrix;
+package fiji.plugin.trackmate.tracking.sparselap.costmatrix;
 
+import fiji.plugin.trackmate.Spot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,21 +11,19 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import budDetector.BCellobject;
-
 public class GraphSegmentSplitter
 {
-	private final List< BCellobject > segmentStarts;
+	private final List< Spot > segmentStarts;
 
-	private final List< BCellobject > segmentEnds;
+	private final List< Spot > segmentEnds;
 
-	private final List< List< BCellobject >> segmentMiddles;
+	private final List< List< Spot >> segmentMiddles;
 
-	public GraphSegmentSplitter( final Graph< BCellobject, DefaultWeightedEdge > graph, final boolean findMiddlePoints )
+	public GraphSegmentSplitter( final Graph< Spot, DefaultWeightedEdge > graph, final boolean findMiddlePoints )
 	{
-		final ConnectivityInspector< BCellobject, DefaultWeightedEdge > connectivity = new ConnectivityInspector< >( graph );
-		final List< Set< BCellobject >> connectedSets = connectivity.connectedSets();
-		final Comparator< BCellobject > framecomparator = BCellobject.frameComparator;
+		final ConnectivityInspector< Spot, DefaultWeightedEdge > connectivity = new ConnectivityInspector< >( graph );
+		final List< Set< Spot >> connectedSets = connectivity.connectedSets();
+		final Comparator< Spot > framecomparator = Spot.frameComparator;
 
 		segmentStarts = new ArrayList< >( connectedSets.size() );
 		segmentEnds = new ArrayList< >( connectedSets.size() );
@@ -37,14 +36,14 @@ public class GraphSegmentSplitter
 			segmentMiddles = Collections.emptyList();
 		}
 
-		for ( final Set< BCellobject > set : connectedSets )
+		for ( final Set< Spot > set : connectedSets )
 		{
 			if ( set.size() < 2 )
 			{
 				continue;
 			}
 
-			final List< BCellobject > list = new ArrayList< >( set );
+			final List< Spot > list = new ArrayList< >( set );
 			Collections.sort( list, framecomparator );
 
 			segmentEnds.add( list.remove( list.size() - 1 ) );
@@ -56,17 +55,17 @@ public class GraphSegmentSplitter
 		}
 	}
 
-	public List< BCellobject > getSegmentEnds()
+	public List< Spot > getSegmentEnds()
 	{
 		return segmentEnds;
 	}
 
-	public List< List< BCellobject >> getSegmentMiddles()
+	public List< List< Spot >> getSegmentMiddles()
 	{
 		return segmentMiddles;
 	}
 
-	public List< BCellobject > getSegmentStarts()
+	public List< Spot > getSegmentStarts()
 	{
 		return segmentStarts;
 	}

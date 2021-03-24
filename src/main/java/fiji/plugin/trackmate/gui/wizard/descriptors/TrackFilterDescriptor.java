@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -6,16 +6,16 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.features.track.TrackBranchingAnalyzer;
-import Buddy.plugin.trackmate.gui.components.FeatureDisplaySelector;
-import Buddy.plugin.trackmate.gui.components.FilterGuiPanel;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
-import Buddy.plugin.trackmate.util.EverythingDisablerAndReenabler;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.trackmate.features.track.TrackBranchingAnalyzer;
+import fiji.plugin.trackmate.gui.components.FeatureDisplaySelector;
+import fiji.plugin.trackmate.gui.components.FilterGuiPanel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.util.EverythingDisablerAndReenabler;
 
 public class TrackFilterDescriptor extends WizardPanelDescriptor
 {

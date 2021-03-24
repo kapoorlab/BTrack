@@ -1,15 +1,9 @@
-package Buddy.plugin.trackmate.tracking.kdtree;
+package fiji.plugin.trackmate.tracking.kdtree;
 
-import static Buddy.plugin.trackmate.io.IOUtils.readDoubleAttribute;
-import static Buddy.plugin.trackmate.io.IOUtils.writeAttribute;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.gui.ConfigurationPanel;
-import Buddy.plugin.trackmate.gui.panels.tracker.NearestNeighborTrackerSettingsPanel;
-import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
-import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +14,35 @@ import org.jdom2.Element;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.VERY_LOW, visible = false )
-public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.trackmate.gui.components.tracker.NearestNeighborTrackerSettingsPanel;
+import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+
+@Plugin( type = SpotTrackerFactory.class, priority = Priority.LOW )
+public class NearestNeighborTrackerFactory implements SpotTrackerFactory
 {
 	public static final String TRACKER_KEY = "NEAREST_NEIGHBOR_TRACKER";
 
-	public static final String NAME = null;
+	public static final String NAME = "Nearest-neighbor tracker";
 
-	public static final String INFO_TEXT = "<html>" + " Not a valid choice for BTrackMate " + " </html>";
+	public static final String INFO_TEXT = "<html>"
+			+ "This tracker is the most simple one, and is based on nearest neighbor <br>"
+			+ "search. The spots in the target frame are searched for the nearest neighbor <br> "
+			+ "of each spot in the source frame. If the spots found are closer than the <br>"
+			+ "maximal allowed distance, a link between the two is created. <br>"
+			+ "<p>"
+			+ "The nearest neighbor search relies upon the KD-tree technique implemented <br>"
+			+ "in imglib by Johannes Schindelin and friends. This ensure a very efficient "
+			+ "tracking and makes this tracker suitable for situation where a huge number <br>"
+			+ "of particles are to be tracked over a very large number of frames. However, <br>"
+			+ "because of the naiveness of its principles, it can result in pathological <br>"
+			+ "tracks. It can only do frame-to-frame linking; there cannot be any track <br>"
+			+ "merging or splitting, and gaps will not be closed. Also, the end results are non-"
+			+ "deterministic."
+			+ " </html>";
 
 	private String errorMessage;
 
@@ -46,7 +61,7 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 	@Override
 	public String getKey()
 	{
-		return null;
+		return TRACKER_KEY;
 	}
 
 	@Override
@@ -56,9 +71,9 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings )
 	{
-		return new NearestNeighborTracker( BCellobjects, settings );
+		return new NearestNeighborTracker( spots, settings );
 	}
 
 	@Override
@@ -73,9 +88,9 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 	{
 		final StringBuilder str = new StringBuilder();
 		final boolean ok = writeAttribute( settings, element, KEY_LINKING_MAX_DISTANCE, Double.class, str );
-		if (!ok) {
+		if ( !ok )
 			errorMessage = str.toString();
-		}
+
 		return ok;
 	}
 
@@ -86,9 +101,8 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 		final StringBuilder errorHolder = new StringBuilder();
 		final boolean ok = readDoubleAttribute( element, settings, KEY_LINKING_MAX_DISTANCE, errorHolder );
 		if ( !ok )
-		{
 			errorMessage = errorHolder.toString();
-		}
+
 		return ok;
 	}
 
@@ -112,9 +126,8 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 		final StringBuilder str = new StringBuilder();
 		final boolean ok = NearestNeighborTracker.checkInput( settings, str );
 		if ( !ok )
-		{
 			errorMessage = str.toString();
-		}
+
 		return ok;
 	}
 
@@ -123,5 +136,4 @@ public class NearestNeighborTrackerFactory implements BCellobjectTrackerFactory
 	{
 		return errorMessage;
 	}
-
 }

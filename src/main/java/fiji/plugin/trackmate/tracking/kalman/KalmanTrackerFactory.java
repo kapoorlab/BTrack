@@ -1,13 +1,13 @@
-package Buddy.plugin.trackmate.tracking.kalman;
+package fiji.plugin.trackmate.tracking.kalman;
 
-import static Buddy.plugin.trackmate.io.IOUtils.readDoubleAttribute;
-import static Buddy.plugin.trackmate.io.IOUtils.readIntegerAttribute;
-import static Buddy.plugin.trackmate.io.IOUtils.writeAttribute;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.DEFAULT_GAP_CLOSING_MAX_FRAME_GAP;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.trackmate.io.IOUtils.readIntegerAttribute;
+import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.DEFAULT_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,47 +17,48 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.gui.ConfigurationPanel;
-import Buddy.plugin.trackmate.gui.panels.tracker.KalmanTrackerConfigPanel;
-import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
-import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.trackmate.gui.components.tracker.KalmanTrackerConfigPanel;
+import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 
-@Plugin( type = BCellobjectTrackerFactory.class )
-public class KalmanTrackerFactory implements BCellobjectTrackerFactory
+@Plugin( type = SpotTrackerFactory.class )
+public class KalmanTrackerFactory implements SpotTrackerFactory
 {
 
 	private static final String INFO_TEXT_PART2 = "This tracker needs two parameters (on top of the maximal frame gap tolerated): "
 			+ "<br/>"
 			+ "\t - the max search radius defines how far from a predicted position it should look "
-			+ "for candidate BCellobjects;<br/>"
-			+ "\t - the initial search radius defines how far two BCellobjects can be apart when initiating "
+			+ "for candidate spots;<br/>"
+			+ "\t - the initial search radius defines how far two spots can be apart when initiating "
 			+ "a new track."
 			+ "<br/></html>";
 
-	private static final String INFO_TEXT = "<html>This tracker is best suited for objects that "
+	private static final String INFO_TEXT = "<html>"
+			+ "This tracker is best suited for objects that "
 			+ "move with a roughly constant velocity vector."
 			+ "<p>"
-			+ "It relies on the Kalman filter to predict the next most likely position of a BCellobject. "
-			+ "The predictions for all current tracks are linked to the BCellobjects actually "
+			+ "It relies on the Kalman filter to predict the next most likely position of a spot. "
+			+ "The predictions for all current tracks are linked to the spots actually "
 			+ "found in the next frame, thanks to the LAP framework already present in the LAP tracker. "
-			+ "Predictions are continuously refined and the tracker can accomodate moderate "
+			+ "Predictions are continuously refined and the tracker can accommodate moderate "
 			+ "velocity direction and magnitude changes. "
 			+ "<p>"
-			+ "This tracker can bridge gaps: If a BCellobject is not found close enough to a prediction, "
+			+ "This tracker can bridge gaps: If a spot is not found close enough to a prediction, "
 			+ "then the Kalman filter will make another prediction in the next frame and re-iterate "
 			+ "the search. "
 			+ "<p>"
 			+ "The first frames of a track are critical for this tracker to work properly: Tracks"
 			+ "are initiated by looking for close neighbors (again via the LAP tracker). "
-			+ "Spurious BCellobjects in the beginning of each track can confure the tracker."
+			+ "Spurious spots in the beginning of each track can confure the tracker."
 			+ "<p>"
 			+ INFO_TEXT_PART2;
 
 	private static final String KEY = "KALMAN_TRACKER";
 
-	private static final String NAME = "Linear motion LAP tracker";
+	private static final String NAME = "Kalman tracker";
 
 	public static final String KEY_KALMAN_SEARCH_RADIUS = "KALMAN_SEARCH_RADIUS";
 
@@ -90,12 +91,12 @@ public class KalmanTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
+	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings )
 	{
 		final double maxSearchRadius = ( Double ) settings.get( KEY_KALMAN_SEARCH_RADIUS );
 		final int maxFrameGap = ( Integer ) settings.get( KEY_GAP_CLOSING_MAX_FRAME_GAP );
 		final double initialSearchRadius = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
-		return new KalmanTracker( BCellobjects, maxSearchRadius, maxFrameGap, initialSearchRadius );
+		return new KalmanTracker( spots, maxSearchRadius, maxFrameGap, initialSearchRadius );
 	}
 
 	@Override

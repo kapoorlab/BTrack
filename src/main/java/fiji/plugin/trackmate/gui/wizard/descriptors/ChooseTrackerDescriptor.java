@@ -1,13 +1,13 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import java.util.Map;
 
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.components.ModuleChooserPanel;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
-import Buddy.plugin.trackmate.providers.TrackerProvider;
-import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
-import Buddy.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.components.ModuleChooserPanel;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.providers.TrackerProvider;
+import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 
 public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 {
@@ -38,7 +38,7 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 			key = trackmate.getSettings().trackerFactory.getKey();
 
 		@SuppressWarnings( "unchecked" )
-		final ModuleChooserPanel< BCellobjectTrackerFactory > component = (Buddy.plugin.trackmate.gui.components.ModuleChooserPanel< BCellobjectTrackerFactory > ) targetPanel;
+		final ModuleChooserPanel< SpotTrackerFactory > component = (fiji.plugin.trackmate.gui.components.ModuleChooserPanel< SpotTrackerFactory > ) targetPanel;
 		component.setSelectedModuleKey( key );
 	}
 
@@ -53,11 +53,11 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 	{
 		// Configure the detector provider with choice made in panel
 		@SuppressWarnings( "unchecked" )
-		final ModuleChooserPanel< BCellobjectTrackerFactory > component = (Buddy.plugin.trackmate.gui.components.ModuleChooserPanel< BCellobjectTrackerFactory > ) targetPanel;
+		final ModuleChooserPanel< SpotTrackerFactory > component = (fiji.plugin.trackmate.gui.components.ModuleChooserPanel< SpotTrackerFactory > ) targetPanel;
 		final String trackerKey = component.getSelectedModuleKey();
 
 		// Configure trackmate settings with selected detector
-		final BCellobjectTrackerFactory factory = trackerProvider.getFactory( trackerKey );
+		final SpotTrackerFactory factory = trackerProvider.getFactory( trackerKey );
 
 		if ( null == factory )
 		{

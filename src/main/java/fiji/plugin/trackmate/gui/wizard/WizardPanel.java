@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.wizard;
+package fiji.plugin.trackmate.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
-import Buddy.plugin.trackmate.gui.wizard.TransitionAnimator.Direction;
+import fiji.plugin.trackmate.gui.wizard.TransitionAnimator.Direction;
 import net.imglib2.ui.PainterThread;
 import net.imglib2.ui.PainterThread.Paintable;
 

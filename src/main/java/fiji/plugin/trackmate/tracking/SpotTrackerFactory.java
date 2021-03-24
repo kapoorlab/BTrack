@@ -1,28 +1,28 @@
-package Buddy.plugin.trackmate.tracking;
+package fiji.plugin.trackmate.tracking;
 
 import java.util.Map;
 
 import org.jdom2.Element;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.TrackMateModule;
-import Buddy.plugin.trackmate.gui.ConfigurationPanel;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.TrackMateModule;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
 
-public interface BCellobjectTrackerFactory extends TrackMateModule
+public interface SpotTrackerFactory extends TrackMateModule
 {
 
 	/**
-	 * Instantiates and returns a new {@link BCellobjectTracker} configured to operate
-	 * on the specified {@link BCellobjectCollection}, using the specified settins map.
+	 * Instantiates and returns a new {@link SpotTracker} configured to operate
+	 * on the specified {@link SpotCollection}, using the specified settins map.
 	 *
-	 * @param BCellobjects
-	 *            the {@link BCellobjectCollection} containing the BCellobjects to track.
+	 * @param spots
+	 *            the {@link SpotCollection} containing the spots to track.
 	 * @param settings
 	 *            the settings map configuring the tracker.
-	 * @return a new {@link BCellobjectTracker} instance.
+	 * @return a new {@link SpotTracker} instance.
 	 */
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings );
+	public SpotTracker create( final SpotCollection spots, final Map< String, Object > settings );
 
 	/**
 	 * Returns a new GUI panel able to configure the settings suitable for the
@@ -41,7 +41,7 @@ public interface BCellobjectTrackerFactory extends TrackMateModule
 	 * Only parameters specific to the concrete tracker factory are marshalled.
 	 * The element also always receive an attribute named
 	 * {@value TrackerKeys#XML_ATTRIBUTE_TRACKER_NAME} that saves the target
-	 * {@link BCellobjectTracker} key.
+	 * {@link SpotTracker} key.
 	 *
 	 * @return true if marshalling was successful. If not, check
 	 *         {@link #getErrorMessage()}

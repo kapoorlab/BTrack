@@ -1,6 +1,6 @@
-package Buddy.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.trackmate.gui.displaysettings;
 
-import static Buddy.plugin.trackmate.features.FeatureUtils.USE_UNIFORM_COLOR_KEY;
+import static fiji.plugin.trackmate.features.FeatureUtils.USE_UNIFORM_COLOR_KEY;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.scijava.listeners.Listeners;
 
-import Buddy.plugin.trackmate.features.track.TrackIndexAnalyzer;
+import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 
 public class DisplaySettings
 {

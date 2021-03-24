@@ -1,11 +1,11 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import javax.swing.Action;
 
-import Buddy.plugin.trackmate.gui.components.ConfigureViewsPanel;
-import Buddy.plugin.trackmate.gui.components.FeatureDisplaySelector;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.gui.components.ConfigureViewsPanel;
+import fiji.plugin.trackmate.gui.components.FeatureDisplaySelector;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 
 public class ConfigureViewsDescriptor extends WizardPanelDescriptor
 {

@@ -1,25 +1,25 @@
-package Buddy.plugin.trackmate.tracking.sparselap;
+package fiji.plugin.trackmate.tracking.sparselap;
 
-import static Buddy.plugin.trackmate.tracking.LAPUtils.checkFeatureMap;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
-import static Buddy.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.trackmate.tracking.LAPUtils.checkFeatureMap;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
 
 import java.util.Map;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Logger.SlaveLogger;
-import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
-import Buddy.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanSegmentCostMatrixCreator;
-import Buddy.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Logger.SlaveLogger;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanSegmentCostMatrixCreator;
+import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import net.imglib2.algorithm.Benchmark;
 
 /**
@@ -54,12 +54,12 @@ import net.imglib2.algorithm.Benchmark;
  * The class itself uses a sparse version of the cost matrix and a solver that
  * can exploit it. Therefore it is optimized for memory usage rather than speed.
  */
-public class SparseLAPSegmentTracker implements BCellobjectTracker, Benchmark
+public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 {
 
 	private static final String BASE_ERROR_MESSAGE = "[SparseLAPSegmentTracker] ";
 
-	private final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph;
+	private final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph;
 
 	private final Map< String, Object > settings;
 
@@ -71,7 +71,7 @@ public class SparseLAPSegmentTracker implements BCellobjectTracker, Benchmark
 
 	private int numThreads;
 
-	public SparseLAPSegmentTracker( final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph, final Map< String, Object > settings )
+	public SparseLAPSegmentTracker( final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph, final Map< String, Object > settings )
 	{
 		this.graph = graph;
 		this.settings = settings;
@@ -79,7 +79,7 @@ public class SparseLAPSegmentTracker implements BCellobjectTracker, Benchmark
 	}
 
 	@Override
-	public SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > getResult()
+	public SimpleWeightedGraph< Spot, DefaultWeightedEdge > getResult()
 	{
 		return graph;
 	}
@@ -127,7 +127,7 @@ public class SparseLAPSegmentTracker implements BCellobjectTracker, Benchmark
 		final JaqamanSegmentCostMatrixCreator costMatrixCreator = new JaqamanSegmentCostMatrixCreator( graph, settings );
 		costMatrixCreator.setNumThreads( numThreads );
 		final SlaveLogger jlLogger = new SlaveLogger( logger, 0, 0.9 );
-		final JaqamanLinker< BCellobject, BCellobject > linker = new JaqamanLinker<>( costMatrixCreator, jlLogger );
+		final JaqamanLinker< Spot, Spot > linker = new JaqamanLinker<>( costMatrixCreator, jlLogger );
 		if ( !linker.checkInput() || !linker.process() )
 		{
 			errorMessage = linker.getErrorMessage();
@@ -142,12 +142,12 @@ public class SparseLAPSegmentTracker implements BCellobjectTracker, Benchmark
 		logger.setProgress( 0.9d );
 		logger.setStatus( "Creating links..." );
 
-		final Map< BCellobject, BCellobject > assignment = linker.getResult();
-		final Map< BCellobject, Double > costs = linker.getAssignmentCosts();
+		final Map< Spot, Spot > assignment = linker.getResult();
+		final Map< Spot, Double > costs = linker.getAssignmentCosts();
 
-		for ( final BCellobject source : assignment.keySet() )
+		for ( final Spot source : assignment.keySet() )
 		{
-			final BCellobject target = assignment.get( source );
+			final Spot target = assignment.get( source );
 			final DefaultWeightedEdge edge = graph.addEdge( source, target );
 
 			final double cost = costs.get( source );

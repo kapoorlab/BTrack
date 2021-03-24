@@ -1,65 +1,52 @@
-package Buddy.plugin.trackmate.tracking.oldlap;
+package fiji.plugin.trackmate.tracking;
 
-import static Buddy.plugin.trackmate.io.IOUtils.marshallMap;
-import static Buddy.plugin.trackmate.io.IOUtils.readBooleanAttribute;
-import static Buddy.plugin.trackmate.io.IOUtils.readDoubleAttribute;
-import static Buddy.plugin.trackmate.io.IOUtils.readIntegerAttribute;
-import static Buddy.plugin.trackmate.io.IOUtils.unmarshallMap;
-import static Buddy.plugin.trackmate.io.IOUtils.writeAttribute;
-import static Buddy.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_GAP_CLOSING;
-import static Buddy.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_LINKING;
-import static Buddy.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_MERGING;
-import static Buddy.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_SPLITTING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_BLOCKING_VALUE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_CUTOFF_PERCENTILE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.gui.ConfigurationPanel;
-import Buddy.plugin.trackmate.gui.panels.tracker.LAPTrackerSettingsPanel;
-import Buddy.plugin.trackmate.tracking.LAPUtils;
-import Buddy.plugin.trackmate.tracking.BCellobjectTracker;
-import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
+import static fiji.plugin.trackmate.io.IOUtils.marshallMap;
+import static fiji.plugin.trackmate.io.IOUtils.readBooleanAttribute;
+import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.trackmate.io.IOUtils.readIntegerAttribute;
+import static fiji.plugin.trackmate.io.IOUtils.unmarshallMap;
+import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_GAP_CLOSING;
+import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_LINKING;
+import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_MERGING;
+import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_SPLITTING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_BLOCKING_VALUE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_CUTOFF_PERCENTILE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import org.scijava.Priority;
+
 import org.jdom2.Element;
-import org.scijava.plugin.Plugin;
 
-@Plugin( type = BCellobjectTrackerFactory.class, priority = Priority.EXTREMELY_LOW, visible= false  )
-public class LAPTrackerFactory implements BCellobjectTrackerFactory
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.trackmate.gui.components.tracker.LAPTrackerSettingsPanel;
+
+/**
+ * Base class for LAP-based trackers.
+ */
+public abstract class LAPTrackerFactory implements SpotTrackerFactory
 {
-
-	public static final String TRACKER_KEY = "LAP_TRACKER";
-
-	public static final String NAME = "LAP Tracker";
-
-	public static final String INFO_TEXT = "<html>" + "This tracker is based on the Linear Assignment Problem mathematical framework. <br>" + "Its implementation is derived from the following paper: <br>" + "<i>Robust single-particle tracking in live-cell time-lapse sequences</i> - <br>" + "Jaqaman <i> et al.</i>, 2008, Nature Methods. <br>" + "</html>";
 
 	private String errorMessage;
 
-	@Override
-	public String getInfoText()
-	{
-		return INFO_TEXT;
-	}
 
 	@Override
 	public ImageIcon getIcon()
@@ -68,29 +55,11 @@ public class LAPTrackerFactory implements BCellobjectTrackerFactory
 	}
 
 	@Override
-	public String getKey()
-	{
-		return TRACKER_KEY;
-	}
-
-	@Override
-	public String getName()
-	{
-		return NAME;
-	}
-
-	@Override
-	public BCellobjectTracker create( final BCellobjectCollection BCellobjects, final Map< String, Object > settings )
-	{
-		return new LAPTracker( BCellobjects, settings );
-	}
-
-	@Override
 	public ConfigurationPanel getTrackerConfigurationPanel( final Model model )
 	{
 		final String spaceUnits = model.getSpaceUnits();
-		final Collection< String > features = model.getFeatureModel().getBCellobjectFeatures();
-		final Map< String, String > featureNames = model.getFeatureModel().getBCellobjectFeatureNames();
+		final Collection< String > features = model.getFeatureModel().getSpotFeatures();
+		final Map< String, String > featureNames = model.getFeatureModel().getSpotFeatureNames();
 		return new LAPTrackerSettingsPanel( getName(), spaceUnits, features, featureNames );
 	}
 

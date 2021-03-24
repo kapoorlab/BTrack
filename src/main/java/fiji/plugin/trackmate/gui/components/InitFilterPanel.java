@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.gui.components;
+package fiji.plugin.trackmate.gui.components;
 
-import static Buddy.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,18 +14,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-import Buddy.plugin.trackmate.features.FeatureFilter;
-import Buddy.plugin.trackmate.util.OnRequestUpdater;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.trackmate.util.OnRequestUpdater;
 
 public class InitFilterPanel extends JPanel
 {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String EXPLANATION_TEXT = "<html><p align=\"justify\">" + "Set here a threshold on the quality feature to restrict the number of BCellobjects " + "before calculating other features and rendering. This step can help save " + "time in the case of a very large number of BCellobjects. " + "<br/> " + "Warning: the BCellobject filtered here will be discarded: they will not be saved " + "and cannot be retrieved by any other means than re-doing the detection " + "step." + "</html>";
+	private static final String EXPLANATION_TEXT = "<html><p align=\"justify\">" + "Set here a threshold on the quality feature to restrict the number of spots " + "before calculating other features and rendering. This step can help save " + "time in the case of a very large number of spots. " + "<br/> " + "Warning: the spot filtered here will be discarded: they will not be saved " + "and cannot be retrieved by any other means than re-doing the detection " + "step." + "</html>";
 
-	private static final String SELECTED_BCellobject_STRING = "Selected BCellobjects: %d out of %d";
+	private static final String SELECTED_SPOT_STRING = "Selected spots: %d out of %d";
 
 	private final OnRequestUpdater updater;
 
@@ -33,7 +33,7 @@ public class InitFilterPanel extends JPanel
 
 	private final FilterPanel filterPanel;
 
-	private final JLabel lblSelectedBCellobjects;
+	private final JLabel lblSelectedSpots;
 
 	private double[] values;
 
@@ -58,10 +58,10 @@ public class InitFilterPanel extends JPanel
 		panelFields.setPreferredSize( new java.awt.Dimension( 300, 100 ) );
 		panelFields.setLayout( null );
 
-		lblSelectedBCellobjects = new JLabel( "Please wait..." );
-		panelFields.add( lblSelectedBCellobjects );
-		lblSelectedBCellobjects.setBounds( 12, 12, 276, 15 );
-		lblSelectedBCellobjects.setFont( FONT );
+		lblSelectedSpots = new JLabel( "Please wait..." );
+		panelFields.add( lblSelectedSpots );
+		lblSelectedSpots.setBounds( 12, 12, 276, 15 );
+		lblSelectedSpots.setFont( FONT );
 
 		final JPanel panelText = new JPanel();
 		this.add( panelText, BorderLayout.NORTH );
@@ -88,9 +88,9 @@ public class InitFilterPanel extends JPanel
 		lblExplanation.setFont( FONT.deriveFont( Font.ITALIC ) );
 
 		final ArrayList< String > keys = new ArrayList<>( 1 );
-		keys.add( BCellobject.QUALITY );
+		keys.add( Spot.QUALITY );
 		final HashMap< String, String > keyNames = new HashMap<>( 1 );
-		keyNames.put( BCellobject.QUALITY, BCellobject.FEATURE_NAMES.get( BCellobject.QUALITY ) );
+		keyNames.put( Spot.QUALITY, Spot.FEATURE_NAMES.get( Spot.QUALITY ) );
 
 		filterPanel = new FilterPanel( keyNames, valueCollector, filter );
 		filterPanel.cmbboxFeatureKeys.setEnabled( false );
@@ -109,7 +109,7 @@ public class InitFilterPanel extends JPanel
 
 	public void refresh()
 	{
-		values = valueCollector.apply( BCellobject.QUALITY );
+		values = valueCollector.apply( Spot.QUALITY );
 		filterPanel.refresh();
 		updater.doUpdate();
 	}
@@ -134,7 +134,7 @@ public class InitFilterPanel extends JPanel
 
 		if ( null == values )
 			return;
-		final int nBCellobjects = values.length;
+		final int nspots = values.length;
 		int nselected = 0;
 		if ( isAbove )
 		{
@@ -148,6 +148,6 @@ public class InitFilterPanel extends JPanel
 				if ( val < threshold )
 					nselected++;
 		}
-		lblSelectedBCellobjects.setText( String.format( SELECTED_BCellobject_STRING, nselected, nBCellobjects ) );
+		lblSelectedSpots.setText( String.format( SELECTED_SPOT_STRING, nselected, nspots ) );
 	}
 }

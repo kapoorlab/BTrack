@@ -1,9 +1,9 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.components.GrapherPanel;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.components.GrapherPanel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 
 public class GrapherDescriptor extends WizardPanelDescriptor
 {

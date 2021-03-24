@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import java.awt.Frame;
 import java.io.File;
@@ -7,14 +7,14 @@ import java.io.IOException;
 
 import javax.swing.SwingUtilities;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.components.LogPanel;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.wizard.WizardSequence;
-import Buddy.plugin.trackmate.io.IOUtils;
-import Buddy.plugin.trackmate.io.TmXmlWriter;
-import Buddy.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.components.LogPanel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.wizard.WizardSequence;
+import fiji.plugin.trackmate.io.IOUtils;
+import fiji.plugin.trackmate.io.TmXmlWriter;
+import fiji.plugin.trackmate.util.TMUtils;
 
 public class SaveDescriptor extends SomeDialogDescriptor
 {

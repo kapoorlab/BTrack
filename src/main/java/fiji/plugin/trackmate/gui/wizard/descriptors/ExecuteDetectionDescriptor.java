@@ -1,10 +1,10 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
 import org.scijava.Cancelable;
 
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.components.LogPanel;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.components.LogPanel;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 
 public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 {

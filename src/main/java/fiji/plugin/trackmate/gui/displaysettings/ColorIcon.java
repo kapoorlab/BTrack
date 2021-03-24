@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.trackmate.gui.displaysettings;
 
 import java.awt.Color;
 import java.awt.Component;

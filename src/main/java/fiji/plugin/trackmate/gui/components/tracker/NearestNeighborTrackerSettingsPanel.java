@@ -1,9 +1,9 @@
-package Buddy.plugin.trackmate.gui.components.tracker;
+package fiji.plugin.trackmate.gui.components.tracker;
 
-import static Buddy.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.TEXTFIELD_DIMENSION;
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.TEXTFIELD_DIMENSION;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
 
 import java.awt.Font;
 import java.util.HashMap;
@@ -13,8 +13,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import Buddy.plugin.trackmate.gui.GuiUtils;
-import Buddy.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.trackmate.gui.GuiUtils;
+import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
 
 public class NearestNeighborTrackerSettingsPanel extends ConfigurationPanel {
 

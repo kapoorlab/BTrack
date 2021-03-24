@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.gui.components;
+package fiji.plugin.trackmate.gui.components;
 
-import static Buddy.plugin.trackmate.gui.Fonts.FONT;
-import static Buddy.plugin.trackmate.gui.Icons.EXECUTE_ICON;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Icons.EXECUTE_ICON;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -12,14 +12,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.action.CaptureOverlayAction;
-import Buddy.plugin.trackmate.action.TrackMateAction;
-import Buddy.plugin.trackmate.action.TrackMateActionFactory;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.providers.ActionProvider;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.action.CaptureOverlayAction;
+import fiji.plugin.trackmate.action.TrackMateAction;
+import fiji.plugin.trackmate.action.TrackMateActionFactory;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.providers.ActionProvider;
 
 public class ActionChooserPanel extends ModuleChooserPanel< TrackMateActionFactory >
 {

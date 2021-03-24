@@ -1,12 +1,12 @@
-package Buddy.plugin.trackmate.gui.wizard;
+package fiji.plugin.trackmate.gui.wizard;
 
-import static Buddy.plugin.trackmate.gui.Icons.CANCEL_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.DISPLAY_CONFIG_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.LOG_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.NEXT_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.PREVIOUS_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.REVERT_ICON;
-import static Buddy.plugin.trackmate.gui.Icons.SAVE_ICON;
+import static fiji.plugin.trackmate.gui.Icons.CANCEL_ICON;
+import static fiji.plugin.trackmate.gui.Icons.DISPLAY_CONFIG_ICON;
+import static fiji.plugin.trackmate.gui.Icons.LOG_ICON;
+import static fiji.plugin.trackmate.gui.Icons.NEXT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.PREVIOUS_ICON;
+import static fiji.plugin.trackmate.gui.Icons.REVERT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.SAVE_ICON;
 
 import java.awt.Container;
 import java.awt.Frame;
@@ -19,8 +19,8 @@ import javax.swing.SwingUtilities;
 
 import org.scijava.Cancelable;
 
-import Buddy.plugin.trackmate.gui.wizard.TransitionAnimator.Direction;
-import Buddy.plugin.trackmate.util.EverythingDisablerAndReenabler;
+import fiji.plugin.trackmate.gui.wizard.TransitionAnimator.Direction;
+import fiji.plugin.trackmate.util.EverythingDisablerAndReenabler;
 
 public class WizardController
 {

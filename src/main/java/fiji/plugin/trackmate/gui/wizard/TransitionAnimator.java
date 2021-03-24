@@ -1,9 +1,9 @@
-package Buddy.plugin.trackmate.gui.wizard;
+package fiji.plugin.trackmate.gui.wizard;
 
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 
-import Buddy.plugin.trackmate.util.ImageHelper;
+import fiji.plugin.trackmate.util.ImageHelper;
 
 public class TransitionAnimator extends AbstractAnimator
 {

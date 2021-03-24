@@ -1,10 +1,12 @@
-package Buddy.plugin.trackmate.io;
+package fiji.plugin.trackmate.io;
 
-
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.TRACKMATE_ICON;
-import Buddy.plugin.trackmate.Logger;
-import fiji.util.NumberParser;
-import ij.IJ;
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DOWNSAMPLE_FACTOR;
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_MEDIAN_FILTERING;
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION;
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_RADIUS;
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_THRESHOLD;
+import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -23,15 +25,44 @@ import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 
+import fiji.plugin.trackmate.Logger;
+import fiji.util.NumberParser;
+import ij.IJ;
+
 /**
  * A collection of static utilities for the input/output of xml files.
+ * 
  * @author Jean-Yves Tinevez
  *
  */
-public class IOUtils {
+public class IOUtils
+{
 
-
-
+	public static final boolean canReadFile( final String path, final StringBuilder errorHolder )
+	{
+		if ( path.isEmpty() )
+		{
+			errorHolder.append( "The path to the file is empty." );
+			return false;
+		}
+		final File file = new File( path );
+		if ( !file.exists() )
+		{
+			errorHolder.append( "The file " + path + " does not exist." );
+			return false;
+		}
+		if ( !file.isFile() )
+		{
+			errorHolder.append( "The path" + path + " is not a file." );
+			return false;
+		}
+		if ( !file.canRead() )
+		{
+			errorHolder.append( "The file" + path + " cannot be read." );
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Prompts the user for a xml file to save to.
@@ -48,49 +79,62 @@ public class IOUtils {
 	 * @return the selected file, or <code>null</code> if the user pressed the
 	 *         "cancel" button.
 	 */
-	public static File askForFileForSaving(File file, final Frame parent, final Logger logger) {
+	public static File askForFileForSaving( File file, final Frame parent, final Logger logger )
+	{
 
-		if (IJ.isMacintosh() && parent != null) {
+		if ( IJ.isMacintosh() && parent != null )
+		{
 			// use the native file dialog on the mac
-			final FileDialog dialog =	new FileDialog(parent, "Save to a XML file", FileDialog.SAVE);
-			dialog.setIconImage(TRACKMATE_ICON.getImage());
-			dialog.setDirectory(file.getParent());
-			dialog.setFile(file.getName());
-			final FilenameFilter filter = new FilenameFilter() {
+			final FileDialog dialog = new FileDialog( parent, "Save to a XML file", FileDialog.SAVE );
+			dialog.setIconImage( TRACKMATE_ICON.getImage() );
+			dialog.setDirectory( file.getParent() );
+			dialog.setFile( file.getName() );
+			final FilenameFilter filter = new FilenameFilter()
+			{
 				@Override
-				public boolean accept(final File dir, final String name) {
-					return name.endsWith(".xml");
+				public boolean accept( final File dir, final String name )
+				{
+					return name.endsWith( ".xml" );
 				}
 			};
-			dialog.setFilenameFilter(filter);
-			dialog.setVisible(true);
+			dialog.setFilenameFilter( filter );
+			dialog.setVisible( true );
 			String selectedFile = dialog.getFile();
-			if (null == selectedFile) {
-				logger.log("Save data aborted.\n");
+			if ( null == selectedFile )
+			{
+				logger.log( "Save data aborted.\n" );
 				return null;
 			}
-			if (!selectedFile.endsWith(".xml"))
+			if ( !selectedFile.endsWith( ".xml" ) )
 				selectedFile += ".xml";
-			file = new File(dialog.getDirectory(), selectedFile);
-		} else {
-			final JFileChooser fileChooser = new JFileChooser(file.getParent()) {
+			file = new File( dialog.getDirectory(), selectedFile );
+		}
+		else
+		{
+			final JFileChooser fileChooser = new JFileChooser( file.getParent() )
+			{
 				private static final long serialVersionUID = 1L;
-				@Override
-			    protected JDialog createDialog( final Component lParent ) throws HeadlessException {
-			        final JDialog dialog = super.createDialog( lParent );
-			        dialog.setIconImage( TRACKMATE_ICON.getImage() );
-			        return dialog;
-			    }
-			};
-			fileChooser.setSelectedFile(file);
-			final FileNameExtensionFilter filter = new FileNameExtensionFilter("XML files", "xml");
-			fileChooser.setFileFilter(filter);
 
-			final int returnVal = fileChooser.showSaveDialog(parent);
-			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				@Override
+				protected JDialog createDialog( final Component lParent ) throws HeadlessException
+				{
+					final JDialog dialog = super.createDialog( lParent );
+					dialog.setIconImage( TRACKMATE_ICON.getImage() );
+					return dialog;
+				}
+			};
+			fileChooser.setSelectedFile( file );
+			final FileNameExtensionFilter filter = new FileNameExtensionFilter( "XML files", "xml" );
+			fileChooser.setFileFilter( filter );
+
+			final int returnVal = fileChooser.showSaveDialog( parent );
+			if ( returnVal == JFileChooser.APPROVE_OPTION )
+			{
 				file = fileChooser.getSelectedFile();
-			} else {
-				logger.log("Save data aborted.\n");
+			}
+			else
+			{
+				logger.log( "Save data aborted.\n" );
 				return null;
 			}
 		}
@@ -100,62 +144,80 @@ public class IOUtils {
 	/**
 	 * Prompts the user for a xml file to load from.
 	 *
-	 * @param file  a default file, will be used to display a default choice in the file chooser.
-	 * @param title  the title to display on the file chooser window
-	 * @param parent  the {@link Frame} to lock on this dialog.
-	 * @param logger  a {@link Logger} to report what is happening.
-	 * @return  the selected file, or <code>null</code> if the user pressed the "cancel" button.
+	 * @param file
+	 *            a default file, will be used to display a default choice in
+	 *            the file chooser.
+	 * @param title
+	 *            the title to display on the file chooser window
+	 * @param parent
+	 *            the {@link Frame} to lock on this dialog.
+	 * @param logger
+	 *            a {@link Logger} to report what is happening.
+	 * @return the selected file, or <code>null</code> if the user pressed the
+	 *         "cancel" button.
 	 */
-	public static File askForFileForLoading(File file, final String title, final Frame parent, final Logger logger) {
+	public static File askForFileForLoading( File file, final String title, final Frame parent, final Logger logger )
+	{
 
-		if(IJ.isMacintosh()) {
+		if ( IJ.isMacintosh() )
+		{
 			// use the native file dialog on the mac
-			final FileDialog dialog =	new FileDialog(parent, title, FileDialog.LOAD);
-			dialog.setIconImage(TRACKMATE_ICON.getImage());
-			dialog.setDirectory(file.getParent());
-			dialog.setFile(file.getName());
-			final FilenameFilter filter = new FilenameFilter() {
+			final FileDialog dialog = new FileDialog( parent, title, FileDialog.LOAD );
+			dialog.setIconImage( TRACKMATE_ICON.getImage() );
+			dialog.setDirectory( file.getParent() );
+			dialog.setFile( file.getName() );
+			final FilenameFilter filter = new FilenameFilter()
+			{
 				@Override
-				public boolean accept(final File dir, final String name) {
-					return name.endsWith(".xml");
+				public boolean accept( final File dir, final String name )
+				{
+					return name.endsWith( ".xml" );
 				}
 			};
-			dialog.setFilenameFilter(filter);
-			dialog.setVisible(true);
+			dialog.setFilenameFilter( filter );
+			dialog.setVisible( true );
 			String selectedFile = dialog.getFile();
-			if (null == selectedFile) {
-				logger.log("Load data aborted.\n");
+			if ( null == selectedFile )
+			{
+				logger.log( "Load data aborted.\n" );
 				return null;
 			}
-			if (!selectedFile.endsWith(".xml"))
+			if ( !selectedFile.endsWith( ".xml" ) )
 				selectedFile += ".xml";
-			file = new File(dialog.getDirectory(), selectedFile);
-		} else {
-			final JFileChooser fileChooser = new JFileChooser(file.getParent()) {
+			file = new File( dialog.getDirectory(), selectedFile );
+		}
+		else
+		{
+			final JFileChooser fileChooser = new JFileChooser( file.getParent() )
+			{
 				private static final long serialVersionUID = 1L;
-				@Override
-			    protected JDialog createDialog( final Component lParent ) throws HeadlessException {
-			        final JDialog dialog = super.createDialog( lParent );
-			        dialog.setIconImage( TRACKMATE_ICON.getImage() );
-			        return dialog;
-			    }
-			};
-			fileChooser.setName(title);
-			fileChooser.setSelectedFile(file);
-			final FileNameExtensionFilter filter = new FileNameExtensionFilter("XML files", "xml");
-			fileChooser.setFileFilter(filter);
 
-			final int returnVal = fileChooser.showOpenDialog(parent);
-			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				@Override
+				protected JDialog createDialog( final Component lParent ) throws HeadlessException
+				{
+					final JDialog dialog = super.createDialog( lParent );
+					dialog.setIconImage( TRACKMATE_ICON.getImage() );
+					return dialog;
+				}
+			};
+			fileChooser.setName( title );
+			fileChooser.setSelectedFile( file );
+			final FileNameExtensionFilter filter = new FileNameExtensionFilter( "XML files", "xml" );
+			fileChooser.setFileFilter( filter );
+
+			final int returnVal = fileChooser.showOpenDialog( parent );
+			if ( returnVal == JFileChooser.APPROVE_OPTION )
+			{
 				file = fileChooser.getSelectedFile();
-			} else {
-				logger.log("Load data aborted.\n");
+			}
+			else
+			{
+				logger.log( "Load data aborted.\n" );
 				return null;
 			}
 		}
 		return file;
 	}
-
 
 	/**
 	 * Prompts the user for a target folder.
@@ -226,71 +288,102 @@ public class IOUtils {
 		return file;
 	}
 
-
 	/**
-	 * Read and return an integer attribute from a JDom {@link Element}, and substitute a default value of 0
-	 * if the attribute is not found or of the wrong type.
+	 * Read and return an integer attribute from a JDom {@link Element}, and
+	 * substitute a default value of 0 if the attribute is not found or of the
+	 * wrong type.
 	 */
-	public static final int readIntAttribute(final Element element, final String name, final Logger logger) {
-		return readIntAttribute(element, name, logger, 0);
+	public static final int readIntAttribute( final Element element, final String name, final Logger logger )
+	{
+		return readIntAttribute( element, name, logger, 0 );
 	}
 
-	public static final int readIntAttribute(final Element element, final String name, final Logger logger, final int defaultValue) {
+	public static final int readIntAttribute( final Element element, final String name, final Logger logger, final int defaultValue )
+	{
 		int val = defaultValue;
-		final Attribute att = element.getAttribute(name);
-		if (null == att) {
-			logger.error("Could not find attribute "+name+" for element "+element.getName()+", substituting default value: "+defaultValue+".\n");
+		final Attribute att = element.getAttribute( name );
+		if ( null == att )
+		{
+			logger.error( "Could not find attribute " + name + " for element " + element.getName() + ", substituting default value: " + defaultValue + ".\n" );
 			return val;
 		}
-		try {
+		try
+		{
 			val = att.getIntValue();
-		} catch (final DataConversionException e) {
-			logger.error("Cannot read the attribute "+name+" of the element "+element.getName()+", substituting default value: "+defaultValue+".\n");
+		}
+		catch ( final DataConversionException e )
+		{
+			logger.error( "Cannot read the attribute " + name + " of the element " + element.getName() + ", substituting default value: " + defaultValue + ".\n" );
 		}
 		return val;
 	}
 
-	public static final double readFloatAttribute(final Element element, final String name, final Logger logger) {
+	public static final double readFloatAttribute( final Element element, final String name, final Logger logger )
+	{
 		double val = 0;
-		final Attribute att = element.getAttribute(name);
-		if (null == att) {
-			logger.error("Could not find attribute "+name+" for element "+element.getName()+", substituting default value.\n");
+		final Attribute att = element.getAttribute( name );
+		if ( null == att )
+		{
+			logger.error( "Could not find attribute " + name + " for element " + element.getName() + ", substituting default value.\n" );
 			return val;
 		}
-		try {
+		try
+		{
 			val = att.getFloatValue();
-		} catch (final DataConversionException e) {
-			logger.error("Cannot read the attribute "+name+" of the element "+element.getName()+", substituting default value.\n");
+		}
+		catch ( final DataConversionException e )
+		{
+			logger.error( "Cannot read the attribute " + name + " of the element " + element.getName() + ", substituting default value.\n" );
 		}
 		return val;
 	}
 
-	public static final double readDoubleAttribute(final Element element, final String name, final Logger logger) {
-		double val = 0;
-		final Attribute att = element.getAttribute(name);
-		if (null == att) {
-			logger.error("Could not find attribute "+name+" for element "+element.getName()+", substituting default value.\n");
+	public static final double readDoubleAttribute( final Element element, final String name, final Logger logger )
+	{
+		return readDoubleAttribute( element, name, logger, 0. );
+	}
+
+	public static final double readDoubleAttribute( final Element element, final String name, final Logger logger, final double defaultValue )
+	{
+		double val = defaultValue;
+		final Attribute att = element.getAttribute( name );
+		if ( null == att )
+		{
+			logger.error( "Could not find attribute " + name + " for element " + element.getName() + ", substituting default value.\n" );
 			return val;
 		}
-		try {
+		try
+		{
 			val = att.getDoubleValue();
-		} catch (final DataConversionException e) {
-			logger.error("Cannot read the attribute "+name+" of the element "+element.getName()+", substituting default value.\n");
+		}
+		catch ( final DataConversionException e )
+		{
+			logger.error( "Cannot read the attribute " + name + " of the element " + element.getName() + ", substituting default value.\n" );
 		}
 		return val;
 	}
 
-	public static final boolean readBooleanAttribute(final Element element, final String name, final Logger logger) {
-		boolean val = false;
-		final Attribute att = element.getAttribute(name);
-		if (null == att) {
-			logger.error("Could not find attribute "+name+" for element "+element.getName()+", substituting default value.\n");
+	public static final boolean readBooleanAttribute( final Element element, final String name, final Logger logger )
+	{
+		return readBooleanAttribute( element, name, logger, false );
+	}
+
+	public static final boolean readBooleanAttribute( final Element element, final String name, final Logger logger, final boolean defaultValue )
+	{
+		boolean val = defaultValue;
+		final Attribute att = element.getAttribute( name );
+		if ( null == att )
+		{
+			logger.error( "Could not find attribute " + name + " for element " + element.getName() + ", substituting default value.\n" );
 			return val;
 		}
-		try {
+		try
+		{
 			val = att.getBooleanValue();
-		} catch (final DataConversionException e) {
-			logger.error("Cannot read the attribute "+name+" of the element "+element.getName()+", substituting default value.\n");
+		}
+		catch ( final DataConversionException e )
+		{
+			logger.error( "Cannot read the attribute " + name + " of the element " + element.getName() + ", substituting default value.\n" );
 		}
 		return val;
 	}
@@ -362,6 +455,18 @@ public class IOUtils {
 		return true;
 	}
 
+	public static final boolean readStringAttribute( final Element element, final Map< String, Object > settings, final String parameterKey, final StringBuilder errorHolder )
+	{
+		final String str = element.getAttributeValue( parameterKey );
+		if ( null == str )
+		{
+			errorHolder.append( "Attribute " + parameterKey + " could not be found in XML element.\n" );
+			return false;
+		}
+		settings.put( parameterKey, str );
+		return true;
+	}
+
 	/**
 	 * Unmarshall the attributes of a JDom element in a map of doubles. Mappings
 	 * are <b>added</b> to the specified map. If a value is found not to be a
@@ -391,7 +496,39 @@ public class IOUtils {
 		return ok;
 	}
 
-	
+	/*
+	 * MARSHALLING UTILS
+	 */
+
+	public static final boolean writeTargetChannel( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
+	{
+		return writeAttribute( settings, element, KEY_TARGET_CHANNEL, Integer.class, errorHolder );
+	}
+
+	public static final boolean writeRadius( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
+	{
+		return writeAttribute( settings, element, KEY_RADIUS, Double.class, errorHolder );
+	}
+
+	public static final boolean writeThreshold( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
+	{
+		return writeAttribute( settings, element, KEY_THRESHOLD, Double.class, errorHolder );
+	}
+
+	public static final boolean writeDoMedian( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
+	{
+		return writeAttribute( settings, element, KEY_DO_MEDIAN_FILTERING, Boolean.class, errorHolder );
+	}
+
+	public static final boolean writeDoSubPixel( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
+	{
+		return writeAttribute( settings, element, KEY_DO_SUBPIXEL_LOCALIZATION, Boolean.class, errorHolder );
+	}
+
+	public static final boolean writeDownsamplingFactor( final Map< String, Object > settings, final Element element, final StringBuilder errorHolder )
+	{
+		return writeAttribute( settings, element, KEY_DOWNSAMPLE_FACTOR, Integer.class, errorHolder );
+	}
 
 	/**
 	 * Add a parameter attribute to the given element, taken from the given
@@ -422,7 +559,7 @@ public class IOUtils {
 
 		if ( !expectedClass.isInstance( obj ) )
 		{
-			errorHolder.append( "Exoected " + parameterKey + " parameter to be a " + expectedClass.getName() + " but was a " + obj.getClass().getName() + ".\n" );
+			errorHolder.append( "Expected " + parameterKey + " parameter to be a " + expectedClass.getName() + " but was a " + obj.getClass().getName() + ".\n" );
 			return false;
 		}
 
@@ -437,8 +574,6 @@ public class IOUtils {
 	public static void marshallMap( final Map< String, Double > map, final Element element )
 	{
 		for ( final String key : map.keySet() )
-		{
 			element.setAttribute( key, map.get( key ).toString() );
-		}
 	}
 }

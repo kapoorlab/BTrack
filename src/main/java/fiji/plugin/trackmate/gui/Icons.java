@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.gui;
+package fiji.plugin.trackmate.gui;
 
 import java.awt.Image;
 

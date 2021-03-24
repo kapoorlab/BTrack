@@ -1,8 +1,8 @@
-package Buddy.plugin.trackmate.gui.components;
+package fiji.plugin.trackmate.gui.components;
 
-import static Buddy.plugin.trackmate.gui.Icons.EDGE_ICON_64x64;
-import static Buddy.plugin.trackmate.gui.Icons.SPOT_ICON_64x64;
-import static Buddy.plugin.trackmate.gui.Icons.TRACK_ICON_64x64;
+import static fiji.plugin.trackmate.gui.Icons.EDGE_ICON_64x64;
+import static fiji.plugin.trackmate.gui.Icons.SPOT_ICON_64x64;
+import static fiji.plugin.trackmate.gui.Icons.TRACK_ICON_64x64;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -16,13 +16,14 @@ import javax.swing.SwingConstants;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.features.EdgeFeatureGrapher;
-import Buddy.plugin.trackmate.features.BCellobjectFeatureGrapher;
-import Buddy.plugin.trackmate.features.TrackFeatureGrapher;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.features.EdgeFeatureGrapher;
+import fiji.plugin.trackmate.features.FeatureUtils;
+import fiji.plugin.trackmate.features.SpotFeatureGrapher;
+import fiji.plugin.trackmate.features.TrackFeatureGrapher;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
 
 public class GrapherPanel extends JPanel
 {
@@ -150,11 +151,11 @@ public class GrapherPanel extends JPanel
 	private void plotSpotFeatures( final String xFeature, final Set< String > yFeatures )
 	{
 		// Collect only the spots that are in tracks
-		final List< BCellobject > spots = new ArrayList<>( trackmate.getModel().getBCellobjects().getNBCellobjects(  ) );
+		final List< Spot > spots = new ArrayList<>( trackmate.getModel().getSpots().getNSpots( true ) );
 		for ( final Integer trackID : trackmate.getModel().getTrackModel().trackIDs( true ) )
-			spots.addAll( trackmate.getModel().getTrackModel().trackBCellobjects( trackID ) );
+			spots.addAll( trackmate.getModel().getTrackModel().trackSpots( trackID ) );
 
-		final BCellobjectFeatureGrapher grapher = new BCellobjectFeatureGrapher( xFeature, yFeatures, spots, trackmate.getModel(), displaySettings );
+		final SpotFeatureGrapher grapher = new SpotFeatureGrapher( xFeature, yFeatures, spots, trackmate.getModel(), displaySettings );
 		grapher.render();
 	}
 

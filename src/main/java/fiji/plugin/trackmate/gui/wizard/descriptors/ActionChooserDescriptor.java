@@ -1,11 +1,11 @@
-package Buddy.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.trackmate.gui.wizard.descriptors;
 
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.components.ActionChooserPanel;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
-import Buddy.plugin.trackmate.providers.ActionProvider;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.components.ActionChooserPanel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.trackmate.providers.ActionProvider;
 
 public class ActionChooserDescriptor extends WizardPanelDescriptor
 {
