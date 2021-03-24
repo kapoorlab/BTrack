@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import budDetector.BCellobject;
+import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;
@@ -73,7 +73,7 @@ import pluginTools.TrackEach3DCell;
 				// and the distance
 				double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 				// Make the bud n cell object, each cell has all information about the bud n itself 
-				BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
+				Spot budncell = new Spot(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
 	            parent.budcells.add(budncell, parent.thirdDimension);  
 	            
 			

@@ -1,4 +1,19 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.trackmate.visualization.trackscheme;
+
+import static fiji.plugin.trackmate.gui.Icons.ARROW_DOWNLEFT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_DOWNRIGHT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_DOWN_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_LEFT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_RIGHT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_UPLEFT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_UPRIGHT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ARROW_UP_ICON;
+import static fiji.plugin.trackmate.gui.Icons.EDIT_ICON;
+import static fiji.plugin.trackmate.gui.Icons.END_ICON;
+import static fiji.plugin.trackmate.gui.Icons.HOME_ICON;
+import static fiji.plugin.trackmate.gui.Icons.RESET_ZOOM_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ZOOM_IN_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ZOOM_OUT_ICON;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -10,7 +25,6 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
@@ -20,8 +34,7 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 
-import budDetector.BCellobject;
-
+import fiji.plugin.trackmate.Spot;
 
 public class TrackSchemeActions
 {
@@ -30,34 +43,6 @@ public class TrackSchemeActions
 	 * When panning with the keyboard, by how much pixels to move.
 	 */
 	private static final int PAN_AMOUNT = 100;
-
-	private static final ImageIcon RESET_ZOOM_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom.png" ) );
-
-	private static final ImageIcon ZOOM_IN_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_in.png" ) );
-
-	private static final ImageIcon ZOOM_OUT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_out.png" ) );
-
-	private static final ImageIcon EDIT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/tag_blue_edit.png" ) );
-
-	private static final ImageIcon HOME_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/control_start.png" ) );
-
-	private static final ImageIcon END_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/control_end.png" ) );
-
-	private static final ImageIcon ARROW_UP_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_up.png" ) );
-
-	private static final ImageIcon ARROW_DOWN_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_down.png" ) );
-
-	private static final ImageIcon ARROW_LEFT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_left.png" ) );
-
-	private static final ImageIcon ARROW_RIGHT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_right.png" ) );
-
-	private static final ImageIcon ARROW_UPLEFT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_nw.png" ) );
-
-	private static final ImageIcon ARROW_DOWNLEFT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_sw.png" ) );
-
-	private static final ImageIcon ARROW_UPRIGHT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_ne.png" ) );
-
-	private static final ImageIcon ARROW_DOWNRIGHT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/arrow_se.png" ) );
 
 	private static Action zoomInAction;
 
@@ -261,7 +246,7 @@ public class TrackSchemeActions
 				int minFrame = Integer.MAX_VALUE;
 				for ( final mxCell mxCell : vertices )
 				{
-					final int frame = graph.getBCellobjectFor( mxCell ).getFeature( BCellobject.POSITION_T ).intValue();
+					final int frame = graph.getSpotFor( mxCell ).getFeature( Spot.FRAME ).intValue();
 					if ( frame < minFrame )
 					{
 						minFrame = frame;
@@ -278,7 +263,7 @@ public class TrackSchemeActions
 					for ( final mxCell mxCell : edges )
 					{
 						final mxICell target = mxCell.getTarget();
-						final int frame = graph.getBCellobjectFor( target ).getFeature( BCellobject.POSITION_T ).intValue();
+						final int frame = graph.getSpotFor( target ).getFeature( Spot.FRAME ).intValue();
 						if ( frame < minFrame )
 						{
 							minFrame = frame;
@@ -327,7 +312,7 @@ public class TrackSchemeActions
 					int maxFrame = Integer.MIN_VALUE;
 					for ( final mxCell mxCell : vertices )
 					{
-						final int frame = graph.getBCellobjectFor( mxCell ).getFeature( BCellobject.POSITION_T ).intValue();
+						final int frame = graph.getSpotFor( mxCell ).getFeature( Spot.FRAME ).intValue();
 						if ( frame > maxFrame )
 						{
 							maxFrame = frame;
@@ -344,7 +329,7 @@ public class TrackSchemeActions
 						for ( final mxCell mxCell : edges )
 						{
 							final mxICell target = mxCell.getTarget();
-							final int frame = graph.getBCellobjectFor( target ).getFeature( BCellobject.POSITION_T ).intValue();
+							final int frame = graph.getSpotFor( target ).getFeature( Spot.FRAME ).intValue();
 							if ( frame > maxFrame )
 							{
 								maxFrame = frame;
@@ -378,10 +363,10 @@ public class TrackSchemeActions
 		@Override
 		public void actionPerformed( final ActionEvent e )
 		{
-				multiEditBCellobjectName( graphComponent, e );
+				multiEditSpotName( graphComponent, e );
 		}
 
-		private void multiEditBCellobjectName( final TrackSchemeGraphComponent lGraphComponent, final ActionEvent triggerEvent )
+		private void multiEditSpotName( final TrackSchemeGraphComponent lGraphComponent, final ActionEvent triggerEvent )
 		{
 			/*
 			 * We want to display the editing window in the cell is the closer
@@ -413,7 +398,7 @@ public class TrackSchemeActions
 					for ( final mxCell cell : vertices )
 					{
 						cell.setValue( tc.getValue() );
-						graph.getBCellobjectFor( cell ).setName( tc.getValue().toString() );
+						graph.getSpotFor( cell ).setName( tc.getValue().toString() );
 					}
 					lGraphComponent.refresh();
 					lGraphComponent.removeListener( this );

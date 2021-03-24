@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import budDetector.BCellobject;
+import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;
@@ -37,7 +37,7 @@ public class TrackEachCell {
 	int percent;
 	final ArrayList<Budobject> Budlist;
 	final ArrayList<Budpointobject> Budpointlist;
-	final ArrayList<BCellobject> Budcelllist;
+	final ArrayList<Spot> Budcelllist;
     ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
     
 	public TrackEachCell(final InteractiveBud parent, 
@@ -52,7 +52,7 @@ public class TrackEachCell {
 	}
 	
 	public TrackEachCell(final InteractiveBud parent, 
-			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<BCellobject> Budcelllist,
+			ArrayList<Budobject> Budlist, ArrayList<Budpointobject> Budpointlist, ArrayList<Spot> Budcelllist,
 			final int percent) {
 
 		this.parent = parent;
@@ -88,7 +88,7 @@ public class TrackEachCell {
 		return Budpointlist;
 	}
 	
-    public ArrayList<BCellobject> returnBCellobjectlist(){
+    public ArrayList<Spot> returnSpotlist(){
 		
 		
 		return Budcelllist;
@@ -213,7 +213,7 @@ public class TrackEachCell {
 			// and the distance
 			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
+			Spot budncell = new Spot(Curreentbud, Budpointlist, currentbudcell, closestBudPoint, closestBudPoint, parent.thirdDimension);
             parent.budcells.add(budncell, parent.thirdDimension);  
 		}
 		

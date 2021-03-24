@@ -59,8 +59,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 		final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION + " started on:\n" + TMUtils.getCurrentTimeString() + '\n';
 		// Log GUI processing start
 		logger.log( welcomeMessage, Logger.BLUE_COLOR );
-		logger.log( "Please note that TrackMate is available through Buddy, and is based on a publication. "
-				+ "If you use it successfully for your research please be so kind to cite our work:\n" );
+		logger.log( "BTrackmate is a slim version of Trackmate, "
+				+ "to be used when inputting integer segmentations as tif or csv file:\n" );
 		logger.log( "Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), 'TrackMate: An open and extensible platform for single-particle tracking.', "
 				+ "Methods 115: 80-90, PMID 27713081.\n", Logger.GREEN_COLOR );
 		logger.log( "https://www.ncbi.nlm.nih.gov/pubmed/27713081\n", Logger.BLUE_COLOR );

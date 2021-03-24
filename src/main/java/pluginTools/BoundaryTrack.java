@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import javax.swing.JProgressBar;
 
-import budDetector.BCellobject;
+import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import kalmanGUI.CovistoKalmanPanel;
@@ -116,7 +116,7 @@ public class BoundaryTrack {
 	computeMinMax(Views.iterable(BudSeg), min, max);
 	ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
 	ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
-	ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
+	ArrayList<Spot> Budcelllist = new ArrayList<Spot>();
 	if(parent.SegYelloworiginalimg!=null) {
 		
 	    TrackEachBud compute = new TrackEachBud(parent,  Budlist,Budpointlist, Budcelllist,max.get(), percent);

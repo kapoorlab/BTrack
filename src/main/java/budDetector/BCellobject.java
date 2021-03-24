@@ -14,7 +14,7 @@ import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 
-public class BCellobject extends AbstractEuclideanSpace implements RealLocalizable, Comparable<BCellobject> {
+public class Spot extends AbstractEuclideanSpace implements RealLocalizable, Comparable<Spot> {
 	
 	private final ConcurrentHashMap< String, Double > features = new ConcurrentHashMap< String, Double >();
 	public static AtomicInteger IDcounter = new AtomicInteger( -1 );
@@ -34,7 +34,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	private String name;
 	static int totalfeatures = 9;
 	
-	public BCellobject( final RealLocalizable currentcell) {
+	public Spot( final RealLocalizable currentcell) {
 		
 		
 		
@@ -57,7 +57,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 	}
 	
-	public BCellobject( final Cellobject currentcell,  final int time) {
+	public Spot( final Cellobject currentcell,  final int time) {
 		
 		
 		
@@ -81,7 +81,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 	}
 	
-	public BCellobject(final Budobject mybud, final ArrayList<Budpointobject> mybudpoints, final Cellobject currentcell, final double closestGrowthPoint, final double closestBudPoint, final int time) {
+	public Spot(final Budobject mybud, final ArrayList<Budpointobject> mybudpoints, final Cellobject currentcell, final double closestGrowthPoint, final double closestBudPoint, final int time) {
 		
 		
 		
@@ -104,7 +104,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 	}
 
-	public BCellobject( final int ID )
+	public Spot( final int ID )
 	{
 		super( 3 );
 		this.ID = ID;
@@ -122,7 +122,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	}
 	
 	
-	public BCellobject( final double x, final double y, final double z, final double radius,  final String name )
+	public Spot( final double x, final double y, final double z, final double radius,  final String name )
 	{
 		super( 3 );
 		this.ID = IDcounter.incrementAndGet();
@@ -280,7 +280,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	}
 
 	@Override
-	public int compareTo(BCellobject o) {
+	public int compareTo(Spot o) {
 		return hashCode() - o.hashCode();
 	}
 
@@ -320,7 +320,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	 *            n n = 0 for X- coordinate, n = 1 for Y- coordinate
 	 * @return the difference in co-ordinate specified.
 	 */
-	public double diffTo(final BCellobject target, int n) {
+	public double diffTo(final Spot target, int n) {
 
 		final double thisBloblocation = currentcell.Location.getDoublePosition(n);
 		final double targetBloblocation = target.currentcell.Location.getDoublePosition(n);
@@ -340,14 +340,14 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	 *            the name of the feature to use for calculation.
 	 * @return the difference in feature value.
 	 */
-	public double diffTo( final BCellobject s, final String feature )
+	public double diffTo( final Spot s, final String feature )
 	{
 		final double f1 = features.get( feature ).doubleValue();
 		final double f2 = s.getFeature( feature ).doubleValue();
 		return f1 - f2;
 	}
 	
-	public double normalizeDiffTo( final BCellobject s, final String feature )
+	public double normalizeDiffTo( final Spot s, final String feature )
 	{
 		final double a = features.get( feature ).doubleValue();
 		final double b = s.getFeature( feature ).doubleValue();
@@ -356,12 +356,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		
 		return Math.abs( a - b ) / ( ( a + b ) / 2 );
 	}
-	public final static Comparator< BCellobject > featureComparator( final String feature )
+	public final static Comparator< Spot > featureComparator( final String feature )
 	{
-		final Comparator< BCellobject > comparator = new Comparator< BCellobject >()
+		final Comparator< Spot > comparator = new Comparator< Spot >()
 		{
 			@Override
-			public int compare( final BCellobject o1, final BCellobject o2 )
+			public int compare( final Spot o1, final Spot o2 )
 			{
 				final double diff = o2.diffTo( o1, feature );
 				if ( diff == 0 )
@@ -375,7 +375,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		return comparator;
 	}
 	/** A comparator used to sort cells by ascending time frame. */
-	public final static Comparator<BCellobject> frameComparator = featureComparator( POSITION_T );
+	public final static Comparator<Spot> frameComparator = featureComparator( POSITION_T );
 	/**
 	 * Returns the squared distance between two clouds.
 	 *
@@ -385,7 +385,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	 * @return the distance to the current cloud to target cloud specified.
 	 */
 
-	public double squareDistanceTo(BCellobject target) {
+	public double squareDistanceTo(Spot target) {
 		// Returns squared distance between the source Blob and the target Blob.
 
 		final Localizable sourceLocation = currentcell.Location;
@@ -399,7 +399,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 		return distance;
 	}
-	public double DistanceTo(BCellobject target, final double alpha, final double beta) {
+	public double DistanceTo(Spot target, final double alpha, final double beta) {
 		// Returns squared distance between the source Blob and the target Blob.
 
 		final Localizable sourceLocation = currentcell.Location;
@@ -419,12 +419,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 	 * A comparator used to sort cells by name. The comparison uses numerical
 	 * natural sorting, So that "cell_4" comes before "cell_122".
 	 */
-	public final static Comparator< BCellobject > nameComparator = new Comparator< BCellobject >()
+	public final static Comparator< Spot > nameComparator = new Comparator< Spot >()
 	{
 		private final AlphanumComparator comparator = AlphanumComparator.instance;
 
 		@Override
-		public int compare( final BCellobject o1, final BCellobject o2 )
+		public int compare( final Spot o1, final Spot o2 )
 		{
 			return comparator.compare( o1.getName(), o2.getName() );
 		}

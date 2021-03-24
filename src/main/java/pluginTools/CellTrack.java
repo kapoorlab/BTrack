@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JProgressBar;
 
-import budDetector.BCellobject;
+import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import kalmanGUI.CovistoKalmanPanel;
@@ -58,7 +58,7 @@ public class CellTrack implements Runnable {
 		computeMinMax(Views.iterable(BudSeg), min, max);
 		ArrayList<Budobject> Budlist = new ArrayList<Budobject>();
 		ArrayList<Budpointobject>Budpointlist = new ArrayList<Budpointobject>();
-		ArrayList<BCellobject> Budcelllist = new ArrayList<BCellobject>();
+		ArrayList<Spot> Budcelllist = new ArrayList<Spot>();
 		
 			
 		    TrackEachCell compute = new TrackEachCell(parent,  Budlist,Budpointlist, Budcelllist,  percent);

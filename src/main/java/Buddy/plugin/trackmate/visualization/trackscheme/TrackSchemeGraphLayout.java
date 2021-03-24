@@ -1,9 +1,9 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.trackmate.visualization.trackscheme;
 
-import static Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_HEIGHT;
-import static Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_WIDTH;
-import static Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme.X_COLUMN_SIZE;
-import static Buddy.plugin.trackmate.visualization.trackscheme.TrackScheme.Y_COLUMN_SIZE;
+import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_HEIGHT;
+import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_WIDTH;
+import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.X_COLUMN_SIZE;
+import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.Y_COLUMN_SIZE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,13 +22,13 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.graph.ConvexBranchesDecomposition;
-import Buddy.plugin.trackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
-import Buddy.plugin.trackmate.graph.GraphUtils;
-import Buddy.plugin.trackmate.graph.SortedDepthFirstIterator;
-import Buddy.plugin.trackmate.graph.TimeDirectedNeighborIndex;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition;
+import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
+import fiji.plugin.trackmate.graph.GraphUtils;
+import fiji.plugin.trackmate.graph.SortedDepthFirstIterator;
+import fiji.plugin.trackmate.graph.TimeDirectedNeighborIndex;
 import net.imglib2.algorithm.Benchmark;
 
 /**
@@ -46,7 +46,7 @@ public class TrackSchemeGraphLayout extends mxGraphLayout implements Benchmark
 
 	private static final int START_COLUMN = 1;
 
-	/** The target model to draw BCellobject from. */
+	/** The target model to draw spot from. */
 	private final Model model;
 
 	private final JGraphXAdapter graphAdapter;
@@ -104,12 +104,12 @@ public class TrackSchemeGraphLayout extends mxGraphLayout implements Benchmark
 		/*
 		 * Compute column width from recursive cumsum
 		 */
-		final Map< BCellobject, Integer > cumulativeBranchWidth = GraphUtils.cumulativeBranchWidth( model.getTrackModel() );
+		final Map< Spot, Integer > cumulativeBranchWidth = GraphUtils.cumulativeBranchWidth( model.getTrackModel() );
 
 		/*
 		 * How many rows do we have to parse?
 		 */
-		final int maxFrame = model.getBCellobjects().lastKey();
+		final int maxFrame = model.getSpots().lastKey();
 
 		graphAdapter.getModel().beginUpdate();
 		try
@@ -136,19 +136,19 @@ public class TrackSchemeGraphLayout extends mxGraphLayout implements Benchmark
 			{ // will be sorted by track name
 
 				// Get Tracks
-				final Set< BCellobject > track = model.getTrackModel().trackBCellobjects( trackID );
+				final Set< Spot > track = model.getTrackModel().trackSpots( trackID );
 
 				// Pass name & trackID to component
 				component.columnTrackIDs[ trackIndex ] = trackID;
 
-				// Get first BCellobject
-				final TreeSet< BCellobject > sortedTrack = new TreeSet< >( BCellobject.frameComparator );
+				// Get first spot
+				final TreeSet< Spot > sortedTrack = new TreeSet< >( Spot.frameComparator );
 				sortedTrack.addAll( track );
-				final BCellobject first = sortedTrack.first();
+				final Spot first = sortedTrack.first();
 
 				/*
 				 * A special case: our quick layout below fails for graph that
-				 * are not trees. That is: if a track has at least a BCellobject that
+				 * are not trees. That is: if a track has at least a spot that
 				 * has more than one predecessor. If we have to deal with such a
 				 * case, we revert to the old, slow scheme.
 				 */
@@ -162,33 +162,33 @@ public class TrackSchemeGraphLayout extends mxGraphLayout implements Benchmark
 					 * Quick layout for a tree-like track
 					 */
 
-					// First loop: Loop over BCellobjects in good order
-					final SortedDepthFirstIterator< BCellobject, DefaultWeightedEdge > iterator = model.getTrackModel().getSortedDepthFirstIterator( first, BCellobject.nameComparator, false );
+					// First loop: Loop over spots in good order
+					final SortedDepthFirstIterator< Spot, DefaultWeightedEdge > iterator = model.getTrackModel().getSortedDepthFirstIterator( first, Spot.nameComparator, false );
 
 					while ( iterator.hasNext() )
 					{
 
-						final BCellobject BCellobject = iterator.next();
+						final Spot spot = iterator.next();
 
 						// Get corresponding JGraphX cell, add it if it does not
 						// exist in the JGraphX yet
-						final mxICell cell = graphAdapter.getCellFor( BCellobject );
+						final mxICell cell = graphAdapter.getCellFor( spot );
 
 						// This is cell is in a track, remove it from the list
 						// of lonely cells
 						lonelyCells.remove( cell );
 
-						// Determine in what row to put the BCellobject
-						final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+						// Determine in what row to put the spot
+						final int frame = spot.getFeature( Spot.FRAME ).intValue();
 
 						// Cell size, position and style
-						final int cellPos = columns[ frame ] + cumulativeBranchWidth.get( BCellobject ) / 2;
+						final int cellPos = columns[ frame ] + cumulativeBranchWidth.get( spot ) / 2;
 						setCellGeometry( cell, frame, cellPos );
-						columns[ frame ] += cumulativeBranchWidth.get( BCellobject );
+						columns[ frame ] += cumulativeBranchWidth.get( spot );
 
 						// If it is a leaf, we fill the remaining row below and
 						// above
-						if ( neighborCache.successorsOf( BCellobject ).size() == 0 )
+						if ( neighborCache.successorsOf( spot ).size() == 0 )
 						{
 							final int target = columns[ frame ];
 							for ( int i = 0; i <= maxFrame; i++ )
@@ -208,40 +208,40 @@ public class TrackSchemeGraphLayout extends mxGraphLayout implements Benchmark
 					 */
 
 					final TrackBranchDecomposition branchDecomposition = ConvexBranchesDecomposition.processTrack( trackID, model.getTrackModel(), neighborCache, false, false );
-					final SimpleDirectedGraph< List< BCellobject >, DefaultEdge > branchGraph = ConvexBranchesDecomposition.buildBranchGraph( branchDecomposition );
-					final DepthFirstIterator< List< BCellobject >, DefaultEdge > depthFirstIterator = new DepthFirstIterator< >( branchGraph );
+					final SimpleDirectedGraph< List< Spot >, DefaultEdge > branchGraph = ConvexBranchesDecomposition.buildBranchGraph( branchDecomposition );
+					final DepthFirstIterator< List< Spot >, DefaultEdge > depthFirstIterator = new DepthFirstIterator< >( branchGraph );
 
 					while ( depthFirstIterator.hasNext() )
 					{
-						final List< BCellobject > branch = depthFirstIterator.next();
+						final List< Spot > branch = depthFirstIterator.next();
 
-						final int firstFrame = branch.get( 0 ).getFeature( BCellobject.POSITION_T ).intValue();
-						final int lastFrame = branch.get( branch.size() - 1 ).getFeature( BCellobject.POSITION_T ).intValue();
+						final int firstFrame = branch.get( 0 ).getFeature( Spot.FRAME ).intValue();
+						final int lastFrame = branch.get( branch.size() - 1 ).getFeature( Spot.FRAME ).intValue();
 
 						// Determine target column.
 						int targetColumn = columns[ firstFrame ];
-						for ( final BCellobject BCellobject : branch )
+						for ( final Spot spot : branch )
 						{
-							final int sFrame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+							final int sFrame = spot.getFeature( Spot.FRAME ).intValue();
 							if ( columns[ sFrame ] > targetColumn )
 							{
 								targetColumn = columns[ sFrame ];
 							}
 						}
 
-						// Place BCellobjects.
-						for ( final BCellobject BCellobject : branch )
+						// Place spots.
+						for ( final Spot spot : branch )
 						{
 							// Get corresponding JGraphX cell, add it if it does
 							// not exist in the JGraphX yet
-							final mxICell cell = graphAdapter.getCellFor( BCellobject );
+							final mxICell cell = graphAdapter.getCellFor( spot );
 
 							// This is cell is in a track, remove it from the
 							// list of lonely cells
 							lonelyCells.remove( cell );
 
-							// Determine in what row to put the BCellobject
-							final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+							// Determine in what row to put the spot
+							final int frame = spot.getFeature( Spot.FRAME ).intValue();
 
 							// Cell position
 							setCellGeometry( cell, frame, targetColumn );
@@ -284,8 +284,8 @@ public class TrackSchemeGraphLayout extends mxGraphLayout implements Benchmark
 			// Deal with lonely cells
 			for ( final mxCell cell : lonelyCells )
 			{
-				final BCellobject BCellobject = graphAdapter.getBCellobjectFor( cell );
-				final int frame = BCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+				final Spot spot = graphAdapter.getSpotFor( cell );
+				final int frame = spot.getFeature( Spot.FRAME ).intValue();
 				setCellGeometry( cell, frame, columns[ frame ]++ );
 			}
 

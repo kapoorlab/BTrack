@@ -1,12 +1,22 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.trackmate.visualization.trackscheme;
 
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Icons.CAPTURE_DECORATED_ICON;
+import static fiji.plugin.trackmate.gui.Icons.CAPTURE_UNDECORATED_ICON;
+import static fiji.plugin.trackmate.gui.Icons.DISPLAY_DECORATIONS_ON_ICON;
+import static fiji.plugin.trackmate.gui.Icons.LINKING_OFF_ICON;
+import static fiji.plugin.trackmate.gui.Icons.LINKING_ON_ICON;
+import static fiji.plugin.trackmate.gui.Icons.REFRESH_ICON;
+import static fiji.plugin.trackmate.gui.Icons.RESET_ZOOM_ICON;
+import static fiji.plugin.trackmate.gui.Icons.SELECT_STYLE_ICON;
+import static fiji.plugin.trackmate.gui.Icons.THUMBNAIL_OFF_ICON;
+import static fiji.plugin.trackmate.gui.Icons.THUMBNAIL_ON_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ZOOM_IN_ICON;
+import static fiji.plugin.trackmate.gui.Icons.ZOOM_OUT_ICON;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -17,25 +27,13 @@ import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
-import Buddy.plugin.trackmate.visualization.trackscheme.utils.SearchBar;
+import fiji.plugin.trackmate.visualization.trackscheme.utils.SearchBar;
 
 public class TrackSchemeToolbar extends JToolBar
 {
 
 	private static final long serialVersionUID = 3442140463984241266L;
 
-	private static final ImageIcon LINKING_ON_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/connect.png" ) );
-	private static final ImageIcon LINKING_OFF_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/connect_bw.png" ) );
-	private static final ImageIcon THUMBNAIL_ON_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/images.png" ) );
-	private static final ImageIcon THUMBNAIL_OFF_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/images_bw.png" ) );
-	private static final ImageIcon RESET_ZOOM_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom.png" ) );
-	private static final ImageIcon ZOOM_IN_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_in.png" ) );
-	private static final ImageIcon ZOOM_OUT_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/zoom_out.png" ) );
-	private static final ImageIcon REFRESH_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/refresh.png" ) );
-	private static final ImageIcon CAPTURE_UNDECORATED_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_go.png" ) );
-	private static final ImageIcon CAPTURE_DECORATED_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_edit.png" ) );
-	private static final ImageIcon DISPLAY_DECORATIONS_ON_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/application_view_columns.png" ) );
-	private static final ImageIcon SELECT_STYLE_ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/theme.png" ) );
 	private final TrackScheme trackScheme;
 
 	public TrackSchemeToolbar( final TrackScheme trackScheme )
@@ -231,10 +229,9 @@ public class TrackSchemeToolbar extends JToolBar
 
 		final JComboBox< String > selectStyleBox;
 		{
-			final Set< String > styleNames = new HashSet< >( TrackSchemeStylist.VERTEX_STYLES.keySet() );
-			selectStyleBox = new JComboBox< >( styleNames.toArray( new String[] {} ) );
+			selectStyleBox = new JComboBox<>( TrackSchemeStylist.VERTEX_STYLE_NAMES.toArray( new String[] {} ) );
 			selectStyleBox.setPreferredSize( new Dimension( 80, 20 ) );
-			selectStyleBox.setSelectedItem( TrackSchemeStylist.DEFAULT_STYLE_NAME );
+			selectStyleBox.setSelectedIndex( 0 );
 			selectStyleBox.setMaximumSize( new Dimension( 200, 30 ) );
 			selectStyleBox.setFont( FONT );
 			selectStyleBox.addActionListener( new ActionListener()

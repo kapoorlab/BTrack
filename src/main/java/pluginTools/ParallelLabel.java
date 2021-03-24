@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import budDetector.BCellobject;
+import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;
@@ -50,7 +50,7 @@ public class ParallelLabel implements Runnable {
 			// and the distance
 			double closestBudPoint = 0;
 			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
+			Spot budncell = new Spot(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
             parent.budcells.add(budncell, parent.fourthDimension);  
             
 		

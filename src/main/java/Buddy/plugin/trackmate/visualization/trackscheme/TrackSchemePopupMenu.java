@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.trackmate.visualization.trackscheme;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -20,10 +20,9 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 
-import Buddy.plugin.trackmate.features.manual.ManualBCellobjectColorAnalyzerFactory;
-import Buddy.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import budDetector.BCellobject;
-
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
+import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
 
 public class TrackSchemePopupMenu extends JPopupMenu
 {
@@ -70,9 +69,9 @@ public class TrackSchemePopupMenu extends JPopupMenu
 	{
 		for ( final mxCell mxCell : vertices )
 		{
-			final BCellobject BCellobject = trackScheme.getGraph().getBCellobjectFor( mxCell );
+			final Spot spot = trackScheme.getGraph().getSpotFor( mxCell );
 			final Double value = Double.valueOf( previousColor.getRGB() );
-			BCellobject.putFeature( ManualBCellobjectColorAnalyzerFactory.FEATURE, value );
+			spot.putFeature( ManualSpotColorAnalyzerFactory.FEATURE, value );
 		}
 	}
 
@@ -92,7 +91,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		trackScheme.selectTrack( vertices, edges, 1 );
 	}
 
-	private void editBCellobjectName()
+	private void editSpotName()
 	{
 		trackScheme.getGUI().graphComponent.startEditingAtCell( cell );
 	}
@@ -112,7 +111,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		trackScheme.getGraph().foldCells( !trackScheme.getGraph().isCellCollapsed( parent ), false, new Object[] { parent } );
 	}
 
-	private void multiEditBCellobjectName( final ArrayList< mxCell > vertices, final EventObject triggerEvent )
+	private void multiEditSpotName( final ArrayList< mxCell > vertices, final EventObject triggerEvent )
 	{
 		/*
 		 * We want to display the editing window in the cell that is the closer
@@ -135,7 +134,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 				for ( final mxCell lCell : vertices )
 				{
 					lCell.setValue( tc.getValue() );
-					trackScheme.getGraph().getBCellobjectFor( lCell ).setName( tc.getValue().toString() );
+					trackScheme.getGraph().getSpotFor( lCell ).setName( tc.getValue().toString() );
 				}
 				graphComponent.refresh();
 				graphComponent.removeListener( this );
@@ -164,9 +163,9 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		return target_cell;
 	}
 
-	private void linkBCellobjects()
+	private void linkSpots()
 	{
-		trackScheme.linkBCellobjects();
+		trackScheme.linkSpots();
 	}
 
 	private void remove()
@@ -230,12 +229,12 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		if ( cell != null )
 		{
 			// Edit
-			add( new AbstractAction( "Edit BCellobject name" )
+			add( new AbstractAction( "Edit spot name" )
 			{
 				@Override
 				public void actionPerformed( final ActionEvent e )
 				{
-					editBCellobjectName();
+					editSpotName();
 				}
 			} );
 
@@ -247,33 +246,33 @@ public class TrackSchemePopupMenu extends JPopupMenu
 			{
 
 				// Multi edit
-				add( new AbstractAction( "Edit " + vertices.size() + " BCellobject names" )
+				add( new AbstractAction( "Edit " + vertices.size() + " spot names" )
 				{
 					@Override
 					public void actionPerformed( final ActionEvent e )
 					{
-						multiEditBCellobjectName( vertices, e );
+						multiEditSpotName( vertices, e );
 					}
 				} );
 			}
 
 			// Link
-			final Action linkAction = new AbstractAction( "Link " + trackScheme.getSelectionModel().getBCellobjectSelection().size() + " BCellobjects" )
+			final Action linkAction = new AbstractAction( "Link " + trackScheme.getSelectionModel().getSpotSelection().size() + " spots" )
 			{
 				@Override
 				public void actionPerformed( final ActionEvent e )
 				{
-					linkBCellobjects();
+					linkSpots();
 				}
 			};
-			if ( trackScheme.getSelectionModel().getBCellobjectSelection().size() > 1 )
+			if ( trackScheme.getSelectionModel().getSpotSelection().size() > 1 )
 			{
 				add( linkAction );
 			}
 		}
 
 		/*
-		 * Edges and BCellobject manual coloring
+		 * Edges and spot manual coloring
 		 */
 
 		if ( edges.size() > 0 || vertices.size() > 0 )
@@ -283,7 +282,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 
 		if ( vertices.size() > 0 )
 		{
-			final String str = "Manual color for " + ( vertices.size() == 1 ? " one BCellobject" : vertices.size() + " BCellobjects" );
+			final String str = "Manual color for " + ( vertices.size() == 1 ? " one spot" : vertices.size() + " spots" );
 			add( new AbstractAction( str )
 			{
 				@Override
@@ -328,7 +327,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 
 		if ( edges.size() > 0 && vertices.size() > 0 )
 		{
-			final String str = "Manual color for " + ( vertices.size() == 1 ? " one BCellobject and " : vertices.size() + " BCellobjects and " ) + ( edges.size() == 1 ? " one edge" : edges.size() + " edges" );
+			final String str = "Manual color for " + ( vertices.size() == 1 ? " one spot and " : vertices.size() + " spots and " ) + ( edges.size() == 1 ? " one edge" : edges.size() + " edges" );
 			add( new AbstractAction( str )
 			{
 				@Override
@@ -357,8 +356,8 @@ public class TrackSchemePopupMenu extends JPopupMenu
 			{
 				for ( final mxCell mxCell : vertices )
 				{
-					final BCellobject BCellobject = trackScheme.getGraph().getBCellobjectFor( mxCell );
-					BCellobject.getFeatures().remove( ManualBCellobjectColorAnalyzerFactory.FEATURE );
+					final Spot spot = trackScheme.getGraph().getSpotFor( mxCell );
+					spot.getFeatures().remove( ManualSpotColorAnalyzerFactory.FEATURE );
 				}
 				for ( final mxCell mxCell : edges )
 				{
@@ -382,7 +381,7 @@ public class TrackSchemePopupMenu extends JPopupMenu
 		if ( selection.length > 0 )
 		{
 			addSeparator();
-			final Action removeAction = new AbstractAction( "Remove BCellobjects and links" )
+			final Action removeAction = new AbstractAction( "Remove spots and links" )
 			{
 				@Override
 				public void actionPerformed( final ActionEvent e )

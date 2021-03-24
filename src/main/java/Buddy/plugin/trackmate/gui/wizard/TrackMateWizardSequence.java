@@ -1,6 +1,6 @@
 package Buddy.plugin.trackmate.gui.wizard;
 
-import static Buddy.plugin.trackmate.gui.Icons.BCellobject_TABLE_ICON;
+import static Buddy.plugin.trackmate.gui.Icons.SPOT_TABLE_ICON;
 import static Buddy.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON_16x16;
 import static Buddy.plugin.trackmate.gui.Icons.TRACK_TABLES_ICON;
 

@@ -1,15 +1,15 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
-
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.visualization.TrackMateModelView;
-import Buddy.plugin.trackmate.visualization.ViewFactory;
-import pluginTools.InteractiveBud;
+package fiji.plugin.trackmate.visualization.trackscheme;
 
 import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
+
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.visualization.TrackMateModelView;
+import fiji.plugin.trackmate.visualization.ViewFactory;
 
 /*
  * We annotate the TrackScheme factory to be NOT visible,
@@ -20,9 +20,9 @@ public class TrackSchemeFactory implements ViewFactory
 {
 
 	@Override
-	public TrackMateModelView create( final InteractiveBud parent,  final Model model, final Settings settings, final SelectionModel selectionModel )
+	public TrackMateModelView create( final Model model, final Settings settings, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		return new TrackScheme( parent, model, selectionModel );
+		return new TrackScheme( model, selectionModel, displaySettings );
 	}
 
 	@Override
@@ -48,5 +48,4 @@ public class TrackSchemeFactory implements ViewFactory
 	{
 		return "<html>Not redacted!</html>";
 	}
-
 }

@@ -6,7 +6,7 @@ import Buddy.plugin.trackmate.TrackMate;
 import Buddy.plugin.trackmate.gui.components.ModuleChooserPanel;
 import Buddy.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 import Buddy.plugin.trackmate.providers.TrackerProvider;
-import Buddy.plugin.trackmate.tracking.SpotTrackerFactory;
+import Buddy.plugin.trackmate.tracking.BCellobjectTrackerFactory;
 import Buddy.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 
 public class ChooseTrackerDescriptor extends WizardPanelDescriptor
@@ -38,7 +38,7 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 			key = trackmate.getSettings().trackerFactory.getKey();
 
 		@SuppressWarnings( "unchecked" )
-		final ModuleChooserPanel< SpotTrackerFactory > component = (Buddy.plugin.trackmate.gui.components.ModuleChooserPanel< SpotTrackerFactory > ) targetPanel;
+		final ModuleChooserPanel< BCellobjectTrackerFactory > component = (Buddy.plugin.trackmate.gui.components.ModuleChooserPanel< BCellobjectTrackerFactory > ) targetPanel;
 		component.setSelectedModuleKey( key );
 	}
 
@@ -53,11 +53,11 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 	{
 		// Configure the detector provider with choice made in panel
 		@SuppressWarnings( "unchecked" )
-		final ModuleChooserPanel< SpotTrackerFactory > component = (Buddy.plugin.trackmate.gui.components.ModuleChooserPanel< SpotTrackerFactory > ) targetPanel;
+		final ModuleChooserPanel< BCellobjectTrackerFactory > component = (Buddy.plugin.trackmate.gui.components.ModuleChooserPanel< BCellobjectTrackerFactory > ) targetPanel;
 		final String trackerKey = component.getSelectedModuleKey();
 
 		// Configure trackmate settings with selected detector
-		final SpotTrackerFactory factory = trackerProvider.getFactory( trackerKey );
+		final BCellobjectTrackerFactory factory = trackerProvider.getFactory( trackerKey );
 
 		if ( null == factory )
 		{
@@ -71,7 +71,7 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 		/*
 		 * Compare current settings with default ones, and substitute default
 		 * ones only if the old ones are absent or not compatible with it.
-		 */s
+		 */
 		final Map< String, Object > currentSettings = trackmate.getSettings().trackerSettings;
 		if ( !factory.checkSettingsValidity( currentSettings ) )
 		{

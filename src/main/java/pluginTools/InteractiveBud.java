@@ -44,12 +44,12 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import budDetector.BCellobject;
+import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Cellobject;
 import budDetector.Roiobject;
-import Buddy.plugin.trackmate.BCellobjectCollection;
+import Buddy.plugin.trackmate.SpotCollection;
 import fileListeners.BTrackSaveDirectoryListener;
 import ij.IJ;
 import ij.ImagePlus;
@@ -148,7 +148,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public HashMap<Integer, HashMap<Integer, Double>> BudVelocityMap;
 
 	public ArrayList<ValuePair<String, Budobject>> BudTracklist;
-	public HashMap<String, ArrayList<BCellobject>> AllBudcells;
+	public HashMap<String, ArrayList<Spot>> AllBudcells;
 	public Overlay overlay;
 	public ImagePlus imp;
 	public String selectedID;
@@ -190,7 +190,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
 	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
-	public BCellobjectCollection budcells = new BCellobjectCollection();
+	public SpotCollection budcells = new SpotCollection();
 	public HashMap<Integer, Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Budpointobject> Finalresult;
 

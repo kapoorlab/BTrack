@@ -1,7 +1,7 @@
 package Buddy.plugin.trackmate.util;
 
 import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
+import static Buddy.plugin.trackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Color;
 
@@ -14,7 +14,7 @@ public class JLabelLogger extends JLabel {
 
 	public JLabelLogger() {
 		this.logger = new MyLogger(this);
-		setFont(TrackMateWizard.SMALL_FONT);
+		setFont(SMALL_FONT);
 	}
 	
 	public Logger getLogger() {

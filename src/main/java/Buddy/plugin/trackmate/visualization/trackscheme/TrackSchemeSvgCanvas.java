@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.trackmate.visualization.trackscheme;
 
 import com.mxgraph.canvas.mxSvgCanvas;
 import com.mxgraph.util.mxConstants;

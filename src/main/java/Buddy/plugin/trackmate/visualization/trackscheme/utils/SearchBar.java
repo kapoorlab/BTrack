@@ -1,4 +1,6 @@
-package Buddy.plugin.trackmate.visualization.trackscheme.utils;
+package fiji.plugin.trackmate.visualization.trackscheme.utils;
+
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,17 +19,16 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.visualization.TrackMateModelView;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.visualization.TrackMateModelView;
 
 @SuppressWarnings( "unchecked" )
 public class SearchBar extends JTextField
 {
 	private static final long serialVersionUID = 1L;
 
-	private final static Font NORMAL_FONT = TrackMateWizard.FONT.deriveFont( 10f );
+	private final static Font NORMAL_FONT = FONT.deriveFont( 10f );
 
 	private final static Font NOTFOUND_FONT;
 	static
@@ -52,7 +53,7 @@ public class SearchBar extends JTextField
 	 * @param model
 	 *            the model to search in.
 	 * @param view
-	 *            the view to update when a BCellobject is found.
+	 *            the view to update when a spot is found.
 	 */
 	public SearchBar( final Model model, final TrackMateModelView view )
 	{
@@ -117,10 +118,10 @@ public class SearchBar extends JTextField
 //		setText( "Search" );
 	}
 
-	private class SearchAction implements PropertyChangeListener, Iterator< BCellobject >
+	private class SearchAction implements PropertyChangeListener, Iterator< Spot >
 	{
 
-		private Iterator< BCellobject > iterator;
+		private Iterator< Spot > iterator;
 
 		private Iterator< Integer > trackIterator;
 
@@ -130,8 +131,8 @@ public class SearchBar extends JTextField
 			if ( trackIterator.hasNext() )
 			{
 				final Integer currentTrackID = trackIterator.next();
-				final BCellobject trackStart = firstBCellobjectOf( currentTrackID );
-				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, BCellobject.nameComparator, false );
+				final Spot trackStart = firstSpotOf( currentTrackID );
+				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, Spot.nameComparator, false );
 			}
 			else
 			{
@@ -151,17 +152,17 @@ public class SearchBar extends JTextField
 
 		private void search( final String text )
 		{
-			BCellobject start = null;
-			BCellobject BCellobject;
-			while ( ( BCellobject = next() ) != start )
+			Spot start = null;
+			Spot spot;
+			while ( ( spot = next() ) != start )
 			{
 				if ( start == null )
 				{
-					start = BCellobject;
+					start = spot;
 				}
-				if ( BCellobject.getName().contains( text ) )
+				if ( spot.getName().contains( text ) )
 				{
-					view.centerViewOn( BCellobject );
+					view.centerViewOn( spot );
 					return;
 				}
 			}
@@ -175,7 +176,7 @@ public class SearchBar extends JTextField
 		}
 
 		@Override
-		public BCellobject next()
+		public Spot next()
 		{
 			if ( null == iterator || !iterator.hasNext() )
 			{
@@ -184,17 +185,17 @@ public class SearchBar extends JTextField
 					trackIterator = model.getTrackModel().trackIDs( true ).iterator();
 				}
 				final Integer currentTrackID = trackIterator.next();
-				final BCellobject trackStart = firstBCellobjectOf( currentTrackID );
-				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, BCellobject.nameComparator, false );
+				final Spot trackStart = firstSpotOf( currentTrackID );
+				iterator = model.getTrackModel().getSortedDepthFirstIterator( trackStart, Spot.nameComparator, false );
 			}
 			return iterator.next();
 		}
 
-		private BCellobject firstBCellobjectOf( final Integer trackID )
+		private Spot firstSpotOf( final Integer trackID )
 		{
-			final List< BCellobject > trackBCellobjects = new ArrayList<>( model.getTrackModel().trackBCellobjects( trackID ) );
-			Collections.sort( trackBCellobjects, BCellobject.frameComparator );
-			return trackBCellobjects.get( 0 );
+			final List< Spot > trackSpots = new ArrayList<>( model.getTrackModel().trackSpots( trackID ) );
+			Collections.sort( trackSpots, Spot.frameComparator );
+			return trackSpots.get( 0 );
 		}
 
 		@Override

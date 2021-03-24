@@ -1,7 +1,7 @@
 package Buddy.plugin.trackmate.util;
 
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.FONT;
-import static Buddy.plugin.trackmate.gui.TrackMateWizard.SMALL_FONT;
+import static Buddy.plugin.trackmate.gui.Fonts.FONT;
+import static Buddy.plugin.trackmate.gui.Fonts.SMALL_FONT;
 
 import com.itextpdf.awt.PdfGraphics2D;
 import com.itextpdf.text.DocumentException;
