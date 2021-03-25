@@ -13,6 +13,7 @@ import fiji.plugin.trackmate.Spot;
 import net.imagej.ops.OpService;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 import utility.GetNearest;
 import pluginTools.TrackEach3DCell;
 
@@ -48,17 +49,19 @@ public class ParallelLabel implements Runnable {
 			final double y = calibration[1] * ( currentbudcell.Location.getDoublePosition(1) );
 			final double z = calibration[2] * ( currentbudcell.Location.getDoublePosition(2) );
 
-			double volume = currentbudcell.cellVolume;
-			for ( int d = 0; d < calibration.length; d++ )
-				if ( calibration[ d ] > 0 )
-					volume *= calibration[ d ];
-			final double radius = ( parent.originalimg.numDimensions() == 2 )
-					? Math.sqrt( volume / Math.PI )
-					: Math.pow( 3. * volume / ( 4. * Math.PI ), 1. / 3. );
+			double[] point = {x,y,z};
+			RealPoint location = new RealPoint(point);
+			
+			
+			double radius = 0;
+			for (int i = 0; i < currentbudcell.extents.length; ++i)
+				radius *=  currentbudcell.extents[i] * calibration[i];
+					
+			radius = radius /8;		
 			final double quality = currentbudcell.cellVolume;
 			
 			// Make the Spot
-			Spot budncell = new Spot(currentbudcell.Location,radius,quality);
+			Spot budncell = new Spot(location,radius,quality);
 			
             parent.budcells.add(budncell, parent.fourthDimension);  
             

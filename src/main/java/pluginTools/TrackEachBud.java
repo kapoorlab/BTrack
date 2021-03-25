@@ -268,18 +268,25 @@ public class TrackEachBud {
 		//ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud, label);
 		for(Cellobject currentbudcell:celllist) {
 			
-			Localizable centercell = currentbudcell.Location;
-			// For each cell get nearest bud growth point
-			RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(skeletonEndPoints, centercell);
-			// Get distance between the center of cell and bud growth point
-			double closestGrowthPoint = Distance.DistanceSqrt(centercell, closestdynamicskel);
-			// For each cell get nearest bud point
-			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
-			// and the distance
-			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
+			// Make TM spot
+     		double [] calibration = {parent.calibrationX, parent.calibrationY, parent.calibrationZ};
+     		final double x = calibration[0]* ( currentbudcell.Location.getDoublePosition(0) );
+			final double y = calibration[1] * ( currentbudcell.Location.getDoublePosition(1) );
+			final double z = calibration[2] * ( currentbudcell.Location.getDoublePosition(2) );
+
+			double[] point = {x,y,z};
+			RealPoint location = new RealPoint(point);
 			
-			// Make the bud n cell object, each cell has all information about the bud n itself 
-			Spot budncell = new Spot(Curreentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, parent.thirdDimension);
+			
+			double radius = 0;
+			for (int i = 0; i < currentbudcell.extents.length; ++i)
+				radius *=  currentbudcell.extents[i] * calibration[i];
+					
+			radius = radius /8;		
+			final double quality = currentbudcell.cellVolume;
+			
+			// Make the Spot
+			Spot budncell = new Spot(location,radius,quality);
             parent.budcells.add(budncell, parent.thirdDimension);  
 		}
 		
