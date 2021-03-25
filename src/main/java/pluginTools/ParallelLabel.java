@@ -43,15 +43,19 @@ public class ParallelLabel implements Runnable {
      	for(Cellobject currentbudcell:Greencelllist) {
 			
 			// Make TM spot
-     		
-			double size = 0;
-			// Get bounding box region in XYZ
-			for(int i = 0; i <currentbudcell.extents.length; ++i )		
-			size = size * currentbudcell.extents[i];
-			//Create radius of spot
-			size = size/8;
-			double radius = Math.sqrt(size);
-			double quality = currentbudcell.cellVolume;
+     		double [] calibration = {parent.calibrationX, parent.calibrationY, parent.calibrationZ};
+     		final double x = calibration[0]* ( currentbudcell.Location.getDoublePosition(0) );
+			final double y = calibration[1] * ( currentbudcell.Location.getDoublePosition(1) );
+			final double z = calibration[2] * ( currentbudcell.Location.getDoublePosition(2) );
+
+			double volume = currentbudcell.cellVolume;
+			for ( int d = 0; d < calibration.length; d++ )
+				if ( calibration[ d ] > 0 )
+					volume *= calibration[ d ];
+			final double radius = ( parent.originalimg.numDimensions() == 2 )
+					? Math.sqrt( volume / Math.PI )
+					: Math.pow( 3. * volume / ( 4. * Math.PI ), 1. / 3. );
+			final double quality = currentbudcell.cellVolume;
 			
 			// Make the Spot
 			Spot budncell = new Spot(currentbudcell.Location,radius,quality);
