@@ -3,7 +3,7 @@ package fiji.plugin.trackmate.gui.wizard.descriptors;
 import java.util.Map;
 
 import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.detection.LogDetectorFactory;
+import fiji.plugin.trackmate.detection.LabeImageDetectorFactory;
 import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
 import fiji.plugin.trackmate.gui.components.ModuleChooserPanel;
 import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
@@ -24,7 +24,7 @@ public class ChooseDetectorDescriptor extends WizardPanelDescriptor
 		this.trackmate = trackmate;
 		this.detectorProvider = detectorProvider;
 
-		String selectedDetector = LogDetectorFactory.DETECTOR_KEY; // default
+		String selectedDetector = LabeImageDetectorFactory.DETECTOR_KEY; // default
 		if ( null != trackmate.getSettings().detectorFactory )
 			selectedDetector = trackmate.getSettings().detectorFactory.getKey();
 
@@ -33,7 +33,7 @@ public class ChooseDetectorDescriptor extends WizardPanelDescriptor
 
 	private void setCurrentChoiceFromPlugin()
 	{
-		String key = LogDetectorFactory.DETECTOR_KEY; // back to default
+		String key = LabeImageDetectorFactory.DETECTOR_KEY; // back to default
 		if ( null != trackmate.getSettings().detectorFactory )
 			key = trackmate.getSettings().detectorFactory.getKey();
 

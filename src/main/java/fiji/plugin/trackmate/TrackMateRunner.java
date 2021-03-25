@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 
 import fiji.plugin.trackmate.action.ExportTracksToXML;
 import fiji.plugin.trackmate.detection.DetectorKeys;
-import fiji.plugin.trackmate.detection.LogDetectorFactory;
+import fiji.plugin.trackmate.detection.LabeImageDetectorFactory;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.track.TrackBranchingAnalyzer;
 import fiji.plugin.trackmate.gui.GuiUtils;
@@ -29,6 +29,7 @@ import fiji.plugin.trackmate.gui.wizard.descriptors.LogPanelDescriptor2;
 import fiji.plugin.trackmate.io.TmXmlWriter;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import fiji.plugin.trackmate.util.LogRecorder;
 import fiji.plugin.trackmate.util.TMUtils;
 import fiji.plugin.trackmate.visualization.TrackMateModelView;
@@ -294,11 +295,11 @@ public class TrackMateRunner extends TrackMatePlugIn
 				final Map< String, FilterGenerator > trackFiltersParsers = prepareTrackFiltersParsableArguments();
 
 				// Default detector.
-				settings.detectorFactory = new LogDetectorFactory< >();
+				settings.detectorFactory = new LabeImageDetectorFactory< >();
 				settings.detectorSettings = settings.detectorFactory.getDefaultSettings();
 
 				// Default tracker.
-				settings.trackerFactory = new SimpleSparseLAPTrackerFactory();
+				settings.trackerFactory = new SparseLAPTrackerFactory();
 				settings.trackerSettings = settings.trackerFactory.getDefaultSettings();
 
 				/*

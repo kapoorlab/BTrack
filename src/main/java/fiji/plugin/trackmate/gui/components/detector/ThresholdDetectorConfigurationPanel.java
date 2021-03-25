@@ -28,7 +28,6 @@ import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.Settings;
 import fiji.plugin.trackmate.detection.DetectionUtils;
-import fiji.plugin.trackmate.detection.LogDetectorFactory;
 import fiji.plugin.trackmate.detection.MaskUtils;
 import fiji.plugin.trackmate.detection.SpotDetectorFactory;
 import fiji.plugin.trackmate.detection.ThresholdDetectorFactory;
