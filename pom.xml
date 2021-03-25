@@ -145,12 +145,34 @@
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2-ui</artifactId>
 		</dependency>
-
+<dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>bigdataviewer-vistools</artifactId>
+    </dependency>
 		<!-- SciJava dependencies -->
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-common</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.scif/pom-scifio -->
+<!-- https://mvnrepository.com/artifact/io.scif/scifio -->
+<dependency>
+    <groupId>io.scif</groupId>
+    <artifactId>scifio</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.imagej/imagej-ops -->
+<dependency>
+    <groupId>net.imagej</groupId>
+    <artifactId>imagej-ops</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.imagej/ij -->
+<!-- https://mvnrepository.com/artifact/net.imagej/imagej -->
+<dependency>
+    <groupId>net.imagej</groupId>
+    <artifactId>imagej</artifactId>
+</dependency>
+
+
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-listeners</artifactId>

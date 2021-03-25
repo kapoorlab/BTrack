@@ -57,7 +57,7 @@ public class BigDataViewerDisplayer extends AbstractTrackMateModelView
 
 		this.image = ImageJFunctions.convertFloat(imp);
 		
-		this.bdv = BdvFunctions.show(this.image);
+		this.bdv = BdvFunctions.show(this.image, "BTM");
 		
 		this.spotOverlay = createSpotOverlay( displaySettings );
 		this.trackOverlay = createTrackOverlay( displaySettings );

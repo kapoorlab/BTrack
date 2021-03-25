@@ -37,20 +37,25 @@ public class ParallelLabel implements Runnable {
 	@Override
 	public void run() {
 	
-
-		
-
-		Budobject Curreentbud = new Budobject(null, null, null, parent.fourthDimension, 1,
-				0);
 		  
-	      Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewYellowInt);
+	    Greencelllist  = GetNearest.getAllInterior3DCells(parent, parent.CurrentViewYellowInt);
 	      
      	for(Cellobject currentbudcell:Greencelllist) {
 			
-			// and the distance
-			double closestBudPoint = 0;
-			// Make the bud n cell object, each cell has all information about the bud n itself 
-			Spot budncell = new Spot(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
+			// Make TM spot
+     		
+			double size = 0;
+			// Get bounding box region in XYZ
+			for(int i = 0; i <currentbudcell.extents.length; ++i )		
+			size = size * currentbudcell.extents[i];
+			//Create radius of spot
+			size = size/8;
+			double radius = Math.sqrt(size);
+			double quality = currentbudcell.cellVolume;
+			
+			// Make the Spot
+			Spot budncell = new Spot(currentbudcell.Location,radius,quality);
+			
             parent.budcells.add(budncell, parent.fourthDimension);  
             
 		
