@@ -47,9 +47,17 @@
 	</developers>
 	<contributors>
 		<contributor>
-			<name>None</name>
-			<url>http://imagej.net/User:MTrack</url>
-			<properties><id>vkapoor</id></properties>
+			<name>Claudia Carabana Garcia</name>
+			<url>http://imagej.net/User:ClaudiaCarabanaGarcia</url>
+			<properties><id>claudiacarabana</id></properties>
+
+<roles>
+                                <role>founder</role>
+                                <role>debugger</role>
+                                <role>reviewer</role>
+                                <role>support</role>
+                                
+                        </roles>
 		</contributor>
 	</contributors>
 
