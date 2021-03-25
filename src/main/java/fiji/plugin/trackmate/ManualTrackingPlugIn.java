@@ -7,9 +7,17 @@ import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
 import ij.ImageJ;
 import ij.ImagePlus;
+import pluginTools.InteractiveBud;
 
 public class ManualTrackingPlugIn extends TrackMatePlugIn
 {
+
+	final InteractiveBud parent;
+	
+	public ManualTrackingPlugIn(InteractiveBud parent) {
+		super(parent);
+		this.parent = parent;
+	}
 
 	@Override
 	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
@@ -36,6 +44,5 @@ public class ManualTrackingPlugIn extends TrackMatePlugIn
 	public static void main( final String[] args )
 	{
 		ImageJ.main( args );
-		new ManualTrackingPlugIn().run( "samples/Merged.tif" );
 	}
 }

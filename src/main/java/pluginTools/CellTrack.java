@@ -10,9 +10,9 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JProgressBar;
 
-import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import fiji.plugin.trackmate.Spot;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;

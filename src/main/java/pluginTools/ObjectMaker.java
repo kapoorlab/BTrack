@@ -3,7 +3,6 @@ package pluginTools;
 import java.util.ArrayList;
 import java.util.List;
 
-import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;

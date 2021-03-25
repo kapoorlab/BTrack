@@ -41,6 +41,7 @@ import ij.ImagePlus;
 import ij.Macro;
 import ij.WindowManager;
 import net.imglib2.util.ValuePair;
+import pluginTools.InteractiveBud;
 
 /**
  * An extension of TrackMate plugin that makes it executable from a macro.
@@ -51,6 +52,11 @@ public class TrackMateRunner extends TrackMatePlugIn
 	/*
 	 * List of arguments usable in the macro.
 	 */
+	final InteractiveBud parent;
+	public TrackMateRunner(InteractiveBud parent) {
+		super(parent);
+		this.parent = parent;
+	}
 
 	/**
 	 * The macro parameter to set the detection radius of particles. Accept
@@ -684,19 +690,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 	public static void main( final String[] args )
 	{
 		ImageJ.main( args );
-		new TrackMateRunner().run(
-				"use_gui=false "
-						+ "save_to=[/Users/tinevez/Desktop/TrackMateSaveTest.xml] "
-						+ "export_to=[/Users/tinevez/Desktop/TrackMateExportTest.xml] "
-						+ "image_path=[samples/FakeTracks.tif] "
-						+ "display_results=true "
-						+ "radius=2.5 "
-						+ "threshold=50.1 "
-						+ "subpixel=false "
-						+ "median=false "
-						+ "channel=1 "
-						+ "max_frame_gap=0 "
-						+ "paf!=pif!" );
+		
 	}
 
 }

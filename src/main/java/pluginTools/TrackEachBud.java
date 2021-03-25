@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;
@@ -40,6 +39,7 @@ import skeleton.*;
 import utility.GetNearest;
 import utility.SavePink;
 import displayBud.DisplayListOverlay;
+import fiji.plugin.trackmate.Spot;
 import ij.IJ;
 import ij.gui.OvalRoi;
 

@@ -10,7 +10,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.ImageIcon;
 
-import Buddy.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.Dimension;
 import budDetector.Budpointobject;
 import net.imglib2.multithreading.SimpleMultiThreading;
 import tracker.BUDDYDimension;

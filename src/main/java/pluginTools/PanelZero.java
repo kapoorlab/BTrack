@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import ij.ImagePlus;
 import ij.io.Opener;
 
-import net.imagej.ImageJ;
+import ij.ImageJ;
 
 public class PanelZero {
 

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
+import fiji.plugin.trackmate.Spot;
 import net.imagej.ops.OpService;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;

@@ -3,9 +3,9 @@ package tracker.trackanalyzer;
 import java.util.List;
 import java.util.Map;
 
-import Buddy.plugin.trackmate.Dimension;
-import Buddy.plugin.trackmate.TrackMateModule;
-import Buddy.plugin.trackmate.features.FeatureAnalyzer;
+import fiji.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.TrackMateModule;
+import fiji.plugin.trackmate.features.FeatureAnalyzer;
 import tracker.BUDDYDimension;
 
 public interface BudFeatureAnalyzer  extends TrackMateModule {

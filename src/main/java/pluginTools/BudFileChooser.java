@@ -48,7 +48,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.OvalRoi;
-import io.scif.img.ImgIOException;
 import listeners.BTrackGoBudListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
@@ -143,7 +142,6 @@ public class BudFileChooser extends JPanel {
 		   inputLabelcalX = new Label("Pixel calibration in X(um)");
 	       inputFieldcalX = new TextField(5);
 		   inputFieldcalX.setText("1");
-		   
 
 		   inputLabelcalY = new Label("Pixel calibration in Y(um)");
 	       inputFieldcalY = new TextField(5);
@@ -299,11 +297,7 @@ public class BudFileChooser extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			try {
 				DoneCurrBud(Cardframe);
-			} catch (ImgIOException e1) {
-
-			}
 		}
 
 	}
@@ -389,7 +383,7 @@ public class BudFileChooser extends JPanel {
 	
 
 	
-	public void DoneCurrBud(Frame parent) throws ImgIOException {
+	public void DoneCurrBud(Frame parent) {
 
 		// Tracking and Measurement is done with imageA
 

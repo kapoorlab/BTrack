@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import budDetector.Spot;
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Budregionobject;
@@ -29,6 +28,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.view.Views;
 import utility.GetNearest;
 import displayBud.DisplayListOverlay;
+import fiji.plugin.trackmate.Spot;
 
 public class TrackEachCell {
 

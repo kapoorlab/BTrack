@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-import Buddy.plugin.trackmate.TrackMatePlugIn_;
+import fiji.plugin.trackmate.TrackMatePlugIn;
 
 
 public class CollectCells extends SwingWorker<Void, Void> {
@@ -55,7 +55,7 @@ public class CollectCells extends SwingWorker<Void, Void> {
 					"Collected all cells, starting TrackMate");
 		
 		
-		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
+		TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
 		plugin.run(null);
 	}
 	

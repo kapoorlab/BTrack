@@ -3,7 +3,7 @@ package pluginTools;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-import Buddy.plugin.trackmate.TrackMatePlugIn_;
+import fiji.plugin.trackmate.TrackMatePlugIn;
 import utility.SaveGreen;
 
 
@@ -47,8 +47,10 @@ public class CollectGreenCells extends SwingWorker<Void, Void> {
 		SaveGreen savecsv = new SaveGreen(parent);
 		savecsv.Saver();
 		parent.imp.close();
-		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
-		plugin.run("threeD");
+		
+		//Initiate the TM plugin
+		TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
+		plugin.run(null);
 		
 	}
 	

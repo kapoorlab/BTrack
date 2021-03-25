@@ -18,40 +18,27 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import pluginTools.InteractiveBud;
 
 public class TrackMatePlugIn implements PlugIn
 {
 
+	
+	protected InteractiveBud parent;
+
+
+	public TrackMatePlugIn(final InteractiveBud parent) {
+
+		this.parent = parent;
+	}
+	
+	
 	@Override
 	public void run( final String imagePath )
 	{
 		GuiUtils.setSystemLookAndFeel();
-		final ImagePlus imp;
-		if ( imagePath != null && imagePath.length() > 0 )
-		{
-			imp = IJ.openImage( imagePath );
-			if ( null == imp.getOriginalFileInfo() )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, "Could not load image with path " + imagePath + "." );
-				return;
-			}
-		}
-		else
-		{
-			imp = WindowManager.getCurrentImage();
-			if ( null == imp )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION,
-						"Please open an image before running TrackMate." );
-				return;
-			}
-			else if ( imp.getType() == ImagePlus.COLOR_RGB )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION,
-						"TrackMate does not work on RGB images." );
-				return;
-			}
-		}
+		final ImagePlus imp = ImageJFunctions.wrapFloat(parent.originalimg, " ");
 
 		imp.setOpenAsHyperStack( true );
 		imp.setDisplayMode( IJ.COMPOSITE );
@@ -158,10 +145,6 @@ public class TrackMatePlugIn implements PlugIn
 	{
 		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		ImageJ.main( args );
-//		new TrackMatePlugIn().run( "samples/Stack.tif" );
-//		new TrackMatePlugIn().run( "samples/Merged.tif" );
-		new TrackMatePlugIn().run( "samples/MAX_Merged.tif" );
-//		new TrackMatePlugIn().run( "samples/Mask.tif" );
-//		new TrackMatePlugIn().run( "samples/FakeTracks.tif" );
+
 	}
 }
