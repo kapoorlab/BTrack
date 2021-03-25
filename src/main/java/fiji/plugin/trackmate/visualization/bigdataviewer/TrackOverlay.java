@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.hyperstack;
+package fiji.plugin.trackmate.visualization.bigdataviewer;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
