@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

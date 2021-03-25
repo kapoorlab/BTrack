@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.graph;
+package fiji.plugin.trackmate.graph;
 
-import Buddy.plugin.trackmate.TrackModel;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackModel;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -22,7 +22,7 @@ public class GraphUtils {
 
 	/**
 	 * @return a pretty-print string representation of a {@link TrackModel}, as long it is 
-	 * a tree (each BCellobject must not have more than one predecessor).
+	 * a tree (each spot must not have more than one predecessor).
 	 * @throws IllegalArgumentException if the given graph is not a tree.
 	 */
 	public static final String toString(final TrackModel model) {
@@ -41,15 +41,15 @@ public class GraphUtils {
 		/*
 		 * Get column widths
 		 */
-		Map<BCellobject, Integer> widths = cumulativeBranchWidth(model);
+		Map<Spot, Integer> widths = cumulativeBranchWidth(model);
 		
 		/*
-		 * By the way we compute the largest BCellobject name
+		 * By the way we compute the largest spot name
 		 */
 		int largestName = 0;
-		for (BCellobject BCellobject : model.vertexSet()) {
-			if (BCellobject.getName().length() > largestName) {
-				largestName = BCellobject.getName().length();
+		for (Spot spot : model.vertexSet()) {
+			if (spot.getName().length() > largestName) {
+				largestName = spot.getName().length();
 			}
 		}
 		largestName += 2;
@@ -58,8 +58,8 @@ public class GraphUtils {
 		 * Find how many different frames we have
 		 */
 		TreeSet<Integer> frames = new TreeSet<>();
-		for (BCellobject BCellobject : model.vertexSet()) {
-			frames.add(BCellobject.getFeature(BCellobject.POSITION_T).intValue());
+		for (Spot spot : model.vertexSet()) {
+			frames.add(spot.getFeature(Spot.FRAME).intValue());
 		}
 		int nframes = frames.size();
 
@@ -78,14 +78,14 @@ public class GraphUtils {
 		}
 
 		/*
-		 * Keep track of where the carret is for each BCellobject
+		 * Keep track of where the carret is for each spot
 		 */
-		Map<BCellobject, Integer> carretPos = new HashMap<>(model.vertexSet().size()); 
+		Map<Spot, Integer> carretPos = new HashMap<>(model.vertexSet().size()); 
 
 		/*
-		 * Comparator to have BCellobjects order by name
+		 * Comparator to have spots order by name
 		 */
-		Comparator<BCellobject> comparator = BCellobject.nameComparator;
+		Comparator<Spot> comparator = Spot.nameComparator;
 		
 		/*
 		 * Let's go!
@@ -94,14 +94,14 @@ public class GraphUtils {
 		for (Integer trackID : model.trackIDs(true)) {
 			
 			/*
-			 *  Get the 'first' BCellobject for an iterator that starts there
+			 *  Get the 'first' spot for an iterator that starts there
 			 */
-			Set<BCellobject> track = model.trackBCellobjects(trackID);
-			Iterator<BCellobject> it = track.iterator();
-			BCellobject first = it.next();
-			for (BCellobject BCellobject : track) {
-				if (first.diffTo(BCellobject, BCellobject.POSITION_T) > 0) {
-					first = BCellobject;
+			Set<Spot> track = model.trackSpots(trackID);
+			Iterator<Spot> it = track.iterator();
+			Spot first = it.next();
+			for (Spot spot : track) {
+				if (first.diffTo(spot, Spot.FRAME) > 0) {
+					first = spot;
 				}
 			}
 
@@ -116,22 +116,22 @@ public class GraphUtils {
 			/*
 			 * Iterate down the tree
 			 */
-			SortedDepthFirstIterator<BCellobject,DefaultWeightedEdge> iterator = model.getSortedDepthFirstIterator(first, comparator, true);
+			SortedDepthFirstIterator<Spot,DefaultWeightedEdge> iterator = model.getSortedDepthFirstIterator(first, comparator, true);
 			while (iterator.hasNext()) {
 
-				BCellobject BCellobject = iterator.next();
-				int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
-				boolean isLeaf = cache.successorsOf(BCellobject).size() == 0;
+				Spot spot = iterator.next();
+				int frame = spot.getFeature(Spot.FRAME).intValue();
+				boolean isLeaf = cache.successorsOf(spot).size() == 0;
 
-				int columnWidth = widths.get(BCellobject);
-				String str = BCellobject.getName();
+				int columnWidth = widths.get(spot);
+				String str = spot.getName();
 				int nprespaces = largestName/2 - str.length()/2;
 				strings.get(frame).append(makeSpaces(columnWidth / 2 * largestName));
 				strings.get(frame).append(makeSpaces(nprespaces));
 				strings.get(frame).append(str);
 				// Store bar position - deal with bars below
 				int currentBranchingPosition = strings.get(frame).length() - str.length()/2;
-				carretPos.put(BCellobject, currentBranchingPosition);
+				carretPos.put(spot, currentBranchingPosition);
 				// Resume filling the branch
 				strings.get(frame).append(makeSpaces(largestName - nprespaces - str.length()));
 				strings.get(frame).append(makeSpaces( (columnWidth*largestName) - (columnWidth/2*largestName) - largestName));
@@ -144,10 +144,10 @@ public class GraphUtils {
 					}
 				} else {
 					// Is there an empty slot below? Like when a link jumps above several frames?
-					Set<BCellobject> successors = cache.successorsOf(BCellobject);
-					for (BCellobject successor : successors) {
-						if (successor.diffTo(BCellobject, BCellobject.POSITION_T) > 1) {
-							for (int subFrame = successor.getFeature(BCellobject.POSITION_T).intValue(); subFrame <= successor.getFeature(BCellobject.POSITION_T).intValue(); subFrame++) {
+					Set<Spot> successors = cache.successorsOf(spot);
+					for (Spot successor : successors) {
+						if (successor.diffTo(spot, Spot.FRAME) > 1) {
+							for (int subFrame = successor.getFeature(Spot.FRAME).intValue(); subFrame <= successor.getFeature(Spot.FRAME).intValue(); subFrame++) {
 								strings.get(subFrame-1).append(makeSpaces(columnWidth * largestName));
 							}
 						}
@@ -156,7 +156,7 @@ public class GraphUtils {
 				
 				
 
-			} // Finished iterating over BCellobject of the track
+			} // Finished iterating over spot of the track
 			
 			// Fill remainder with spaces
 			
@@ -180,14 +180,14 @@ public class GraphUtils {
 		Set<DefaultWeightedEdge> edges = model.edgeSet();
 		for (DefaultWeightedEdge edge : edges) {
 			
-			BCellobject source = model.getEdgeSource(edge);
-			BCellobject target = model.getEdgeTarget(edge);
+			Spot source = model.getEdgeSource(edge);
+			Spot target = model.getEdgeTarget(edge);
 			
 			int sourceCarret = carretPos.get(source) - 1;
 			int targetCarret = carretPos.get(target) - 1;
 			
-			int sourceFrame = source.getFeature(BCellobject.POSITION_T).intValue();
-			int targetFrame = target.getFeature(BCellobject.POSITION_T).intValue();
+			int sourceFrame = source.getFeature(Spot.FRAME).intValue();
+			int targetFrame = target.getFeature(Spot.FRAME).intValue();
 			
 			for (int frame = sourceFrame; frame < targetFrame; frame++) {
 				below.get(frame).setCharAt(sourceCarret, '|');
@@ -239,9 +239,9 @@ public class GraphUtils {
 	
 
 	
-	public static final boolean isTree(Iterable<BCellobject> BCellobjects, TimeDirectedNeighborIndex cache) {
-		for (BCellobject BCellobject : BCellobjects) {
-			if (cache.predecessorsOf(BCellobject).size() > 1) {
+	public static final boolean isTree(Iterable<Spot> spots, TimeDirectedNeighborIndex cache) {
+		for (Spot spot : spots) {
+			if (cache.predecessorsOf(spot).size() > 1) {
 				return false;
 			}
 		}
@@ -251,7 +251,7 @@ public class GraphUtils {
 	
 	
 	
-	public static final Map<BCellobject, Integer> cumulativeBranchWidth(final TrackModel model) {
+	public static final Map<Spot, Integer> cumulativeBranchWidth(final TrackModel model) {
 
 		/*
 		 * Elements stored:
@@ -270,9 +270,9 @@ public class GraphUtils {
 
 		final TimeDirectedNeighborIndex cache = model.getDirectedNeighborIndex();
 
-		Function1<BCellobject, int[]> isLeafFun = new Function1<BCellobject, int[]>() {
+		Function1<Spot, int[]> isLeafFun = new Function1<Spot, int[]>() {
 			@Override
-			public void compute(BCellobject input, int[] output) {
+			public void compute(Spot input, int[] output) {
 				if (cache.successorsOf(input).size() == 0) {
 					output[0] = 1;
 				} else {
@@ -282,30 +282,30 @@ public class GraphUtils {
 		};
 
 
-		Map<BCellobject, int[]> mappings = new HashMap<>();
+		Map<Spot, int[]> mappings = new HashMap<>();
 		SimpleDirectedWeightedGraph<int[], DefaultWeightedEdge> leafTree = model.copy(factory, isLeafFun, mappings);
 
 		/*
-		 * Find root BCellobjects & first BCellobjects
-		 * Roots are BCellobjects without any ancestors. There might be more than one per track.
-		 * First BCellobjects are the first root found in a track. There is only one per track.
+		 * Find root spots & first spots
+		 * Roots are spots without any ancestors. There might be more than one per track.
+		 * First spots are the first root found in a track. There is only one per track.
 		 * 
-		 * By the way we compute the largest BCellobject name
+		 * By the way we compute the largest spot name
 		 */
 
-		Set<BCellobject> roots = new HashSet<>(model.nTracks(false)); // approx
-		Set<BCellobject> firsts = new HashSet<>(model.nTracks(false)); // exact
+		Set<Spot> roots = new HashSet<>(model.nTracks(false)); // approx
+		Set<Spot> firsts = new HashSet<>(model.nTracks(false)); // exact
 		Set<Integer> ids = model.trackIDs(false);
 		for (Integer id : ids) {
-			Set<BCellobject> track = model.trackBCellobjects(id);
+			Set<Spot> track = model.trackSpots(id);
 			boolean firstFound = false;
-			for (BCellobject BCellobject : track) {
+			for (Spot spot : track) {
 
-				if (cache.predecessorsOf(BCellobject).size() == 0) {
+				if (cache.predecessorsOf(spot).size() == 0) {
 					if (!firstFound) {
-						firsts.add(BCellobject);
+						firsts.add(spot);
 					}
-					roots.add(BCellobject);
+					roots.add(spot);
 					firstFound = true;
 				}
 			}
@@ -323,17 +323,17 @@ public class GraphUtils {
 		};
 
 		RecursiveCumSum<int[], DefaultWeightedEdge> cumsum = new RecursiveCumSum<>(leafTree, cumsumFun);
-		for(BCellobject root : firsts) {
+		for(Spot root : firsts) {
 			int[] current = mappings.get(root);
 			cumsum.apply(current);
 		}
 		
 		/*
-		 * Convert to map of BCellobject vs integer 
+		 * Convert to map of spot vs integer 
 		 */
-		Map<BCellobject, Integer> widths = new HashMap<>();
-		for (BCellobject BCellobject : model.vertexSet()) {
-			widths.put(BCellobject, mappings.get(BCellobject)[0]);
+		Map<Spot, Integer> widths = new HashMap<>();
+		for (Spot spot : model.vertexSet()) {
+			widths.put(spot, mappings.get(spot)[0]);
 		}
 		
 		return widths;
@@ -355,13 +355,13 @@ public class GraphUtils {
 
 
 	/**
-	 * @return true only if the given model is a tree; that is: every BCellobject has one or less
+	 * @return true only if the given model is a tree; that is: every spot has one or less
 	 * predecessors.
 	 */
-	public static final Set<BCellobject> getSibblings(final NeighborCache<BCellobject, DefaultWeightedEdge> cache, final BCellobject BCellobject) {
-		HashSet<BCellobject> sibblings = new HashSet<>();
-		Set<BCellobject> predecessors = cache.predecessorsOf(BCellobject);
-		for (BCellobject predecessor : predecessors) {
+	public static final Set<Spot> getSibblings(final NeighborCache<Spot, DefaultWeightedEdge> cache, final Spot spot) {
+		HashSet<Spot> sibblings = new HashSet<>();
+		Set<Spot> predecessors = cache.predecessorsOf(spot);
+		for (Spot predecessor : predecessors) {
 			sibblings.addAll(cache.successorsOf(predecessor));
 		}
 		return sibblings;

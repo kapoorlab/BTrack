@@ -1,24 +1,21 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
-import java.awt.Component;
+import static fiji.plugin.trackmate.gui.Icons.CAMERA_ICON;
+import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.scijava.plugin.Plugin;
 
-import Buddy.plugin.trackmate.LoadTrackMatePlugIn_;
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.visualization.TrackMateModelView;
-import Buddy.plugin.trackmate.visualization.trackscheme.TrackSchemeFrame;
-import ij.IJ;
-import ij.ImageJ;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
@@ -26,8 +23,6 @@ import ij.process.ColorProcessor;
 
 public class CaptureOverlayAction extends AbstractTMAction
 {
-
-	public static final ImageIcon ICON = new ImageIcon( TrackSchemeFrame.class.getResource( "resources/camera_go.png" ) );
 
 	public static final String NAME = "Capture overlay";
 
@@ -44,19 +39,12 @@ public class CaptureOverlayAction extends AbstractTMAction
 			"Also, make sure nothing is moved over the image while capturing. " +
 			"</html>";
 
-	private final Component gui;
-
 	private static int firstFrame = -1;
 
 	private static int lastFrame = -1;
 
-	public CaptureOverlayAction( final Component gui )
-	{
-		this.gui = gui;
-	}
-
 	@Override
-	public void execute( final TrackMate trackmate )
+	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame gui )
 	{
 		final ImagePlus imp = trackmate.getSettings().imp;
 
@@ -76,7 +64,7 @@ public class CaptureOverlayAction extends AbstractTMAction
 					"Capture TrackMate overlay",
 					JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
-					TrackMateWizard.TRACKMATE_ICON );
+					TRACKMATE_ICON );
 
 			if ( userInput != JOptionPane.OK_OPTION )
 				return;
@@ -211,15 +199,15 @@ public class CaptureOverlayAction extends AbstractTMAction
 		}
 
 		@Override
-		public TrackMateAction create( final TrackMateGUIController controller )
+		public TrackMateAction create()
 		{
-			return new CaptureOverlayAction( controller.getGUI() );
+			return new CaptureOverlayAction();
 		}
 
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return CAMERA_ICON;
 		}
 
 		@Override
@@ -227,31 +215,5 @@ public class CaptureOverlayAction extends AbstractTMAction
 		{
 			return NAME;
 		}
-
-	}
-
-	public static void main( final String[] args )
-	{
-		ImageJ.main( args );
-		final File file = new File( "samples/FakeTracks.xml" );
-		final LoadTrackMatePlugIn_ loader = new LoadTrackMatePlugIn_();
-		loader.run( file.getAbsolutePath() );
-
-		loader.getSettings().imp.setDisplayMode( IJ.GRAYSCALE );
-		loader.getSettings().imp.getCanvas().zoomIn( 50, 50 );
-		loader.getSettings().imp.getCanvas().zoomIn( 50, 50 );
-		loader.getSettings().imp.getCanvas().zoomIn( 50, 50 );
-		loader.getSettings().imp.getCanvas().zoomIn( 50, 50 );
-		loader.getSettings().imp.getCanvas().zoomIn( 50, 50 );
-
-		for ( final TrackMateModelView view : loader.getController().getGuimodel().getViews() )
-		{
-			view.setDisplaySettings( TrackMateModelView.KEY_TRACK_DISPLAY_DEPTH, 100 );
-			view.setDisplaySettings( TrackMateModelView.KEY_TRACK_DISPLAY_MODE, TrackMateModelView.TRACK_DISPLAY_MODE_LOCAL_BACKWARD );
-		}
-
-		final TrackMate trackmate = loader.getController().getPlugin();
-		final ImagePlus capture = CaptureOverlayAction.capture( trackmate, 15, 25 );
-		capture.show();
 	}
 }

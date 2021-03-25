@@ -1,15 +1,8 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.Settings;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.io.IOUtils;
-import Buddy.plugin.trackmate.util.TMUtils;
-import budDetector.BCellobject;
+import static fiji.plugin.trackmate.gui.Icons.SAVE_ICON;
 
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,9 +18,18 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.scijava.plugin.Plugin;
 
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.io.IOUtils;
+import fiji.plugin.trackmate.util.TMUtils;
+
 public class ExportTracksToXML extends AbstractTMAction {
 
-	public static final ImageIcon ICON = new ImageIcon(TrackMateWizard.class.getResource("images/page_save.png"));
 	public static final String NAME = "Export tracks to XML file";
 
 	public static final String KEY = "EXPORT_TRACKS_TO_XML_SIMPLE";
@@ -36,29 +38,14 @@ public class ExportTracksToXML extends AbstractTMAction {
 				"file in a simple format. " +
 				"<p> " +
 				"The file will have one element per track, and each track " +
-				"contains several BCellobject elements. These BCellobjects are " +
+				"contains several spot elements. These spots are " +
 				"sorted by frame number, and have 4 numerical attributes: " +
-				"the frame number this BCellobject is in, and its X, Y, Z position in " +
+				"the frame number this spot is in, and its X, Y, Z position in " +
 				"physical units as specified in the image properties. " +
 				"<p>" +
 				"As such, this format <u>cannot</u> handle track merging and " +
 				"splitting properly, and is suited only for non-branching tracks." +
 				"</html>";
-
-	private final TrackMateGUIController controller;
-
-	/*
-	 * CONSTRUCTOR
-	 */
-
-	public ExportTracksToXML( final TrackMateGUIController controller )
-	{
-		this.controller = controller;
-	}
-
-	/*
-	 * METHODS
-	 */
 
 	/**
 	 * Static utility that silently exports tracks in a simplified xml format,
@@ -84,8 +71,8 @@ public class ExportTracksToXML extends AbstractTMAction {
 	}
 
 	@Override
-	public void execute(final TrackMate trackmate) {
-
+	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	{
 		logger.log("Exporting tracks to simple XML format.\n");
 		final Model model = trackmate.getModel();
 		final int ntracks = model.getTrackModel().nTracks(true);
@@ -113,7 +100,7 @@ public class ExportTracksToXML extends AbstractTMAction {
 		} catch (final NullPointerException npe) {
 			file = new File(folder.getPath() + File.separator + "Tracks.xml");
 		}
-		file = IOUtils.askForFileForSaving(file, controller.getGUI(), logger);
+		file = IOUtils.askForFileForSaving( file, parent, logger );
 		if (null == file) {
 			return;
 		}
@@ -146,27 +133,27 @@ public class ExportTracksToXML extends AbstractTMAction {
 		int i = 0;
 		for (final Integer trackID : trackIDs) {
 
-			final Set<BCellobject> track = model.getTrackModel().trackBCellobjects(trackID);
+			final Set<Spot> track = model.getTrackModel().trackSpots(trackID);
 
 			final Element trackElement = new Element(TRACK_KEY);
-			trackElement.setAttribute(NBCellobjectS_ATT, ""+track.size());
+			trackElement.setAttribute(NSPOTS_ATT, ""+track.size());
 
 			// Sort them by time
-			final TreeSet<BCellobject> sortedTrack = new TreeSet<>(BCellobject.frameComparator);
+			final TreeSet<Spot> sortedTrack = new TreeSet<>(Spot.timeComparator);
 			sortedTrack.addAll(track);
 
-			for (final BCellobject BCellobject : sortedTrack) {
-				final int frame = BCellobject.getFeature(BCellobject.POSITION_T).intValue();
-				final double x = BCellobject.getFeature(BCellobject.POSITION_X);
-				final double y = BCellobject.getFeature(BCellobject.POSITION_Y);
-				final double z = BCellobject.getFeature(BCellobject.POSITION_Z);
+			for (final Spot spot : sortedTrack) {
+				final int frame = spot.getFeature(Spot.FRAME).intValue();
+				final double x = spot.getFeature(Spot.POSITION_X);
+				final double y = spot.getFeature(Spot.POSITION_Y);
+				final double z = spot.getFeature(Spot.POSITION_Z);
 
-				final Element BCellobjectElement = new Element(BCellobject_KEY);
-				BCellobjectElement.setAttribute(T_ATT, ""+frame);
-				BCellobjectElement.setAttribute(X_ATT, ""+x);
-				BCellobjectElement.setAttribute(Y_ATT, ""+y);
-				BCellobjectElement.setAttribute(Z_ATT, ""+z);
-				trackElement.addContent(BCellobjectElement);
+				final Element spotElement = new Element(SPOT_KEY);
+				spotElement.setAttribute(T_ATT, ""+frame);
+				spotElement.setAttribute(X_ATT, ""+x);
+				spotElement.setAttribute(Y_ATT, ""+y);
+				spotElement.setAttribute(Z_ATT, ""+z);
+				trackElement.addContent(spotElement);
 			}
 			content.addContent(trackElement);
 			logger.setProgress(i++ / (0d + model.getTrackModel().nTracks(true)));
@@ -177,28 +164,24 @@ public class ExportTracksToXML extends AbstractTMAction {
 		return content;
 	}
 
-
 	/*
 	 * XML KEYS
 	 */
 
-	private static final String CONTENT_KEY 	= "Tracks";
-	private static final String DATE_ATT 		= "generationDateTime";
-	private static final String PHYSUNIT_ATT 	= "spaceUnits";
-	private static final String FRAMEINTERVAL_ATT 	= "frameInterval";
+	private static final String CONTENT_KEY 			= "Tracks";
+	private static final String DATE_ATT 				= "generationDateTime";
+	private static final String PHYSUNIT_ATT 			= "spaceUnits";
+	private static final String FRAMEINTERVAL_ATT 		= "frameInterval";
 	private static final String FRAMEINTERVALUNIT_ATT 	= "timeUnits";
-	private static final String FROM_ATT 		= "from";
-	private static final String NTRACKS_ATT		= "nTracks";
-	private static final String NBCellobjectS_ATT		= "nBCellobjects";
-
-
-	private static final String TRACK_KEY = "particle";
-	private static final String BCellobject_KEY = "detection";
-	private static final String X_ATT = "x";
-	private static final String Y_ATT = "y";
-	private static final String Z_ATT = "z";
-	private static final String T_ATT = "t";
-
+	private static final String FROM_ATT 				= "from";
+	private static final String NTRACKS_ATT				= "nTracks";
+	private static final String NSPOTS_ATT				= "nSpots";
+	private static final String TRACK_KEY 				= "particle";
+	private static final String SPOT_KEY 				= "detection";
+	private static final String X_ATT 					= "x";
+	private static final String Y_ATT 					= "y";
+	private static final String Z_ATT 					= "z";
+	private static final String T_ATT 					= "t";
 
 	@Plugin( type = TrackMateActionFactory.class )
 	public static class Factory implements TrackMateActionFactory
@@ -223,15 +206,15 @@ public class ExportTracksToXML extends AbstractTMAction {
 		}
 
 		@Override
-		public TrackMateAction create( final TrackMateGUIController controller )
+		public TrackMateAction create()
 		{
-			return new ExportTracksToXML( controller );
+			return new ExportTracksToXML();
 		}
 
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return SAVE_ICON;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,7 +12,7 @@ public class LabelImgExporterPanel extends JPanel
 
 	private static final long serialVersionUID = 1L;
 
-	private final JCheckBox exportBCellobjectsAsDots;
+	private final JCheckBox exportSpotsAsDots;
 
 	private final JCheckBox exportTracksOnly;
 
@@ -27,18 +27,18 @@ public class LabelImgExporterPanel extends JPanel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 
-		exportBCellobjectsAsDots = new JCheckBox( "Export BCellobjects as single pixels", false );
-		add( exportBCellobjectsAsDots, gbc );
+		exportSpotsAsDots = new JCheckBox( "Export spots as single pixels", false );
+		add( exportSpotsAsDots, gbc );
 
-		exportTracksOnly = new JCheckBox( "Export only BCellobjects in tracks", false );
+		exportTracksOnly = new JCheckBox( "Export only spots in tracks", false );
 		gbc.gridy++;
 		add( exportTracksOnly, gbc );
 
 	}
 
-	public boolean isExportBCellobjectsAsDots()
+	public boolean isExportSpotsAsDots()
 	{
-		return exportBCellobjectsAsDots.isSelected();
+		return exportSpotsAsDots.isSelected();
 	}
 
 	public boolean isExportTracksOnly()

@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.visualization.hyperstack;
+package fiji.plugin.trackmate.visualization.hyperstack;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -25,12 +25,14 @@ import javax.swing.SwingUtilities;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.SpotCollection;
-import Buddy.plugin.trackmate.util.TMUtils;
-import budDetector.Spot;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.trackmate.detection.semiauto.SemiAutoTracker;
+import fiji.plugin.trackmate.util.TMUtils;
 import fiji.tool.AbstractTool;
 import fiji.tool.ToolWithOptions;
 import ij.IJ;
@@ -76,13 +78,13 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 	/** The singleton instance. */
 	private static SpotEditTool instance;
 
-	/** Stores the edited Spot in each {@link ImagePlus}. */
+	/** Stores the edited spot in each {@link ImagePlus}. */
 	private final HashMap< ImagePlus, Spot > editedSpots = new HashMap<>();
 
 	/** Stores the view possible attached to each {@link ImagePlus}. */
 	HashMap< ImagePlus, HyperStackDisplayer > displayers = new HashMap<>();
 
-	/** The radius of the previously edited Spot. */
+	/** The radius of the previously edited spot. */
 	private Double previousRadius = null;
 
 	private Spot quickEditedSpot;
@@ -265,16 +267,16 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 
 		case 2:
 		{
-			// Edit Spot
+			// Edit spot
 
 			if ( null == editedSpot )
 			{
-				// No Spot is currently edited, we pick one to edit
+				// No spot is currently edited, we pick one to edit
 				Double radius;
 				if ( null != target && null != target.getFeature( Spot.RADIUS ) )
 				{
 					radius = target.getFeature( Spot.RADIUS );
-					logger.log( "Editing Spot " + target + ".\n" );
+					logger.log( "Editing spot " + target + ".\n" );
 				}
 				else
 				{
@@ -284,31 +286,31 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				}
 				if ( null == target || target.squareDistanceTo( clickLocation ) > radius * radius )
 				{
-					// Create a new Spot if not inside one
+					// Create a new spot if not inside one
 					target = clickLocation;
 					if ( null == previousRadius )
 						previousRadius = radius;
 
 					target.putFeature( Spot.RADIUS, previousRadius );
-					logger.log( "Creating new Spot.\n" );
+					logger.log( "Creating new spot.\n" );
 
 				}
 				editedSpot = target;
-				displayer.SpotOverlay.editingSpot = editedSpot;
+				displayer.spotOverlay.editingSpot = editedSpot;
 				displayer.refresh();
-				// Edit Spot
+				// Edit spot
 				if ( DEBUG )
-					System.out.println( "[SpotEditTool] mouseClicked: Set " + editedSpot + " as editing Spot for this imp." );
+					System.out.println( "[SpotEditTool] mouseClicked: Set " + editedSpot + " as editing spot for this imp." );
 
 			}
 			else
 			{
 				// We leave editing mode
 				if ( DEBUG )
-					System.out.println( "[SpotEditTool] mouseClicked: Got " + editedSpot + " as editing Spot for this imp, leaving editing mode." );
+					System.out.println( "[SpotEditTool] mouseClicked: Got " + editedSpot + " as editing spot for this imp, leaving editing mode." );
 
 				/*
-				 * A hack: we update the current z and t of the edited Spot to
+				 * A hack: we update the current z and t of the edited spot to
 				 * the current one, because it is not updated otherwise: there
 				 * is no way to listen to slice change
 				 */
@@ -327,7 +329,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				{
 					if ( initFrame == null )
 					{
-						// Means that the Spot was created
+						// Means that the spot was created
 						model.addSpotTo( editedSpot, frame );
 					}
 					else if ( initFrame != frame )
@@ -337,10 +339,10 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 					}
 					else
 					{
-						// The Spots pre-existed and was not moved across frames
+						// The spots pre-existed and was not moved across frames
 						model.updateFeatures( editedSpot );
 					}
-					logger.log( "Finished editing Spot " + editedSpot + ".\n" );
+					logger.log( "Finished editing spot " + editedSpot + ".\n" );
 
 				}
 				finally
@@ -349,16 +351,16 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				}
 
 				/*
-				 * If we are in auto-link mode, we create an edge with Spot in
+				 * If we are in auto-link mode, we create an edge with spot in
 				 * selection, if there is just one and if it is in a previous
 				 * frame
 				 */
 				if ( autolinkingmode )
 				{
-					final Set< Spot > SpotSelection = selectionModel.getSpotSelection();
-					if ( SpotSelection.size() == 1 )
+					final Set< Spot > spotSelection = selectionModel.getSpotSelection();
+					if ( spotSelection.size() == 1 )
 					{
-						final Spot source = SpotSelection.iterator().next();
+						final Spot source = spotSelection.iterator().next();
 						if ( editedSpot.diffTo( source, Spot.FRAME ) > 0 )
 						{
 							model.beginUpdate();
@@ -379,10 +381,10 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				selectionModel.clearSpotSelection();
 				selectionModel.addSpotToSelection( editedSpot );
 
-				// Forget edited Spot, but remember its radius
+				// Forget edited spot, but remember its radius
 				previousRadius = editedSpot.getFeature( Spot.RADIUS );
 				editedSpot = null;
-				displayer.SpotOverlay.editingSpot = null;
+				displayer.spotOverlay.editingSpot = null;
 			}
 			break;
 		}
@@ -422,24 +424,24 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 
 					while ( it.hasNext() )
 					{
-						final Spot Spot = it.next();
-						final double x = Spot.getFeature( Spot.POSITION_X );
-						final double y = Spot.getFeature( Spot.POSITION_Y );
+						final Spot spot = it.next();
+						final double x = spot.getFeature( Spot.POSITION_X );
+						final double y = spot.getFeature( Spot.POSITION_Y );
 						// In pixel units
 						final int xp = ( int ) ( x / calibration[ 0 ] + 0.5f );
 						final int yp = ( int ) ( y / calibration[ 1 ] + 0.5f );
 
 						if ( null != roiedit && roiedit.contains( xp, yp ) )
-							added.add( Spot );
+							added.add( spot );
 					}
 
 					if ( !added.isEmpty() )
 					{
 						selectionModel.addSpotToSelection( added );
 						if ( added.size() == 1 )
-							logger.log( "Added one Spot to selection.\n" );
+							logger.log( "Added one spot to selection.\n" );
 						else
-							logger.log( "Added " + added.size() + " Spots to selection.\n" );
+							logger.log( "Added " + added.size() + " spots to selection.\n" );
 					}
 					roiedit = null;
 				}
@@ -596,12 +598,12 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 		switch ( keycode )
 		{
 
-		// Delete currently edited Spot
+		// Delete currently edited spot
 		case KeyEvent.VK_DELETE:
 		{
 			if ( null == editedSpot )
 			{
-				final ArrayList< Spot > SpotSelection = new ArrayList<>( selectionModel.getSpotSelection() );
+				final ArrayList< Spot > spotSelection = new ArrayList<>( selectionModel.getSpotSelection() );
 				final ArrayList< DefaultWeightedEdge > edgeSelection = new ArrayList<>( selectionModel.getEdgeSelection() );
 				model.beginUpdate();
 				try
@@ -612,10 +614,10 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 						model.removeEdge( edge );
 						logger.log( "Removed edge " + edge + ".\n" );
 					}
-					for ( final Spot Spot : SpotSelection )
+					for ( final Spot spot : spotSelection )
 					{
-						model.removeSpot( Spot );
-						logger.log( "Removed Spot " + Spot + ".\n" );
+						model.removeSpot( spot );
+						logger.log( "Removed spot " + spot + ".\n" );
 					}
 				}
 				finally
@@ -644,7 +646,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 			break;
 		}
 
-		// Quick add Spot at mouse
+		// Quick add spot at mouse
 		case KeyEvent.VK_A:
 		{
 
@@ -661,7 +663,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				else
 				{
 
-					// Create and drop a new Spot
+					// Create and drop a new spot
 					final double radius = ( null != previousRadius )
 							? previousRadius
 							: FALL_BACK_RADIUS;
@@ -678,7 +680,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 					try
 					{
 						model.addSpotTo( newSpot, frame );
-						logger.log( "Added Spot " + newSpot + " to frame " + frame + ".\n" );
+						logger.log( "Added spot " + newSpot + " to frame " + frame + ".\n" );
 					}
 					finally
 					{
@@ -686,16 +688,16 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 					}
 
 					/*
-					 * If we are in auto-link mode, we create an edge with Spot
+					 * If we are in auto-link mode, we create an edge with spot
 					 * in selection, if there is just one and if it is in a
 					 * previous frame
 					 */
 					if ( autolinkingmode )
 					{
-						final Set< Spot > SpotSelection = selectionModel.getSpotSelection();
-						if ( SpotSelection.size() == 1 )
+						final Set< Spot > spotSelection = selectionModel.getSpotSelection();
+						if ( spotSelection.size() == 1 )
 						{
-							final Spot source = SpotSelection.iterator().next();
+							final Spot source = spotSelection.iterator().next();
 							if ( newSpot.diffTo( source, Spot.FRAME ) != 0 )
 							{
 								model.beginUpdate();
@@ -726,7 +728,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 			break;
 		}
 
-		// Quick delete Spot under mouse
+		// Quick delete spot under mouse
 		case KeyEvent.VK_D:
 		{
 
@@ -748,7 +750,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				try
 				{
 					model.removeSpot( target );
-					logger.log( "Removed Spot " + target + ".\n" );
+					logger.log( "Removed spot " + target + ".\n" );
 				}
 				finally
 				{
@@ -766,7 +768,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 			break;
 		}
 
-		// Quick move Spot under the mouse
+		// Quick move spot under the mouse
 		case KeyEvent.VK_SPACE:
 		{
 
@@ -783,7 +785,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 
 		}
 
-		// Quick change Spot radius
+		// Quick change spot radius
 		case KeyEvent.VK_Q:
 		case KeyEvent.VK_E:
 		{
@@ -825,7 +827,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				try
 				{
 					model.updateFeatures( target );
-					logger.log( String.format( Locale.US, "Changed Spot " + target + " radius to %.1f " + model.getSpaceUnits() + ".\n", radius ) );
+					logger.log( String.format( Locale.US, "Changed spot " + target + " radius to %.1f " + model.getSpaceUnits() + ".\n", radius ) );
 				}
 				finally
 				{
@@ -838,7 +840,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 			break;
 		}
 
-		// Copy Spots from previous frame
+		// Copy spots from previous frame
 		case KeyEvent.VK_V:
 		{
 			if ( e.isShiftDown() )
@@ -848,34 +850,34 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 				if ( currentFrame > 0 )
 				{
 
-					final SpotCollection Spots = model.getSpots();
-					if ( Spots.getNSpots( currentFrame - 1, true ) == 0 )
+					final SpotCollection spots = model.getSpots();
+					if ( spots.getNSpots( currentFrame - 1, true ) == 0 )
 					{
 						e.consume();
 						break;
 					}
-					final HashSet< Spot > copiedSpots = new HashSet<>( Spots.getNSpots( currentFrame - 1, true ) );
-					final HashSet< String > featuresKey = new HashSet<>( Spots.iterator( currentFrame - 1, true ).next().getFeatures().keySet() );
+					final HashSet< Spot > copiedSpots = new HashSet<>( spots.getNSpots( currentFrame - 1, true ) );
+					final HashSet< String > featuresKey = new HashSet<>( spots.iterator( currentFrame - 1, true ).next().getFeatures().keySet() );
 					// Deal with time separately
 					featuresKey.remove( Spot.POSITION_T );
 					double dt = lImp.getCalibration().frameInterval;
 					if ( dt == 0. )
 						dt = 1.;
 
-					for ( final Iterator< Spot > it = Spots.iterator( currentFrame - 1, true ); it.hasNext(); )
+					for ( final Iterator< Spot > it = spots.iterator( currentFrame - 1, true ); it.hasNext(); )
 					{
-						final Spot Spot = it.next();
-						final Spot newSpot = new Spot( Spot );
+						final Spot spot = it.next();
+						final Spot newSpot = new Spot( spot );
 						// Deal with features
 						for ( final String key : featuresKey )
 						{
-							final Double val = Spot.getFeature( key );
+							final Double val = spot.getFeature( key );
 							if ( val == null )
 								continue;
 
 							newSpot.putFeature( key, val );
 						}
-						newSpot.putFeature( Spot.POSITION_T, Spot.getFeature( Spot.POSITION_T ) + dt );
+						newSpot.putFeature( Spot.POSITION_T, spot.getFeature( Spot.POSITION_T ) + dt );
 						copiedSpots.add( newSpot );
 					}
 
@@ -884,22 +886,22 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 					{
 						// Remove old ones
 						final HashSet< Spot > toRemove = new HashSet<>();
-						for ( final Iterator< Spot > it = Spots.iterator( currentFrame, true ); it.hasNext(); )
+						for ( final Iterator< Spot > it = spots.iterator( currentFrame, true ); it.hasNext(); )
 							toRemove.add( it.next() );
 
-						for ( final Spot Spot : toRemove )
-							model.removeSpot( Spot );
+						for ( final Spot spot : toRemove )
+							model.removeSpot( spot );
 
 						// Add new ones
-						for ( final Spot Spot : copiedSpots )
-							model.addSpotTo( Spot, currentFrame );
+						for ( final Spot spot : copiedSpots )
+							model.addSpotTo( spot, currentFrame );
 					}
 					finally
 					{
 						model.endUpdate();
 						lImp.updateAndDraw();
-						logger.log( "Removed Spots of frame " + currentFrame + ".\n" );
-						logger.log( "Copied Spots of frame " + ( currentFrame - 1 ) + " to frame " + currentFrame + ".\n" );
+						logger.log( "Removed spots of frame " + currentFrame + ".\n" );
+						logger.log( "Copied spots of frame " + ( currentFrame - 1 ) + " to frame " + currentFrame + ".\n" );
 					}
 				}
 
@@ -923,7 +925,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 			else
 			{
 				/*
-				 * Toggle a link between two Spots.
+				 * Toggle a link between two spots.
 				 */
 				final Set< Spot > selectedSpots = selectionModel.getSpotSelection();
 				if ( selectedSpots.size() == 2 )
@@ -974,7 +976,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 							}
 							/*
 							 * To emulate a kind of automatic linking, we put
-							 * the last Spot to the selection, so several Spots
+							 * the last spot to the selection, so several spots
 							 * can be tracked in a row without having to
 							 * de-select one
 							 */
@@ -984,14 +986,14 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 						}
 						else
 						{
-							logger.error( "Cannot create an edge between two Spots belonging to the same frame.\n" );
+							logger.error( "Cannot create an edge between two spots belonging to the same frame.\n" );
 						}
 					}
 
 				}
 				else
 				{
-					logger.error( "Expected selection to contain 2 Spots, found " + selectedSpots.size() + ".\n" );
+					logger.error( "Expected selection to contain 2 spots, found " + selectedSpots.size() + ".\n" );
 				}
 
 			}
@@ -1093,15 +1095,15 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 	 * PRIVATE METHODS
 	 */
 
-	private void updateStatusBar( final Spot Spot, final String units )
+	private void updateStatusBar( final Spot spot, final String units )
 	{
-		if ( null == Spot )
+		if ( null == spot )
 			return;
 		String statusString = "";
-		if ( null == Spot.getName() || Spot.getName().equals( "" ) )
-			statusString = String.format( Locale.US, "Spot ID%d, x = %.1f, y = %.1f, z = %.1f, r = %.1f %s", Spot.ID(), Spot.getFeature( Spot.POSITION_X ), Spot.getFeature( Spot.POSITION_Y ), Spot.getFeature( Spot.POSITION_Z ), Spot.getFeature( Spot.RADIUS ), units );
+		if ( null == spot.getName() || spot.getName().equals( "" ) )
+			statusString = String.format( Locale.US, "Spot ID%d, x = %.1f, y = %.1f, z = %.1f, r = %.1f %s", spot.ID(), spot.getFeature( Spot.POSITION_X ), spot.getFeature( Spot.POSITION_Y ), spot.getFeature( Spot.POSITION_Z ), spot.getFeature( Spot.RADIUS ), units );
 		else
-			statusString = String.format( Locale.US, "Spot %s, x = %.1f, y = %.1f, z = %.1f, r = %.1f %s", Spot.getName(), Spot.getFeature( Spot.POSITION_X ), Spot.getFeature( Spot.POSITION_Y ), Spot.getFeature( Spot.POSITION_Z ), Spot.getFeature( Spot.RADIUS ), units );
+			statusString = String.format( Locale.US, "Spot %s, x = %.1f, y = %.1f, z = %.1f, r = %.1f %s", spot.getName(), spot.getFeature( Spot.POSITION_X ), spot.getFeature( Spot.POSITION_Y ), spot.getFeature( Spot.POSITION_Z ), spot.getFeature( Spot.RADIUS ), units );
 		IJ.showStatus( statusString );
 	}
 
@@ -1144,7 +1146,7 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 	}
 
 	/**
-	 * Sets the radius to use for the next created Spot.
+	 * Sets the radius to use for the next created spot.
 	 * 
 	 * @param radius
 	 *            the radius to use.
@@ -1165,13 +1167,13 @@ public class SpotEditTool extends AbstractTool implements MouseMotionListener, M
 		 * Semi-auto tracking parameters
 		 */
 		/**
-		 * The fraction of the initial quality above which we keep new Spots.
+		 * The fraction of the initial quality above which we keep new spots.
 		 * The highest, the more intolerant.
 		 */
 		double qualityThreshold = 0.5;
 
 		/**
-		 * How close must be the new Spot found to be accepted, in radius units.
+		 * How close must be the new spot found to be accepted, in radius units.
 		 */
 		double distanceTolerance = 2d;
 

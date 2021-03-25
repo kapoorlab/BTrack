@@ -7,7 +7,7 @@
  * See LICENSE file for license details. If you are unable to locate
  * this file please contact info (at) jgraph (dot) com.
  */
-package Buddy.plugin.trackmate.util;
+package fiji.plugin.trackmate.util;
 
 import java.io.File;
 

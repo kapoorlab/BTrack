@@ -1,20 +1,9 @@
 /**
  *
  */
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
-import Buddy.plugin.trackmate.Logger;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import Buddy.plugin.trackmate.gui.descriptors.SomeDialogDescriptor;
-import Buddy.plugin.trackmate.io.IOUtils;
-import Buddy.plugin.trackmate.io.TmXmlReader;
-import Buddy.plugin.trackmate.io.TmXmlReader_v12;
-import Buddy.plugin.trackmate.io.TmXmlReader_v20;
-import Buddy.plugin.trackmate.util.Version;
-import budDetector.BCellobject;
+import static fiji.plugin.trackmate.gui.Icons.MERGE_ICON;
 
 import java.awt.Frame;
 import java.io.File;
@@ -26,9 +15,18 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-public class MergeFileAction extends AbstractTMAction {
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.wizard.descriptors.SomeDialogDescriptor;
+import fiji.plugin.trackmate.io.IOUtils;
+import fiji.plugin.trackmate.io.TmXmlReader;
 
-	public static final ImageIcon ICON = new ImageIcon(TrackMateWizard.class.getResource("images/arrow_merge.png"));
+public class MergeFileAction extends AbstractTMAction
+{
+
 	public static final String NAME = "Merge a TrackMate file";
 
 	public static final String KEY = "MERGE_OTHER_FILE";
@@ -39,115 +37,109 @@ public class MergeFileAction extends AbstractTMAction {
 			+ "if two operators have been annotating the same datasets <br>"
 			+ "and want to merge their work in a single file."
 			+ "<p>"
-			+ "Only the BCellobjects belonging to visible tracks are imported <br>"
+			+ "Only the spots belonging to visible tracks are imported <br>"
 			+ "from the target file, which makes this action non-entirely <br>"
 			+ "symmetrical.  Numerical features are re-calculated using <br>"
 			+ "the current settings. There is no check that the imported <br>"
 			+ "data was generated on the raw source."
 			+ "</html>";
 
-	private final Frame parent;
-
-	public MergeFileAction( final Frame parent )
-	{
-		this.parent = parent;
-	}
-
 	@Override
-	public void execute(final TrackMate trackmate) {
-
+	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	{
 		File file = SomeDialogDescriptor.file;
-		if (null == file) {
-			final File folder = new File(System.getProperty("user.dir")).getParentFile().getParentFile();
-			file = new File(folder.getPath() + File.separator + "TrackMateData.xml");
+		if ( null == file )
+		{
+			final File folder = new File( System.getProperty( "user.dir" ) ).getParentFile().getParentFile();
+			file = new File( folder.getPath() + File.separator + "TrackMateData.xml" );
 		}
 
 		final File tmpFile = IOUtils.askForFileForLoading( file, "Merge a TrackMate XML file", parent, logger );
-		if (null == tmpFile) {
+		if ( null == tmpFile )
 			return;
-		}
 		file = tmpFile;
 
 		// Read the file content
-		TmXmlReader reader = new TmXmlReader(file);
-		final Version version = new Version(reader.getVersion());
-		if (version.compareTo(new Version("2.0.0")) < 0) {
-			logger.log("Detecting a file version " + version + ". Using the right reader.\n", Logger.GREEN_COLOR);
-			reader = new TmXmlReader_v12(file);
-		} else if (version.compareTo(new Version("2.1.0")) < 0) {
-			logger.log("Detecting a file version " + version + ". Using the right reader.\n", Logger.GREEN_COLOR);
-			reader = new TmXmlReader_v20(file);
-		}
-		if (!reader.isReadingOk()) {
-			logger.error(reader.getErrorMessage());
-			logger.error("Aborting.\n"); // If I cannot even open the xml file, it is not worth going on.
+		final TmXmlReader reader = new TmXmlReader( file );
+		if ( !reader.isReadingOk() )
+		{
+			logger.error( reader.getErrorMessage() );
+			logger.error( "Aborting.\n" );
 			return;
 		}
 
 		// Model
 		final Model modelToMerge = reader.getModel();
 		final Model model = trackmate.getModel();
-		final int nNewTracks = modelToMerge.getTrackModel().nTracks(true);
+		final int nNewTracks = modelToMerge.getTrackModel().nTracks( true );
 
 		int progress = 0;
 		model.beginUpdate();
 
-		int nNewBCellobjects = 0;
-		try {
-			for (final int id : modelToMerge.getTrackModel().trackIDs(true)) {
+		int nNewSpots = 0;
+		try
+		{
+			for ( final int id : modelToMerge.getTrackModel().trackIDs( true ) )
+			{
 
 				/*
-				 * Add new BCellobjects built on the ones in the file.
+				 * Add new spots built on the ones in the file.
 				 */
 
-				final Set<BCellobject> BCellobjects = modelToMerge.getTrackModel().trackBCellobjects(id);
-				final HashMap<BCellobject, BCellobject> mapOldToNew = new HashMap<>(BCellobjects.size());
+				final Set< Spot > spots = modelToMerge.getTrackModel().trackSpots( id );
+				final HashMap< Spot, Spot > mapOldToNew = new HashMap<>( spots.size() );
 
-				BCellobject newBCellobject = null; // we keep a reference to the new BCellobject, needed below
-				for (final BCellobject oldBCellobject : BCellobjects) {
-					// An awkward way to avoid BCellobject ID conflicts after loading two files
-					newBCellobject = new BCellobject( oldBCellobject );
-					for (final String feature : oldBCellobject.getFeatures().keySet()) {
-						newBCellobject.putFeature(feature, oldBCellobject.getFeature(feature));
-					}
-					mapOldToNew.put(oldBCellobject, newBCellobject);
-					model.addBCellobjectTo(newBCellobject, oldBCellobject.getFeature(BCellobject.POSITION_T).intValue());
-					nNewBCellobjects++;
+				Spot newSpot = null;
+				for ( final Spot oldSpot : spots )
+				{
+					/*
+					 * An awkward way to avoid spot ID conflicts after loading
+					 * two files
+					 */
+					newSpot = new Spot( oldSpot );
+					for ( final String feature : oldSpot.getFeatures().keySet() )
+						newSpot.putFeature( feature, oldSpot.getFeature( feature ) );
+
+					mapOldToNew.put( oldSpot, newSpot );
+					model.addSpotTo( newSpot, oldSpot.getFeature( Spot.FRAME ).intValue() );
+					nNewSpots++;
 				}
 
 				/*
-				 * Link new BCellobjects from info in the file.
+				 * Link new spots from info in the file.
 				 */
 
-				final Set<DefaultWeightedEdge> edges = modelToMerge.getTrackModel().trackEdges(id);
-				for (final DefaultWeightedEdge edge : edges) {
-					final BCellobject oldSource = modelToMerge.getTrackModel().getEdgeSource(edge);
-					final BCellobject oldTarget = modelToMerge.getTrackModel().getEdgeTarget(edge);
-					final BCellobject newSource = mapOldToNew.get(oldSource);
-					final BCellobject newTarget = mapOldToNew.get(oldTarget);
-					final double weight = modelToMerge.getTrackModel().getEdgeWeight(edge);
+				final Set< DefaultWeightedEdge > edges = modelToMerge.getTrackModel().trackEdges( id );
+				for ( final DefaultWeightedEdge edge : edges )
+				{
+					final Spot oldSource = modelToMerge.getTrackModel().getEdgeSource( edge );
+					final Spot oldTarget = modelToMerge.getTrackModel().getEdgeTarget( edge );
+					final Spot newSource = mapOldToNew.get( oldSource );
+					final Spot newTarget = mapOldToNew.get( oldTarget );
+					final double weight = modelToMerge.getTrackModel().getEdgeWeight( edge );
 
-					model.addEdge(newSource, newTarget, weight);
+					model.addEdge( newSource, newTarget, weight );
 				}
 
 				/*
 				 * Put back track names
 				 */
 
-				final String trackName = modelToMerge.getTrackModel().name(id);
-				final int newId = model.getTrackModel().trackIDOf(newBCellobject);
-				model.getTrackModel().setName(newId, trackName);
+				final String trackName = modelToMerge.getTrackModel().name( id );
+				final int newId = model.getTrackModel().trackIDOf( newSpot );
+				model.getTrackModel().setName( newId, trackName );
 
 				progress++;
-				logger.setProgress((double) progress / nNewTracks);
+				logger.setProgress( ( double ) progress / nNewTracks );
 			}
 
-		} finally {
-			model.endUpdate();
-			logger.setProgress(0);
-			logger.log("Imported " + nNewTracks + " tracks made of " + nNewBCellobjects + " BCellobjects.\n");
 		}
-
+		finally
+		{
+			model.endUpdate();
+			logger.setProgress( 0 );
+			logger.log( "Imported " + nNewTracks + " tracks made of " + nNewSpots + " spots.\n" );
+		}
 	}
 
 	@Plugin( type = TrackMateActionFactory.class, visible = true )
@@ -175,13 +167,13 @@ public class MergeFileAction extends AbstractTMAction {
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return MERGE_ICON;
 		}
 
 		@Override
-		public TrackMateAction create( final TrackMateGUIController controller )
+		public TrackMateAction create()
 		{
-			return new MergeFileAction( controller.getGUI() );
+			return new MergeFileAction();
 		}
 	}
 }

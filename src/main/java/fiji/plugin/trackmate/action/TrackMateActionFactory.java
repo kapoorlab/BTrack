@@ -1,9 +1,8 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
-import Buddy.plugin.trackmate.TrackMateModule;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
+import fiji.plugin.trackmate.TrackMateModule;
 
 public interface TrackMateActionFactory extends TrackMateModule
 {
-	public TrackMateAction create( TrackMateGUIController controller );
+	public TrackMateAction create();
 }

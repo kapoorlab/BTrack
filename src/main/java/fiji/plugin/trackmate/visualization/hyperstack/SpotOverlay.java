@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.visualization.hyperstack;
+package fiji.plugin.trackmate.visualization.hyperstack;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -17,18 +17,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SpotCollection;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
-import Buddy.plugin.trackmate.util.TMUtils;
-import Buddy.plugin.trackmate.visualization.FeatureColorGenerator;
-import budDetector.Spot;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.trackmate.features.FeatureUtils;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
+import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
 import ij.ImagePlus;
 import ij.gui.Roi;
 
 /**
- * The overlay class in charge of drawing the Spot images on the hyperstack
+ * The overlay class in charge of drawing the spot images on the hyperstack
  * window.
  *
  * @author Jean-Yves Tinevez
@@ -44,7 +46,7 @@ public class SpotOverlay extends Roi
 
 	protected FontMetrics fm;
 
-	protected Collection< Spot > SpotSelection = new ArrayList<>();
+	protected Collection< Spot > spotSelection = new ArrayList<>();
 
 	protected DisplaySettings displaySettings;
 
@@ -73,7 +75,7 @@ public class SpotOverlay extends Roi
 		final int xcorner = ic.offScreenX( 0 );
 		final int ycorner = ic.offScreenY( 0 );
 		final double magnification = getMagnification();
-		final SpotCollection Spots = model.getSpots();
+		final SpotCollection spots = model.getSpots();
 
 		if ( !displaySettings.isSpotVisible() )
 			return;
@@ -104,68 +106,68 @@ public class SpotOverlay extends Roi
 		final double lMag = magnification;
 		final int frame = imp.getFrame() - 1;
 
-		// Deal with normal Spots.
+		// Deal with normal spots.
 		final FeatureColorGenerator< Spot > colorGenerator = FeatureUtils.createSpotColorGenerator( model, displaySettings );
 
 		g2d.setStroke( new BasicStroke( ( float ) displaySettings.getLineThickness() ) );
 
-		if ( selectionOnly && null != SpotSelection)
+		if ( selectionOnly && null != spotSelection)
 		{
 			// Track display mode only displays selection.
-			for ( final Spot Spot : SpotSelection )
+			for ( final Spot spot : spotSelection )
 			{
-				if ( Spot == editingSpot )
+				if ( spot == editingSpot )
 					continue;
 
-				final int sFrame = Spot.getFeature( Spot.FRAME ).intValue();
+				final int sFrame = spot.getFeature( Spot.FRAME ).intValue();
 				if ( sFrame != frame )
 					continue;
 
-				final double z = Spot.getFeature( Spot.POSITION_Z ).doubleValue();
+				final double z = spot.getFeature( Spot.POSITION_Z ).doubleValue();
 				if ( doLimitDrawingDepth && Math.abs( z - zslice ) > drawingDepth )
 					continue;
 
-				final Color color = colorGenerator.color( Spot );
+				final Color color = colorGenerator.color( spot );
 				g2d.setColor( color );
-				drawSpot( g2d, Spot, zslice, xcorner, ycorner, lMag, filled );
+				drawSpot( g2d, spot, zslice, xcorner, ycorner, lMag, filled );
 			}
 
 		}
 		else
 		{
 			// Other track displays.
-			for ( final Iterator< Spot > iterator = Spots.iterator( frame, true ); iterator.hasNext(); )
+			for ( final Iterator< Spot > iterator = spots.iterator( frame, true ); iterator.hasNext(); )
 			{
-				final Spot Spot = iterator.next();
+				final Spot spot = iterator.next();
 
-				if ( editingSpot == Spot || ( SpotSelection != null && SpotSelection.contains( Spot ) ) )
+				if ( editingSpot == spot || ( spotSelection != null && spotSelection.contains( spot ) ) )
 					continue;
 
-				final Color color = colorGenerator.color( Spot );
+				final Color color = colorGenerator.color( spot );
 				g2d.setColor( color );
 
-				final double z = Spot.getFeature( Spot.POSITION_Z ).doubleValue();
+				final double z = spot.getFeature( Spot.POSITION_Z ).doubleValue();
 				if ( doLimitDrawingDepth && Math.abs( z - zslice ) > drawingDepth )
 					continue;
 
-				drawSpot( g2d, Spot, zslice, xcorner, ycorner, lMag, filled );
+				drawSpot( g2d, spot, zslice, xcorner, ycorner, lMag, filled );
 			}
 
-			// Deal with Spot selection
-			if ( null != SpotSelection )
+			// Deal with spot selection
+			if ( null != spotSelection )
 			{
 				g2d.setStroke( new BasicStroke( ( float ) displaySettings.getSelectionLineThickness() ) );
 				g2d.setColor( displaySettings.getHighlightColor() );
-				for ( final Spot Spot : SpotSelection )
+				for ( final Spot spot : spotSelection )
 				{
-					if ( Spot == editingSpot )
+					if ( spot == editingSpot )
 						continue;
 
-					final int sFrame = Spot.getFeature( Spot.FRAME ).intValue();
+					final int sFrame = spot.getFeature( Spot.FRAME ).intValue();
 					if ( sFrame != frame )
 						continue;
 
-					drawSpot( g2d, Spot, zslice, xcorner, ycorner, lMag, filled );
+					drawSpot( g2d, spot, zslice, xcorner, ycorner, lMag, filled );
 				}
 			}
 		}
@@ -173,7 +175,7 @@ public class SpotOverlay extends Roi
 		drawExtraLayer( g2d, frame );
 
 		/*
-		 * Deal with editing Spot - we always draw it with its center at the
+		 * Deal with editing spot - we always draw it with its center at the
 		 * current z, current t (it moves along with the current slice).
 		 */
 		if ( null != editingSpot )
@@ -213,23 +215,23 @@ public class SpotOverlay extends Roi
 	protected void drawExtraLayer( final Graphics2D g2d, final int frame )
 	{}
 
-	public void setSpotSelection( final Collection< Spot > Spots )
+	public void setSpotSelection( final Collection< Spot > spots )
 	{
-		this.SpotSelection = Spots;
+		this.spotSelection = spots;
 	}
 
-	protected void drawSpot( final Graphics2D g2d, final Spot Spot, final double zslice, final int xcorner, final int ycorner, final double magnification, final boolean filled )
+	protected void drawSpot( final Graphics2D g2d, final Spot spot, final double zslice, final int xcorner, final int ycorner, final double magnification, final boolean filled )
 	{
-		final double x = Spot.getFeature( Spot.POSITION_X );
-		final double y = Spot.getFeature( Spot.POSITION_Y );
-		final double z = Spot.getFeature( Spot.POSITION_Z );
+		final double x = spot.getFeature( Spot.POSITION_X );
+		final double y = spot.getFeature( Spot.POSITION_Y );
+		final double z = spot.getFeature( Spot.POSITION_Z );
 		final double dz2 = ( z - zslice ) * ( z - zslice );
 		final double radiusRatio = displaySettings.getSpotDisplayRadius();
-		final double radius = Spot.getFeature( Spot.RADIUS ) * radiusRatio;
+		final double radius = spot.getFeature( Spot.RADIUS ) * radiusRatio;
 		// In pixel units
 		final double xp = x / calibration[ 0 ] + 0.5f;
 		final double yp = y / calibration[ 1 ] + 0.5f;
-		// so that Spot centers are displayed on the pixel centers.
+		// so that spot centers are displayed on the pixel centers.
 
 		// Scale to image zoom
 		final double xs = ( xp - xcorner ) * magnification;
@@ -241,7 +243,7 @@ public class SpotOverlay extends Roi
 			return;
 		}
 
-		final SpotRoi roi = Spot.getRoi();
+		final SpotRoi roi = spot.getRoi();
 		final int textPos;
 		if ( !displaySettings.isSpotDisplayedAsRoi() || roi == null || roi.x.length < 2 )
 		{
@@ -272,7 +274,11 @@ public class SpotOverlay extends Roi
 			polygon.closePath();
 
 			if ( filled )
+			{
 				g2d.fill( polygon );
+				g2d.setColor( Color.BLACK );
+				g2d.draw( polygon );
+			}
 			else
 				g2d.draw( polygon );
 			textPos = ( int ) ( Arrays.stream( polygonX ).max().getAsDouble() - xs );
@@ -280,7 +286,7 @@ public class SpotOverlay extends Roi
 
 		if ( displaySettings.isSpotShowName() )
 		{
-			final String str = Spot.toString();
+			final String str = spot.toString();
 
 			final int xindent = fm.stringWidth( str );
 			int xtext = ( int ) ( xs + textPos + 5 );
@@ -290,7 +296,7 @@ public class SpotOverlay extends Roi
 			final int yindent = fm.getAscent() / 2;
 			final int ytext = ( int ) ys + yindent;
 
-			g2d.drawString( Spot.toString(), xtext, ytext );
+			g2d.drawString( spot.toString(), xtext, ytext );
 		}
 	}
 }

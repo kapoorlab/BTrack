@@ -1,9 +1,8 @@
-package Buddy.plugin.trackmate.util;
+package fiji.plugin.trackmate.util;
 
+import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 
-import ij.IJ;
-import ij.ImagePlus;
-
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,26 +16,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.scijava.Context;
+
+import fiji.plugin.trackmate.Dimension;
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Settings;
+import fiji.plugin.trackmate.Spot;
+import ij.IJ;
+import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.ImgPlusMetadata;
 import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.img.ImagePlusAdapter;
+import net.imglib2.img.display.imagej.ImgPlusViews;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.Util;
-import pluginTools.InteractiveBud;
 
-import org.scijava.Context;
-
-import Buddy.plugin.trackmate.Dimension;
-import Buddy.plugin.trackmate.Settings;
-import budDetector.BCellobject;
-import net.imglib2.img.display.imagej.ImgPlusViews;
 /**
- * List of static utilities for {@link Buddy.plugin.trackmate.TrackMate}.
+ * List of static utilities for {@link fiji.plugin.trackmate.TrackMate}.
  */
 public class TMUtils
 {
@@ -55,20 +55,11 @@ public class TMUtils
 	public static < K, V extends Comparable< ? super V > > Map< K, V > sortByValue( final Map< K, V > map, final Comparator< V > comparator )
 	{
 		final List< Map.Entry< K, V > > list = new LinkedList< >( map.entrySet() );
-		Collections.sort( list, new Comparator< Map.Entry< K, V > >()
-		{
-			@Override
-			public int compare( final Map.Entry< K, V > o1, final Map.Entry< K, V > o2 )
-			{
-				return comparator.compare( o1.getValue(), o2.getValue() );
-			}
-		} );
+		Collections.sort( list, Comparator.comparing( Map.Entry::getValue ) );
 
 		final LinkedHashMap< K, V > result = new LinkedHashMap< >();
 		for ( final Map.Entry< K, V > entry : list )
-		{
 			result.put( entry.getKey(), entry.getValue() );
-		}
 		return result;
 	}
 
@@ -82,9 +73,8 @@ public class TMUtils
 		for ( final String key : map.keySet() )
 		{
 			for ( int i = 0; i < indent; i++ )
-			{
 				builder.append( " " );
-			}
+
 			builder.append( "- " );
 			builder.append( key.toLowerCase().replace( "_", " " ) );
 			builder.append( ": " );
@@ -138,13 +128,11 @@ public class TMUtils
 	public static final < T > boolean checkMapKeys( final Map< T, ? > map, Collection< T > mandatoryKeys, Collection< T > optionalKeys, final StringBuilder errorHolder )
 	{
 		if ( null == optionalKeys )
-		{
 			optionalKeys = new ArrayList< >();
-		}
+
 		if ( null == mandatoryKeys )
-		{
 			mandatoryKeys = new ArrayList< >();
-		}
+
 		boolean ok = true;
 		final Set< T > keySet = map.keySet();
 		for ( final T key : keySet )
@@ -203,40 +191,12 @@ public class TMUtils
 	 * Returns the mapping in a map that is targeted by a list of keys, in the
 	 * order given in the list.
 	 */
-	public static final < J, K > List< K > getArrayFromMaping( final List< J > keys, final Map< J, K > mapping )
+	public static final < J, K > List< K > getArrayFromMaping( final Collection< J > keys, final Map< J, K > mapping )
 	{
 		final List< K > names = new ArrayList< >( keys.size() );
-		for ( int i = 0; i < keys.size(); i++ )
-		{
-			names.add( mapping.get( keys.get( i ) ) );
-		}
+		for ( final J key : keys )
+			names.add( mapping.get( key ) );
 		return names;
-	}
-
-	/**
-	 * Translate each BCellobject of the given collection by the amount specified in
-	 * argument. The distances are all understood in physical units.
-	 * <p>
-	 * This is meant to deal with a cropped image. The translation will bring
-	 * the BCellobject coordinates back to the top-left corner of the un-cropped image
-	 * reference.
-	 */
-	public static void translateBCellobjects( final Collection< BCellobject > BCellobjects, final double dx, final double dy, final double dz )
-	{
-		final double[] dval = new double[] { dx, dy, dz };
-		final String[] features = new String[] { BCellobject.POSITION_X, BCellobject.POSITION_Y, BCellobject.POSITION_Z };
-		Double val;
-		for ( final BCellobject BCellobject : BCellobjects )
-		{
-			for ( int i = 0; i < features.length; i++ )
-			{
-				val = BCellobject.getFeature( features[ i ] );
-				if ( null != val )
-				{
-					BCellobject.putFeature( features[ i ], val + dval[ i ] );
-				}
-			}
-		}
 	}
 
 	/*
@@ -244,74 +204,22 @@ public class TMUtils
 	 */
 
 	/**
-	 * Returns the index of the target axis in the given metadata. Return -1 if
-	 * the axis was not found.
-	 */
-	private static final int findAxisIndex( final ImgPlusMetadata img, final AxisType axis )
-	{
-		return img.dimensionIndex( axis );
-	}
-
-	public static final int findXAxisIndex( final ImgPlusMetadata img )
-	{
-		return findAxisIndex( img, Axes.X );
-	}
-
-	public static final int findYAxisIndex( final ImgPlusMetadata img )
-	{
-		return findAxisIndex( img, Axes.Y );
-	}
-
-	public static final int findZAxisIndex( final ImgPlusMetadata img )
-	{
-		return findAxisIndex( img, Axes.Z );
-	}
-
-	public static final int findTAxisIndex( final ImgPlusMetadata img )
-	{
-		return findAxisIndex( img, Axes.TIME );
-	}
-
-	public static final int findCAxisIndex( final ImgPlusMetadata img )
-	{
-		return findAxisIndex( img, Axes.CHANNEL );
-	}
-
-	/**
 	 * Return the xyz calibration stored in an {@link ImgPlusMetadata} in a
 	 * 3-elements double array. Calibration is ordered as X, Y, Z. If one axis
 	 * is not found, then the calibration for this axis takes the value of 1.
 	 */
-	public static final double[] getSpatialCalibration( final InteractiveBud parent , final ImgPlusMetadata img )
+	public static final double[] getSpatialCalibration( final ImgPlusMetadata img )
 	{
 		final double[] calibration = Util.getArrayFromValue( 1d, 3 );
 
 		for ( int d = 0; d < img.numDimensions(); d++ )
 		{
 			if ( img.axis( d ).type() == Axes.X )
-			{
-				calibration[ 0 ] = parent.calibrationX;
-			}
+				calibration[ 0 ] = img.averageScale( d );
 			else if ( img.axis( d ).type() == Axes.Y )
-			{
-				calibration[ 1 ] = parent.calibrationY;
-			}
+				calibration[ 1 ] = img.averageScale( d );
 			else if ( img.axis( d ).type() == Axes.Z )
-			{
-				calibration[ 2 ] = parent.calibrationZ;
-			}
-		}
-		return calibration;
-	}
-	
-	public static double[] getSpatialCalibration(final InteractiveBud parent ,  final ImagePlus imp )
-	{
-		final double[] calibration = Util.getArrayFromValue( 1d, 3 );
-		calibration[ 0 ] = parent.calibrationX;
-		calibration[ 1 ] = parent.calibrationY;
-		if ( imp.getNSlices() > 1 )
-		{
-			calibration[ 2 ] = parent.calibrationZ;
+				calibration[ 2 ] = img.averageScale( d );
 		}
 		return calibration;
 	}
@@ -322,9 +230,8 @@ public class TMUtils
 		calibration[ 0 ] = imp.getCalibration().pixelWidth;
 		calibration[ 1 ] = imp.getCalibration().pixelHeight;
 		if ( imp.getNSlices() > 1 )
-		{
 			calibration[ 2 ] = imp.getCalibration().pixelDepth;
-		}
+
 		return calibration;
 	}
 
@@ -336,10 +243,13 @@ public class TMUtils
 	{
 
 		final int size = values.length;
-		if ( ( p > 1 ) || ( p <= 0 ) ) { throw new IllegalArgumentException( "invalid quantile value: " + p ); }
+		if ( ( p > 1 ) || ( p <= 0 ) )
+			throw new IllegalArgumentException( "invalid quantile value: " + p );
 		// always return single value for n = 1
-		if ( size == 0 ) { return Double.NaN; }
-		if ( size == 1 ) { return values[ 0 ]; }
+		if ( size == 0 )
+			return Double.NaN;
+		if ( size == 1 )
+			return values[ 0 ];
 		final double n = size;
 		final double pos = p * ( n + 1 );
 		final double fpos = Math.floor( pos );
@@ -349,8 +259,10 @@ public class TMUtils
 		System.arraycopy( values, 0, sorted, 0, size );
 		Arrays.sort( sorted );
 
-		if ( pos < 1 ) { return sorted[ 0 ]; }
-		if ( pos >= n ) { return sorted[ size - 1 ]; }
+		if ( pos < 1 )
+			return sorted[ 0 ];
+		if ( pos >= n )
+			return sorted[ size - 1 ];
 		final double lower = sorted[ intPos - 1 ];
 		final double upper = sorted[ intPos ];
 		return lower + dif * ( upper - lower );
@@ -364,33 +276,20 @@ public class TMUtils
 	 */
 	private static final double[] getRange( final double[] data )
 	{
-		double min = Double.POSITIVE_INFINITY;
-		double max = Double.NEGATIVE_INFINITY;
-		double value;
-		for ( int i = 0; i < data.length; i++ )
-		{
-			value = data[ i ];
-			if ( value < min )
-			{
-				min = value;
-			}
-			if ( value > max )
-			{
-				max = value;
-			}
-		}
+		final double min = Arrays.stream( data ).min().getAsDouble();
+		final double max = Arrays.stream( data ).max().getAsDouble();
 		return new double[] { ( max - min ), min, max };
 	}
 
 	/**
-	 * Store the x, y, z coordinates of the specified BCellobject in the first 3
+	 * Store the x, y, z coordinates of the specified spot in the first 3
 	 * elements of the specified double array.
 	 */
-	public static final void localize( final BCellobject BCellobject, final double[] coords )
+	public static final void localize( final Spot spot, final double[] coords )
 	{
-		coords[ 0 ] = BCellobject.getFeature( BCellobject.POSITION_X ).doubleValue();
-		coords[ 1 ] = BCellobject.getFeature( BCellobject.POSITION_Y ).doubleValue();
-		coords[ 2 ] = BCellobject.getFeature( BCellobject.POSITION_Z ).doubleValue();
+		coords[ 0 ] = spot.getFeature( Spot.POSITION_X ).doubleValue();
+		coords[ 1 ] = spot.getFeature( Spot.POSITION_Y ).doubleValue();
+		coords[ 2 ] = spot.getFeature( Spot.POSITION_Z ).doubleValue();
 	}
 
 	/**
@@ -408,14 +307,12 @@ public class TMUtils
 		final double binWidth = 2 * iqr * Math.pow( size, -0.33 );
 		final double[] range = getRange( values );
 		int nBin = ( int ) ( range[ 0 ] / binWidth + 1 );
+
 		if ( nBin > maxBinNumber )
-		{
 			nBin = maxBinNumber;
-		}
 		else if ( nBin < minBinNumber )
-		{
 			nBin = minBinNumber;
-		}
+
 		return nBin;
 	}
 
@@ -491,9 +388,7 @@ public class TMUtils
 
 		double sum = 0;
 		for ( int t = 0; t < hist.length; t++ )
-		{
 			sum += t * hist[ t ];
-		}
 
 		double sumB = 0;
 		int wB = 0;
@@ -506,15 +401,11 @@ public class TMUtils
 		{
 			wB += hist[ t ]; // Weight Background
 			if ( wB == 0 )
-			{
 				continue;
-			}
 
 			wF = total - wB; // Weight Foreground
 			if ( wF == 0 )
-			{
 				break;
-			}
 
 			sumB += ( t * hist[ t ] );
 
@@ -541,46 +432,134 @@ public class TMUtils
 	 */
 	public static final String getUnitsFor( final Dimension dimension, final String spaceUnits, final String timeUnits )
 	{
-		String units = "no unit";
 		switch ( dimension )
 		{
 		case ANGLE:
-			units = "Radians";
-			break;
+			return "radians";
 		case INTENSITY:
-			units = "Counts";
-			break;
+			return "counts";
 		case INTENSITY_SQUARED:
-			units = "Counts^2";
-			break;
+			return "counts^2";
 		case NONE:
-			units = "";
-			break;
+			return "";
 		case POSITION:
 		case LENGTH:
-			units = spaceUnits;
-			break;
-		
+			return spaceUnits;
+		case AREA:
+			return spaceUnits + "^2";
+		case QUALITY:
+			return "quality";
+		case COST:
+			return "cost";
 		case TIME:
-			units = timeUnits;
-			break;
+			return timeUnits;
 		case VELOCITY:
-			units = spaceUnits + "/" + timeUnits;
-			break;
+			return spaceUnits + "/" + timeUnits;
 		case RATE:
-			units = "/" + timeUnits;
-			break;
+			return "/" + timeUnits;
+		case ANGLE_RATE:
+			return "rad/" + timeUnits;
 		default:
-			break;
 		case STRING:
 			return null;
 		}
-		return units;
 	}
 
 	public static final String getCurrentTimeString()
 	{
 		return DATE_FORMAT.format( new Date() );
+	}
+
+	public static < T extends Type< T > > ImgPlus< T > hyperSlice( final ImgPlus< T > img, final long channel, final long frame )
+	{
+		final int timeDim = img.dimensionIndex( Axes.TIME );
+		final ImgPlus< T > imgT = timeDim < 0
+				? img
+				: ImgPlusViews.hyperSlice( img, timeDim, frame );
+		final int channelDim = imgT.dimensionIndex( Axes.CHANNEL );
+		final ImgPlus< T > imgTC = channelDim < 0
+				? imgT
+				: ImgPlusViews.hyperSlice( imgT, channelDim, channel );
+		return imgTC;
+	}
+
+	/**
+	 * Returns an interval object that slices in the specified {@link ImgPlus}
+	 * <b>in a single channel</b> (the channel dimension is dropped).
+	 * <p>
+	 * The specified {@link Settings} object is used to determine a crop-cube
+	 * that will determine the X,Y,Z size of the interval. The channel dimension
+	 * will be dropped.
+	 * <p>
+	 * If the specified {@link ImgPlus} has a time axis, it will be included,
+	 * using the {@link Settings#tstart} and {@link Settings#tend} as bounds. If
+	 * it is a singleton dimension (1 time-point) it won't be dropped.
+	 *
+	 * @param img
+	 *            the source image into which the interval is to be defined.
+	 * @param settings
+	 *            the settings object that will determine the interval size.
+	 * @return a new interval.
+	 */
+	public static final Interval getIntervalWithTime( final ImgPlus< ? > img, final Settings settings )
+	{
+		final long[] max = new long[ img.numDimensions() ];
+		final long[] min = new long[ img.numDimensions() ];
+
+		// X, we must have it.
+		final int xindex = img.dimensionIndex( Axes.X );
+		min[ xindex ] = settings.xstart;
+		max[ xindex ] = settings.xend;
+
+		// Y, we must have it.
+		final int yindex = img.dimensionIndex( Axes.Y );
+		min[ yindex ] = settings.ystart;
+		max[ yindex ] = settings.yend;
+
+		// Z, we MIGHT have it.
+		final int zindex = img.dimensionIndex( Axes.Z );
+		if ( zindex >= 0 )
+		{
+			min[ zindex ] = settings.zstart;
+			max[ zindex ] = settings.zend;
+		}
+
+		// TIME, we might have it, but anyway we leave the start & end
+		// management to elsewhere.
+		final int tindex = img.dimensionIndex( Axes.TIME );
+		if ( tindex >= 0 )
+		{
+			min[ tindex ] = settings.tstart;
+			max[ tindex ] = settings.tend;
+		}
+
+		// CHANNEL, we might have it, we drop it.
+		final long[] max2;
+		final long[] min2;
+		final int cindex = img.dimensionIndex( Axes.CHANNEL );
+		if ( cindex >= 0 )
+		{
+			max2 = new long[ img.numDimensions() - 1 ];
+			min2 = new long[ img.numDimensions() - 1 ];
+			int d2 = 0;
+			for ( int d = 0; d < min.length; d++ )
+			{
+				if ( d != cindex )
+				{
+					min2[ d2 ] = min[ d ];
+					max2[ d2 ] = max[ d ];
+					d2++;
+				}
+			}
+		}
+		else
+		{
+			max2 = max;
+			min2 = min;
+		}
+
+		final FinalInterval interval = new FinalInterval( min2, max2 );
+		return interval;
 	}
 
 	/**
@@ -591,7 +570,7 @@ public class TMUtils
 	 * that will determine the X,Y,Z size of the interval. A single channel will
 	 * be taken in the case of a multi-channel image. If the detector set in the
 	 * settings object has a parameter for the target channel
-	 * {@link Buddy.plugin.trackmate.detection.DetectorKeys#KEY_TARGET_CHANNEL},
+	 * {@link fiji.plugin.trackmate.detection.DetectorKeys#KEY_TARGET_CHANNEL},
 	 * it will be used; otherwise the first channel will be taken.
 	 * <p>
 	 * If the specified {@link ImgPlus} has a time axis, it will be dropped and
@@ -609,17 +588,17 @@ public class TMUtils
 		final long[] min = new long[ img.numDimensions() ];
 
 		// X, we must have it.
-		final int xindex = TMUtils.findXAxisIndex( img );
+		final int xindex = img.dimensionIndex( Axes.X );
 		min[ xindex ] = settings.xstart;
 		max[ xindex ] = settings.xend;
 
 		// Y, we must have it.
-		final int yindex = TMUtils.findYAxisIndex( img );
+		final int yindex = img.dimensionIndex( Axes.Y );
 		min[ yindex ] = settings.ystart;
 		max[ yindex ] = settings.yend;
 
 		// Z, we MIGHT have it.
-		final int zindex = TMUtils.findZAxisIndex( img );
+		final int zindex = img.dimensionIndex( Axes.Z );
 		if ( zindex >= 0 )
 		{
 			min[ zindex ] = settings.zstart;
@@ -627,21 +606,20 @@ public class TMUtils
 		}
 
 		// CHANNEL, we might have it.
-		final int cindex = TMUtils.findCAxisIndex( img );
+		final int cindex = img.dimensionIndex( Axes.CHANNEL );
 		if ( cindex >= 0 )
 		{
-			Integer c = ( Integer ) settings.detectorSettings.get( 1 ); // 1-based.
+			Integer c = ( Integer ) settings.detectorSettings.get( KEY_TARGET_CHANNEL ); // 1-based.
 			if ( null == c )
-			{
 				c = 1;
-			}
+
 			min[ cindex ] = c - 1; // 0-based.
 			max[ cindex ] = min[ cindex ];
 		}
 
 		// TIME, we might have it, but anyway we leave the start & end
 		// management to elsewhere.
-		final int tindex = TMUtils.findTAxisIndex( img );
+		final int tindex = img.dimensionIndex( Axes.TIME );
 
 		/*
 		 * We want to exclude time (if we have it) from out interval and source,
@@ -658,9 +636,8 @@ public class TMUtils
 			for ( int d = 0; d < min.length; d++ )
 			{
 				if ( d == tindex )
-				{
 					continue;
-				}
+
 				nindex++;
 				intervalMin[ nindex ] = Math.max( 0l, min[ d ] );
 				intervalMax[ nindex ] = Math.min( img.max( d ), max[ d ] );
@@ -680,13 +657,77 @@ public class TMUtils
 		return ( Context ) IJ.runPlugIn( "org.scijava.Context", "" );
 	}
 
+	/**
+	 * Creates a default file path to save the TrackMate session to, based on
+	 * the image TrackMate works on.
+	 *
+	 * @param settings
+	 *            the settings object from which to read the image, its folder,
+	 *            etc.
+	 * @param logger
+	 *            a logger instance in which to echo problems if any.
+	 * @return a new file.
+	 */
+	public static File proposeTrackMateSaveFile( final Settings settings, final Logger logger )
+	{
+		File folder, file;
+		if ( null != settings.imp
+				&& null != settings.imp.getOriginalFileInfo()
+				&& null != settings.imp.getOriginalFileInfo().directory )
+		{
+			folder = new File( settings.imp.getOriginalFileInfo().directory );
+			/*
+			 * Update the settings field with the image file location now,
+			 * because it's valid.
+			 */
+			settings.imageFolder = settings.imp.getOriginalFileInfo().directory;
+		}
+		else
+		{
+			folder = new File( System.getProperty( "user.dir" ) );
+			/*
+			 * Warn the user that the file cannot be reloaded properly because
+			 * the source image does not match a file.
+			 */
+			logger.error( "Warning: The source image does not match a file on the system."
+					+ "TrackMate won't be able to reload it when opening this XML file.\n"
+					+ "To fix this, save the source image to a TIF file before saving the TrackMate session.\n" );
+			settings.imageFolder = "";
+		}
+		try
+		{
+			file = new File( folder.getPath() + File.separator + settings.imp.getShortTitle() + ".xml" );
+		}
+		catch ( final NullPointerException npe )
+		{
+			file = new File( folder.getPath() + File.separator + "TrackMateData.xml" );
+		}
+		return file;
+	}
+
+	public static final double variance( final double[] data )
+	{
+		final double mean = Util.average( data );
+		double variance = 0;
+		for ( int i = 0; i < data.length; i++ )
+		{
+			final double dx = data[ i ] - mean;
+			variance += dx * dx;
+		}
+		variance /= ( data.length - 1 );
+		return variance;
+	}
+
+	public static final double standardDeviation( final double[] data )
+	{
+		return Math.sqrt( variance( data ) );
+	}
+
+	public static double sum( final double[] intensities )
+	{
+		return Arrays.stream( intensities ).sum();
+	}
+
 	private TMUtils()
 	{}
-
-	public static < T extends Type< T > > ImgPlus< T > hyperSlice( final ImgPlus< T > img, final long channel, final long frame )
-	{
-		final ImgPlus< T > imgT = ImgPlusViews.hyperSlice( img, img.dimensionIndex( Axes.TIME ), frame );
-		final ImgPlus< T > imgTC = ImgPlusViews.hyperSlice( imgT, imgT.dimensionIndex( Axes.CHANNEL ), channel );
-		return imgTC;
-	}
 }

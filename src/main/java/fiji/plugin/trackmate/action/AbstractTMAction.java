@@ -1,6 +1,6 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
-import Buddy.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Logger;
 
 public abstract class AbstractTMAction implements TrackMateAction {
 

@@ -1,6 +1,6 @@
-package Buddy.plugin.trackmate.util;
+package fiji.plugin.trackmate.util;
 
-import static Buddy.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,12 +10,12 @@ import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.tracking.kdtree.NearestNeighborTracker;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.FeatureModel;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.tracking.kdtree.NearestNeighborTracker;
 
 /**
  * A collection of static utilities made to ease the manipulation of a TrackMate
@@ -31,7 +31,7 @@ public class ModelTools
 
 	/**
 	 * Sets the content of the specified selection model to be the whole tracks
-	 * the selected BCellobjects belong to. Other selected edges are removed from the
+	 * the selected spots belong to. Other selected edges are removed from the
 	 * selection.
 	 * 
 	 * @param selectionModel
@@ -40,12 +40,12 @@ public class ModelTools
 	public static void selectTrack( final SelectionModel selectionModel )
 	{
 		selectionModel.clearEdgeSelection();
-		selectionModel.selectTrack( selectionModel.getBCellobjectSelection(), Collections.< DefaultWeightedEdge >emptyList(), 0 );
+		selectionModel.selectTrack( selectionModel.getSpotSelection(), Collections.< DefaultWeightedEdge >emptyList(), 0 );
 	}
 
 	/**
 	 * Sets the content of the specified selection model to be the whole tracks
-	 * the selected BCellobjects belong to, but searched for only forward in time
+	 * the selected spots belong to, but searched for only forward in time
 	 * (downward). Other selected edges are removed from the selection.
 	 * 
 	 * @param selectionModel
@@ -54,12 +54,12 @@ public class ModelTools
 	public static void selectTrackDownward( final SelectionModel selectionModel )
 	{
 		selectionModel.clearEdgeSelection();
-		selectionModel.selectTrack( selectionModel.getBCellobjectSelection(), Collections.< DefaultWeightedEdge >emptyList(), -1 );
+		selectionModel.selectTrack( selectionModel.getSpotSelection(), Collections.< DefaultWeightedEdge >emptyList(), -1 );
 	}
 
 	/**
 	 * Sets the content of the specified selection model to be the whole tracks
-	 * the selected BCellobjects belong to, but searched for only backward in time
+	 * the selected spots belong to, but searched for only backward in time
 	 * (backward). Other selected edges are removed from the selection.
 	 * 
 	 * @param selectionModel
@@ -68,28 +68,28 @@ public class ModelTools
 	public static void selectTrackUpward( final SelectionModel selectionModel )
 	{
 		selectionModel.clearEdgeSelection();
-		selectionModel.selectTrack( selectionModel.getBCellobjectSelection(), Collections.< DefaultWeightedEdge >emptyList(), 1 );
+		selectionModel.selectTrack( selectionModel.getSpotSelection(), Collections.< DefaultWeightedEdge >emptyList(), 1 );
 	}
 
 	/**
-	 * Links all the BCellobjects in the selection, in time-forward order.
+	 * Links all the spots in the selection, in time-forward order.
 	 * 
 	 * @param model
 	 *            the model to modify.
 	 * @param selectionModel
-	 *            the selection that contains the BCellobjects to link.
+	 *            the selection that contains the spots to link.
 	 */
-	public static void linkBCellobjects( final Model model, final SelectionModel selectionModel )
+	public static void linkSpots( final Model model, final SelectionModel selectionModel )
 	{
 
 		/*
 		 * Configure tracker
 		 */
 
-		final BCellobjectCollection BCellobjects = BCellobjectCollection.fromCollection( selectionModel.getBCellobjectSelection() );
+		final SpotCollection spots = SpotCollection.fromCollection( selectionModel.getSpotSelection() );
 		final Map< String, Object > settings = new HashMap<>( 1 );
 		settings.put( KEY_LINKING_MAX_DISTANCE, Double.POSITIVE_INFINITY );
-		final NearestNeighborTracker tracker = new NearestNeighborTracker( BCellobjects, settings );
+		final NearestNeighborTracker tracker = new NearestNeighborTracker( spots, settings );
 		tracker.setNumThreads( 1 );
 
 		/*
@@ -98,10 +98,10 @@ public class ModelTools
 
 		if ( !tracker.checkInput() || !tracker.process() )
 		{
-			System.err.println( "Problem while computing BCellobject links: " + tracker.getErrorMessage() );
+			System.err.println( "Problem while computing spot links: " + tracker.getErrorMessage() );
 			return;
 		}
-		final SimpleWeightedGraph< BCellobject, DefaultWeightedEdge > graph = tracker.getResult();
+		final SimpleWeightedGraph< Spot, DefaultWeightedEdge > graph = tracker.getResult();
 
 		/*
 		 * Copy found links in source model
@@ -112,8 +112,8 @@ public class ModelTools
 		{
 			for ( final DefaultWeightedEdge edge : graph.edgeSet() )
 			{
-				final BCellobject source = graph.getEdgeSource( edge );
-				final BCellobject target = graph.getEdgeTarget( edge );
+				final Spot source = graph.getEdgeSource( edge );
+				final Spot target = graph.getEdgeTarget( edge );
 				model.addEdge( source, target, graph.getEdgeWeight( edge ) );
 			}
 		}

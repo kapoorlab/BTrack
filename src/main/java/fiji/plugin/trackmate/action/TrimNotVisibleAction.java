@@ -1,5 +1,8 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
+import static fiji.plugin.trackmate.gui.Icons.BIN_ICON;
+
+import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -7,13 +10,13 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import Buddy.plugin.trackmate.BCellobjectCollection;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.TrackModel;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
 
 public class TrimNotVisibleAction extends AbstractTMAction
 {
@@ -22,7 +25,7 @@ public class TrimNotVisibleAction extends AbstractTMAction
 			+ "This action trims the tracking data by removing anything that is "
 			+ "not marked as visible. "
 			+ "<p>"
-			+ "The BCellobjects that do not belong to a visible track will be "
+			+ "The spots that do not belong to a visible track will be "
 			+ "removed. The tracks that are not marked "
 			+ "as visible will be removed as well. "
 			+ "<p>"
@@ -33,50 +36,39 @@ public class TrimNotVisibleAction extends AbstractTMAction
 
 	public static final String KEY = "TRIM_NOT_VISIBLE";
 
-	public static final ImageIcon ICON = new ImageIcon( TrackMateWizard.class.getResource( "images/bin_empty.png" ) );
-
 	public static final String NAME = "Trim non-visible data";
 
-	public TrimNotVisibleAction()
-	{
-	}
-
 	@Override
-	public void execute( final TrackMate trackmate )
+	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
 		final Model model = trackmate.getModel();
 		final TrackModel tm = model.getTrackModel();
 
-		final BCellobjectCollection BCellobjects = new BCellobjectCollection();
-		BCellobjects.setNumThreads( trackmate.getNumThreads() );
-		final Collection< BCellobject > toRemove = new ArrayList<>();
+		final SpotCollection spots = new SpotCollection();
+		spots.setNumThreads( trackmate.getNumThreads() );
+		final Collection< Spot > toRemove = new ArrayList<>();
 
 		for ( final Integer trackID : tm.unsortedTrackIDs( false ) )
 		{
 			if ( !tm.isVisible( trackID ) )
 			{
-				for ( final BCellobject BCellobject : tm.trackBCellobjects( trackID ) )
-				{
-					toRemove.add( BCellobject );
-				}
+				for ( final Spot spot : tm.trackSpots( trackID ) )
+					toRemove.add( spot );
 			}
 			else
 			{
-				for ( final BCellobject BCellobject : tm.trackBCellobjects( trackID ) )
-				{
-					BCellobjects.add( BCellobject, BCellobject.getFeature( BCellobject.POSITION_T ).intValue() );
-				}
+				for ( final Spot spot : tm.trackSpots( trackID ) )
+					spots.add( spot, spot.getFeature( Spot.FRAME ).intValue() );
 			}
-
 		}
+
 		model.beginUpdate();
 		try
 		{
-			for ( final BCellobject BCellobject : toRemove )
-			{
-				model.removeBCellobject( BCellobject );
-			}
-			model.setBCellobjects( BCellobjects, false );
+			for ( final Spot spot : toRemove )
+				model.removeSpot( spot );
+
+			model.setSpots( spots, false );
 		}
 		finally
 		{
@@ -101,7 +93,7 @@ public class TrimNotVisibleAction extends AbstractTMAction
 		}
 
 		@Override
-		public TrackMateAction create( final TrackMateGUIController controller )
+		public TrackMateAction create()
 		{
 			return new TrimNotVisibleAction();
 		}
@@ -109,7 +101,7 @@ public class TrimNotVisibleAction extends AbstractTMAction
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return BIN_ICON;
 		}
 
 		@Override
@@ -117,6 +109,5 @@ public class TrimNotVisibleAction extends AbstractTMAction
 		{
 			return NAME;
 		}
-
 	}
 }

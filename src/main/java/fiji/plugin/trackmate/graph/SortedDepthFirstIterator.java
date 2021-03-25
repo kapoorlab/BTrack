@@ -1,7 +1,7 @@
 /**
  *
  */
-package Buddy.plugin.trackmate.graph;
+package fiji.plugin.trackmate.graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

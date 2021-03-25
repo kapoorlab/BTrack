@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fiji.plugin.trackmate.detection.DetectionUtils;
+import fiji.plugin.trackmate.detection.DetectorKeys;
+import fiji.plugin.trackmate.detection.LabeImageDetectorFactory;
+import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
 import fiji.plugin.trackmate.features.FeatureAnalyzer;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
@@ -17,7 +21,7 @@ import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.SpotMorphologyAnalyzerProvider;
 import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
-import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.io.FileInfo;
@@ -107,7 +111,12 @@ public class Settings
 
 	public String imageFileName = "";
 
-	
+	/**
+	 * The name of the detector factory to use. It will be used to generate
+	 * {@link fiji.plugin.trackmate.detection.SpotDetector} for each target
+	 * frame.
+	 */
+	public SpotDetectorFactoryBase< ? > detectorFactory;
 
 	/** The the tracker to use. */
 	public SpotTrackerFactory trackerFactory;
@@ -325,7 +334,26 @@ public class Settings
 
 		str.append( toStringImageInfo() );
 
-		
+		str.append( '\n' );
+		str.append( "Spot detection:\n" );
+		if ( null == detectorFactory )
+		{
+			str.append( "No detector factory set.\n" );
+		}
+		else
+		{
+			str.append( "Detector: " + detectorFactory.toString() + ".\n" );
+			if ( null == detectorSettings )
+			{
+				str.append( "No detector settings found.\n" );
+			}
+			else
+			{
+				str.append( "Detector settings:\n" );
+				str.append( detectorSettings );
+				str.append( '\n' );
+			}
+		}
 
 		str.append( '\n' );
 		str.append( toStringFeatureAnalyzersInfo() );
@@ -402,8 +430,21 @@ public class Settings
 			errorMessage = "The source image is null.\n";
 			return false;
 		}
-		
-		
+		if ( null == detectorFactory )
+		{
+			errorMessage = "The detector factory is null.\n";
+			return false;
+		}
+		if ( null == detectorSettings )
+		{
+			errorMessage = "The detector settings is null.\n";
+			return false;
+		}
+		if ( null == initialSpotFilterValue )
+		{
+			errorMessage = "Initial spot quality threshold is not set.\n";
+			return false;
+		}
 		if ( null == trackerFactory )
 		{
 			errorMessage = "The tracker factory is null.\n";
@@ -438,7 +479,13 @@ public class Settings
 		for ( final String key : spotAnalyzerKeys )
 			addSpotAnalyzerFactory( spotAnalyzerProvider.getFactory( key ) );
 
-		
+		if ( imp != null && DetectionUtils.is2D( imp ) && detectorFactory != null && detectorFactory.has2Dsegmentation() )
+		{
+			final SpotMorphologyAnalyzerProvider spotMorphologyAnalyzerProvider = new SpotMorphologyAnalyzerProvider( imp.getNChannels() );
+			final List< String > spotMorphologyAnaylyzerKeys = spotMorphologyAnalyzerProvider.getKeys();
+			for ( final String key : spotMorphologyAnaylyzerKeys )
+				addSpotAnalyzerFactory( spotMorphologyAnalyzerProvider.getFactory( key ) );
+		}
 
 		final EdgeAnalyzerProvider edgeAnalyzerProvider = new EdgeAnalyzerProvider();
 		final List< String > edgeAnalyzerKeys = edgeAnalyzerProvider.getKeys();
@@ -458,7 +505,10 @@ public class Settings
 	 */
 	public void defaultParameters()
 	{
-		this.trackerFactory = new SimpleSparseLAPTrackerFactory();
+		this.detectorFactory = new LabeImageDetectorFactory<>();
+		this.detectorSettings = detectorFactory.getDefaultSettings();
+		detectorSettings.put( DetectorKeys.KEY_RADIUS, 2.5 );
+		this.trackerFactory = new SparseLAPTrackerFactory();
 		this.trackerSettings = trackerFactory.getDefaultSettings();
 		this.initialSpotFilterValue = 20.;
 	}

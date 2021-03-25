@@ -1,6 +1,6 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
-import static Buddy.plugin.trackmate.gui.Icons.CALCULATOR_ICON;
+import static fiji.plugin.trackmate.gui.Icons.CALCULATOR_ICON;
 
 import java.awt.Frame;
 
@@ -8,11 +8,11 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.visualization.table.TrackTableView;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.visualization.table.TrackTableView;
 
 public class ExportStatsTablesAction extends AbstractTMAction
 {

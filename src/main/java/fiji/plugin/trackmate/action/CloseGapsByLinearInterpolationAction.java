@@ -1,5 +1,8 @@
-package Buddy.plugin.trackmate.action;
+package fiji.plugin.trackmate.action;
 
+import static fiji.plugin.trackmate.gui.Icons.ORANGE_ASTERISK_ICON;
+
+import java.awt.Frame;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
@@ -7,18 +10,18 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackMate;
-import Buddy.plugin.trackmate.TrackModel;
-import Buddy.plugin.trackmate.gui.TrackMateGUIController;
-import Buddy.plugin.trackmate.gui.TrackMateWizard;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackMate;
+import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
 import net.imglib2.RealPoint;
 
 /**
- * This action allows to close gaps in tracks by creating new intermediate BCellobjects
+ * This action allows to close gaps in tracks by creating new intermediate spots
  * which are located at interpolated positions. This is useful if you want to
- * measure signal intensity changing during time, even if the BCellobject is not
+ * measure signal intensity changing during time, even if the spot is not
  * visible. Thus, trackmate is utilisable for Fluorescence Recovery after
  * Photobleaching (FRAP) analysis.
  *
@@ -31,20 +34,19 @@ import net.imglib2.RealPoint;
 public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 {
 
-	public static final ImageIcon ICON = new ImageIcon( TrackMateWizard.class.getResource( "images/spot_icon.png" ) );
-
-	public static final String NAME = "Close gaps by introducing new BCellobjects";
+	public static final String NAME = "Close gaps by introducing new spots";
 
 	public static final String KEY = "CLOSE_GAPS_BY_LINEAR_INPERPOLATION";
 
 	public static final String INFO_TEXT = "<html>" 
-			+ "This action closes gaps in tracks by introducing new BCellobjects. "
-			+ "The BCellobjects positions and size are calculated "
+			+ "This action closes gaps in tracks by introducing new spots. "
+			+ "The spots positions and size are calculated "
 			+ "using linear interpolation." 
 			+ "</html>";
 
+
 	@Override
-	public void execute( final TrackMate trackmate )
+	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
 		final Model model = trackmate.getModel();
 
@@ -56,16 +58,16 @@ public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 		{
 			changed = false;
 
-			// Got through all edges, check if the frame distance between BCellobjects
+			// Got through all edges, check if the frame distance between spots
 			// is larger than 1
 			final Set< DefaultWeightedEdge > edges = model.getTrackModel().edgeSet();
 			for ( final DefaultWeightedEdge edge : edges )
 			{
-				final BCellobject currentBCellobject = trackModel.getEdgeSource( edge );
-				final BCellobject nextBCellobject = trackModel.getEdgeTarget( edge );
+				final Spot currentSpot = trackModel.getEdgeSource( edge );
+				final Spot nextSpot = trackModel.getEdgeTarget( edge );
 
-				final int currentFrame = currentBCellobject.getFeature( BCellobject.POSITION_T ).intValue();
-				final int nextFrame = nextBCellobject.getFeature( BCellobject.POSITION_T ).intValue();
+				final int currentFrame = currentSpot.getFeature( Spot.FRAME ).intValue();
+				final int nextFrame = nextSpot.getFeature( Spot.FRAME ).intValue();
 
 				if ( Math.abs( nextFrame - currentFrame ) > 1 )
 				{
@@ -76,38 +78,39 @@ public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 					final double[] currentPosition = new double[ 3 ];
 					final double[] nextPosition = new double[ 3 ];
 
-					nextBCellobject.localize( nextPosition );
-					currentBCellobject.localize( currentPosition );
+					nextSpot.localize( nextPosition );
+					currentSpot.localize( currentPosition );
 
-					model.removeEdge( currentBCellobject, nextBCellobject );
+					model.removeEdge( currentSpot, nextSpot );
 
-					// create new BCellobjects in between; interpolate coordinates and
+					// create new spots in between; interpolate coordinates and
 					// some features
-					BCellobject formerBCellobject = currentBCellobject;
+					Spot formerSpot = currentSpot;
 					for ( int f = currentFrame + presign; ( f < nextFrame && presign == 1 ) 
 							|| ( f > nextFrame && presign == -1 ); f += presign )
 					{
 						final double weight = ( double ) ( nextFrame - f ) / ( nextFrame - currentFrame );
 
 						final double[] position = new double[ 3 ];
-						for ( int d = 0; d < currentBCellobject.numDimensions(); d++ )
+						for ( int d = 0; d < currentSpot.numDimensions(); d++ )
 						{
 							position[ d ] = weight * currentPosition[ d ] + ( 1.0 - weight ) * nextPosition[ d ];
 						}
 
 						final RealPoint rp = new RealPoint( position );
 
-						final BCellobject newBCellobject = new BCellobject( rp);
+						final Spot newSpot = new Spot( rp, 0, 0 );
 
-						// Set some properties of the new BCellobject
-						interpolateFeature( newBCellobject, currentBCellobject, nextBCellobject, weight, BCellobject.Size );
-						interpolateFeature( newBCellobject, currentBCellobject, nextBCellobject, weight, BCellobject.POSITION_T );
+						// Set some properties of the new spot
+						interpolateFeature( newSpot, currentSpot, nextSpot, weight, Spot.RADIUS );
+						interpolateFeature( newSpot, currentSpot, nextSpot, weight, Spot.QUALITY );
+						interpolateFeature( newSpot, currentSpot, nextSpot, weight, Spot.POSITION_T );
 
-						model.addBCellobjectTo( newBCellobject, f );
-						model.addEdge( formerBCellobject, newBCellobject, 1.0 );
-						formerBCellobject = newBCellobject;
+						model.addSpotTo( newSpot, f );
+						model.addEdge( formerSpot, newSpot, 1.0 );
+						formerSpot = newSpot;
 					}
-					model.addEdge( formerBCellobject, nextBCellobject, 1.0 );
+					model.addEdge( formerSpot, nextSpot, 1.0 );
 					model.endUpdate();
 
 					// Restart search to prevent ConcurrentModificationException
@@ -118,15 +121,15 @@ public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 		}
 	}
 
-	private void interpolateFeature( final BCellobject targetBCellobject, final BCellobject BCellobject1, final BCellobject BCellobject2, final double weight, final String feature )
+	private void interpolateFeature( final Spot targetSpot, final Spot spot1, final Spot spot2, final double weight, final String feature )
 	{
-		if ( targetBCellobject.getFeatures().containsKey( feature ) )
+		if ( targetSpot.getFeatures().containsKey( feature ) )
 		{
-			targetBCellobject.getFeatures().remove( feature );
+			targetSpot.getFeatures().remove( feature );
 		}
 
-		targetBCellobject.getFeatures().put( feature, 
-				weight * BCellobject1.getFeature( feature ) + ( 1.0 - weight ) * BCellobject2.getFeature( feature ) );
+		targetSpot.getFeatures().put( feature, 
+				weight * spot1.getFeature( feature ) + ( 1.0 - weight ) * spot2.getFeature( feature ) );
 	}
 
 	@Plugin( type = TrackMateActionFactory.class )
@@ -154,14 +157,13 @@ public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 		@Override
 		public ImageIcon getIcon()
 		{
-			return ICON;
+			return ORANGE_ASTERISK_ICON;
 		}
 
 		@Override
-		public TrackMateAction create( final TrackMateGUIController controller )
+		public TrackMateAction create()
 		{
 			return new CloseGapsByLinearInterpolationAction();
 		}
 	}
-
 }

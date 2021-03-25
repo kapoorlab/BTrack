@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.graph;
+package fiji.plugin.trackmate.graph;
 
 import java.util.Set;
 

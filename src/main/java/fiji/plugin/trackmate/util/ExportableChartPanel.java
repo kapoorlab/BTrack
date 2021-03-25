@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.util;
+package fiji.plugin.trackmate.util;
 
 import java.awt.Container;
 import java.awt.FileDialog;

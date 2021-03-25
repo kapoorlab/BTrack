@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.graph;
+package fiji.plugin.trackmate.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,18 +15,18 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
 
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.TrackModel;
-import budDetector.BCellobject;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.TrackModel;
 import net.imglib2.algorithm.Algorithm;
 import net.imglib2.algorithm.Benchmark;
 
 /**
  * A class that can decompose the tracks of a {@link Model} in convex branches.
  * <p>
- * A convex branch is a portion of a track for which all BCellobjects - but the first
+ * A convex branch is a portion of a track for which all spots - but the first
  * and last one - have exactly one predecessor and one successor (in time). The
- * first and last BCellobjects of a branch may have 0 or 1 or more predecessors or
+ * first and last spots of a branch may have 0 or 1 or more predecessors or
  * successors respectively, depending on they are the start or the end of a
  * track, or a fusion or merging point, or a gap (see below).
  * <p>
@@ -85,7 +85,7 @@ import net.imglib2.algorithm.Benchmark;
  * <p>
  * The behavior of this algorithm can be tuned using two boolean flags. The
  * first one specifies whether we can violate the convex branch contract and
- * have branches that contain a BCellobject with more than one predecessor and one
+ * have branches that contain a spot with more than one predecessor and one
  * successor. For instance, if a track is as follow:
  * 
  * <pre>
@@ -118,9 +118,9 @@ import net.imglib2.algorithm.Benchmark;
  * 
  * which yields fewer and longer branches.
  * <p>
- * Some branches may have gaps in them, that is two BCellobjects separated by more than
+ * Some branches may have gaps in them, that is two spots separated by more than
  * one frame. By default this does not lead to cutting the branch in two. If you
- * want to force branches to contain BCellobjects that are separated by exactly only
+ * want to force branches to contain spots that are separated by exactly only
  * one frame, set the <code>forbidGaps</code> flag to <code>true</code>. In that
  * case, a track arranged as following (<code>ø</code> is a missing detection in
  * a frame, or a gap):
@@ -136,8 +136,8 @@ import net.imglib2.algorithm.Benchmark;
  * D - E - F
  * </pre>
  * <p>
- * It is ensured that each BCellobject in the model is present in exactly one branch of
- * the decomposition. Only BCellobjects belonging to visible tracks are taken into
+ * It is ensured that each spot in the model is present in exactly one branch of
+ * the decomposition. Only spots belonging to visible tracks are taken into
  * account. This class also outputs the links that were cut in the source model
  * to generate these branches.
  * 
@@ -149,13 +149,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 
 	private String errorMessage;
 
-	private Collection< List< BCellobject >> branches;
+	private Collection< List< Spot >> branches;
 
-	private Collection< List< BCellobject > > links;
+	private Collection< List< Spot > > links;
 
-	private Map< Integer, Collection< List< BCellobject >>> branchesPerTrack;
+	private Map< Integer, Collection< List< Spot >>> branchesPerTrack;
 
-	private Map< Integer, Collection< List< BCellobject > >> linksPerTrack;
+	private Map< Integer, Collection< List< Spot > >> linksPerTrack;
 
 	private long processingTime;
 
@@ -177,7 +177,7 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 *            specifies whether we enforce links between branches to be
 	 *            between an end point of a branch and a start point of another
 	 *            branch. If <code>true</code>, links will only reach for these
-	 *            BCellobjects. If <code>false</code>, a link can target a BCellobject within
+	 *            spots. If <code>false</code>, a link can target a spot within
 	 *            a branch, which can lead to fewer and longer branches.
 	 * @param forbidGaps
 	 *            specifies whether we forbid gaps in tracks. If
@@ -194,7 +194,7 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	}
 
 	/**
-	 * Creates a new track splitter. Links between BCellobjects from within branches
+	 * Creates a new track splitter. Links between spots from within branches
 	 * and gaps within convex branches are forbidden.
 	 *
 	 * @param model
@@ -218,11 +218,11 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 		final long start = System.currentTimeMillis();
 		for ( final DefaultWeightedEdge edge : tm.edgeSet() )
 		{
-			final BCellobject source = tm.getEdgeSource( edge );
-			final BCellobject target = tm.getEdgeTarget( edge );
-			if ( source.diffTo( target, BCellobject.POSITION_T ) == 0d )
+			final Spot source = tm.getEdgeSource( edge );
+			final Spot target = tm.getEdgeTarget( edge );
+			if ( source.diffTo( target, Spot.FRAME ) == 0d )
 			{
-				errorMessage = BASE_ERROR_MSG + "Cannot deal with links between two BCellobjects in the same frame (" + source + " & " + target + ").\n";
+				errorMessage = BASE_ERROR_MSG + "Cannot deal with links between two spots in the same frame (" + source + " & " + target + ").\n";
 				return false;
 			}
 		}
@@ -273,12 +273,12 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 *            neighbors in the mother graph.
 	 * @param forbidMiddleLinks
 	 *            if <code>true</code>, the decomposition will include branches
-	 *            where only the first and last BCellobjects may have more than one
+	 *            where only the first and last spots may have more than one
 	 *            predecessor and one successor respectively. If
-	 *            <code>false</code>, some BCellobjects inside a branch may be a fusion
+	 *            <code>false</code>, some spots inside a branch may be a fusion
 	 *            or splitting point. This leads to fewer and longer branches.
 	 * @param forbidGaps
-	 *            if <code>true</code>, two neighbor BCellobjects in a branch will be
+	 *            if <code>true</code>, two neighbor spots in a branch will be
 	 *            separated by exactly one frame. If <code>false</code>,
 	 *            branches will include gaps.
 	 * @return a new {@link TrackBranchDecomposition}.
@@ -286,24 +286,24 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 */
 	public static final TrackBranchDecomposition processTrack( final Integer trackID, final TrackModel tm, final TimeDirectedNeighborIndex neighborIndex, final boolean forbidMiddleLinks, final boolean forbidGaps )
 	{
-		final Set< BCellobject > allBCellobjects = tm.trackBCellobjects( trackID );
+		final Set< Spot > allSpots = tm.trackSpots( trackID );
 		final Set< DefaultWeightedEdge > allEdges = tm.trackEdges( trackID );
-		final SimpleGraph< BCellobject, DefaultWeightedEdge > graph = new SimpleGraph< >( DefaultWeightedEdge.class );
+		final SimpleGraph< Spot, DefaultWeightedEdge > graph = new SimpleGraph< >( DefaultWeightedEdge.class );
 
-		for ( final BCellobject BCellobject : allBCellobjects )
+		for ( final Spot spot : allSpots )
 		{
-			graph.addVertex( BCellobject );
+			graph.addVertex( spot );
 		}
 		for ( final DefaultWeightedEdge edge : allEdges )
 		{
 			graph.addEdge( tm.getEdgeSource( edge ), tm.getEdgeTarget( edge ) );
 		}
 
-		final Collection< List< BCellobject >> links = new HashSet< >();
-		for ( final BCellobject BCellobject : allBCellobjects )
+		final Collection< List< Spot >> links = new HashSet< >();
+		for ( final Spot spot : allSpots )
 		{
-			final Set< BCellobject > successors = neighborIndex.successorsOf( BCellobject );
-			final Set< BCellobject > predecessors = neighborIndex.predecessorsOf( BCellobject );
+			final Set< Spot > successors = neighborIndex.successorsOf( spot );
+			final Set< Spot > predecessors = neighborIndex.predecessorsOf( spot );
 			if ( predecessors.size() <= 1 && successors.size() <= 1 )
 			{
 				continue;
@@ -312,91 +312,91 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 			if ( predecessors.size() == 0 )
 			{
 				boolean found = false;
-				for ( final BCellobject successor : successors )
+				for ( final Spot successor : successors )
 				{
-					if ( !forbidMiddleLinks && !found && successor.diffTo( BCellobject, BCellobject.POSITION_T ) < 2 )
+					if ( !forbidMiddleLinks && !found && successor.diffTo( spot, Spot.FRAME ) < 2 )
 					{
 						found = true;
 					}
 					else
 					{
-						graph.removeEdge( BCellobject, successor );
-						links.add( makeLink( BCellobject, successor ) );
+						graph.removeEdge( spot, successor );
+						links.add( makeLink( spot, successor ) );
 					}
 				}
 			}
 			else if ( successors.size() == 0 )
 			{
 				boolean found = false;
-				for ( final BCellobject predecessor : predecessors )
+				for ( final Spot predecessor : predecessors )
 				{
-					if ( !forbidMiddleLinks && !found && BCellobject.diffTo( predecessor, BCellobject.POSITION_T ) < 2 )
+					if ( !forbidMiddleLinks && !found && spot.diffTo( predecessor, Spot.FRAME ) < 2 )
 					{
 						found = true;
 					}
 					else
 					{
-						graph.removeEdge( predecessor, BCellobject );
-						links.add( makeLink( predecessor, BCellobject ) );
+						graph.removeEdge( predecessor, spot );
+						links.add( makeLink( predecessor, spot ) );
 					}
 				}
 			}
 			else if ( predecessors.size() == 1 )
 			{
-				final BCellobject previous = predecessors.iterator().next();
-				if ( previous.diffTo( BCellobject, BCellobject.POSITION_T ) < 2 )
+				final Spot previous = predecessors.iterator().next();
+				if ( previous.diffTo( spot, Spot.FRAME ) < 2 )
 				{
-					for ( final BCellobject successor : successors )
+					for ( final Spot successor : successors )
 					{
-						graph.removeEdge( BCellobject, successor );
-						links.add( makeLink( BCellobject, successor ) );
+						graph.removeEdge( spot, successor );
+						links.add( makeLink( spot, successor ) );
 					}
 				}
 				else
 				{
-					graph.removeEdge( previous, BCellobject );
-					links.add( makeLink( previous, BCellobject ) );
+					graph.removeEdge( previous, spot );
+					links.add( makeLink( previous, spot ) );
 					boolean found = false;
-					for ( final BCellobject successor : successors )
+					for ( final Spot successor : successors )
 					{
-						if ( !forbidMiddleLinks && !found && successor.diffTo( BCellobject, BCellobject.POSITION_T ) < 2 )
+						if ( !forbidMiddleLinks && !found && successor.diffTo( spot, Spot.FRAME ) < 2 )
 						{
 							found = true;
 						}
 						else
 						{
-							graph.removeEdge( BCellobject, successor );
-							links.add( makeLink( BCellobject, successor ) );
+							graph.removeEdge( spot, successor );
+							links.add( makeLink( spot, successor ) );
 						}
 					}
 				}
 			}
 			else if ( successors.size() == 1 )
 			{
-				final BCellobject next = successors.iterator().next();
-				if ( BCellobject.diffTo( next, BCellobject.POSITION_T ) < 2 )
+				final Spot next = successors.iterator().next();
+				if ( spot.diffTo( next, Spot.FRAME ) < 2 )
 				{
-					for ( final BCellobject predecessor : predecessors )
+					for ( final Spot predecessor : predecessors )
 					{
-						graph.removeEdge( predecessor, BCellobject );
-						links.add( makeLink( predecessor, BCellobject ) );
+						graph.removeEdge( predecessor, spot );
+						links.add( makeLink( predecessor, spot ) );
 					}
 				}
 				else
 				{
-					graph.removeEdge( BCellobject, next );
-					links.add( makeLink( BCellobject, next ) );
+					graph.removeEdge( spot, next );
+					links.add( makeLink( spot, next ) );
 					boolean found = false;
-					for ( final BCellobject predecessor : predecessors )
+					for ( final Spot predecessor : predecessors )
 					{
-						if ( !forbidMiddleLinks && !found && BCellobject.diffTo( predecessor, BCellobject.POSITION_T ) < 2 )
+						if ( !forbidMiddleLinks && !found && spot.diffTo( predecessor, Spot.FRAME ) < 2 )
 						{
 							found = true;
 						}
 						else
 						{
-							graph.removeEdge( predecessor, BCellobject );
-							links.add( makeLink( predecessor, BCellobject ) );
+							graph.removeEdge( predecessor, spot );
+							links.add( makeLink( predecessor, spot ) );
 						}
 					}
 				}
@@ -408,16 +408,16 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 				 * predecessors.
 				 */
 				boolean found = false;
-				for ( final BCellobject predecessor : predecessors )
+				for ( final Spot predecessor : predecessors )
 				{
-					if ( !forbidMiddleLinks && !found && BCellobject.diffTo( predecessor, BCellobject.POSITION_T ) < 2 )
+					if ( !forbidMiddleLinks && !found && spot.diffTo( predecessor, Spot.FRAME ) < 2 )
 					{
 						found = true;
 					}
 					else
 					{
-						graph.removeEdge( predecessor, BCellobject );
-						links.add( makeLink( predecessor, BCellobject ) );
+						graph.removeEdge( predecessor, spot );
+						links.add( makeLink( predecessor, spot ) );
 					}
 				}
 				if ( !forbidMiddleLinks )
@@ -426,16 +426,16 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 					// false, so that we do not destroy on outgoing link.
 					found = false;
 				}
-				for ( final BCellobject successor : successors )
+				for ( final Spot successor : successors )
 				{
-					if ( !forbidMiddleLinks && !found && successor.diffTo( BCellobject, BCellobject.POSITION_T ) < 2 )
+					if ( !forbidMiddleLinks && !found && successor.diffTo( spot, Spot.FRAME ) < 2 )
 					{
 						found = true;
 					}
 					else
 					{
-						graph.removeEdge( BCellobject, successor );
-						links.add( makeLink( BCellobject, successor ) );
+						graph.removeEdge( spot, successor );
+						links.add( makeLink( spot, successor ) );
 					}
 				}
 			}
@@ -451,9 +451,9 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 			final Set< DefaultWeightedEdge > toRemove = new HashSet< >();
 			for ( final DefaultWeightedEdge edge : newEdges )
 			{
-				final BCellobject source = graph.getEdgeSource( edge );
-				final BCellobject target = graph.getEdgeTarget( edge );
-				if ( Math.abs( source.diffTo( target, BCellobject.POSITION_T ) ) > 1 )
+				final Spot source = graph.getEdgeSource( edge );
+				final Spot target = graph.getEdgeTarget( edge );
+				if ( Math.abs( source.diffTo( target, Spot.FRAME ) ) > 1 )
 				{
 					toRemove.add( edge );
 					links.add( makeLink( source, target ) );
@@ -470,13 +470,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 		 * Output
 		 */
 
-		final ConnectivityInspector< BCellobject, DefaultWeightedEdge > connectivity = new ConnectivityInspector< >( graph );
-		final List< Set< BCellobject >> connectedSets = connectivity.connectedSets();
-		final Collection< List< BCellobject >> branches = new HashSet< >( connectedSets.size() );
-		final Comparator< BCellobject > comparator = BCellobject.frameComparator;
-		for ( final Set< BCellobject > set : connectedSets )
+		final ConnectivityInspector< Spot, DefaultWeightedEdge > connectivity = new ConnectivityInspector< >( graph );
+		final List< Set< Spot >> connectedSets = connectivity.connectedSets();
+		final Collection< List< Spot >> branches = new HashSet< >( connectedSets.size() );
+		final Comparator< Spot > comparator = Spot.frameComparator;
+		for ( final Set< Spot > set : connectedSets )
 		{
-			final List< BCellobject > branch = new ArrayList< >( set.size() );
+			final List< Spot > branch = new ArrayList< >( set.size() );
 			branch.addAll( set );
 			Collections.sort( branch, comparator );
 			branches.add( branch );
@@ -501,39 +501,39 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 *         graph are taken as the end of a branch is the source, and the
 	 *         beginning of a branch as the target, following time.
 	 */
-	public static final SimpleDirectedGraph< List< BCellobject >, DefaultEdge > buildBranchGraph( final TrackBranchDecomposition branchDecomposition )
+	public static final SimpleDirectedGraph< List< Spot >, DefaultEdge > buildBranchGraph( final TrackBranchDecomposition branchDecomposition )
 	{
-		final SimpleDirectedGraph< List< BCellobject >, DefaultEdge > branchGraph = new SimpleDirectedGraph< >( DefaultEdge.class );
+		final SimpleDirectedGraph< List< Spot >, DefaultEdge > branchGraph = new SimpleDirectedGraph< >( DefaultEdge.class );
 
-		final Collection< List< BCellobject >> branches = branchDecomposition.branches;
-		final Collection< List< BCellobject >> links = branchDecomposition.links;
+		final Collection< List< Spot >> branches = branchDecomposition.branches;
+		final Collection< List< Spot >> links = branchDecomposition.links;
 
-		// Map of the first BCellobject of each branch.
-		final Map< BCellobject, List< BCellobject > > firstBCellobjects = new HashMap< >( branches.size() );
-		// Map of the last BCellobject of each branch.
-		final Map< BCellobject, List< BCellobject > > lastBCellobjects = new HashMap< >( branches.size() );
-		for ( final List< BCellobject > branch : branches )
+		// Map of the first spot of each branch.
+		final Map< Spot, List< Spot > > firstSpots = new HashMap< >( branches.size() );
+		// Map of the last spot of each branch.
+		final Map< Spot, List< Spot > > lastSpots = new HashMap< >( branches.size() );
+		for ( final List< Spot > branch : branches )
 		{
-			firstBCellobjects.put( branch.get( 0 ), branch );
-			lastBCellobjects.put( branch.get( branch.size() - 1 ), branch );
+			firstSpots.put( branch.get( 0 ), branch );
+			lastSpots.put( branch.get( branch.size() - 1 ), branch );
 			branchGraph.addVertex( branch );
 		}
 
-		for ( final List< BCellobject > link : links )
+		for ( final List< Spot > link : links )
 		{
-			final BCellobject source = link.get( 0 );
-			final BCellobject target = link.get( 1 );
+			final Spot source = link.get( 0 );
+			final Spot target = link.get( 1 );
 
-			List< BCellobject > targetBranch = firstBCellobjects.get( target );
+			List< Spot > targetBranch = firstSpots.get( target );
 			if ( targetBranch == null )
 			{
 				/*
 				 * We could not find this link's target in the map of first
-				 * BCellobjects. Most likely this means that the link targets a middle
-				 * BCellobject, because the branch decomposition authorized it. So we
+				 * spots. Most likely this means that the link targets a middle
+				 * spot, because the branch decomposition authorized it. So we
 				 * have to find it...
 				 */
-				for ( final List< BCellobject > branch : branches )
+				for ( final List< Spot > branch : branches )
 				{
 					if ( branch.contains( target ) )
 					{
@@ -543,10 +543,10 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 				}
 			}
 
-			List< BCellobject > sourceBranch = lastBCellobjects.get( source );
+			List< Spot > sourceBranch = lastSpots.get( source );
 			if ( sourceBranch == null )
 			{
-				for ( final List< BCellobject > branch : branches )
+				for ( final List< Spot > branch : branches )
 				{
 					if ( branch.contains( source ) )
 					{
@@ -562,11 +562,11 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 		return branchGraph;
 	}
 
-	private static final List< BCellobject > makeLink( final BCellobject BCellobjectA, final BCellobject BCellobjectB )
+	private static final List< Spot > makeLink( final Spot spotA, final Spot spotB )
 	{
-		final List< BCellobject > link = new ArrayList< >( 2 );
-		link.add( BCellobjectA );
-		link.add( BCellobjectB );
+		final List< Spot > link = new ArrayList< >( 2 );
+		link.add( spotA );
+		link.add( spotB );
 		return link;
 	}
 
@@ -579,13 +579,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	/**
 	 * Returns the collection of branches built by this algorithm.
 	 * <p>
-	 * Branches are returned as list of BCellobject. It is ensured that the BCellobjects are
+	 * Branches are returned as list of spot. It is ensured that the spots are
 	 * ordered in the list by increasing frame number, and that two consecutive
-	 * BCellobject are separated by exactly one frame.
+	 * spot are separated by exactly one frame.
 	 *
 	 * @return the collection of branches.
 	 */
-	public Collection< List< BCellobject >> getBranches()
+	public Collection< List< Spot >> getBranches()
 	{
 		return branches;
 	}
@@ -594,13 +594,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 * Returns the mapping of each source track ID to the branches it was split
 	 * in.
 	 * <p>
-	 * Branches are returned as list of BCellobject. It is ensured that the BCellobjects are
+	 * Branches are returned as list of spot. It is ensured that the spots are
 	 * ordered in the list by increasing frame number, and that two consecutive
-	 * BCellobject are separated by exactly one frame.
+	 * spot are separated by exactly one frame.
 	 *
 	 * @return a mapping of collections of branches.
 	 */
-	public Map< Integer, Collection< List< BCellobject >>> getBranchesPerTrack()
+	public Map< Integer, Collection< List< Spot >>> getBranchesPerTrack()
 	{
 		return branchesPerTrack;
 	}
@@ -612,13 +612,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 * These links are returned as a collection of 2-elements list. If the
 	 * instance was created with <code>forbidMiddleLinks</code> sets to
 	 * <code>true</code>, it is ensured that the first element of all links is
-	 * the last BCellobject of a branch, and the second element of this link is the
-	 * first BCellobject of another branch. Otherwise, a link can target a BCellobject within
+	 * the last spot of a branch, and the second element of this link is the
+	 * first spot of another branch. Otherwise, a link can target a spot within
 	 * a branch.
 	 *
 	 * @return a collection of links as a 2-elements list.
 	 */
-	public Collection< List< BCellobject >> getLinks()
+	public Collection< List< Spot >> getLinks()
 	{
 		return links;
 	}
@@ -630,13 +630,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	 * These links are returned as a collection of 2-elements list. If the
 	 * instance was created with <code>forbidMiddleLinks</code> sets to
 	 * <code>true</code>, it is ensured that the first element of all links is
-	 * the last BCellobject of a branch, and the second element of this link is the
-	 * first BCellobject of another branch. Otherwise, a link can target a BCellobject within
+	 * the last spot of a branch, and the second element of this link is the
+	 * first spot of another branch. Otherwise, a link can target a spot within
 	 * a branch.
 	 *
 	 * @return the mapping of track IDs to the links.
 	 */
-	public Map< Integer, Collection< List< BCellobject >>> getLinksPerTrack()
+	public Map< Integer, Collection< List< Spot >>> getLinksPerTrack()
 	{
 		return linksPerTrack;
 	}
@@ -652,16 +652,16 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 	public static final class TrackBranchDecomposition
 	{
 		/**
-		 * Branches are returned as list of BCellobject. It is ensured that the BCellobjects
+		 * Branches are returned as list of spot. It is ensured that the spots
 		 * are ordered in the list by increasing frame number, and that two
-		 * consecutive BCellobject are separated by exactly one frame.
+		 * consecutive spot are separated by exactly one frame.
 		 */
-		public Collection< List< BCellobject >> branches;
+		public Collection< List< Spot >> branches;
 
 		/**
 		 * Links, as a collection of 2-elements list.
 		 */
-		public Collection< List< BCellobject >> links;
+		public Collection< List< Spot >> links;
 
 		@Override
 		public String toString()
@@ -670,13 +670,13 @@ public class ConvexBranchesDecomposition implements Algorithm, Benchmark
 			str.append( super.toString() + ";\n" );
 			str.append( "  Branches:\n" );
 			int index = 0;
-			for ( final List< BCellobject > branch : branches )
+			for ( final List< Spot > branch : branches )
 			{
 				str.append( String.format( "    % 4d:\t" + branch + '\n', index++ ) );
 			}
 			str.append( "  Links:\n" );
 			index = 0;
-			for ( final List< BCellobject > link : links )
+			for ( final List< Spot > link : links )
 			{
 				str.append( String.format( "    % 4d:\t" + link.get( 0 ) + "\t→\t" + link.get( 1 ) + '\n', index++ ) );
 			}

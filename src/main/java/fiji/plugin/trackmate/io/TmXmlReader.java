@@ -1,5 +1,6 @@
 package fiji.plugin.trackmate.io;
 
+import static fiji.plugin.trackmate.detection.DetectorKeys.XML_ATTRIBUTE_DETECTOR_NAME;
 import static fiji.plugin.trackmate.io.IOUtils.readBooleanAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.readIntAttribute;
@@ -106,6 +107,8 @@ import fiji.plugin.trackmate.Settings;
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.trackmate.detection.SpotDetectorFactory;
+import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
 import fiji.plugin.trackmate.features.FeatureFilter;
 import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
@@ -116,6 +119,7 @@ import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
 import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
 import fiji.plugin.trackmate.gui.displaysettings.DisplaySettingsIO;
 import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.trackmate.providers.DetectorProvider;
 import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
 import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
 import fiji.plugin.trackmate.providers.SpotMorphologyAnalyzerProvider;
@@ -400,6 +404,7 @@ public class TmXmlReader
 	public Settings readSettings( final ImagePlus imp )
 	{
 		return readSettings( imp,
+				new DetectorProvider(),
 				new TrackerProvider(),
 				new SpotAnalyzerProvider( ( imp == null ) ? 1 : imp.getNChannels() ),
 				new EdgeAnalyzerProvider(),
@@ -436,6 +441,7 @@ public class TmXmlReader
 	 */
 	public Settings readSettings(
 			final ImagePlus imp,
+			final DetectorProvider detectorProvider,
 			final TrackerProvider trackerProvider,
 			final SpotAnalyzerProvider spotAnalyzerProvider,
 			final EdgeAnalyzerProvider edgeAnalyzerProvider,
@@ -461,7 +467,9 @@ public class TmXmlReader
 		// Base
 		getBaseSettings( settingsElement, settings );
 
-		
+		// Detector
+		if ( null != detectorProvider )
+			getDetectorSettings( settingsElement, settings, detectorProvider );
 
 		// Tracker
 		if ( null != trackerProvider )
@@ -746,7 +754,8 @@ public class TmXmlReader
 	 */
 	protected void getDetectorSettings(
 			final Element settingsElement,
-			final Settings settings)
+			final Settings settings,
+			final DetectorProvider provider )
 	{
 		final Element element = settingsElement.getChild( DETECTOR_SETTINGS_ELEMENT_KEY );
 
@@ -757,7 +766,30 @@ public class TmXmlReader
 			return;
 		}
 
-		
+		// Get the detector key
+		final String detectorKey = element.getAttributeValue( XML_ATTRIBUTE_DETECTOR_NAME );
+		if ( null == detectorKey )
+		{
+			logger.error( "Could not find the detector key element in file.\n" );
+			this.ok = false;
+			return;
+		}
+
+		final SpotDetectorFactoryBase< ? > factory = provider.getFactory( detectorKey );
+		if ( null == factory )
+		{
+			logger.error( "The detector identified by the key " + detectorKey + " is unknown to TrackMate.\n" );
+			this.ok = false;
+			return;
+		}
+		settings.detectorFactory = factory;
+
+		final Map< String, Object > ds = new HashMap<>();
+		ok = factory.unmarshall( element, ds );
+
+		settings.detectorSettings = ds;
+		if ( !ok )
+			logger.error( factory.getErrorMessage() );
 	}
 
 	/**

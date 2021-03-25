@@ -1,4 +1,4 @@
-package Buddy.plugin.trackmate.graph;
+package fiji.plugin.trackmate.graph;
 
 /**
  * Interface for function that compute values from a two inputs and store it in 

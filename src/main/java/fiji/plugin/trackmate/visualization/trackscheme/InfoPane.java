@@ -1,7 +1,7 @@
-package Buddy.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.trackmate.visualization.trackscheme;
 
-import static Buddy.plugin.trackmate.gui.Fonts.FONT;
-import static Buddy.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -39,16 +39,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import Buddy.plugin.trackmate.FeatureModel;
-import Buddy.plugin.trackmate.Model;
-import Buddy.plugin.trackmate.SelectionChangeEvent;
-import Buddy.plugin.trackmate.SelectionChangeListener;
-import Buddy.plugin.trackmate.SelectionModel;
-import Buddy.plugin.trackmate.features.SpotFeatureGrapher;
-import Buddy.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import Buddy.plugin.trackmate.util.OnRequestUpdater;
-import Buddy.plugin.trackmate.util.OnRequestUpdater.Refreshable;
-import Buddy.plugin.trackmate.util.TMUtils;
+import fiji.plugin.trackmate.FeatureModel;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.SelectionChangeEvent;
+import fiji.plugin.trackmate.SelectionChangeListener;
+import fiji.plugin.trackmate.SelectionModel;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.features.SpotFeatureGrapher;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.util.OnRequestUpdater;
+import fiji.plugin.trackmate.util.OnRequestUpdater.Refreshable;
+import fiji.plugin.trackmate.util.TMUtils;
 import ij.measure.ResultsTable;
 
 public class InfoPane extends JPanel implements SelectionChangeListener
