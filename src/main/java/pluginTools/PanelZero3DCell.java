@@ -19,7 +19,7 @@ public class PanelZero3DCell {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-			.openImage("/home/kapoorlab/TrackingExamples/Tracking_SegmentationProjection-3.tif");
+			.openImage("/Users/aimachine/StarDiskMask/Tracking-1.tif");
 		impA.show();
 		
 		

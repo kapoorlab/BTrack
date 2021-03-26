@@ -56,11 +56,13 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 	@Override
 	public void aboutToDisplayPanel()
 	{
-		final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION + " started on:\n" + TMUtils.getCurrentTimeString() + '\n';
+		final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION + '\n';
 		// Log GUI processing start
 		logger.log( welcomeMessage, Logger.BLUE_COLOR );
-		logger.log( "Please note that TrackMate is available through Fiji, and is based on a publication. "
-				+ "If you use it successfully for your research please be so kind to cite our work:\n" );
+		logger.log( "BTrackmate is a slim version of Trackmate "
+				+ "If you input label images/csv file we skip detection process of Trackmate.\n" );
+		logger.log( "Made for Claudia Carabana Garcia "
+				+ "by Varun Kapoo, TrackMate is based on:\n" );
 		logger.log( "Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), 'TrackMate: An open and extensible platform for single-particle tracking.', "
 				+ "Methods 115: 80-90, PMID 27713081.\n", Logger.GREEN_COLOR );
 		logger.log( "https://www.ncbi.nlm.nih.gov/pubmed/27713081\n", Logger.BLUE_COLOR );
@@ -116,11 +118,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
 			gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 1.0, 1.0 };
 			setLayout( gridBagLayout );
-
 			final JLabel lblCitation = new JLabel( "<html>"
-					+ "Please note that TrackMate is available through Fiji, "
-					+ "and is based on a publication. If you use it successfully "
-					+ "for your research please be so kind to cite our work:"
+					+ "BTrackmate is a slim version of Trackmate "
+					+ "If you input label images/csv file we skip detection process of Trackmate.\n" 
+					+ "<p>"
+			        + "Made for Claudia Carabana Garcia "
+					+ "by Varun Kapoor."
+					+ "<p>"
+					+ " TrackMate is based on:\n" 
 					+ "<p>"
 					+ "<b>Tinevez, JY.; Perry, N. & Schindelin, J. et al. (2017), "
 					+ "<i>TrackMate: An open and extensible platform for single-particle "

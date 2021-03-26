@@ -124,7 +124,7 @@ public class GuiUtils
 					"Z/T swapped?", JOptionPane.YES_NO_CANCEL_OPTION ) )
 			{
 			case JOptionPane.YES_OPTION:
-				imp.setDimensions( dims[ 2 ], dims[ 4 ], dims[ 3 ] );
+				imp.setDimensions( dims[ 4 ], dims[ 2 ], dims[ 3 ] );
 				final Calibration calibration = imp.getCalibration();
 				if ( 0. == calibration.frameInterval )
 				{

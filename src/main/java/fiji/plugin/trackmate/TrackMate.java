@@ -52,10 +52,11 @@ import net.imglib2.algorithm.MultiThreaded;
 public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Cancelable
 {
 
-	public static final String PLUGIN_NAME_STR = "TrackMate";
+	public static final String PLUGIN_NAME_STR = "BTrackMate";
 
 	public static final String PLUGIN_NAME_VERSION = VersionUtils.getVersion( TrackMate.class );
 
+	
 	/**
 	 * The model this trackmate will shape.
 	 */

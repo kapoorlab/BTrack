@@ -18,52 +18,44 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.InteractiveBud;
 
-public class TrackMatePlugIn implements PlugIn
-{
+public class TrackMatePlugIn implements PlugIn {
 
-	
 	protected InteractiveBud parent;
-
 
 	public TrackMatePlugIn(final InteractiveBud parent) {
 
 		this.parent = parent;
 	}
-	
-	
+
 	@Override
-	public void run( final String imagePath )
-	{
+	public void run(final String imagePath) {
 		GuiUtils.setSystemLookAndFeel();
-		final ImagePlus imp = ImageJFunctions.wrapFloat(parent.originalimg, " ");
 
-		imp.setOpenAsHyperStack( true );
-		imp.setDisplayMode( IJ.COMPOSITE );
-		if ( !imp.isVisible() )
-			imp.show();
-
-		GuiUtils.userCheckImpDimensions( imp );
-
+		ImagePlus imp = null;
+		imp = Reshape3D(parent.originalimg, "");
 		// Main objects.
-		final Settings settings = createSettings( imp );
-		final Model model = createModel( imp );
-		final TrackMate trackmate = createTrackMate( model, settings );
-		final SelectionModel selectionModel = new SelectionModel( model );
+		final Settings settings = createSettings(imp);
+		final Model model = createModel();
+		model.setSpots(parent.budcells, true);
+		final TrackMate trackmate = createTrackMate(model, settings);
+		final SelectionModel selectionModel = new SelectionModel(model);
 		final DisplaySettings displaySettings = createDisplaySettings();
 
 		// Main view.
-		final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, imp, displaySettings );
+		final TrackMateModelView displayer = new HyperStackDisplayer(model, selectionModel, imp, displaySettings);
 		displayer.render();
 
 		// Wizard.
-		final WizardSequence sequence = createSequence( trackmate, selectionModel, displaySettings );
-		final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
-		frame.setIconImage( TRACKMATE_ICON.getImage() );
-		GuiUtils.positionWindow( frame, imp.getWindow() );
-		frame.setVisible( true );
+		final WizardSequence sequence = createSequence(trackmate, selectionModel, displaySettings);
+		final JFrame frame = sequence.run("BTrackMate" + imp.getShortTitle());
+		frame.setIconImage(TRACKMATE_ICON.getImage());
+		GuiUtils.positionWindow(frame, imp.getWindow());
+		frame.setVisible(true);
 	}
 
 	/**
@@ -76,9 +68,34 @@ public class TrackMatePlugIn implements PlugIn
 	 * @param displaySettings
 	 * @return
 	 */
-	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
-	{
-		return new TrackMateWizardSequence( trackmate, selectionModel, displaySettings );
+	protected WizardSequence createSequence(final TrackMate trackmate, final SelectionModel selectionModel,
+			final DisplaySettings displaySettings) {
+		return new TrackMateWizardSequence(trackmate, selectionModel, displaySettings);
+	}
+
+	public static ImagePlus Reshape3D(RandomAccessibleInterval<FloatType> image, String title) {
+
+		int channels, frames;
+
+		ImagePlus imp = ImageJFunctions.wrapFloat(image, title);
+		if (imp.getNChannels() > imp.getNFrames()) {
+			channels = imp.getNFrames();
+			frames = imp.getNChannels();
+
+		}
+
+		else {
+
+			channels = imp.getNChannels();
+			frames = imp.getNFrames();
+
+		}
+
+		imp.setDimensions(channels, frames, imp.getNSlices());
+		imp.show();
+
+		return imp;
+
 	}
 
 	/**
@@ -90,29 +107,22 @@ public class TrackMatePlugIn implements PlugIn
 	 *
 	 * @return a new {@link Model} instance.
 	 */
-	protected Model createModel( final ImagePlus imp )
-	{
-		final Model model = new Model();
-		model.setPhysicalUnits(
-				imp.getCalibration().getUnit(),
-				imp.getCalibration().getTimeUnit() );
-		return model;
+	protected Model createModel() {
+		return new Model();
 	}
 
 	/**
 	 * Hook for subclassers: <br>
 	 * Creates the {@link Settings} instance that will be used to tune the
-	 * {@link TrackMate} instance. It is initialized by default with values
-	 * taken from the current {@link ImagePlus}.
+	 * {@link TrackMate} instance. It is initialized by default with values taken
+	 * from the current {@link ImagePlus}.
 	 *
-	 * @param imp
-	 *            the {@link ImagePlus} to operate on.
+	 * @param imp the {@link ImagePlus} to operate on.
 	 * @return a new {@link Settings} instance.
 	 */
-	protected Settings createSettings( final ImagePlus imp )
-	{
+	protected Settings createSettings(final ImagePlus imp) {
 		final Settings ls = new Settings();
-		ls.setFrom( imp );
+		ls.setFrom(imp);
 		ls.addAllAnalyzers();
 		return ls;
 	}
@@ -123,28 +133,26 @@ public class TrackMatePlugIn implements PlugIn
 	 *
 	 * @return a new {@link TrackMate} instance.
 	 */
-	protected TrackMate createTrackMate( final Model model, final Settings settings )
-	{
+	protected TrackMate createTrackMate(final Model model, final Settings settings) {
 		/*
 		 * Since we are now sure that we will be working on this model with this
 		 * settings, we need to pass to the model the units from the settings.
 		 */
 		final String spaceUnits = settings.imp.getCalibration().getXUnit();
 		final String timeUnits = settings.imp.getCalibration().getTimeUnit();
-		model.setPhysicalUnits( spaceUnits, timeUnits );
+		model.setPhysicalUnits(spaceUnits, timeUnits);
 
-		return new TrackMate( model, settings );
+		return new TrackMate(model, settings);
 	}
 
-	protected DisplaySettings createDisplaySettings()
-	{
-		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );
+	protected DisplaySettings createDisplaySettings() {
+		return DisplaySettingsIO.readUserDefault().copy("CurrentDisplaySettings");
 	}
 
-	public static void main( final String[] args ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
-	{
-		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-		ImageJ.main( args );
+	public static void main(final String[] args) throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException, UnsupportedLookAndFeelException {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		ImageJ.main(args);
 
 	}
 }

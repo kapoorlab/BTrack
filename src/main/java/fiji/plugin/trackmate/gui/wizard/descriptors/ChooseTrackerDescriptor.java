@@ -8,6 +8,7 @@ import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
 import fiji.plugin.trackmate.providers.TrackerProvider;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 
 public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 {
@@ -24,7 +25,7 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 		this.trackmate = trackmate;
 		this.trackerProvider = trackerProvider;
 
-		String selectedTracker = SimpleSparseLAPTrackerFactory.THIS2_TRACKER_KEY; // default
+		String selectedTracker = SparseLAPTrackerFactory.THIS_TRACKER_KEY; // default
 		if ( null != trackmate.getSettings().trackerFactory )
 			selectedTracker = trackmate.getSettings().trackerFactory.getKey();
 

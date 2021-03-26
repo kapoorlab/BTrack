@@ -286,7 +286,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 				 */
 
 				final Settings settings = createSettings( imp );
-				final Model model = createModel( imp );
+				final Model model = createModel(  );
 				final SelectionModel selectionModel = new SelectionModel( model );
 				model.setLogger( logger );
 				final TrackMate trackmate = createTrackMate( model, settings );
