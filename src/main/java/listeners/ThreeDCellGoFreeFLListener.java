@@ -6,16 +6,15 @@ import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fileListeners.ChooseGreenSegMap;
-import pluginTools.ThreeDTimeCellFileChooser;
-
+import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 
 public class ThreeDCellGoFreeFLListener implements ItemListener {
 
-	public final ThreeDTimeCellFileChooser parent;
+	public final BTMStartDialogDescriptor parent;
 	
 	
 	
-	public ThreeDCellGoFreeFLListener( final ThreeDTimeCellFileChooser parent) {
+	public ThreeDCellGoFreeFLListener( final BTMStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}

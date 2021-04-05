@@ -1,4 +1,4 @@
-package fiji.plugin.btrackmate.tracking.kalman;
+package fiji.plugin.bbtrackmate.tracking.kalman;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,14 +13,14 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.scijava.Cancelable;
 
-import fiji.plugin.btrackmate.Logger;
-import fiji.plugin.btrackmate.Spot;
-import fiji.plugin.btrackmate.SpotCollection;
-import fiji.plugin.btrackmate.tracking.SpotTracker;
-import fiji.plugin.btrackmate.tracking.sparselap.costfunction.CostFunction;
-import fiji.plugin.btrackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
-import fiji.plugin.btrackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
-import fiji.plugin.btrackmate.tracking.sparselap.linker.JaqamanLinker;
+import fiji.plugin.bbtrackmate.Logger;
+import fiji.plugin.bbtrackmate.Spot;
+import fiji.plugin.bbtrackmate.SpotCollection;
+import fiji.plugin.bbtrackmate.tracking.SpotTracker;
+import fiji.plugin.bbtrackmate.tracking.sparselap.costfunction.CostFunction;
+import fiji.plugin.bbtrackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
+import fiji.plugin.bbtrackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
+import fiji.plugin.bbtrackmate.tracking.sparselap.linker.JaqamanLinker;
 import net.imglib2.RealPoint;
 import net.imglib2.algorithm.Benchmark;
 

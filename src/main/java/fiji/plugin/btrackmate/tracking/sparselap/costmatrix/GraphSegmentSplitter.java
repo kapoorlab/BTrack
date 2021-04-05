@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.tracking.sparselap.costmatrix;
+package fiji.plugin.btrackmate.tracking.sparselap.costmatrix;
 
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 
 import java.util.ArrayList;
 import java.util.Collections;

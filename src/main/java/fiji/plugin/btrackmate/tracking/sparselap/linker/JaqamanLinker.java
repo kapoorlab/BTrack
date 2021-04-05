@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.tracking.sparselap.linker;
+package fiji.plugin.btrackmate.tracking.sparselap.linker;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,8 +10,8 @@ import java.util.Map;
 import net.imglib2.algorithm.BenchmarkAlgorithm;
 import net.imglib2.algorithm.OutputAlgorithm;
 import net.imglib2.util.Util;
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.CostMatrixCreator;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.tracking.sparselap.costmatrix.CostMatrixCreator;
 
 /**
  * Links two lists of objects based on the LAP framework described in Jaqaman

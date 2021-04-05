@@ -2,7 +2,7 @@ package tracker.trackanalyzer;
 
 import java.util.Collection;
 
-import fiji.plugin.trackmate.features.FeatureAnalyzer;
+import fiji.plugin.btrackmate.features.FeatureAnalyzer;
 import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
 import tracker.BUDDYModel;

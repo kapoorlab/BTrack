@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.tracking.sparselap.costfunction;
+package fiji.plugin.btrackmate.tracking.sparselap.costfunction;
 
 /**
  * Interface representing a function that can calculate the cost to link a

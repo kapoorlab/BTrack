@@ -1,13 +1,13 @@
-package fiji.plugin.btrackmate.tracking.kalman;
+package fiji.plugin.bbtrackmate.tracking.kalman;
 
-import static fiji.plugin.btrackmate.io.IOUtils.readDoubleAttribute;
-import static fiji.plugin.btrackmate.io.IOUtils.readIntegerAttribute;
-import static fiji.plugin.btrackmate.io.IOUtils.writeAttribute;
-import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_GAP_CLOSING_MAX_FRAME_GAP;
-import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
-import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
-import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.bbtrackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.bbtrackmate.io.IOUtils.readIntegerAttribute;
+import static fiji.plugin.bbtrackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.bbtrackmate.tracking.TrackerKeys.DEFAULT_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.bbtrackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
+import static fiji.plugin.bbtrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.bbtrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.bbtrackmate.util.TMUtils.checkParameter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +17,12 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.btrackmate.Model;
-import fiji.plugin.btrackmate.SpotCollection;
-import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.btrackmate.gui.components.tracker.KalmanTrackerConfigPanel;
-import fiji.plugin.btrackmate.tracking.SpotTracker;
-import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.bbtrackmate.Model;
+import fiji.plugin.bbtrackmate.SpotCollection;
+import fiji.plugin.bbtrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.bbtrackmate.gui.components.tracker.KalmanTrackerConfigPanel;
+import fiji.plugin.bbtrackmate.tracking.SpotTracker;
+import fiji.plugin.bbtrackmate.tracking.SpotTrackerFactory;
 
 @Plugin( type = SpotTrackerFactory.class )
 public class KalmanTrackerFactory implements SpotTrackerFactory

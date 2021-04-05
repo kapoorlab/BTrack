@@ -1,21 +1,30 @@
-package pluginTools;
+package fiji.plugin.btrack.gui.descriptors;
+
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.TEXTFIELD_DIMENSION;
 
 import java.awt.CardLayout;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
+import java.awt.Rectangle;
 import java.awt.TextComponent;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.BufferedReader;
@@ -23,6 +32,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +44,12 @@ import ij.process.ImageConverter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -49,6 +65,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.OvalRoi;
+import ij.gui.Roi;
+import ij.measure.Calibration;
 import listeners.BTrackGoBudListener;
 import listeners.BTrackGoFreeFlListener;
 import listeners.BTrackGoGreenFLListener;
@@ -59,14 +77,22 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
+import pluginTools.InteractiveBud;
 import fileListeners.SimplifiedIO;
+import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.GuiUtils;
 
 
-public class BTStartDialogDescriptor extends JPanel {
+public class BTStartDialogDescriptor  extends JPanel
 
-	/**
-	 * 
-	 */
+{
+	
+	
+
+	
 	private static final long serialVersionUID = 1L;
 	public JFrame Cardframe = new JFrame("Bud n Cell tracker");
 	public JPanel panelCont = new JPanel();
@@ -137,6 +163,11 @@ public class BTStartDialogDescriptor extends JPanel {
 	public Checkbox YellowMode = new Checkbox("Flourescent Channel 1", DoYellow, cellmode);
 
 
+	
+	
+	
+	
+	
 	public BTStartDialogDescriptor() {
 
 		   inputLabelcalX = new Label("Pixel calibration in X(um)");
@@ -247,6 +278,7 @@ public class BTStartDialogDescriptor extends JPanel {
 		ChoosesuperImage.setEnabled(true);
 
 		Cardframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		Cardframe.setPreferredSize( new Dimension( 291, 491 ) );
 		Cardframe.pack();
 		Cardframe.setVisible(true);
 	}

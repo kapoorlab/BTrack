@@ -19,13 +19,12 @@ public class LoadBTrackMatePlugIn {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-			.openImage("/Users/aimachine/StarDiskMask/Tracking-1.tif");
+			.openImage("/home/sancere/Downloads/TOMCellSegmentation.tif");
 		impA.show();
 		
 		
 		BTMStartDialogDescriptor panel = new BTMStartDialogDescriptor();
 
-		frame.getContentPane().add(panel, "Center");
 		frame.setSize(panel.getPreferredSize());
 		
 		

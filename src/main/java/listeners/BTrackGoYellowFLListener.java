@@ -5,9 +5,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.LoadDualImage;
+import fiji.plugin.btrack.gui.descriptors.BTStartDialogDescriptor;
 import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
-import pluginTools.BTStartDialogDescriptor;
 
 
 public class BTrackGoYellowFLListener implements ItemListener {

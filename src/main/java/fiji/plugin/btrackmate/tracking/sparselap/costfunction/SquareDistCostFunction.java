@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.tracking.sparselap.costfunction;
+package fiji.plugin.btrackmate.tracking.sparselap.costfunction;
 
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 
 /**
  * A cost function that returns cost equal to the square distance. Suited to

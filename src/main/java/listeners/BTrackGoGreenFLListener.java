@@ -5,10 +5,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.CovistoThreeChForceFileLoader;
+import fiji.plugin.btrack.gui.descriptors.BTStartDialogDescriptor;
 import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
 import fileListeners.ChooseBudSegCMap;
-import pluginTools.BTStartDialogDescriptor;
 
 
 public class BTrackGoGreenFLListener implements ItemListener {

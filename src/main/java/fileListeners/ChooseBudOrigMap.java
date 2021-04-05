@@ -8,9 +8,9 @@ import java.util.Locale;
 
 import javax.swing.JComboBox;
 
+import fiji.plugin.btrack.gui.descriptors.BTStartDialogDescriptor;
 import ij.IJ;
 import ij.WindowManager;
-import pluginTools.BTStartDialogDescriptor;
 
 public class ChooseBudOrigMap implements ActionListener {
 	

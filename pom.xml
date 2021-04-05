@@ -103,7 +103,7 @@
 		</repository>
 	</repositories>
    
-	<dependencies>
+<dependencies>
 		<!-- Fiji dependencies -->
 		<dependency>
 			<groupId>net.imagej</groupId>
@@ -142,47 +142,15 @@
 			<artifactId>imglib2-roi</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-ui</artifactId>
+			<groupId>sc.fiji</groupId>
+			<artifactId>bigdataviewer-core</artifactId>
 		</dependency>
-<dependency>
-        <groupId>sc.fiji</groupId>
-        <artifactId>bigdataviewer-vistools</artifactId>
-    </dependency>
+
 		<!-- SciJava dependencies -->
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-common</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.scif/pom-scifio -->
-<!-- https://mvnrepository.com/artifact/io.scif/scifio -->
-<dependency>
-    <groupId>io.scif</groupId>
-    <artifactId>scifio</artifactId>
-</dependency>
-<!-- https://mvnrepository.com/artifact/net.imagej/imagej-ops -->
-<dependency>
-    <groupId>net.imagej</groupId>
-    <artifactId>imagej-ops</artifactId>
-</dependency>
-<!-- https://mvnrepository.com/artifact/net.imagej/ij -->
-<!-- https://mvnrepository.com/artifact/net.imagej/imagej -->
-<dependency>
-    <groupId>net.imagej</groupId>
-    <artifactId>imagej</artifactId>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/net.imglib2/imglib2 -->
-<dependency>
-    <groupId>net.imglib2</groupId>
-    <artifactId>imglib2</artifactId>
-</dependency>
-<!-- https://mvnrepository.com/artifact/io.scif/scifio -->
-<dependency>
-    <groupId>io.scif</groupId>
-    <artifactId>scifio</artifactId>
-</dependency>
-
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-listeners</artifactId>
@@ -239,6 +207,11 @@
 			<artifactId>javaGeom</artifactId>
 			<version>0.11.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.imagej/imagej-ops -->
+<dependency>
+    <groupId>net.imagej</groupId>
+    <artifactId>imagej-ops</artifactId>
+</dependency>
 		
 		<!-- Test dependencies -->
 		<dependency>
