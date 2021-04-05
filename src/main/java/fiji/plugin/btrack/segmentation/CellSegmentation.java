@@ -1,20 +1,21 @@
-package pluginTools;
+package fiji.plugin.btrack.segmentation;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-import Buddy.plugin.trackmate.TrackMatePlugIn_;
-import utility.SaveGreen;
+import fiji.plugin.btrackmate.TrackMatePlugIn;
+import pluginTools.GreenCellTrack;
+import pluginTools.InteractiveBud;
 
 
-public class CollectGreenCells extends SwingWorker<Void, Void> {
+public class CellSegmentation extends SwingWorker<Void, Void> {
 	
 	
 	final InteractiveBud parent;
 	final JProgressBar jpb;
 	
 	
-	public CollectGreenCells(final InteractiveBud parent, final JProgressBar jpb) {
+	public CellSegmentation(final InteractiveBud parent, final JProgressBar jpb) {
 		
 		
 		this.parent = parent;
@@ -26,29 +27,31 @@ public class CollectGreenCells extends SwingWorker<Void, Void> {
 	public Void doInBackground() throws Exception {
 		
 		
-		
 		GreenCellTrack newtrack = new GreenCellTrack(parent, jpb);
 		newtrack.ShowCellTime();
-		
-		
 		
 		return null;
 		
 	}
+	
+	
 	@Override
 	protected void done() {
 		
 		parent.jpb.setIndeterminate(false);
 		if(parent.jpb!=null )
 			utility.BudProgressBar.SetProgressBar(parent.jpb, 100 ,
-					"Collected all cells, starting TrackMate");
+					"Cell Collection complete, starting TrackMate");
 		
 		// Save the cell colllection as btrack compatiable csv file
-		SaveGreen savecsv = new SaveGreen(parent);
+		SaveCellSegmentation savecsv = new SaveCellSegmentation(parent);
 		savecsv.Saver();
+		
+		
 		parent.imp.close();
-		TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
-		plugin.run("threeD");
+		//Initiate the TM plugin
+		TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
+		plugin.run(null);
 		
 	}
 	

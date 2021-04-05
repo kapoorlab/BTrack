@@ -1,4 +1,4 @@
-package utility;
+package fiji.plugin.btrack.segmentation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,13 +11,13 @@ import budDetector.Cellobject;
 import budDetector.Roiobject;
 import pluginTools.InteractiveBud;
 
-public class SaveGreen {
+public class SaveCellSegmentation {
 
 	
 	public InteractiveBud parent;
 	
 	
-	public SaveGreen(InteractiveBud parent) {
+	public SaveCellSegmentation(InteractiveBud parent) {
 		
 		this.parent = parent;
 		
@@ -29,14 +29,14 @@ public class SaveGreen {
 		
 		
 		try {
-		    File budfile = new File(parent.defaultDirectory + "//" + parent.NameA.replaceFirst("[.][^.]+$", "") + "Restart3DcellTrack"+ ".csv");
+		    File budfile = new File(parent.defaultDirectory + "//" + parent.NameA.replaceFirst("[.][^.]+$", "") + "btrackmateRestart"+ ".csv");
 				
 				if(budfile.exists())
 				budfile.delete();
 				FileWriter fwbud = new FileWriter(budfile);
 				BufferedWriter bwbud = new BufferedWriter(fwbud);
 				bwbud.write(
-						"T, X , Y, Z, Label, Perimeter, Volume, Intensity, ExtentX, ExtentY, ExtentZ  \n");
+						"T,X,Y,Z,Label,Perimeter,Volume,Intensity,ExtentX,ExtentY,ExtentZ  \n");
                for (Map.Entry<Integer, ArrayList<Cellobject>> timeroi: parent.CSVGreen.entrySet()) {
             	   
 						Integer time =   timeroi.getKey();
@@ -65,12 +65,11 @@ public class SaveGreen {
 								+ parent.nf.format(sizeX) +  "," 
 								+ parent.nf.format(sizeY) + ","
 								+ parent.nf.format(sizeZ) + "," +
-								
 								"\n");
 						}
 						}
 		  
-		  bwbud.close();
+		    bwbud.close();
 			fwbud.close();
 			
 		}
