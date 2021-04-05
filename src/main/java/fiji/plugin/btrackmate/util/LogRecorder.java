@@ -1,8 +1,8 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
 import java.awt.Color;
 
-import fiji.plugin.trackmate.Logger;
+import fiji.plugin.btrackmate.Logger;
 
 public class LogRecorder extends Logger
 {

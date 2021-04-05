@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,25 +15,25 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 
-import fiji.plugin.trackmate.action.ExportTracksToXML;
-import fiji.plugin.trackmate.detection.DetectorKeys;
-import fiji.plugin.trackmate.detection.LabeImageDetectorFactory;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.features.track.TrackBranchingAnalyzer;
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.WizardSequence;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.LogPanelDescriptor2;
-import fiji.plugin.trackmate.io.TmXmlWriter;
-import fiji.plugin.trackmate.tracking.TrackerKeys;
-import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
-import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
-import fiji.plugin.trackmate.util.LogRecorder;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
-import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
+import fiji.plugin.btrackmate.action.ExportTracksToXML;
+import fiji.plugin.btrackmate.detection.DetectorKeys;
+import fiji.plugin.btrackmate.detection.LabeImageDetectorFactory;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.features.track.TrackBranchingAnalyzer;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.LogPanelDescriptor2;
+import fiji.plugin.btrackmate.io.TmXmlWriter;
+import fiji.plugin.btrackmate.tracking.TrackerKeys;
+import fiji.plugin.btrackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
+import fiji.plugin.btrackmate.tracking.sparselap.SparseLAPTrackerFactory;
+import fiji.plugin.btrackmate.util.LogRecorder;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.util.SplitString;
 import ij.IJ;
 import ij.ImageJ;
@@ -140,7 +140,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 
 	/**
 	 * The macro parameter to set the path to export to simplified XML. See
-	 * {@link fiji.plugin.trackmate.action.ExportTracksToXML}. Is ignored if the
+	 * {@link fiji.plugin.btrackmate.action.ExportTracksToXML}. Is ignored if the
 	 * {@link #ARG_USE_GUI} is set to <code>true</code>.
 	 */
 	private static final String ARG_EXPORT_TO = "export_to";
@@ -289,7 +289,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 				final Model model = createModel(  );
 				final SelectionModel selectionModel = new SelectionModel( model );
 				model.setLogger( logger );
-				final TrackMate trackmate = createTrackMate( model, settings );
+				final TrackMate btrackmate = createTrackMate( model, settings );
 				final DisplaySettings displaySettings = createDisplaySettings();
 
 				/*
@@ -401,7 +401,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 					displayer.render();
 
 					// Wizard.
-					final WizardSequence sequence = createSequence( trackmate, selectionModel, displaySettings );
+					final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
 					final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
 					frame.setIconImage( TRACKMATE_ICON.getImage() );
 					GuiUtils.positionWindow( frame, imp.getWindow() );
@@ -411,9 +411,9 @@ public class TrackMateRunner extends TrackMatePlugIn
 
 				final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION + " started on:\n" + TMUtils.getCurrentTimeString() + '\n';
 				logger.log( welcomeMessage );
-				if ( !trackmate.checkInput() || !trackmate.process() )
+				if ( !btrackmate.checkInput() || !btrackmate.process() )
 				{
-					logger.error( "Error while performing tracking:\n" + trackmate.getErrorMessage() );
+					logger.error( "Error while performing tracking:\n" + btrackmate.getErrorMessage() );
 					return;
 				}
 
@@ -428,8 +428,8 @@ public class TrackMateRunner extends TrackMatePlugIn
 					final TmXmlWriter writer = new TmXmlWriter( save_path, logger );
 
 					writer.appendLog( logger.toString() );
-					writer.appendModel( trackmate.getModel() );
-					writer.appendSettings( trackmate.getSettings() );
+					writer.appendModel( btrackmate.getModel() );
+					writer.appendSettings( btrackmate.getSettings() );
 
 					try
 					{
@@ -499,7 +499,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 					displayer.render();
 
 					// Wizard.
-					final WizardSequence sequence = createSequence( trackmate, selectionModel, displaySettings );
+					final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
 					sequence.setCurrent( ConfigureViewsDescriptor.KEY );
 					final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
 					frame.setIconImage( TRACKMATE_ICON.getImage() );

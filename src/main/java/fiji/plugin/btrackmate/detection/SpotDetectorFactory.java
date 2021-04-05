@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
 import java.util.Map;
 

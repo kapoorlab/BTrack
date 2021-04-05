@@ -1,12 +1,12 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 import java.awt.Color;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.gui.displaysettings.Colormap;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.gui.displaysettings.Colormap;
 
 public class PerSpotFeatureColorGenerator implements TrackColorGenerator
 {

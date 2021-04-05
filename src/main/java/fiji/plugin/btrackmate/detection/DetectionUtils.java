@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,13 +10,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.detection.util.MedianFilter2D;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.detection.util.MedianFilter2D;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -104,19 +104,19 @@ public class DetectionUtils
 					lSettings.detectorFactory = detectorFactory;
 					lSettings.detectorSettings = detectorSettings;
 
-					final TrackMate trackmate = new TrackMate( lSettings );
-					trackmate.getModel().setLogger( logger );
+					final TrackMate btrackmate = new TrackMate( lSettings );
+					btrackmate.getModel().setLogger( logger );
 
-					final boolean detectionOk = trackmate.execDetection();
+					final boolean detectionOk = btrackmate.execDetection();
 					if ( !detectionOk )
 					{
-						logger.error( trackmate.getErrorMessage() );
+						logger.error( btrackmate.getErrorMessage() );
 						return;
 					}
-					logger.log( "Found " + trackmate.getModel().getSpots().getNSpots( false ) + " spots." );
+					logger.log( "Found " + btrackmate.getModel().getSpots().getNSpots( false ) + " spots." );
 
 					// Wrap new spots in a list.
-					final SpotCollection newspots = trackmate.getModel().getSpots();
+					final SpotCollection newspots = btrackmate.getModel().getSpots();
 					final Iterator< Spot > it = newspots.iterator( frame, false );
 					final ArrayList< Spot > spotsToCopy = new ArrayList<>( newspots.getNSpots( frame, false ) );
 					while ( it.hasNext() )

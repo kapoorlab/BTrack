@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
 import java.awt.Image;
 import java.awt.Rectangle;

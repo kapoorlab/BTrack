@@ -1,8 +1,8 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_HEIGHT;
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_WIDTH;
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_COLOR;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_HEIGHT;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_WIDTH;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.DEFAULT_COLOR;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -21,11 +21,11 @@ import com.mxgraph.util.mxStyleUtils;
 import com.mxgraph.view.mxPerimeter;
 import com.mxgraph.view.mxStylesheet;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.FeatureUtils;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.features.FeatureUtils;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
 
 public class TrackSchemeStylist
 {

@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
 import org.jfree.data.general.Series;
 import org.jfree.data.xy.XYSeries;

@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.visualization.table;
+package fiji.plugin.btrackmate.visualization.table;
 
-import static fiji.plugin.trackmate.gui.Icons.CSV_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CSV_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,26 +34,26 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.ModelChangeEvent;
-import fiji.plugin.trackmate.ModelChangeListener;
-import fiji.plugin.trackmate.SelectionChangeEvent;
-import fiji.plugin.trackmate.SelectionChangeListener;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.FeatureUtils;
-import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.UpdateListener;
-import fiji.plugin.trackmate.util.FileChooser;
-import fiji.plugin.trackmate.util.FileChooser.DialogType;
-import fiji.plugin.trackmate.util.FileChooser.SelectionMode;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
-import fiji.plugin.trackmate.visualization.trackscheme.utils.SearchBar;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.ModelChangeEvent;
+import fiji.plugin.btrackmate.ModelChangeListener;
+import fiji.plugin.btrackmate.SelectionChangeEvent;
+import fiji.plugin.btrackmate.SelectionChangeListener;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.features.FeatureUtils;
+import fiji.plugin.btrackmate.features.manual.ManualEdgeColorAnalyzer;
+import fiji.plugin.btrackmate.features.manual.ManualSpotColorAnalyzerFactory;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.UpdateListener;
+import fiji.plugin.btrackmate.util.FileChooser;
+import fiji.plugin.btrackmate.util.FileChooser.DialogType;
+import fiji.plugin.btrackmate.util.FileChooser.SelectionMode;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.visualization.trackscheme.utils.SearchBar;
 
 public class TrackTableView extends JFrame implements TrackMateModelView, ModelChangeListener, SelectionChangeListener
 {

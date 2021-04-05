@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.detection.util;
+package fiji.plugin.btrackmate.detection.util;
 
 import java.util.Iterator;
 

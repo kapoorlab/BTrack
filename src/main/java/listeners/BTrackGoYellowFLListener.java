@@ -1,25 +1,20 @@
 package listeners;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import fileListeners.ChooseBudOrigMap;
-import fileListeners.ChooseBudSecOrigMap;
+import fiji.plugin.btrack.gui.components.LoadDualImage;
 import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
-import loadfile.CovistoOneChFileLoader;
-import loadfile.CovistoTwoChForceFileLoader;
-import pluginTools.BudFileChooser;
+import pluginTools.BTStartDialogDescriptor;
 
 
 public class BTrackGoYellowFLListener implements ItemListener {
 
-	public final BudFileChooser parent;
+	public final BTStartDialogDescriptor parent;
 	
-	public BTrackGoYellowFLListener( final BudFileChooser parent) {
+	public BTrackGoYellowFLListener( final BTStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}
@@ -35,7 +30,7 @@ public class BTrackGoYellowFLListener implements ItemListener {
 			
 			
 			
-			CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(parent.chooseYellowSegstring, parent.blankimageNames);
+			LoadDualImage segmentation = new LoadDualImage(parent.chooseYellowSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.TwoChannelOption();
 			
 			

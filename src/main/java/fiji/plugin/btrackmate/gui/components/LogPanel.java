@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +15,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import fiji.plugin.trackmate.Logger;
+import fiji.plugin.btrackmate.Logger;
 
 /**
  * A panel using s {@link JTextPane} to log events.

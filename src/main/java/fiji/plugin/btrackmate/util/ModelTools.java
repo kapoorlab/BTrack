@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,12 +10,12 @@ import java.util.Map;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import fiji.plugin.trackmate.FeatureModel;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.kdtree.NearestNeighborTracker;
+import fiji.plugin.btrackmate.FeatureModel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.tracking.kdtree.NearestNeighborTracker;
 
 /**
  * A collection of static utilities made to ease the manipulation of a TrackMate

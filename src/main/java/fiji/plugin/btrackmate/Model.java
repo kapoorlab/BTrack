@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,10 +8,10 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import fiji.plugin.trackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.features.FeatureFilter;
 
 /**
- * <h1>The model for the data managed by TrackMate trackmate.</h1>
+ * <h1>The model for the data managed by TrackMate btrackmate.</h1>
  * <p>
  * This is a relatively large class, with a lot of public methods. This
  * complexity arose because this class handles data storage and manipulation,
@@ -423,7 +423,7 @@ public class Model
 
 	/**
 	 * Set the logger that will receive the messages from the processes
-	 * occurring within this trackmate.
+	 * occurring within this btrackmate.
 	 * 
 	 * @param logger
 	 *            the {@link Logger} to use.

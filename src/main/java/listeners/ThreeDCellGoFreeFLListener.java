@@ -4,8 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fileListeners.ChooseGreenSegMap;
-import loadfile.CovistoOneChFileLoader;
 import pluginTools.ThreeDTimeCellFileChooser;
 
 
@@ -36,7 +36,7 @@ public class ThreeDCellGoFreeFLListener implements ItemListener {
 			parent.panelFirst.repaint();
 			
 			
-			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseCellSegstring, parent.blankimageNames);
+			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseCellSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
 			segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(parent, segmentation.ChooseImage));
 			

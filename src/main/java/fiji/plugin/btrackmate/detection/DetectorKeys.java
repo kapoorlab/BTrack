@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
 /**
  * A class to store key names for parameters of the current {@link SpotDetector}

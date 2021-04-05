@@ -1,10 +1,10 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.btrackmate.SpotRoi;
 
 /**
  * Adapted from a code by Kirill Artemov,

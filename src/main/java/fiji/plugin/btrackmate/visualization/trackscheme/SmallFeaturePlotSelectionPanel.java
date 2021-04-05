@@ -1,10 +1,10 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.trackmate.gui.Icons.ADD_ICON;
-import static fiji.plugin.trackmate.gui.Icons.PLOT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.REMOVE_ICON;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Icons.ADD_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.PLOT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.REMOVE_ICON;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,9 +27,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import fiji.plugin.trackmate.gui.components.FeaturePlotSelectionPanel;
-import fiji.plugin.trackmate.gui.components.FeaturePlotSelectionPanel.PlotAction;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.gui.components.FeaturePlotSelectionPanel;
+import fiji.plugin.btrackmate.gui.components.FeaturePlotSelectionPanel.PlotAction;
+import fiji.plugin.btrackmate.util.TMUtils;
 
 /**
  * A simple Panel to allow the selection of a X key amongst an enum, and of

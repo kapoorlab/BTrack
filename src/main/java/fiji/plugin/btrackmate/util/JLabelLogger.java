@@ -1,12 +1,12 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Color;
 
 import javax.swing.JLabel;
 
-import fiji.plugin.trackmate.Logger;
+import fiji.plugin.btrackmate.Logger;
 
 public class JLabelLogger extends JLabel {
 	

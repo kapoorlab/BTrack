@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.scijava.Cancelable;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.features.track.TrackAnalyzer;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.features.track.TrackAnalyzer;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
 /**

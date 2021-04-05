@@ -1,15 +1,15 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
 import java.util.ArrayList;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.ModelChangeEvent;
-import fiji.plugin.trackmate.ModelChangeListener;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.ModelChangeEvent;
+import fiji.plugin.btrackmate.ModelChangeListener;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
 import net.imglib2.algorithm.MultiThreaded;
 
 /**

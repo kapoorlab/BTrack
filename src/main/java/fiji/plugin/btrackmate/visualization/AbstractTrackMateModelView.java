@@ -1,14 +1,14 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 import java.util.Map;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.ModelChangeListener;
-import fiji.plugin.trackmate.SelectionChangeEvent;
-import fiji.plugin.trackmate.SelectionChangeListener;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.ModelChangeListener;
+import fiji.plugin.btrackmate.SelectionChangeEvent;
+import fiji.plugin.btrackmate.SelectionChangeListener;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 
 /**
  * An abstract class for spot displayers, that can overlay detected spots and

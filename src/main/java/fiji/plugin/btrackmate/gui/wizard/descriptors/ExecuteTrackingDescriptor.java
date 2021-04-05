@@ -1,26 +1,26 @@
-package fiji.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import java.util.IntSummaryStatistics;
 
 import org.scijava.Cancelable;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.TrackModel;
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.TrackModel;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 
 public class ExecuteTrackingDescriptor extends WizardPanelDescriptor
 {
 
 	public static final String KEY = "ExecuteTracking";
 
-	private final TrackMate trackmate;
+	private final TrackMate btrackmate;
 
-	public ExecuteTrackingDescriptor( final TrackMate trackmate, final LogPanel logPanel )
+	public ExecuteTrackingDescriptor( final TrackMate btrackmate, final LogPanel logPanel )
 	{
 		super( KEY );
-		this.trackmate = trackmate;
+		this.btrackmate = btrackmate;
 		this.targetPanel = logPanel;
 	}
 
@@ -29,12 +29,12 @@ public class ExecuteTrackingDescriptor extends WizardPanelDescriptor
 	{
 		return () -> {
 			final long start = System.currentTimeMillis();
-			trackmate.execTracking();
+			btrackmate.execTracking();
 			final long end = System.currentTimeMillis();
 
-			final Logger logger = trackmate.getModel().getLogger();
+			final Logger logger = btrackmate.getModel().getLogger();
 			logger.log( String.format( "Tracking done in %.1f s.\n", ( end - start ) / 1e3f ) );
-			final TrackModel trackModel = trackmate.getModel().getTrackModel();
+			final TrackModel trackModel = btrackmate.getModel().getTrackModel();
 			final int nTracks = trackModel.nTracks( false );
 			final IntSummaryStatistics stats = trackModel.unsortedTrackIDs( false ).stream()
 					.mapToInt( id -> trackModel.trackSpots( id ).size() )
@@ -49,6 +49,6 @@ public class ExecuteTrackingDescriptor extends WizardPanelDescriptor
 	@Override
 	public Cancelable getCancelable()
 	{
-		return trackmate;
+		return btrackmate;
 	}
 }

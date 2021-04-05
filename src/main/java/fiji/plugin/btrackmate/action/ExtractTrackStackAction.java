@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.MAGNIFIER_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.MAGNIFIER_ICON;
 
 import java.awt.Frame;
 import java.util.ArrayList;
@@ -16,15 +16,15 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.trackscheme.SpotIconGrabber;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.visualization.trackscheme.SpotIconGrabber;
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -72,7 +72,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 
 	@Override
 	public void execute(
-			final TrackMate trackmate,
+			final TrackMate btrackmate,
 			final SelectionModel selectionModel,
 			final DisplaySettings displaySettings,
 			final Frame parent )
@@ -98,7 +98,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 
 		logger.log( "Capturing " + ( do3d ? "3D" : "2D" ) + " track stack.\n" );
 
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		final Set< Spot > selection = selectionModel.getSpotSelection();
 		final int nspots = selection.size();
 		if ( nspots != 2 )
@@ -125,7 +125,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 				selectionModel.addEdgeToSelection( edges );
 
 				// Get stack.
-				final ImagePlus imp = trackStack( trackmate, spot, do3d, logger );
+				final ImagePlus imp = trackStack( btrackmate, spot, do3d, logger );
 				imp.show();
 				imp.setZ( imp.getNSlices() / 2 + 1 );
 				imp.resetDisplayRange();
@@ -167,7 +167,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 			selectionModel.addEdgeToSelection( edges );
 
 			// Get stack.
-			final ImagePlus imp = trackStack( trackmate, start1, end1, do3d, logger );
+			final ImagePlus imp = trackStack( btrackmate, start1, end1, do3d, logger );
 			imp.show();
 			imp.setZ( imp.getNSlices() / 2 + 1 );
 			imp.resetDisplayRange();
@@ -175,28 +175,28 @@ public class ExtractTrackStackAction extends AbstractTMAction
 	}
 
 	public static final ImagePlus trackStack(
-			final TrackMate trackmate,
+			final TrackMate btrackmate,
 			final Spot spot,
 			final boolean do3d,
 			final Logger logger )
 	{
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		final Integer trackID = model.getTrackModel().trackIDOf( spot );
 		final List< Spot > spots = new ArrayList<>( model.getTrackModel().trackSpots( trackID ) );
 		Collections.sort( spots, Spot.frameComparator );
 		final Spot start = spots.get( 0 );
 		final Spot end = spots.get( spots.size() - 1 );
-		return trackStack( trackmate, start, end, do3d, logger );
+		return trackStack( btrackmate, start, end, do3d, logger );
 	}
 
 	public static final ImagePlus trackStack(
-			final TrackMate trackmate,
+			final TrackMate btrackmate,
 			final Spot start,
 			final Spot end,
 			final boolean do3d,
 			final Logger logger )
 	{
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		final Spot start1;
 		final Spot end1;
 		if ( start.getFeature( Spot.POSITION_T ) > end.getFeature( Spot.POSITION_T ) )
@@ -244,7 +244,7 @@ public class ExtractTrackStackAction extends AbstractTMAction
 		// Sort spot by ascending frame number
 		final TreeSet< Spot > sortedSpots = new TreeSet<>( Spot.timeComparator );
 		sortedSpots.addAll( path );
-		return trackStack( trackmate.getSettings(), path, radius, do3d, logger );
+		return trackStack( btrackmate.getSettings(), path, radius, do3d, logger );
 	}
 
 	@SuppressWarnings( { "unchecked", "rawtypes" } )

@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.graph;
+package fiji.plugin.btrackmate.graph;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackModel;
 
 import java.util.Arrays;
 import java.util.Comparator;

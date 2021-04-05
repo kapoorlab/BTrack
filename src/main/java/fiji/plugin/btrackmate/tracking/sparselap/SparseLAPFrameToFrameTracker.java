@@ -1,11 +1,11 @@
-package fiji.plugin.trackmate.tracking.sparselap;
+package fiji.plugin.btrackmate.tracking.sparselap;
 
-import static fiji.plugin.trackmate.tracking.LAPUtils.checkFeatureMap;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import static fiji.plugin.trackmate.util.TMUtils.checkMapKeys;
-import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.btrackmate.tracking.LAPUtils.checkFeatureMap;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.util.TMUtils.checkMapKeys;
+import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,15 +23,15 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.scijava.Cancelable;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.sparselap.costfunction.CostFunction;
-import fiji.plugin.trackmate.tracking.sparselap.costfunction.FeaturePenaltyCostFunction;
-import fiji.plugin.trackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.tracking.SpotTracker;
+import fiji.plugin.btrackmate.tracking.sparselap.costfunction.CostFunction;
+import fiji.plugin.btrackmate.tracking.sparselap.costfunction.FeaturePenaltyCostFunction;
+import fiji.plugin.btrackmate.tracking.sparselap.costfunction.SquareDistCostFunction;
+import fiji.plugin.btrackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
+import fiji.plugin.btrackmate.tracking.sparselap.linker.JaqamanLinker;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
 public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorithm implements SpotTracker, Cancelable

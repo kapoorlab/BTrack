@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,14 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.scijava.Cancelable;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactoryBase;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.features.spot.SpotAnalyzer;
+import fiji.plugin.btrackmate.features.spot.SpotAnalyzerFactoryBase;
+import fiji.plugin.btrackmate.util.TMUtils;
 import net.imagej.ImgPlus;
 import net.imglib2.algorithm.MultiThreaded;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;

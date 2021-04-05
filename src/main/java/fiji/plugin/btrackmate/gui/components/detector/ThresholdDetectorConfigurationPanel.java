@@ -1,10 +1,10 @@
-package fiji.plugin.trackmate.gui.components.detector;
+package fiji.plugin.btrackmate.gui.components.detector;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.trackmate.gui.Icons.PREVIEW_ICON;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Icons.PREVIEW_ICON;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -24,17 +24,17 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.detection.DetectionUtils;
-import fiji.plugin.trackmate.detection.MaskUtils;
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
-import fiji.plugin.trackmate.detection.ThresholdDetectorFactory;
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.util.JLabelLogger;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.detection.DetectionUtils;
+import fiji.plugin.btrackmate.detection.MaskUtils;
+import fiji.plugin.btrackmate.detection.SpotDetectorFactory;
+import fiji.plugin.btrackmate.detection.ThresholdDetectorFactory;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.util.JLabelLogger;
+import fiji.plugin.btrackmate.util.TMUtils;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imglib2.Interval;

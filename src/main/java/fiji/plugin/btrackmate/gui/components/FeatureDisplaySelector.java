@@ -1,11 +1,11 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.features.FeatureUtils.collectFeatureKeys;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject.DEFAULT;
-import static fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject.EDGES;
-import static fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject.SPOTS;
-import static fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject.TRACKS;
+import static fiji.plugin.btrackmate.features.FeatureUtils.collectFeatureKeys;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject.DEFAULT;
+import static fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject.EDGES;
+import static fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject.SPOTS;
+import static fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject.TRACKS;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,17 +41,17 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.ModelChangeEvent;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.features.FeatureUtils;
-import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
-import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.displaysettings.Colormap;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.ModelChangeEvent;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.features.FeatureUtils;
+import fiji.plugin.btrackmate.features.manual.ManualEdgeColorAnalyzer;
+import fiji.plugin.btrackmate.features.manual.ManualSpotColorAnalyzerFactory;
+import fiji.plugin.btrackmate.features.track.TrackIndexAnalyzer;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.displaysettings.Colormap;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
 
 public class FeatureDisplaySelector
 {

@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
 import net.imglib2.Cursor;
 import net.imglib2.Sampler;

@@ -6,16 +6,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 import ij.WindowManager;
-import pluginTools.BudFileChooser;
+import pluginTools.BTStartDialogDescriptor;
 
 public class ChooseBudSegBMap implements ActionListener {
 	
 	
-	final BudFileChooser parent;
+	final BTStartDialogDescriptor parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseBudSegBMap(final BudFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseBudSegBMap(final BTStartDialogDescriptor parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;
@@ -29,10 +29,7 @@ public class ChooseBudSegBMap implements ActionListener {
 		
 		String imagename = (String) choice.getSelectedItem();
 		
-		
-		
     	parent.impSegB = WindowManager.getImage(imagename);
-    	
 
 		
 	}

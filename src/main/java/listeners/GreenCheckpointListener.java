@@ -14,16 +14,16 @@ import javax.swing.filechooser.FileFilter;
 
 import budDetector.Cellobject;
 import budDetector.Roiobject;
+import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import ij.gui.OvalRoi;
 import net.imglib2.Point;
 import net.imglib2.RealPoint;
-import pluginTools.ThreeDTimeCellFileChooser;
 
 public class GreenCheckpointListener implements ActionListener {
 
-	final ThreeDTimeCellFileChooser parent;
+	final BTMStartDialogDescriptor parent;
 	
-	public GreenCheckpointListener(final ThreeDTimeCellFileChooser parent) {
+	public GreenCheckpointListener(final BTMStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}

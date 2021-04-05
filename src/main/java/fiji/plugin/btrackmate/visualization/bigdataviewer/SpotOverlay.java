@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.bigdataviewer;
+package fiji.plugin.btrackmate.visualization.bigdataviewer;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -17,15 +17,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.SpotRoi;
-import fiji.plugin.trackmate.features.FeatureUtils;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.SpotRoi;
+import fiji.plugin.btrackmate.features.FeatureUtils;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
 import ij.ImagePlus;
 import ij.gui.Roi;
 

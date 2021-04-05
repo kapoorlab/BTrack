@@ -1,12 +1,12 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.features.FeatureUtils.collectFeatureKeys;
-import static fiji.plugin.trackmate.features.FeatureUtils.collectFeatureValues;
-import static fiji.plugin.trackmate.features.FeatureUtils.nObjects;
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.trackmate.gui.Icons.ADD_ICON;
-import static fiji.plugin.trackmate.gui.Icons.REMOVE_ICON;
+import static fiji.plugin.btrackmate.features.FeatureUtils.collectFeatureKeys;
+import static fiji.plugin.btrackmate.features.FeatureUtils.collectFeatureValues;
+import static fiji.plugin.btrackmate.features.FeatureUtils.nObjects;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Icons.ADD_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.REMOVE_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,12 +35,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
-import fiji.plugin.trackmate.util.OnRequestUpdater;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.btrackmate.util.OnRequestUpdater;
 
 public class FilterGuiPanel extends JPanel implements ChangeListener
 {

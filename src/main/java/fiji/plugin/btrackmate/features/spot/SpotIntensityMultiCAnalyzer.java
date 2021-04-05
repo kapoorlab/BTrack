@@ -1,15 +1,15 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MAX_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MEAN_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MEDIAN_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MIN_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.STD_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.TOTAL_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MAX_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MEAN_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MEDIAN_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MIN_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.STD_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.TOTAL_INTENSITY;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.util.SpotUtil;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.util.SpotUtil;
+import fiji.plugin.btrackmate.util.TMUtils;
 import net.imagej.ImgPlus;
 import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;

@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.tracking.overlap;
+package fiji.plugin.btrackmate.tracking.overlap;
 
-import static fiji.plugin.trackmate.tracking.overlap.OverlapTrackerFactory.BASE_ERROR_MESSAGE;
+import static fiji.plugin.btrackmate.tracking.overlap.OverlapTrackerFactory.BASE_ERROR_MESSAGE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,11 +20,11 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.scijava.Cancelable;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.SpotRoi;
-import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.SpotRoi;
+import fiji.plugin.btrackmate.tracking.SpotTracker;
 import math.geom2d.AffineTransform2D;
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;

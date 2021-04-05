@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.gui.components.detector;
+package fiji.plugin.btrackmate.gui.components.detector;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_RADIUS;
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_RADIUS;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -19,7 +19,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
 
 /**
  * Configuration panel for spot detectors based on LoG detector.

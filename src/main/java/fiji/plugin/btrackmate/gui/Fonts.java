@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.gui;
+package fiji.plugin.btrackmate.gui;
 
 import java.awt.Dimension;
 import java.awt.Font;

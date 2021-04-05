@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.graph;
+package fiji.plugin.btrackmate.graph;
 
 /**
  * Interface for functions that return a new object, computed from two input arguments.

@@ -1,11 +1,11 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.DEFAULT_RADIUS;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_RADIUS;
-import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.writeRadius;
-import static fiji.plugin.trackmate.util.TMUtils.checkMapKeys;
-import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.DEFAULT_RADIUS;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_RADIUS;
+import static fiji.plugin.btrackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.writeRadius;
+import static fiji.plugin.btrackmate.util.TMUtils.checkMapKeys;
+import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,11 +18,11 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.detector.ManualDetectorConfigurationPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.detector.ManualDetectorConfigurationPanel;
 import net.imagej.ImgPlus;
 import net.imglib2.Interval;
 import net.imglib2.type.NativeType;

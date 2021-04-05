@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 

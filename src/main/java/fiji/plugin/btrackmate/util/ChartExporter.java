@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Rectangle;
 import java.io.File;

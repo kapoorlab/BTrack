@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.LABEL_IMG_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.LABEL_IMG_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.Frame;
 import java.util.Set;
@@ -12,14 +12,14 @@ import javax.swing.JOptionPane;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.util.SpotUtil;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.util.SpotUtil;
+import fiji.plugin.btrackmate.util.TMUtils;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -54,7 +54,7 @@ public class LabelImgExporter extends AbstractTMAction
 	public static final String NAME = "Export label image";
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame gui )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame gui )
 	{
 		/*
 		 * Ask use for option.
@@ -89,7 +89,7 @@ public class LabelImgExporter extends AbstractTMAction
 		 * Generate label image.
 		 */
 
-		createLabelImagePlus( trackmate, exportSpotsAsDots, exportTracksOnly, logger ).show();
+		createLabelImagePlus( btrackmate, exportSpotsAsDots, exportTracksOnly, logger ).show();
 	}
 
 	/**
@@ -97,10 +97,10 @@ public class LabelImgExporter extends AbstractTMAction
 	 * model are painted as ellipsoids taken from their shape, with their track
 	 * ID as pixel value.
 	 *
-	 * @param trackmate
-	 *            the trackmate instance from which we takes the spots to paint.
+	 * @param btrackmate
+	 *            the btrackmate instance from which we takes the spots to paint.
 	 *            The label image will have the same calibration, name and
-	 *            dimension from the input image stored in the trackmate
+	 *            dimension from the input image stored in the btrackmate
 	 *            settings. The output label image will have the same size that
 	 *            of this input image, except for the number of channels, which
 	 *            will be 1.
@@ -116,11 +116,11 @@ public class LabelImgExporter extends AbstractTMAction
 	 * @return a new {@link ImagePlus}.
 	 */
 	public static final ImagePlus createLabelImagePlus(
-			final TrackMate trackmate,
+			final TrackMate btrackmate,
 			final boolean exportSpotsAsDots,
 			final boolean exportTracksOnly )
 	{
-		return createLabelImagePlus( trackmate, exportSpotsAsDots, exportTracksOnly, Logger.VOID_LOGGER );
+		return createLabelImagePlus( btrackmate, exportSpotsAsDots, exportTracksOnly, Logger.VOID_LOGGER );
 	}
 
 	/**
@@ -128,10 +128,10 @@ public class LabelImgExporter extends AbstractTMAction
 	 * model are painted as ellipsoids taken from their shape, with their track
 	 * ID as pixel value.
 	 *
-	 * @param trackmate
-	 *            the trackmate instance from which we takes the spots to paint.
+	 * @param btrackmate
+	 *            the btrackmate instance from which we takes the spots to paint.
 	 *            The label image will have the same calibration, name and
-	 *            dimension from the input image stored in the trackmate
+	 *            dimension from the input image stored in the btrackmate
 	 *            settings. The output label image will have the same size that
 	 *            of this input image, except for the number of channels, which
 	 *            will be 1.
@@ -150,12 +150,12 @@ public class LabelImgExporter extends AbstractTMAction
 	 * @return a new {@link ImagePlus}.
 	 */
 	public static final ImagePlus createLabelImagePlus(
-			final TrackMate trackmate,
+			final TrackMate btrackmate,
 			final boolean exportSpotsAsDots,
 			final boolean exportTracksOnly,
 			final Logger logger )
 	{
-		return createLabelImagePlus( trackmate.getModel(), trackmate.getSettings().imp, exportSpotsAsDots, exportTracksOnly, logger );
+		return createLabelImagePlus( btrackmate.getModel(), btrackmate.getSettings().imp, exportSpotsAsDots, exportTracksOnly, logger );
 	}
 
 	/**

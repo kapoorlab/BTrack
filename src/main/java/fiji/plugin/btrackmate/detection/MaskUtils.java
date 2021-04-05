@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
 import java.awt.Polygon;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotRoi;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.measure.Measurements;

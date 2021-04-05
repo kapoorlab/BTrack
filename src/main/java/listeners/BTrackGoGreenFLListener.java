@@ -1,26 +1,21 @@
 package listeners;
 
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import fileListeners.ChooseBudOrigMap;
-import fileListeners.ChooseBudSecOrigMap;
+import fiji.plugin.btrack.gui.components.CovistoThreeChForceFileLoader;
 import fileListeners.ChooseBudSegAMap;
 import fileListeners.ChooseBudSegBMap;
 import fileListeners.ChooseBudSegCMap;
-import loadfile.CovistoOneChFileLoader;
-import loadfile.CovistoThreeChForceFileLoader;
-import loadfile.CovistoTwoChForceFileLoader;
-import pluginTools.BudFileChooser;
+import pluginTools.BTStartDialogDescriptor;
 
 
 public class BTrackGoGreenFLListener implements ItemListener {
 
-	public final BudFileChooser parent;
+	public final BTStartDialogDescriptor parent;
 	
-	public BTrackGoGreenFLListener( final BudFileChooser parent) {
+	public BTrackGoGreenFLListener( final BTStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}

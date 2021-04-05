@@ -1,8 +1,8 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.trackmate.gui.Icons.PLOT_ICON;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Icons.PLOT_ICON;
 
 import java.awt.Frame;
 
@@ -16,14 +16,14 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.util.ExportableChartPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.util.ExportableChartPanel;
 
 public class PlotNSpotsVsTimeAction extends AbstractTMAction {
 
@@ -36,11 +36,11 @@ public class PlotNSpotsVsTimeAction extends AbstractTMAction {
 			"</html>";
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
 		// Collect data
-		final Model model = trackmate.getModel();
-		final Settings settings = trackmate.getSettings();
+		final Model model = btrackmate.getModel();
+		final Settings settings = btrackmate.getSettings();
 		final SpotCollection spots = model.getSpots();
 		final int nFrames = spots.keySet().size();
 		final double[][] data = new double[2][nFrames];
@@ -56,9 +56,9 @@ public class PlotNSpotsVsTimeAction extends AbstractTMAction {
 		}
 
 		// Plot data
-		final String xAxisLabel = "Time ("+trackmate.getModel().getTimeUnits()+")";
+		final String xAxisLabel = "Time ("+btrackmate.getModel().getTimeUnits()+")";
 		final String yAxisLabel = "N spots";
-		final String title = "Nspots vs Time for "+trackmate.getSettings().imp.getShortTitle();
+		final String title = "Nspots vs Time for "+btrackmate.getSettings().imp.getShortTitle();
 		final DefaultXYDataset dataset = new DefaultXYDataset();
 		dataset.addSeries("Nspots", data);
 

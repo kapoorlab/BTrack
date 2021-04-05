@@ -1,14 +1,14 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
 import java.util.Map;
 
 import org.jdom2.Element;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.SpotRoi;
-import fiji.plugin.trackmate.TrackMateModule;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.SpotRoi;
+import fiji.plugin.btrackmate.TrackMateModule;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;

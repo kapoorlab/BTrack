@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import java.awt.Frame;
 import java.io.File;
@@ -7,30 +7,30 @@ import java.io.IOException;
 
 import javax.swing.SwingUtilities;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.WizardSequence;
-import fiji.plugin.trackmate.io.IOUtils;
-import fiji.plugin.trackmate.io.TmXmlWriter;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
+import fiji.plugin.btrackmate.io.IOUtils;
+import fiji.plugin.btrackmate.io.TmXmlWriter;
+import fiji.plugin.btrackmate.util.TMUtils;
 
 public class SaveDescriptor extends SomeDialogDescriptor
 {
 
 	private static final String KEY = "Saving";
 
-	private final TrackMate trackmate;
+	private final TrackMate btrackmate;
 
 	private final DisplaySettings displaySettings;
 
 	private final WizardSequence sequence;
 
-	public SaveDescriptor( final TrackMate trackmate, final DisplaySettings displaySettings, final WizardSequence sequence )
+	public SaveDescriptor( final TrackMate btrackmate, final DisplaySettings displaySettings, final WizardSequence sequence )
 	{
 		super( KEY, ( LogPanel ) sequence.logDescriptor().getPanelComponent() );
-		this.trackmate = trackmate;
+		this.btrackmate = btrackmate;
 		this.displaySettings = displaySettings;
 		this.sequence = sequence;
 	}
@@ -42,16 +42,16 @@ public class SaveDescriptor extends SomeDialogDescriptor
 		final Logger logger = logPanel.getLogger();
 		logger.log( "Saving data...\n", Logger.BLUE_COLOR );
 		if ( null == file )
-			file = TMUtils.proposeTrackMateSaveFile( trackmate.getSettings(), logger );
+			file = TMUtils.proposeTrackMateSaveFile( btrackmate.getSettings(), logger );
 
 		/*
 		 * If we are to save tracks, we better ensures that track and edge
 		 * features are there, even if we have to enforce it.
 		 */
-		if ( trackmate.getModel().getTrackModel().nTracks( false ) > 0 )
+		if ( btrackmate.getModel().getTrackModel().nTracks( false ) > 0 )
 		{
-			trackmate.computeEdgeFeatures( true );
-			trackmate.computeTrackFeatures( true );
+			btrackmate.computeEdgeFeatures( true );
+			btrackmate.computeTrackFeatures( true );
 		}
 
 		final File tmpFile = IOUtils.askForFileForSaving( file, ( Frame ) SwingUtilities.getWindowAncestor( logPanel ), logger );
@@ -66,8 +66,8 @@ public class SaveDescriptor extends SomeDialogDescriptor
 		final TmXmlWriter writer = new TmXmlWriter( file, logger );
 
 		writer.appendLog( logPanel.getTextContent() );
-		writer.appendModel( trackmate.getModel() );
-		writer.appendSettings( trackmate.getSettings() );
+		writer.appendModel( btrackmate.getModel() );
+		writer.appendSettings( btrackmate.getSettings() );
 		writer.appendGUIState( sequence.current().getPanelDescriptorIdentifier() );
 		writer.appendDisplaySettings( displaySettings );
 

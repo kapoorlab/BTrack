@@ -10,16 +10,16 @@ import javax.swing.JComboBox;
 
 import ij.IJ;
 import ij.WindowManager;
-import pluginTools.BudFileChooser;
+import pluginTools.BTStartDialogDescriptor;
 
 public class ChooseBudOrigMap implements ActionListener {
 	
 	
-	final BudFileChooser parent;
+	final BTStartDialogDescriptor parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseBudOrigMap(final BudFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseBudOrigMap(final BTStartDialogDescriptor parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;

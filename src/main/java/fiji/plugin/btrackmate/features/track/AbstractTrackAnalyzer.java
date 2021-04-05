@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features.track;
+package fiji.plugin.btrackmate.features.track;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,8 +14,8 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Model;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Model;
 
 /**
  * Abstract class for track analyzers that are local and not manual. Offers

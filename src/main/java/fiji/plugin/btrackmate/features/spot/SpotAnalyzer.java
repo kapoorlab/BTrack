@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 

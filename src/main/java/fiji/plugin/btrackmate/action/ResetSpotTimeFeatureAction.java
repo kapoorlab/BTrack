@@ -1,9 +1,9 @@
 /**
  *
  */
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.TIME_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TIME_ICON;
 
 import java.awt.Frame;
 import java.util.Iterator;
@@ -13,11 +13,11 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 
 public class ResetSpotTimeFeatureAction extends AbstractTMAction {
 
@@ -32,14 +32,14 @@ public class ResetSpotTimeFeatureAction extends AbstractTMAction {
 
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
 		logger.log("Reset spot time.\n");
-		double dt = trackmate.getSettings().dt;
+		double dt = btrackmate.getSettings().dt;
 		if (dt == 0) {
 			dt = 1;
 		}
-		final SpotCollection spots = trackmate.getModel().getSpots();
+		final SpotCollection spots = btrackmate.getModel().getSpots();
 		final Set<Integer> frames = spots.keySet();
 		for(final int frame : frames) {
 			for (final Iterator<Spot> iterator = spots.iterator(frame, true); iterator.hasNext();) {

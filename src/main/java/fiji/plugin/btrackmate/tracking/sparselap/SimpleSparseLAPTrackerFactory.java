@@ -1,11 +1,11 @@
-package fiji.plugin.trackmate.tracking.sparselap;
+package fiji.plugin.btrackmate.tracking.sparselap;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.tracker.SimpleLAPTrackerSettingsPanel;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.tracker.SimpleLAPTrackerSettingsPanel;
+import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
 
 @Plugin( type = SpotTrackerFactory.class )
 public class SimpleSparseLAPTrackerFactory extends SparseLAPTrackerFactory
@@ -15,7 +15,7 @@ public class SimpleSparseLAPTrackerFactory extends SparseLAPTrackerFactory
 	public static final String THIS2_NAME = "Simple LAP tracker";
 
 	public static final String THIS2_INFO_TEXT = "<html>"
-			+ "This tracker is identical to the sparse LAP tracker present in this trackmate, except that it <br>"
+			+ "This tracker is identical to the sparse LAP tracker present in this btrackmate, except that it <br>"
 			+ "proposes fewer tuning options. Namely, only gap closing is allowed, based solely on <br>"
 			+ "a distance and time condition. Track splitting and merging are not allowed, resulting <br>"
 			+ "in having non-branching tracks."

@@ -177,6 +177,11 @@
     <groupId>net.imglib2</groupId>
     <artifactId>imglib2</artifactId>
 </dependency>
+<!-- https://mvnrepository.com/artifact/io.scif/scifio -->
+<dependency>
+    <groupId>io.scif</groupId>
+    <artifactId>scifio</artifactId>
+</dependency>
 
 		<dependency>
 			<groupId>org.scijava</groupId>

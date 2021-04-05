@@ -1,7 +1,7 @@
 /**
  *
  */
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -10,11 +10,11 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.FeatureModel;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.TrackModel;
-import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
-import fiji.plugin.trackmate.gui.displaysettings.Colormap;
+import fiji.plugin.btrackmate.FeatureModel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.TrackModel;
+import fiji.plugin.btrackmate.features.track.TrackIndexAnalyzer;
+import fiji.plugin.btrackmate.gui.displaysettings.Colormap;
 
 /**
  * A {@link TrackColorGenerator} that generate colors based on the whole track

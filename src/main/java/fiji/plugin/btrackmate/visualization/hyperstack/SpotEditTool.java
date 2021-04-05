@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.hyperstack;
+package fiji.plugin.btrackmate.visualization.hyperstack;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -25,14 +25,14 @@ import javax.swing.SwingUtilities;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.SpotRoi;
-import fiji.plugin.trackmate.detection.semiauto.SemiAutoTracker;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.SpotRoi;
+import fiji.plugin.btrackmate.detection.semiauto.SemiAutoTracker;
+import fiji.plugin.btrackmate.util.TMUtils;
 import fiji.tool.AbstractTool;
 import fiji.tool.ToolWithOptions;
 import ij.IJ;

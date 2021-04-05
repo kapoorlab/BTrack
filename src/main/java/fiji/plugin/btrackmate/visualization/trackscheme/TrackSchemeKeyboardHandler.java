@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -13,7 +13,7 @@ import javax.swing.UIManager;
 
 import com.mxgraph.swing.util.mxGraphActions;
 
-import fiji.plugin.trackmate.util.TrackNavigator;
+import fiji.plugin.btrackmate.util.TrackNavigator;
 
 public class TrackSchemeKeyboardHandler
 {

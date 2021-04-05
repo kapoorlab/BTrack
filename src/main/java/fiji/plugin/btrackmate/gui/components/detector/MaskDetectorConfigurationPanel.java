@@ -1,14 +1,14 @@
-package fiji.plugin.trackmate.gui.components.detector;
+package fiji.plugin.btrackmate.gui.components.detector;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 
 import java.util.Map;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.detection.MaskDetectorFactory;
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
-import fiji.plugin.trackmate.detection.ThresholdDetectorFactory;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.detection.MaskDetectorFactory;
+import fiji.plugin.btrackmate.detection.SpotDetectorFactory;
+import fiji.plugin.btrackmate.detection.ThresholdDetectorFactory;
 
 /**
  * Configuration panel for spot detectors based on thresholding operations.

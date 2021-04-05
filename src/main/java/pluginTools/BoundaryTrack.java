@@ -8,8 +8,8 @@ import javax.swing.JProgressBar;
 
 import budDetector.Budobject;
 import budDetector.Budpointobject;
+import fiji.plugin.btrack.gui.components.CovistoKalmanPanel;
 import fiji.plugin.trackmate.Spot;
-import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;

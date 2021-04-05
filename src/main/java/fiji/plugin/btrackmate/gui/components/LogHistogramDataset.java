@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
 import org.jfree.data.statistics.HistogramDataset;
 

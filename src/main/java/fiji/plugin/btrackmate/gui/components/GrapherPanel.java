@@ -1,8 +1,8 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.gui.Icons.EDGE_ICON_64x64;
-import static fiji.plugin.trackmate.gui.Icons.SPOT_ICON_64x64;
-import static fiji.plugin.trackmate.gui.Icons.TRACK_ICON_64x64;
+import static fiji.plugin.btrackmate.gui.Icons.EDGE_ICON_64x64;
+import static fiji.plugin.btrackmate.gui.Icons.SPOT_ICON_64x64;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_ICON_64x64;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -16,21 +16,21 @@ import javax.swing.SwingConstants;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.features.EdgeFeatureGrapher;
-import fiji.plugin.trackmate.features.FeatureUtils;
-import fiji.plugin.trackmate.features.SpotFeatureGrapher;
-import fiji.plugin.trackmate.features.TrackFeatureGrapher;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.features.EdgeFeatureGrapher;
+import fiji.plugin.btrackmate.features.FeatureUtils;
+import fiji.plugin.btrackmate.features.SpotFeatureGrapher;
+import fiji.plugin.btrackmate.features.TrackFeatureGrapher;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
 
 public class GrapherPanel extends JPanel
 {
 
 	private static final long serialVersionUID = 1L;
 
-	private final TrackMate trackmate;
+	private final TrackMate btrackmate;
 
 	private final JPanel panelSpot;
 
@@ -50,9 +50,9 @@ public class GrapherPanel extends JPanel
 	 * CONSTRUCTOR
 	 */
 
-	public GrapherPanel( final TrackMate trackmate, final DisplaySettings displaySettings )
+	public GrapherPanel( final TrackMate btrackmate, final DisplaySettings displaySettings )
 	{
-		this.trackmate = trackmate;
+		this.btrackmate = btrackmate;
 		this.displaySettings = displaySettings;
 
 		setLayout( new BorderLayout( 0, 0 ) );
@@ -79,7 +79,7 @@ public class GrapherPanel extends JPanel
 	{
 		// regen spot features
 		panelSpot.removeAll();
-		final Map< String, String > spotFeatureNames = FeatureUtils.collectFeatureKeys( TrackMateObject.SPOTS, trackmate.getModel(), trackmate.getSettings() );
+		final Map< String, String > spotFeatureNames = FeatureUtils.collectFeatureKeys( TrackMateObject.SPOTS, btrackmate.getModel(), btrackmate.getSettings() );
 		final Set< String > spotFeatures = spotFeatureNames.keySet();
 		spotFeatureSelectionPanel = new FeaturePlotSelectionPanel(
 				"T",
@@ -102,7 +102,7 @@ public class GrapherPanel extends JPanel
 
 		// regen edge features
 		panelEdges.removeAll();
-		final Map< String, String > edgeFeatureNames = FeatureUtils.collectFeatureKeys( TrackMateObject.EDGES, trackmate.getModel(), trackmate.getSettings() );
+		final Map< String, String > edgeFeatureNames = FeatureUtils.collectFeatureKeys( TrackMateObject.EDGES, btrackmate.getModel(), btrackmate.getSettings() );
 		final Set< String > edgeFeatures = edgeFeatureNames.keySet();
 		edgeFeatureSelectionPanel = new FeaturePlotSelectionPanel(
 				"Edge time",
@@ -126,7 +126,7 @@ public class GrapherPanel extends JPanel
 
 		// regen trak features
 		panelTracks.removeAll();
-		final Map< String, String > trackFeatureNames = FeatureUtils.collectFeatureKeys( TrackMateObject.TRACKS, trackmate.getModel(), trackmate.getSettings() );
+		final Map< String, String > trackFeatureNames = FeatureUtils.collectFeatureKeys( TrackMateObject.TRACKS, btrackmate.getModel(), btrackmate.getSettings() );
 		final Set< String > trackFeatures = trackFeatureNames.keySet();
 		trackFeatureSelectionPanel = new FeaturePlotSelectionPanel(
 				"Track index",
@@ -151,11 +151,11 @@ public class GrapherPanel extends JPanel
 	private void plotSpotFeatures( final String xFeature, final Set< String > yFeatures )
 	{
 		// Collect only the spots that are in tracks
-		final List< Spot > spots = new ArrayList<>( trackmate.getModel().getSpots().getNSpots( true ) );
-		for ( final Integer trackID : trackmate.getModel().getTrackModel().trackIDs( true ) )
-			spots.addAll( trackmate.getModel().getTrackModel().trackSpots( trackID ) );
+		final List< Spot > spots = new ArrayList<>( btrackmate.getModel().getSpots().getNSpots( true ) );
+		for ( final Integer trackID : btrackmate.getModel().getTrackModel().trackIDs( true ) )
+			spots.addAll( btrackmate.getModel().getTrackModel().trackSpots( trackID ) );
 
-		final SpotFeatureGrapher grapher = new SpotFeatureGrapher( xFeature, yFeatures, spots, trackmate.getModel(), displaySettings );
+		final SpotFeatureGrapher grapher = new SpotFeatureGrapher( xFeature, yFeatures, spots, btrackmate.getModel(), displaySettings );
 		grapher.render();
 	}
 
@@ -163,18 +163,18 @@ public class GrapherPanel extends JPanel
 	{
 		// Collect edges in filtered tracks
 		final List< DefaultWeightedEdge > edges = new ArrayList<>();
-		for ( final Integer trackID : trackmate.getModel().getTrackModel().trackIDs( true ) )
-			edges.addAll( trackmate.getModel().getTrackModel().trackEdges( trackID ) );
+		for ( final Integer trackID : btrackmate.getModel().getTrackModel().trackIDs( true ) )
+			edges.addAll( btrackmate.getModel().getTrackModel().trackEdges( trackID ) );
 
 		// Prepare grapher
-		final EdgeFeatureGrapher grapher = new EdgeFeatureGrapher( xFeature, yFeatures, edges, trackmate.getModel(), displaySettings );
+		final EdgeFeatureGrapher grapher = new EdgeFeatureGrapher( xFeature, yFeatures, edges, btrackmate.getModel(), displaySettings );
 		grapher.render();
 	}
 
 	private void plotTrackFeatures( final String xFeature, final Set< String > yFeatures )
 	{
 		// Prepare grapher
-		final TrackFeatureGrapher grapher = new TrackFeatureGrapher( xFeature, yFeatures, trackmate.getModel(), displaySettings );
+		final TrackFeatureGrapher grapher = new TrackFeatureGrapher( xFeature, yFeatures, btrackmate.getModel(), displaySettings );
 		grapher.render();
 	}
 }

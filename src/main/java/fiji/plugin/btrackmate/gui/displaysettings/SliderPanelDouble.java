@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package fiji.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.bbtrackmate.gui.displaysettings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

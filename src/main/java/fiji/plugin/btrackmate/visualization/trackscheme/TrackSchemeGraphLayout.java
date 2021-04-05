@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_HEIGHT;
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_WIDTH;
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.X_COLUMN_SIZE;
-import static fiji.plugin.trackmate.visualization.trackscheme.TrackScheme.Y_COLUMN_SIZE;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_HEIGHT;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.DEFAULT_CELL_WIDTH;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.X_COLUMN_SIZE;
+import static fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme.Y_COLUMN_SIZE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,13 +22,13 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition;
-import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
-import fiji.plugin.trackmate.graph.GraphUtils;
-import fiji.plugin.trackmate.graph.SortedDepthFirstIterator;
-import fiji.plugin.trackmate.graph.TimeDirectedNeighborIndex;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition;
+import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
+import fiji.plugin.btrackmate.graph.GraphUtils;
+import fiji.plugin.btrackmate.graph.SortedDepthFirstIterator;
+import fiji.plugin.btrackmate.graph.TimeDirectedNeighborIndex;
 import net.imglib2.algorithm.Benchmark;
 
 /**

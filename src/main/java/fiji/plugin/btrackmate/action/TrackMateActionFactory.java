@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import fiji.plugin.trackmate.TrackMateModule;
+import fiji.plugin.btrackmate.TrackMateModule;
 
 public interface TrackMateActionFactory extends TrackMateModule
 {

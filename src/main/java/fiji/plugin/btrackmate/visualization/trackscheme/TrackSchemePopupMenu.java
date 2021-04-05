@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -20,9 +20,9 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.features.manual.ManualEdgeColorAnalyzer;
+import fiji.plugin.btrackmate.features.manual.ManualSpotColorAnalyzerFactory;
 
 public class TrackSchemePopupMenu extends JPopupMenu
 {

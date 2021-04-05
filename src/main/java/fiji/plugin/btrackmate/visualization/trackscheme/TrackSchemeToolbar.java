@@ -1,18 +1,18 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Icons.CAPTURE_DECORATED_ICON;
-import static fiji.plugin.trackmate.gui.Icons.CAPTURE_UNDECORATED_ICON;
-import static fiji.plugin.trackmate.gui.Icons.DISPLAY_DECORATIONS_ON_ICON;
-import static fiji.plugin.trackmate.gui.Icons.LINKING_OFF_ICON;
-import static fiji.plugin.trackmate.gui.Icons.LINKING_ON_ICON;
-import static fiji.plugin.trackmate.gui.Icons.REFRESH_ICON;
-import static fiji.plugin.trackmate.gui.Icons.RESET_ZOOM_ICON;
-import static fiji.plugin.trackmate.gui.Icons.SELECT_STYLE_ICON;
-import static fiji.plugin.trackmate.gui.Icons.THUMBNAIL_OFF_ICON;
-import static fiji.plugin.trackmate.gui.Icons.THUMBNAIL_ON_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ZOOM_IN_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ZOOM_OUT_ICON;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Icons.CAPTURE_DECORATED_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CAPTURE_UNDECORATED_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.DISPLAY_DECORATIONS_ON_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.LINKING_OFF_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.LINKING_ON_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.REFRESH_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.RESET_ZOOM_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.SELECT_STYLE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.THUMBNAIL_OFF_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.THUMBNAIL_ON_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ZOOM_IN_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ZOOM_OUT_ICON;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,7 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
-import fiji.plugin.trackmate.visualization.trackscheme.utils.SearchBar;
+import fiji.plugin.btrackmate.visualization.trackscheme.utils.SearchBar;
 
 public class TrackSchemeToolbar extends JToolBar
 {

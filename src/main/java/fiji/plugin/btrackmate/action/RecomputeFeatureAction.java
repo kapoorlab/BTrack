@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.CALCULATOR_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CALCULATOR_ICON;
 
 import java.awt.Frame;
 
@@ -8,12 +8,12 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 
 public class RecomputeFeatureAction extends AbstractTMAction
 {
@@ -30,9 +30,9 @@ public class RecomputeFeatureAction extends AbstractTMAction
 
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
-		recompute( trackmate, logger );
+		recompute( btrackmate, logger );
 	}
 
 	@Plugin( type = TrackMateActionFactory.class )
@@ -70,14 +70,14 @@ public class RecomputeFeatureAction extends AbstractTMAction
 		}
 	}
 
-	public static void recompute( final TrackMate trackmate, final Logger logger )
+	public static void recompute( final TrackMate btrackmate, final Logger logger )
 	{
 		logger.log( "Recalculating all features.\n" );
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		final Logger oldLogger = model.getLogger();
 		model.setLogger( logger );
 
-		final Settings settings = trackmate.getSettings();
+		final Settings settings = btrackmate.getSettings();
 
 		/*
 		 * Configure settings object with spot, edge and track analyzers as
@@ -85,9 +85,9 @@ public class RecomputeFeatureAction extends AbstractTMAction
 		 */
 
 		settings.addAllAnalyzers();
-		trackmate.computeSpotFeatures( true );
-		trackmate.computeEdgeFeatures( true );
-		trackmate.computeTrackFeatures( true );
+		btrackmate.computeSpotFeatures( true );
+		btrackmate.computeEdgeFeatures( true );
+		btrackmate.computeTrackFeatures( true );
 
 		model.setLogger( oldLogger );
 		logger.log( "Done.\n" );

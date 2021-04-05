@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.algorithm.MultiThreaded;

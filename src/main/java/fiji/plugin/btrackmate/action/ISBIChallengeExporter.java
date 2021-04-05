@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.ISBI_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ISBI_ICON;
 
 import java.awt.Frame;
 import java.io.File;
@@ -21,14 +21,14 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.io.IOUtils;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.io.IOUtils;
 
 public class ISBIChallengeExporter extends AbstractTMAction {
 
@@ -45,13 +45,13 @@ public class ISBIChallengeExporter extends AbstractTMAction {
 				"</html>";
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		File file;
 		final File folder = new File(System.getProperty("user.dir")).getParentFile().getParentFile();
 		try {
-			String filename = trackmate.getSettings().imageFileName;
+			String filename = btrackmate.getSettings().imageFileName;
 			filename = filename.substring(0, filename.indexOf("."));
 			file = new File(folder.getPath() + File.separator + filename +"_ISBI.xml");
 		} catch (final NullPointerException npe) {
@@ -59,7 +59,7 @@ public class ISBIChallengeExporter extends AbstractTMAction {
 		}
 		file = IOUtils.askForFileForSaving( file, parent, logger );
 
-		exportToFile( model, trackmate.getSettings(), file, logger );
+		exportToFile( model, btrackmate.getSettings(), file, logger );
 	}
 
 	public static void exportToFile( final Model model, final Settings settings, final File file )

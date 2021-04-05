@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features.edges;
+package fiji.plugin.btrackmate.features.edges;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,8 +15,8 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Model;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Model;
 
 /**
  * Abstract class for edge analyzers that are local and not manual. Offers

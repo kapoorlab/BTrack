@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,9 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.util.OnRequestUpdater;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.util.OnRequestUpdater;
 
 public class InitFilterPanel extends JPanel
 {

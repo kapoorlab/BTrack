@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.bbtrackmate.gui.displaysettings;
 
-import static fiji.plugin.trackmate.features.FeatureUtils.USE_UNIFORM_COLOR_KEY;
+import static fiji.plugin.bbtrackmate.features.FeatureUtils.USE_UNIFORM_COLOR_KEY;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.scijava.listeners.Listeners;
 
-import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
+import fiji.plugin.bbtrackmate.features.track.TrackIndexAnalyzer;
 
 public class DisplaySettings
 {

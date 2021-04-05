@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.tracking.kdtree;
+package fiji.plugin.btrackmate.tracking.kdtree;
 
 public class FlagNode< K >
 {

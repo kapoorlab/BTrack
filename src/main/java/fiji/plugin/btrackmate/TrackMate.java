@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,18 +15,18 @@ import org.scijava.Cancelable;
 import org.scijava.Named;
 import org.scijava.util.VersionUtils;
 
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
-import fiji.plugin.trackmate.detection.SpotDetector;
-import fiji.plugin.trackmate.detection.SpotDetectorFactory;
-import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
-import fiji.plugin.trackmate.detection.SpotGlobalDetector;
-import fiji.plugin.trackmate.detection.SpotGlobalDetectorFactory;
-import fiji.plugin.trackmate.features.EdgeFeatureCalculator;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.features.SpotFeatureCalculator;
-import fiji.plugin.trackmate.features.TrackFeatureCalculator;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.detection.ManualDetectorFactory;
+import fiji.plugin.btrackmate.detection.SpotDetector;
+import fiji.plugin.btrackmate.detection.SpotDetectorFactory;
+import fiji.plugin.btrackmate.detection.SpotDetectorFactoryBase;
+import fiji.plugin.btrackmate.detection.SpotGlobalDetector;
+import fiji.plugin.btrackmate.detection.SpotGlobalDetectorFactory;
+import fiji.plugin.btrackmate.features.EdgeFeatureCalculator;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.features.SpotFeatureCalculator;
+import fiji.plugin.btrackmate.features.TrackFeatureCalculator;
+import fiji.plugin.btrackmate.tracking.SpotTracker;
+import fiji.plugin.btrackmate.util.TMUtils;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Interval;
@@ -58,7 +58,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 	
 	/**
-	 * The model this trackmate will shape.
+	 * The model this btrackmate will shape.
 	 */
 	protected final Model model;
 

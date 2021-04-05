@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Icons.EXECUTE_ICON;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Icons.EXECUTE_ICON;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -12,21 +12,21 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.action.CaptureOverlayAction;
-import fiji.plugin.trackmate.action.TrackMateAction;
-import fiji.plugin.trackmate.action.TrackMateActionFactory;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.providers.ActionProvider;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.action.CaptureOverlayAction;
+import fiji.plugin.btrackmate.action.TrackMateAction;
+import fiji.plugin.btrackmate.action.TrackMateActionFactory;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.providers.ActionProvider;
 
 public class ActionChooserPanel extends ModuleChooserPanel< TrackMateActionFactory >
 {
 
 	private static final long serialVersionUID = 1L;
 
-	public ActionChooserPanel( final ActionProvider actionProvider, final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	public ActionChooserPanel( final ActionProvider actionProvider, final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
 		super( actionProvider, "action", CaptureOverlayAction.KEY );
 
@@ -72,7 +72,7 @@ public class ActionChooserPanel extends ModuleChooserPanel< TrackMateActionFacto
 							{
 								action.setLogger( logger );
 								action.execute(
-										trackmate,
+										btrackmate,
 										selectionModel,
 										displaySettings,
 										( JFrame ) SwingUtilities.getWindowAncestor( ActionChooserPanel.this ) );

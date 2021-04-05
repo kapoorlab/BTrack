@@ -1,13 +1,13 @@
-package fiji.plugin.trackmate.visualization.hyperstack;
+package fiji.plugin.btrackmate.visualization.hyperstack;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.ModelChangeEvent;
-import fiji.plugin.trackmate.SelectionChangeEvent;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.visualization.AbstractTrackMateModelView;
-import fiji.plugin.trackmate.visualization.ViewUtils;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.ModelChangeEvent;
+import fiji.plugin.btrackmate.SelectionChangeEvent;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.visualization.AbstractTrackMateModelView;
+import fiji.plugin.btrackmate.visualization.ViewUtils;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.Roi;

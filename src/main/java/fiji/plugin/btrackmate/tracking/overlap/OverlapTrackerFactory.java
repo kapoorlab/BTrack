@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.tracking.overlap;
+package fiji.plugin.btrackmate.tracking.overlap;
 
-import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,12 +10,12 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
-import fiji.plugin.trackmate.tracking.overlap.OverlapTracker.IoUCalculation;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.tracking.SpotTracker;
+import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.tracking.overlap.OverlapTracker.IoUCalculation;
 
 @Plugin( type = SpotTrackerFactory.class )
 public class OverlapTrackerFactory implements SpotTrackerFactory

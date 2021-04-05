@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
-import static fiji.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_SCHEME_ICON;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -21,11 +21,11 @@ import javax.swing.ScrollPaneConstants;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackModel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.util.ExportableChartPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackModel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.util.ExportableChartPanel;
 
 public abstract class AbstractFeatureGrapher
 {

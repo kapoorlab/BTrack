@@ -1,8 +1,8 @@
-package fiji.plugin.trackmate.tracking;
+package fiji.plugin.btrackmate.tracking;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
 
 import java.util.Map;
 

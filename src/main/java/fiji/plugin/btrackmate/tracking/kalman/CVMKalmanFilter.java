@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.tracking.kalman;
+package fiji.plugin.btrackmate.tracking.kalman;
 
 import Jama.Matrix;
 

@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.graph;
+package fiji.plugin.btrackmate.graph;
 
 /**
  * Interface for function that can build a human-readable string 

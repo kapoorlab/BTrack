@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
 
 public interface TrackMateModelView
 {

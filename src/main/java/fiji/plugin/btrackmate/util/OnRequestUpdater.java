@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
 /**
  * This class extends Thread and is suited to call methods that are typically

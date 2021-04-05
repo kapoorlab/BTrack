@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.Color;
 import java.io.File;
@@ -9,19 +9,19 @@ import javax.swing.JFrame;
 
 import org.scijava.util.VersionUtils;
 
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.TrackMateWizardSequence;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.LogPanelDescriptor2;
-import fiji.plugin.trackmate.gui.wizard.descriptors.SomeDialogDescriptor;
-import fiji.plugin.trackmate.io.IOUtils;
-import fiji.plugin.trackmate.io.TmXmlReader;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
-import fiji.plugin.trackmate.visualization.ViewUtils;
-import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.TrackMateWizardSequence;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.LogPanelDescriptor2;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.SomeDialogDescriptor;
+import fiji.plugin.btrackmate.io.IOUtils;
+import fiji.plugin.btrackmate.io.TmXmlReader;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.visualization.ViewUtils;
+import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
@@ -140,10 +140,10 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 		 * Create TrackMate.
 		 */
 
-		final TrackMate trackmate = new TrackMate( model, settings );
+		final TrackMate btrackmate = new TrackMate( model, settings );
 
 		// Hook actions
-		postRead( trackmate );
+		postRead( btrackmate );
 
 		// Display settings.
 		final DisplaySettings displaySettings = reader.getDisplaySettings();
@@ -168,7 +168,7 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 			panelIdentifier = ConfigureViewsDescriptor.KEY;
 
 		// Wizard.
-		final TrackMateWizardSequence sequence = new TrackMateWizardSequence( trackmate, selectionModel, displaySettings );
+		final TrackMateWizardSequence sequence = new TrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
 		sequence.setCurrent( panelIdentifier );
 		final JFrame frame = sequence.run( "TrackMate on " + settings.imp.getShortTitle() );
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
@@ -203,10 +203,10 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 	 * The {@link TrackMate} object is loaded and properly configured. This
 	 * method is called just before the controller and GUI are launched.
 	 *
-	 * @param trackmate
+	 * @param btrackmate
 	 *            the {@link TrackMate} instance that was fledged after loading.
 	 */
-	protected void postRead( final TrackMate trackmate )
+	protected void postRead( final TrackMate btrackmate )
 	{}
 
 	/**

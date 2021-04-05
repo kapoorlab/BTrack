@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 
 public class LogPanelDescriptor2 extends WizardPanelDescriptor
 {

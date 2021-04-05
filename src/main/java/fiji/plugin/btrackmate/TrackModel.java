@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,13 +29,13 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
-import fiji.plugin.trackmate.graph.Function1;
-import fiji.plugin.trackmate.graph.SortedDepthFirstIterator;
-import fiji.plugin.trackmate.graph.TimeDirectedDepthFirstIterator;
-import fiji.plugin.trackmate.graph.TimeDirectedNeighborIndex;
-import fiji.plugin.trackmate.graph.TimeDirectedSortedDepthFirstIterator;
-import fiji.plugin.trackmate.util.AlphanumComparator;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.graph.Function1;
+import fiji.plugin.btrackmate.graph.SortedDepthFirstIterator;
+import fiji.plugin.btrackmate.graph.TimeDirectedDepthFirstIterator;
+import fiji.plugin.btrackmate.graph.TimeDirectedNeighborIndex;
+import fiji.plugin.btrackmate.graph.TimeDirectedSortedDepthFirstIterator;
+import fiji.plugin.btrackmate.util.AlphanumComparator;
+import fiji.plugin.btrackmate.util.TMUtils;
 
 /**
  * A component of {@link Model} specialized for tracks.

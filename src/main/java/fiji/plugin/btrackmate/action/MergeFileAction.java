@@ -1,9 +1,9 @@
 /**
  *
  */
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.MERGE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.MERGE_ICON;
 
 import java.awt.Frame;
 import java.io.File;
@@ -15,14 +15,14 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.descriptors.SomeDialogDescriptor;
-import fiji.plugin.trackmate.io.IOUtils;
-import fiji.plugin.trackmate.io.TmXmlReader;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.SomeDialogDescriptor;
+import fiji.plugin.btrackmate.io.IOUtils;
+import fiji.plugin.btrackmate.io.TmXmlReader;
 
 public class MergeFileAction extends AbstractTMAction
 {
@@ -45,7 +45,7 @@ public class MergeFileAction extends AbstractTMAction
 			+ "</html>";
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
 		File file = SomeDialogDescriptor.file;
 		if ( null == file )
@@ -70,7 +70,7 @@ public class MergeFileAction extends AbstractTMAction
 
 		// Model
 		final Model modelToMerge = reader.getModel();
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		final int nNewTracks = modelToMerge.getTrackModel().nTracks( true );
 
 		int progress = 0;

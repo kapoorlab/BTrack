@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.gui.Icons.CAMERA_EXPORT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CAMERA_EXPORT_ICON;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -39,7 +39,7 @@ import com.mxgraph.util.png.mxPngEncodeParam;
 import com.mxgraph.util.png.mxPngImageEncoder;
 import com.mxgraph.view.mxGraph;
 
-import fiji.plugin.trackmate.util.DefaultFileFilter;
+import fiji.plugin.btrackmate.util.DefaultFileFilter;
 
 public class SaveAction extends AbstractAction {
 

@@ -1,18 +1,18 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettingsIO;
-import fiji.plugin.trackmate.gui.wizard.TrackMateWizardSequence;
-import fiji.plugin.trackmate.gui.wizard.WizardSequence;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
-import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettingsIO;
+import fiji.plugin.btrackmate.gui.wizard.TrackMateWizardSequence;
+import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
@@ -42,7 +42,7 @@ public class TrackMatePlugIn implements PlugIn {
 		final Settings settings = createSettings(imp);
 		final Model model = createModel();
 		model.setSpots(parent.budcells, true);
-		final TrackMate trackmate = createTrackMate(model, settings);
+		final TrackMate btrackmate = createTrackMate(model, settings);
 		final SelectionModel selectionModel = new SelectionModel(model);
 		final DisplaySettings displaySettings = createDisplaySettings();
 
@@ -51,7 +51,7 @@ public class TrackMatePlugIn implements PlugIn {
 		displayer.render();
 
 		// Wizard.
-		final WizardSequence sequence = createSequence(trackmate, selectionModel, displaySettings);
+		final WizardSequence sequence = createSequence(btrackmate, selectionModel, displaySettings);
 		final JFrame frame = sequence.run("BTrackMate" + imp.getShortTitle());
 		frame.setIconImage(TRACKMATE_ICON.getImage());
 		GuiUtils.positionWindow(frame, imp.getWindow());
@@ -63,14 +63,14 @@ public class TrackMatePlugIn implements PlugIn {
 	 * Will create and position the sequence that will be played by the wizard
 	 * launched by this plugin.
 	 * 
-	 * @param trackmate
+	 * @param btrackmate
 	 * @param selectionModel
 	 * @param displaySettings
 	 * @return
 	 */
-	protected WizardSequence createSequence(final TrackMate trackmate, final SelectionModel selectionModel,
+	protected WizardSequence createSequence(final TrackMate btrackmate, final SelectionModel selectionModel,
 			final DisplaySettings displaySettings) {
-		return new TrackMateWizardSequence(trackmate, selectionModel, displaySettings);
+		return new TrackMateWizardSequence(btrackmate, selectionModel, displaySettings);
 	}
 
 	public static ImagePlus Reshape3D(RandomAccessibleInterval<FloatType> image, String title) {

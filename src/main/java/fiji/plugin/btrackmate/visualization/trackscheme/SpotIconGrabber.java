@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -8,8 +8,8 @@ import javax.imageio.ImageIO;
 
 import com.mxgraph.util.mxBase64;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.util.TMUtils;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import net.imagej.ImgPlus;

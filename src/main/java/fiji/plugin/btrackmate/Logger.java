@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.awt.Color;
 import java.io.IOException;

@@ -4,4 +4,4 @@
  * 
  * @author Jean-Yves Tinevez
  */
-package fiji.plugin.trackmate.graph;
+package fiji.plugin.btrackmate.graph;

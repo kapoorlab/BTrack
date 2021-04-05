@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
 /**
  * A helper class to store a feature filter. It is just made of 3 public fields.

@@ -5,18 +5,18 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import fiji.plugin.btrack.gui.components.LoadSingleImage;
+import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import fileListeners.ChooseGreenSegMap;
-import loadfile.CovistoOneChFileLoader;
-import pluginTools.ThreeDTimeCellFileChooser;
 
 
 public class CsvLoader implements ItemListener {
 
-	public final ThreeDTimeCellFileChooser parent;
+	public final BTMStartDialogDescriptor parent;
 	
 	
 	
-	public CsvLoader( final ThreeDTimeCellFileChooser parent) {
+	public CsvLoader( final BTMStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}

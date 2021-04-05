@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.util.EventListener;
 

@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
-import static fiji.plugin.trackmate.SpotCollection.VISIBILITY;
+import static fiji.plugin.btrackmate.SpotCollection.VISIBILITY;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import fiji.plugin.trackmate.util.AlphanumComparator;
+import fiji.plugin.btrackmate.util.AlphanumComparator;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.util.Util;

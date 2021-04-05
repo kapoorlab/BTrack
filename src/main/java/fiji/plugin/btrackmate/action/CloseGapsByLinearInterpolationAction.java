@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.ORANGE_ASTERISK_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ORANGE_ASTERISK_ICON;
 
 import java.awt.Frame;
 import java.util.Set;
@@ -10,19 +10,19 @@ import javax.swing.ImageIcon;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.TrackModel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.TrackModel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 import net.imglib2.RealPoint;
 
 /**
  * This action allows to close gaps in tracks by creating new intermediate spots
  * which are located at interpolated positions. This is useful if you want to
  * measure signal intensity changing during time, even if the spot is not
- * visible. Thus, trackmate is utilisable for Fluorescence Recovery after
+ * visible. Thus, btrackmate is utilisable for Fluorescence Recovery after
  * Photobleaching (FRAP) analysis.
  *
  * Author: Robert Haase, Scientific Computing Facility, MPI-CBG,
@@ -46,9 +46,9 @@ public class CloseGapsByLinearInterpolationAction extends AbstractTMAction
 
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 
 		final TrackModel trackModel = model.getTrackModel();
 

@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.bbtrackmate.gui.displaysettings;
 
-import static fiji.plugin.trackmate.gui.Icons.APPLY_ICON;
-import static fiji.plugin.trackmate.gui.Icons.RESET_ICON;
-import static fiji.plugin.trackmate.gui.Icons.REVERT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.bbtrackmate.gui.Icons.APPLY_ICON;
+import static fiji.plugin.bbtrackmate.gui.Icons.RESET_ICON;
+import static fiji.plugin.bbtrackmate.gui.Icons.REVERT_ICON;
+import static fiji.plugin.bbtrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

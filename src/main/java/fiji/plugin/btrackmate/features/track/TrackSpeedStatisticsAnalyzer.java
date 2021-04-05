@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features.track;
+package fiji.plugin.btrackmate.features.track;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,11 +9,11 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.FeatureModel;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.FeatureModel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.util.TMUtils;
 import net.imglib2.util.Util;
 
 @Plugin( type = TrackAnalyzer.class )

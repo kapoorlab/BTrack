@@ -1,22 +1,22 @@
-package fiji.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import org.scijava.Cancelable;
 
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 
 public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 {
 
 	public static final String KEY = "ExecuteDetection";
 
-	private final TrackMate trackmate;
+	private final TrackMate btrackmate;
 
-	public ExecuteDetectionDescriptor( final TrackMate trackmate, final LogPanel logPanel )
+	public ExecuteDetectionDescriptor( final TrackMate btrackmate, final LogPanel logPanel )
 	{
 		super( KEY );
-		this.trackmate = trackmate;
+		this.btrackmate = btrackmate;
 		this.targetPanel = logPanel;
 	}
 
@@ -25,15 +25,15 @@ public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 	{
 		return () -> {
 			final long start = System.currentTimeMillis();
-			trackmate.execDetection();
+			btrackmate.execDetection();
 			final long end = System.currentTimeMillis();
-			trackmate.getModel().getLogger().log( String.format( "Detection done in %.1f s.\n", ( end - start ) / 1e3f ) );
+			btrackmate.getModel().getLogger().log( String.format( "Detection done in %.1f s.\n", ( end - start ) / 1e3f ) );
 		};
 	}
 
 	@Override
 	public Cancelable getCancelable()
 	{
-		return trackmate;
+		return btrackmate;
 	}
 }

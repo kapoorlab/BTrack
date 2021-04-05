@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.CAMERA_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CAMERA_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.Frame;
 import java.awt.Rectangle;
@@ -12,10 +12,10 @@ import javax.swing.JOptionPane;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
@@ -44,9 +44,9 @@ public class CaptureOverlayAction extends AbstractTMAction
 	private static int lastFrame = -1;
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame gui )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame gui )
 	{
-		final ImagePlus imp = trackmate.getSettings().imp;
+		final ImagePlus imp = btrackmate.getSettings().imp;
 
 		if ( firstFrame < 0 )
 			firstFrame = 1;
@@ -77,7 +77,7 @@ public class CaptureOverlayAction extends AbstractTMAction
 			lastFrame = Math.min( imp.getNFrames(), lastFrame );
 		}
 
-		final ImagePlus capture = capture( trackmate, firstFrame, lastFrame );
+		final ImagePlus capture = capture( btrackmate, firstFrame, lastFrame );
 		capture.show();
 	}
 
@@ -87,7 +87,7 @@ public class CaptureOverlayAction extends AbstractTMAction
 	 * captured as is. If the ImagePlus used by TrackMate as multiple Z-slices,
 	 * or multiple channels, the current Z-slice and channel are captured as is.
 	 *
-	 * @param trackmate
+	 * @param btrackmate
 	 *            the TrackMate instance to use for capture.
 	 * @param first
 	 *            the first frame, inclusive, to capture.
@@ -95,10 +95,10 @@ public class CaptureOverlayAction extends AbstractTMAction
 	 *            the last frame, inclusive, to capture.
 	 * @return a new ImagePlus.
 	 */
-	public static ImagePlus capture( final TrackMate trackmate, final int first, final int last )
+	public static ImagePlus capture( final TrackMate btrackmate, final int first, final int last )
 	{
-		final Logger logger = trackmate.getModel().getLogger();
-		final ImagePlus imp = trackmate.getSettings().imp;
+		final Logger logger = btrackmate.getModel().getLogger();
+		final ImagePlus imp = btrackmate.getSettings().imp;
 		return capture( imp, first, last, logger );
 	}
 

@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features.track;
+package fiji.plugin.btrackmate.features.track;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,10 +8,10 @@ import java.util.Set;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.FeatureModel;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.FeatureModel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
 
 @Plugin( type = TrackAnalyzer.class )
 public class TrackLocationAnalyzer extends AbstractTrackAnalyzer

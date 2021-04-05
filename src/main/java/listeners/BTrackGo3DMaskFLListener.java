@@ -4,16 +4,16 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import fiji.plugin.btrack.gui.components.LoadDualImage;
+import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import fileListeners.ChooseGreenSegMap;
 import fileListeners.ChooseMaskSegMap;
-import loadfile.CovistoTwoChForceFileLoader;
-import pluginTools.ThreeDTimeCellFileChooser;
 
 public class BTrackGo3DMaskFLListener implements ItemListener {
 
-	public final ThreeDTimeCellFileChooser parent;
+	public final BTMStartDialogDescriptor parent;
 	
-	public BTrackGo3DMaskFLListener( final ThreeDTimeCellFileChooser parent) {
+	public BTrackGo3DMaskFLListener( final BTMStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}
@@ -33,7 +33,7 @@ public class BTrackGo3DMaskFLListener implements ItemListener {
 			
 			
 			
-			CovistoTwoChForceFileLoader segmentation = new CovistoTwoChForceFileLoader(parent.chooseMaskSegstring, parent.blankimageNames);
+			LoadDualImage segmentation = new LoadDualImage(parent.chooseMaskSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.TwoChannelOption();
 			
 			

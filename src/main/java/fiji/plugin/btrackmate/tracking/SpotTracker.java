@@ -1,10 +1,10 @@
-package fiji.plugin.trackmate.tracking;
+package fiji.plugin.btrackmate.tracking;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Spot;
 import net.imglib2.algorithm.MultiThreaded;
 import net.imglib2.algorithm.OutputAlgorithm;
 
@@ -14,7 +14,7 @@ import net.imglib2.algorithm.OutputAlgorithm;
  * <p>
  * A SpotTracker algorithm is simply expected to <b>create</b> a new
  * {@link SimpleWeightedGraph} from the spot collection help in the
- * {@link fiji.plugin.trackmate.Model} that is given to it. We use a simple
+ * {@link fiji.plugin.btrackmate.Model} that is given to it. We use a simple
  * weighted graph:
  * <ul>
  * <li>Though the weights themselves are not used for subsequent steps, it is

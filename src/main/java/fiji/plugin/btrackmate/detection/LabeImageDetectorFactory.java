@@ -1,14 +1,14 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.DEFAULT_TARGET_CHANNEL;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
-import static fiji.plugin.trackmate.detection.ThresholdDetectorFactory.KEY_SIMPLIFY_CONTOURS;
-import static fiji.plugin.trackmate.io.IOUtils.readBooleanAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.readIntegerAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.writeTargetChannel;
-import static fiji.plugin.trackmate.util.TMUtils.checkMapKeys;
-import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.DEFAULT_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.detection.ThresholdDetectorFactory.KEY_SIMPLIFY_CONTOURS;
+import static fiji.plugin.btrackmate.io.IOUtils.readBooleanAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.readIntegerAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.writeTargetChannel;
+import static fiji.plugin.btrackmate.util.TMUtils.checkMapKeys;
+import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +20,11 @@ import javax.swing.ImageIcon;
 import org.jdom2.Element;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.detector.LabelImageDetectorConfigurationPanel;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.detector.LabelImageDetectorConfigurationPanel;
+import fiji.plugin.btrackmate.util.TMUtils;
 import net.imagej.ImgPlus;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;

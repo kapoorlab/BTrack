@@ -1,10 +1,10 @@
-package fiji.plugin.trackmate.tracking.overlap;
+package fiji.plugin.btrackmate.tracking.overlap;
 
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.tracking.overlap.OverlapTrackerFactory.KEY_IOU_CALCULATION;
-import static fiji.plugin.trackmate.tracking.overlap.OverlapTrackerFactory.KEY_MIN_IOU;
-import static fiji.plugin.trackmate.tracking.overlap.OverlapTrackerFactory.KEY_SCALE_FACTOR;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.tracking.overlap.OverlapTrackerFactory.KEY_IOU_CALCULATION;
+import static fiji.plugin.btrackmate.tracking.overlap.OverlapTrackerFactory.KEY_MIN_IOU;
+import static fiji.plugin.btrackmate.tracking.overlap.OverlapTrackerFactory.KEY_SCALE_FACTOR;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -22,9 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.tracking.overlap.OverlapTracker.IoUCalculation;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.tracking.overlap.OverlapTracker.IoUCalculation;
 
 public class OverlapTrackerSettingsPanel extends ConfigurationPanel
 {

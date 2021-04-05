@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.CALCULATOR_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CALCULATOR_ICON;
 
 import java.awt.Frame;
 
@@ -8,11 +8,11 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.visualization.table.AllSpotsTableView;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.visualization.table.AllSpotsTableView;
 
 public class ExportAllSpotsStatsAction extends AbstractTMAction
 {
@@ -28,9 +28,9 @@ public class ExportAllSpotsStatsAction extends AbstractTMAction
 			+ "</html>";
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
-		createSpotsTable( trackmate.getModel(), selectionModel, displaySettings ).render();
+		createSpotsTable( btrackmate.getModel(), selectionModel, displaySettings ).render();
 	}
 
 	public static final AllSpotsTableView createSpotsTable( final Model model, final SelectionModel selectionModel, final DisplaySettings displaySettings )

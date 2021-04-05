@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.visualization.table;
+package fiji.plugin.btrackmate.visualization.table;
 
-import static fiji.plugin.trackmate.gui.Icons.CSV_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.CSV_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,20 +34,20 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition;
-import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
-import fiji.plugin.trackmate.graph.TimeDirectedNeighborIndex;
-import fiji.plugin.trackmate.util.FileChooser;
-import fiji.plugin.trackmate.util.FileChooser.DialogType;
-import fiji.plugin.trackmate.util.FileChooser.SelectionMode;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition;
+import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
+import fiji.plugin.btrackmate.graph.TimeDirectedNeighborIndex;
+import fiji.plugin.btrackmate.util.FileChooser;
+import fiji.plugin.btrackmate.util.FileChooser.DialogType;
+import fiji.plugin.btrackmate.util.FileChooser.SelectionMode;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
 
 public class BranchTableView extends JFrame implements TrackMateModelView
 {

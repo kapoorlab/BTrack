@@ -1,29 +1,29 @@
-package fiji.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import java.util.function.Function;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.features.FeatureUtils;
-import fiji.plugin.trackmate.gui.components.InitFilterPanel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
-import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.features.FeatureUtils;
+import fiji.plugin.btrackmate.gui.components.InitFilterPanel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 
 public class InitFilterDescriptor extends WizardPanelDescriptor
 {
 
 	public static final String KEY = "InitialFiltering";
 
-	private final TrackMate trackmate;
+	private final TrackMate btrackmate;
 
-	public InitFilterDescriptor( final TrackMate trackmate, final FeatureFilter filter )
+	public InitFilterDescriptor( final TrackMate btrackmate, final FeatureFilter filter )
 	{
 		super( KEY );
-		this.trackmate = trackmate;
+		this.btrackmate = btrackmate;
 		final Function< String, double[] > valuesCollector = key -> FeatureUtils.collectFeatureValues(
-				Spot.QUALITY, TrackMateObject.SPOTS, trackmate.getModel(), trackmate.getSettings(), false );
+				Spot.QUALITY, TrackMateObject.SPOTS, btrackmate.getModel(), btrackmate.getSettings(), false );
 		this.targetPanel = new InitFilterPanel( filter, valuesCollector );
 	}
 
@@ -36,7 +36,7 @@ public class InitFilterDescriptor extends WizardPanelDescriptor
 			@Override
 			public void run()
 			{
-				trackmate.getModel().getLogger().log( "\nComputing spot quality histogram...\n", Logger.BLUE_COLOR );
+				btrackmate.getModel().getLogger().log( "\nComputing spot quality histogram...\n", Logger.BLUE_COLOR );
 				final InitFilterPanel component = ( InitFilterPanel ) targetPanel;
 				component.refresh();
 			}
@@ -47,6 +47,6 @@ public class InitFilterDescriptor extends WizardPanelDescriptor
 	public void aboutToHidePanel()
 	{
 		final InitFilterPanel component = ( InitFilterPanel ) targetPanel;
-		trackmate.getSettings().initialSpotFilterValue = component.getFeatureThreshold().value;
+		btrackmate.getSettings().initialSpotFilterValue = component.getFeatureThreshold().value;
 	}
 }

@@ -1,31 +1,31 @@
-package fiji.plugin.trackmate.tracking;
+package fiji.plugin.btrackmate.tracking;
 
-import static fiji.plugin.trackmate.io.IOUtils.marshallMap;
-import static fiji.plugin.trackmate.io.IOUtils.readBooleanAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.readIntegerAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.unmarshallMap;
-import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
-import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_FEATURE_PENALTIES;
-import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_GAP_CLOSING;
-import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_LINKING;
-import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_MERGING;
-import static fiji.plugin.trackmate.tracking.LAPUtils.XML_ELEMENT_NAME_SPLITTING;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_BLOCKING_VALUE;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_CUTOFF_PERCENTILE;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PENALTIES;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.io.IOUtils.marshallMap;
+import static fiji.plugin.btrackmate.io.IOUtils.readBooleanAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.readIntegerAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.unmarshallMap;
+import static fiji.plugin.btrackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.btrackmate.tracking.LAPUtils.XML_ELEMENT_NAME_FEATURE_PENALTIES;
+import static fiji.plugin.btrackmate.tracking.LAPUtils.XML_ELEMENT_NAME_GAP_CLOSING;
+import static fiji.plugin.btrackmate.tracking.LAPUtils.XML_ELEMENT_NAME_LINKING;
+import static fiji.plugin.btrackmate.tracking.LAPUtils.XML_ELEMENT_NAME_MERGING;
+import static fiji.plugin.btrackmate.tracking.LAPUtils.XML_ELEMENT_NAME_SPLITTING;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_BLOCKING_VALUE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_CUTOFF_PERCENTILE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PENALTIES;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,9 +35,9 @@ import javax.swing.ImageIcon;
 
 import org.jdom2.Element;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.tracker.LAPTrackerSettingsPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.tracker.LAPTrackerSettingsPanel;
 
 /**
  * Base class for LAP-based trackers.

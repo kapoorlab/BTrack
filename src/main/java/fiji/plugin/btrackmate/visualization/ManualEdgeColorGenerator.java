@@ -1,12 +1,12 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 
 import java.awt.Color;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.features.manual.ManualEdgeColorAnalyzer;
 
 public class ManualEdgeColorGenerator implements TrackColorGenerator
 {

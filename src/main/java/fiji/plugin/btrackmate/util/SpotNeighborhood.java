@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 import net.imagej.ImgPlus;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;

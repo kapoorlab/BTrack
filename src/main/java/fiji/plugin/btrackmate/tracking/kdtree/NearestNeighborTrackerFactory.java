@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.tracking.kdtree;
+package fiji.plugin.btrackmate.tracking.kdtree;
 
-import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
-import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
-import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.io.IOUtils.readDoubleAttribute;
+import static fiji.plugin.btrackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_LINKING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +14,12 @@ import org.jdom2.Element;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.tracker.NearestNeighborTrackerSettingsPanel;
-import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.tracker.NearestNeighborTrackerSettingsPanel;
+import fiji.plugin.btrackmate.tracking.SpotTracker;
+import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
 
 @Plugin( type = SpotTrackerFactory.class, priority = Priority.LOW )
 public class NearestNeighborTrackerFactory implements SpotTrackerFactory

@@ -1,19 +1,19 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.gui.Icons.ARROW_DOWNLEFT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_DOWNRIGHT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_DOWN_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_LEFT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_RIGHT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_UPLEFT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_UPRIGHT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ARROW_UP_ICON;
-import static fiji.plugin.trackmate.gui.Icons.EDIT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.END_ICON;
-import static fiji.plugin.trackmate.gui.Icons.HOME_ICON;
-import static fiji.plugin.trackmate.gui.Icons.RESET_ZOOM_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ZOOM_IN_ICON;
-import static fiji.plugin.trackmate.gui.Icons.ZOOM_OUT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_DOWNLEFT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_DOWNRIGHT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_DOWN_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_LEFT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_RIGHT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_UPLEFT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_UPRIGHT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ARROW_UP_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.EDIT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.END_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.HOME_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.RESET_ZOOM_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ZOOM_IN_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ZOOM_OUT_ICON;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -34,7 +34,7 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 
 public class TrackSchemeActions
 {

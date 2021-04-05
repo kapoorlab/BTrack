@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
 import java.awt.Component;
 import java.awt.Dialog;

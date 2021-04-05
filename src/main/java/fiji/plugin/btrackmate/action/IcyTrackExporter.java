@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.action;
+package fiji.plugin.btrackmate.action;
 
-import static fiji.plugin.trackmate.gui.Icons.ICY_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.ICY_ICON;
 
 import java.awt.Frame;
 import java.io.File;
@@ -9,12 +9,12 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.io.IOUtils;
-import fiji.plugin.trackmate.io.IcyTrackFormatWriter;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.io.IOUtils;
+import fiji.plugin.btrackmate.io.IcyTrackFormatWriter;
 
 public class IcyTrackExporter extends AbstractTMAction
 {
@@ -30,11 +30,11 @@ public class IcyTrackExporter extends AbstractTMAction
 	private static final String KEY = "ICY_EXPORTER";
 
 	@Override
-	public void execute( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
+	public void execute( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Frame parent )
 	{
 
 		logger.log( "Exporting tracks to Icy format.\n" );
-		final Model model = trackmate.getModel();
+		final Model model = btrackmate.getModel();
 		final int ntracks = model.getTrackModel().nTracks( true );
 		if ( ntracks == 0 )
 		{
@@ -45,7 +45,7 @@ public class IcyTrackExporter extends AbstractTMAction
 		File folder;
 		try
 		{
-			folder = new File( trackmate.getSettings().imp.getOriginalFileInfo().directory );
+			folder = new File( btrackmate.getSettings().imp.getOriginalFileInfo().directory );
 		}
 		catch ( final NullPointerException npe )
 		{
@@ -55,7 +55,7 @@ public class IcyTrackExporter extends AbstractTMAction
 		File file;
 		try
 		{
-			String filename = trackmate.getSettings().imageFileName;
+			String filename = btrackmate.getSettings().imageFileName;
 			filename = filename.substring( 0, filename.indexOf( "." ) );
 			file = new File( folder.getPath() + File.separator + filename + "_Icy.xml" );
 		}
@@ -70,9 +70,9 @@ public class IcyTrackExporter extends AbstractTMAction
 		logger.log( "  Writing to file.\n" );
 
 		final double[] calibration = new double[ 3 ];
-		calibration[ 0 ] = trackmate.getSettings().dx;
-		calibration[ 1 ] = trackmate.getSettings().dy;
-		calibration[ 2 ] = trackmate.getSettings().dz;
+		calibration[ 0 ] = btrackmate.getSettings().dx;
+		calibration[ 1 ] = btrackmate.getSettings().dy;
+		calibration[ 2 ] = btrackmate.getSettings().dz;
 		final IcyTrackFormatWriter writer = new IcyTrackFormatWriter( file, model, calibration );
 
 		if ( !writer.checkInput() || !writer.process() )

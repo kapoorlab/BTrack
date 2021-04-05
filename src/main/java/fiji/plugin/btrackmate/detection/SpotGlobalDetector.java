@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.detection;
+package fiji.plugin.btrackmate.detection;
 
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.btrackmate.SpotCollection;
 import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.OutputAlgorithm;
 import net.imglib2.type.NativeType;

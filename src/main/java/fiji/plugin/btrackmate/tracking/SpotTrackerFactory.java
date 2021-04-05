@@ -1,13 +1,13 @@
-package fiji.plugin.trackmate.tracking;
+package fiji.plugin.btrackmate.tracking;
 
 import java.util.Map;
 
 import org.jdom2.Element;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.TrackMateModule;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SpotCollection;
+import fiji.plugin.btrackmate.TrackMateModule;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
 
 public interface SpotTrackerFactory extends TrackMateModule
 {

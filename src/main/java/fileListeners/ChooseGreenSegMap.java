@@ -5,19 +5,19 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 
+import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import ij.WindowManager;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
-import pluginTools.ThreeDTimeCellFileChooser;
 
 public class ChooseGreenSegMap implements ActionListener {
 	
 	
-	final ThreeDTimeCellFileChooser parent;
+	final BTMStartDialogDescriptor parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseGreenSegMap(final ThreeDTimeCellFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseGreenSegMap(final BTMStartDialogDescriptor parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;

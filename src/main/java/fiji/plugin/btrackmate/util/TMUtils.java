@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.util;
+package fiji.plugin.btrackmate.util;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -18,10 +18,10 @@ import java.util.Set;
 
 import org.scijava.Context;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
 import ij.IJ;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
@@ -36,7 +36,7 @@ import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.Util;
 
 /**
- * List of static utilities for {@link fiji.plugin.trackmate.TrackMate}.
+ * List of static utilities for {@link fiji.plugin.btrackmate.TrackMate}.
  */
 public class TMUtils
 {
@@ -570,7 +570,7 @@ public class TMUtils
 	 * that will determine the X,Y,Z size of the interval. A single channel will
 	 * be taken in the case of a multi-channel image. If the detector set in the
 	 * settings object has a parameter for the target channel
-	 * {@link fiji.plugin.trackmate.detection.DetectorKeys#KEY_TARGET_CHANNEL},
+	 * {@link fiji.plugin.btrackmate.detection.DetectorKeys#KEY_TARGET_CHANNEL},
 	 * it will be used; otherwise the first channel will be taken.
 	 * <p>
 	 * If the specified {@link ImgPlus} has a time axis, it will be dropped and

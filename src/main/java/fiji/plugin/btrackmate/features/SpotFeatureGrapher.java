@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -19,16 +19,16 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.gui.displaysettings.Colormap;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.util.ExportableChartPanel;
-import fiji.plugin.trackmate.util.TMUtils;
-import fiji.plugin.trackmate.util.XYEdgeRenderer;
-import fiji.plugin.trackmate.util.XYEdgeSeries;
-import fiji.plugin.trackmate.util.XYEdgeSeriesCollection;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.gui.displaysettings.Colormap;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.util.ExportableChartPanel;
+import fiji.plugin.btrackmate.util.TMUtils;
+import fiji.plugin.btrackmate.util.XYEdgeRenderer;
+import fiji.plugin.btrackmate.util.XYEdgeSeries;
+import fiji.plugin.btrackmate.util.XYEdgeSeriesCollection;
 
 public class SpotFeatureGrapher extends AbstractFeatureGrapher
 {

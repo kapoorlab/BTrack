@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,7 +38,7 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphView;
 
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 
 public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEventListener
 {
@@ -382,7 +382,7 @@ public class TrackSchemeGraphComponent extends mxGraphComponent implements mxIEv
 	/**
 	 * This listener method will be invoked when a new edge has been created
 	 * interactively in the graph component. It is used then to update the
-	 * underlying {@link fiji.plugin.trackmate.Model}.
+	 * underlying {@link fiji.plugin.btrackmate.Model}.
 	 */
 	@Override
 	public void invoke( final Object sender, final mxEventObject evt )

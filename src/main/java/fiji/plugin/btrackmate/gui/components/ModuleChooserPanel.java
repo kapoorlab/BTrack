@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
 
 import java.awt.Component;
 import java.awt.Font;
@@ -16,8 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
-import fiji.plugin.trackmate.TrackMateModule;
-import fiji.plugin.trackmate.providers.AbstractProvider;
+import fiji.plugin.btrackmate.TrackMateModule;
+import fiji.plugin.btrackmate.providers.AbstractProvider;
 
 public class ModuleChooserPanel< K extends TrackMateModule > extends JPanel
 {

@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.gui.components;
+package fiji.plugin.btrackmate.gui.components;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Icons.ADD_ICON;
-import static fiji.plugin.trackmate.gui.Icons.PLOT_ICON;
-import static fiji.plugin.trackmate.gui.Icons.REMOVE_ICON;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Icons.ADD_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.PLOT_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.REMOVE_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.util.TMUtils;
 
 /**
  * A simple Panel to allow the selection of a X key amongst an enum, and of

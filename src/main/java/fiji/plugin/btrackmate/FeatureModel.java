@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.features.edges.EdgeTargetAnalyzer;
-import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
+import fiji.plugin.btrackmate.features.edges.EdgeTargetAnalyzer;
+import fiji.plugin.btrackmate.features.track.TrackIndexAnalyzer;
 
 /**
  * This class represents the part of the {@link Model} that is in charge of

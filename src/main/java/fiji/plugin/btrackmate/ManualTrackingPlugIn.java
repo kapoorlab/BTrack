@@ -1,10 +1,10 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.WizardSequence;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
-import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
+import fiji.plugin.btrackmate.detection.ManualDetectorFactory;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.btrackmate.tracking.ManualTrackerFactory;
 import ij.ImageJ;
 import ij.ImagePlus;
 import pluginTools.InteractiveBud;
@@ -20,9 +20,9 @@ public class ManualTrackingPlugIn extends TrackMatePlugIn
 	}
 
 	@Override
-	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	protected WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		final WizardSequence sequence = super.createSequence( trackmate, selectionModel, displaySettings );
+		final WizardSequence sequence = super.createSequence( btrackmate, selectionModel, displaySettings );
 		sequence.setCurrent( ConfigureViewsDescriptor.KEY );
 		return sequence;
 	}

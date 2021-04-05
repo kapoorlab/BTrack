@@ -1,9 +1,9 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 import java.awt.Color;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.features.manual.ManualSpotColorAnalyzerFactory;
 
 public class ManualSpotColorGenerator implements FeatureColorGenerator< Spot >
 {

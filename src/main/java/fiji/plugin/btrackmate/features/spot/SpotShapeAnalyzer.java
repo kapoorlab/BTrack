@@ -1,7 +1,7 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotRoi;
 import net.imglib2.type.numeric.RealType;
 
 public class SpotShapeAnalyzer< T extends RealType< T > > extends AbstractSpotFeatureAnalyzer< T >

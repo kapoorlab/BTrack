@@ -1,8 +1,8 @@
-package fiji.plugin.trackmate.gui.wizard;
+package fiji.plugin.btrackmate.gui.wizard;
 
-import static fiji.plugin.trackmate.gui.Icons.SPOT_TABLE_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON_16x16;
-import static fiji.plugin.trackmate.gui.Icons.TRACK_TABLES_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.SPOT_TABLE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_SCHEME_ICON_16x16;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_TABLES_ICON;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
@@ -12,49 +12,49 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.action.AbstractTMAction;
-import fiji.plugin.trackmate.action.ExportAllSpotsStatsAction;
-import fiji.plugin.trackmate.action.ExportStatsTablesAction;
-import fiji.plugin.trackmate.detection.ManualDetectorFactory;
-import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.FeatureDisplaySelector;
-import fiji.plugin.trackmate.gui.components.LogPanel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ActionChooserDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ChooseDetectorDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ChooseTrackerDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ExecuteDetectionDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.ExecuteTrackingDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.GrapherDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.InitFilterDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.LogPanelDescriptor2;
-import fiji.plugin.trackmate.gui.wizard.descriptors.SaveDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.SpotDetectorDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.SpotFilterDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.SpotTrackerDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.StartDialogDescriptor;
-import fiji.plugin.trackmate.gui.wizard.descriptors.TrackFilterDescriptor;
-import fiji.plugin.trackmate.providers.ActionProvider;
-import fiji.plugin.trackmate.providers.DetectorProvider;
-import fiji.plugin.trackmate.providers.TrackerProvider;
-import fiji.plugin.trackmate.tracking.ManualTrackerFactory;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
-import fiji.plugin.trackmate.visualization.trackscheme.SpotImageUpdater;
-import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.action.AbstractTMAction;
+import fiji.plugin.btrackmate.action.ExportAllSpotsStatsAction;
+import fiji.plugin.btrackmate.action.ExportStatsTablesAction;
+import fiji.plugin.btrackmate.detection.ManualDetectorFactory;
+import fiji.plugin.btrackmate.detection.SpotDetectorFactoryBase;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
+import fiji.plugin.btrackmate.gui.components.FeatureDisplaySelector;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ActionChooserDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ChooseDetectorDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ChooseTrackerDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ExecuteDetectionDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.ExecuteTrackingDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.GrapherDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.InitFilterDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.LogPanelDescriptor2;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.SaveDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.SpotDetectorDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.SpotFilterDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.SpotTrackerDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.StartDialogDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.descriptors.TrackFilterDescriptor;
+import fiji.plugin.btrackmate.providers.ActionProvider;
+import fiji.plugin.btrackmate.providers.DetectorProvider;
+import fiji.plugin.btrackmate.providers.TrackerProvider;
+import fiji.plugin.btrackmate.tracking.ManualTrackerFactory;
+import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.visualization.trackscheme.SpotImageUpdater;
+import fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme;
 
 public class TrackMateWizardSequence implements WizardSequence
 {
 
-	private final TrackMate trackmate;
+	private final TrackMate btrackmate;
 
 	private final SelectionModel selectionModel;
 
@@ -92,13 +92,13 @@ public class TrackMateWizardSequence implements WizardSequence
 
 	private final SaveDescriptor saveDescriptor;
 
-	public TrackMateWizardSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	public TrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		this.trackmate = trackmate;
+		this.btrackmate = btrackmate;
 		this.selectionModel = selectionModel;
 		this.displaySettings = displaySettings;
-		final Settings settings = trackmate.getSettings();
-		final Model model = trackmate.getModel();
+		final Settings settings = btrackmate.getSettings();
+		final Model model = btrackmate.getModel();
 
 		final LogPanel logPanel = new LogPanel();
 		final Logger logger = logPanel.getLogger();
@@ -111,17 +111,17 @@ public class TrackMateWizardSequence implements WizardSequence
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
 		startDialogDescriptor = new StartDialogDescriptor( settings, logger );
-		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), trackmate );
-		executeDetectionDescriptor = new ExecuteDetectionDescriptor( trackmate, logPanel );
-		initFilterDescriptor = new InitFilterDescriptor( trackmate, initialFilter );
-		spotFilterDescriptor = new SpotFilterDescriptor( trackmate, spotFilters, featureSelector );
-		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), trackmate );
-		executeTrackingDescriptor = new ExecuteTrackingDescriptor( trackmate, logPanel );
-		trackFilterDescriptor = new TrackFilterDescriptor( trackmate, trackFilters, featureSelector );
+		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), btrackmate );
+		executeDetectionDescriptor = new ExecuteDetectionDescriptor( btrackmate, logPanel );
+		initFilterDescriptor = new InitFilterDescriptor( btrackmate, initialFilter );
+		spotFilterDescriptor = new SpotFilterDescriptor( btrackmate, spotFilters, featureSelector );
+		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), btrackmate );
+		executeTrackingDescriptor = new ExecuteTrackingDescriptor( btrackmate, logPanel );
+		trackFilterDescriptor = new TrackFilterDescriptor( btrackmate, trackFilters, featureSelector );
 		configureViewsDescriptor = new ConfigureViewsDescriptor( displaySettings, featureSelector, new LaunchTrackSchemeAction(), new ShowTrackTablesAction(), new ShowSpotTableAction(), model.getSpaceUnits() );
-		grapherDescriptor = new GrapherDescriptor( trackmate, displaySettings );
-		actionChooserDescriptor = new ActionChooserDescriptor( new ActionProvider(), trackmate, selectionModel, displaySettings );
-		saveDescriptor = new SaveDescriptor( trackmate, displaySettings, this );
+		grapherDescriptor = new GrapherDescriptor( btrackmate, displaySettings );
+		actionChooserDescriptor = new ActionChooserDescriptor( new ActionProvider(), btrackmate, selectionModel, displaySettings );
+		saveDescriptor = new SaveDescriptor( btrackmate, displaySettings, this );
 
 		this.next = getForwardSequence();
 		this.previous = getBackwardSequence();
@@ -272,7 +272,7 @@ public class TrackMateWizardSequence implements WizardSequence
 	 */
 	private SpotDetectorDescriptor getDetectorConfigDescriptor()
 	{
-		final SpotDetectorFactoryBase< ? > detectorFactory = trackmate.getSettings().detectorFactory;
+		final SpotDetectorFactoryBase< ? > detectorFactory = btrackmate.getSettings().detectorFactory;
 
 		/*
 		 * Special case: are we dealing with the manual detector? If yes, no
@@ -293,7 +293,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		 * descriptor.
 		 */
 		// From settings.
-		final Map< String, Object > oldSettings1 = new HashMap<>( trackmate.getSettings().detectorSettings );
+		final Map< String, Object > oldSettings1 = new HashMap<>( btrackmate.getSettings().detectorSettings );
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
 		final WizardPanelDescriptor previousDescriptor = next.get( chooseDetectorDescriptor );
@@ -314,10 +314,10 @@ public class TrackMateWizardSequence implements WizardSequence
 			defaultSettings.put( skey, previousValue );
 		}
 
-		final ConfigurationPanel detectorConfigurationPanel = detectorFactory.getDetectorConfigurationPanel( trackmate.getSettings(), trackmate.getModel() );
+		final ConfigurationPanel detectorConfigurationPanel = detectorFactory.getDetectorConfigurationPanel( btrackmate.getSettings(), btrackmate.getModel() );
 		detectorConfigurationPanel.setSettings( defaultSettings );
-		trackmate.getSettings().detectorSettings = defaultSettings;
-		final SpotDetectorDescriptor configDescriptor = new SpotDetectorDescriptor( trackmate.getSettings(), detectorConfigurationPanel, trackmate.getModel().getLogger() );
+		btrackmate.getSettings().detectorSettings = defaultSettings;
+		final SpotDetectorDescriptor configDescriptor = new SpotDetectorDescriptor( btrackmate.getSettings(), detectorConfigurationPanel, btrackmate.getModel().getLogger() );
 
 		// Position sequence next and previous.
 		next.put( chooseDetectorDescriptor, configDescriptor );
@@ -338,7 +338,7 @@ public class TrackMateWizardSequence implements WizardSequence
 	 */
 	private SpotTrackerDescriptor getTrackerConfigDescriptor()
 	{
-		final SpotTrackerFactory trackerFactory = trackmate.getSettings().trackerFactory;
+		final SpotTrackerFactory trackerFactory = btrackmate.getSettings().trackerFactory;
 
 		/*
 		 * Special case: are we dealing with the manual tracker? If yes, no
@@ -357,7 +357,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		 * descriptor.
 		 */
 		// From settings.
-		final Map< String, Object > oldSettings1 = new HashMap<>( trackmate.getSettings().trackerSettings );
+		final Map< String, Object > oldSettings1 = new HashMap<>( btrackmate.getSettings().trackerSettings );
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
 		final WizardPanelDescriptor previousDescriptor = next.get( chooseTrackerDescriptor );
@@ -378,10 +378,10 @@ public class TrackMateWizardSequence implements WizardSequence
 			defaultSettings.put( skey, previousValue );
 		}
 
-		final ConfigurationPanel trackerConfigurationPanel = trackerFactory.getTrackerConfigurationPanel( trackmate.getModel() );
+		final ConfigurationPanel trackerConfigurationPanel = trackerFactory.getTrackerConfigurationPanel( btrackmate.getModel() );
 		trackerConfigurationPanel.setSettings( defaultSettings );
-		trackmate.getSettings().trackerSettings = defaultSettings;
-		final SpotTrackerDescriptor configDescriptor = new SpotTrackerDescriptor( trackmate.getSettings(), trackerConfigurationPanel, trackmate.getModel().getLogger() );
+		btrackmate.getSettings().trackerSettings = defaultSettings;
+		final SpotTrackerDescriptor configDescriptor = new SpotTrackerDescriptor( btrackmate.getSettings(), trackerConfigurationPanel, btrackmate.getModel().getLogger() );
 
 		// Position sequence next and previous.
 		next.put( chooseTrackerDescriptor, configDescriptor );
@@ -420,8 +420,8 @@ public class TrackMateWizardSequence implements WizardSequence
 				@Override
 				public void run()
 				{
-					final TrackScheme trackscheme = new TrackScheme( trackmate.getModel(), selectionModel, displaySettings );
-					final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( trackmate.getSettings() );
+					final TrackScheme trackscheme = new TrackScheme( btrackmate.getModel(), selectionModel, displaySettings );
+					final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( btrackmate.getSettings() );
 					trackscheme.setSpotImageUpdater( thumbnailUpdater );
 					trackscheme.render();
 				}
@@ -476,7 +476,7 @@ public class TrackMateWizardSequence implements WizardSequence
 				else
 					action = new ExportStatsTablesAction();
 
-				action.execute( trackmate, selectionModel, displaySettings, null );
+				action.execute( btrackmate, selectionModel, displaySettings, null );
 			}
 		}.start();
 	}

@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.visualization.trackscheme;
+package fiji.plugin.btrackmate.visualization.trackscheme;
 
-import static fiji.plugin.trackmate.gui.Icons.TRACK_SCHEME_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_SCHEME_ICON;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,9 +18,9 @@ import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphOutline;
 import com.mxgraph.swing.handler.mxRubberband;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.util.TrackNavigator;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.util.TrackNavigator;
 
 public class TrackSchemeFrame extends JFrame
 {

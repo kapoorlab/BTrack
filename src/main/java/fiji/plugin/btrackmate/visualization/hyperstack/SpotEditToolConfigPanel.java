@@ -1,14 +1,14 @@
-package fiji.plugin.trackmate.visualization.hyperstack;
+package fiji.plugin.btrackmate.visualization.hyperstack;
 
-import static fiji.plugin.trackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
-import static fiji.plugin.trackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.trackmate.gui.Icons.SELECT_TRACK_ICON;
-import static fiji.plugin.trackmate.gui.Icons.SELECT_TRACK_ICON_DOWNWARDS;
-import static fiji.plugin.trackmate.gui.Icons.SELECT_TRACK_ICON_UPWARDS;
-import static fiji.plugin.trackmate.gui.Icons.SPOT_ICON_64x64;
-import static fiji.plugin.trackmate.gui.Icons.TRACK_ICON;
-import static fiji.plugin.trackmate.gui.Icons.TRACK_ICON_64x64;
+import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Icons.SELECT_TRACK_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.SELECT_TRACK_ICON_DOWNWARDS;
+import static fiji.plugin.btrackmate.gui.Icons.SELECT_TRACK_ICON_UPWARDS;
+import static fiji.plugin.btrackmate.gui.Icons.SPOT_ICON_64x64;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACK_ICON_64x64;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -35,10 +35,10 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.SelectionModel;
-import fiji.plugin.trackmate.util.ModelTools;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.util.ModelTools;
 import ij.ImagePlus;
 
 public class SpotEditToolConfigPanel extends JFrame

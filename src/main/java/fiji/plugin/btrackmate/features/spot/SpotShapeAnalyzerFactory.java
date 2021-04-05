@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ import javax.swing.ImageIcon;
 
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.Dimension;
-import fiji.plugin.trackmate.detection.DetectionUtils;
+import fiji.plugin.btrackmate.Dimension;
+import fiji.plugin.btrackmate.detection.DetectionUtils;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;

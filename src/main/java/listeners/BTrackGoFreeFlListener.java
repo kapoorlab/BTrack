@@ -1,26 +1,21 @@
 package listeners;
 
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import fileListeners.ChooseBudOrigMap;
-import fileListeners.ChooseBudSecOrigMap;
+import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fileListeners.ChooseBudSegAMap;
-import fileListeners.ChooseBudSegBMap;
-import loadfile.CovistoOneChFileLoader;
-import loadfile.CovistoTwoChForceFileLoader;
-import pluginTools.BudFileChooser;
+import pluginTools.BTStartDialogDescriptor;
 
 
 public class BTrackGoFreeFlListener implements ItemListener {
 
-	public final BudFileChooser parent;
+	public final BTStartDialogDescriptor parent;
 	
 	
 	
-	public BTrackGoFreeFlListener( final BudFileChooser parent) {
+	public BTrackGoFreeFlListener( final BTStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}
@@ -37,7 +32,7 @@ public class BTrackGoFreeFlListener implements ItemListener {
 			parent.panelFirst.repaint();
 			
 			
-			CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(parent.chooseBudSegstring, parent.blankimageNames);
+			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseBudSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
 			segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
 			

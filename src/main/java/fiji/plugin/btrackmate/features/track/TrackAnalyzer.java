@@ -1,11 +1,11 @@
-package fiji.plugin.trackmate.features.track;
+package fiji.plugin.btrackmate.features.track;
 
 import java.util.Collection;
 
 import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.features.FeatureAnalyzer;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.features.FeatureAnalyzer;
 
 /**
  * Mother interface for the classes that can compute the feature of tracks.

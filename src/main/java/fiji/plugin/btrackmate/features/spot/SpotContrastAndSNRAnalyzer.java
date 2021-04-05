@@ -1,23 +1,23 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
-import static fiji.plugin.trackmate.features.spot.SpotContrastAndSNRAnalyzerFactory.CONTRAST;
-import static fiji.plugin.trackmate.features.spot.SpotContrastAndSNRAnalyzerFactory.SNR;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MEAN_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.STD_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.TOTAL_INTENSITY;
-import static fiji.plugin.trackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.makeFeatureKey;
+import static fiji.plugin.btrackmate.features.spot.SpotContrastAndSNRAnalyzerFactory.CONTRAST;
+import static fiji.plugin.btrackmate.features.spot.SpotContrastAndSNRAnalyzerFactory.SNR;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.MEAN_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.STD_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.TOTAL_INTENSITY;
+import static fiji.plugin.btrackmate.features.spot.SpotIntensityMultiCAnalyzerFactory.makeFeatureKey;
 
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotRoi;
-import fiji.plugin.trackmate.detection.DetectionUtils;
-import fiji.plugin.trackmate.util.SpotNeighborhood;
-import fiji.plugin.trackmate.util.SpotNeighborhoodCursor;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotRoi;
+import fiji.plugin.btrackmate.detection.DetectionUtils;
+import fiji.plugin.btrackmate.util.SpotNeighborhood;
+import fiji.plugin.btrackmate.util.SpotNeighborhoodCursor;
 import net.imagej.ImgPlus;
 import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;
 
 /**
- * This {@link fiji.plugin.trackmate.features.FeatureAnalyzer} computes both the
+ * This {@link fiji.plugin.btrackmate.features.FeatureAnalyzer} computes both the
  * <a href=http://en.wikipedia.org/wiki/Michelson_contrast#Formula>Michelson
  * contrast</a> and the SNR for each spot:
  * <p>

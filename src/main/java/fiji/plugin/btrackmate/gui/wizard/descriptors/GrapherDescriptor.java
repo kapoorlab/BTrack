@@ -1,19 +1,19 @@
-package fiji.plugin.trackmate.gui.wizard.descriptors;
+package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.gui.components.GrapherPanel;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.gui.components.GrapherPanel;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 
 public class GrapherDescriptor extends WizardPanelDescriptor
 {
 
 	private static final String KEY = "GraphFeatures";
 
-	public GrapherDescriptor( final TrackMate trackmate, final DisplaySettings displaySettings )
+	public GrapherDescriptor( final TrackMate btrackmate, final DisplaySettings displaySettings )
 	{
 		super( KEY );
-		this.targetPanel = new GrapherPanel( trackmate, displaySettings );
+		this.targetPanel = new GrapherPanel( btrackmate, displaySettings );
 	}
 
 	@Override

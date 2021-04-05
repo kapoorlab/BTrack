@@ -8,22 +8,21 @@ import java.util.Locale;
 
 import javax.swing.JComboBox;
 
+import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import ij.IJ;
 import ij.WindowManager;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
-import pluginTools.BudFileChooser;
-import pluginTools.ThreeDTimeCellFileChooser;
 
 public class ChooseGreenOrigMap implements ActionListener {
 	
 	
-	final ThreeDTimeCellFileChooser parent;
+	final BTMStartDialogDescriptor parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseGreenOrigMap(final ThreeDTimeCellFileChooser parent, final JComboBox<String> choice ) {
+	public ChooseGreenOrigMap(final BTMStartDialogDescriptor parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;

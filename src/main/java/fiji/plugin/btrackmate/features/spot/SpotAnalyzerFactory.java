@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features.spot;
+package fiji.plugin.btrackmate.features.spot;
 
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -9,7 +9,7 @@ import net.imglib2.type.numeric.RealType;
  * <p>
  * Concrete implementation should declare what features they can compute
  * numerically, and make this info available in the
- * {@link fiji.plugin.trackmate.providers.SpotAnalyzerProvider} that returns
+ * {@link fiji.plugin.btrackmate.providers.SpotAnalyzerProvider} that returns
  * them.
  * <p>
  * Feature key names are for historical reason all capitalized in an enum

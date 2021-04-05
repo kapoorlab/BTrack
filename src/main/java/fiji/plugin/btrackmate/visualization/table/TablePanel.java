@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.visualization.table;
+package fiji.plugin.btrackmate.visualization.table;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,9 +48,9 @@ import javax.swing.table.TableRowSorter;
 
 import com.opencsv.CSVWriter;
 
-import fiji.plugin.trackmate.gui.GuiUtils;
-import fiji.plugin.trackmate.gui.displaysettings.ColorIcon;
-import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.displaysettings.ColorIcon;
+import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 public class TablePanel< O >

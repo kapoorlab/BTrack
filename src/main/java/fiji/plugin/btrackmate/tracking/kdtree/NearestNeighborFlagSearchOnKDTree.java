@@ -34,7 +34,7 @@
  * #L%
  */
 
-package fiji.plugin.trackmate.tracking.kdtree;
+package fiji.plugin.btrackmate.tracking.kdtree;
 
 import net.imglib2.KDTree;
 import net.imglib2.KDTreeNode;
@@ -103,7 +103,7 @@ public class NearestNeighborFlagSearchOnKDTree< T > implements NearestNeighborSe
 	}
 
 	@Override
-	public Sampler< fiji.plugin.trackmate.tracking.kdtree.FlagNode< T > > getSampler()
+	public Sampler< fiji.plugin.btrackmate.tracking.kdtree.FlagNode< T > > getSampler()
 	{
 		return bestPoint;
 	}

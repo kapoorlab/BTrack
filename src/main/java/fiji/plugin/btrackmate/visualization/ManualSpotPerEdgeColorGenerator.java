@@ -1,12 +1,12 @@
-package fiji.plugin.trackmate.visualization;
+package fiji.plugin.btrackmate.visualization;
 
 import java.awt.Color;
 import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
 
 /**
  * Color a spot by the manual color of its first incoming edges.

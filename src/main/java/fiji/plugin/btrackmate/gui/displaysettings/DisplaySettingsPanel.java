@@ -1,24 +1,24 @@
-package fiji.plugin.trackmate.gui.displaysettings;
+package fiji.plugin.bbtrackmate.gui.displaysettings;
 
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.booleanElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.boundedDoubleElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.colorElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.colormapElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.doubleElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.enumElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.featureElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.fontElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.intElement;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.label;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedCheckBox;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedColorButton;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedColormapChooser;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedFeatureSelector;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedFontButton;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedFormattedTextField;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedSliderPanel;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.linkedSpinnerEnumSelector;
-import static fiji.plugin.trackmate.gui.displaysettings.StyleElements.separator;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.booleanElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.boundedDoubleElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.colorElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.colormapElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.doubleElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.enumElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.featureElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.fontElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.intElement;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.label;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedCheckBox;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedColorButton;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedColormapChooser;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedFeatureSelector;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedFontButton;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedFormattedTextField;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedSliderPanel;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.linkedSpinnerEnumSelector;
+import static fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.separator;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,20 +37,20 @@ import javax.swing.SwingConstants;
 
 import com.itextpdf.text.Font;
 
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.BooleanElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.BoundedDoubleElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.ColorElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.ColormapElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.DoubleElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.EnumElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.FeatureElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.FontElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.IntElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.LabelElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.Separator;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.StyleElement;
-import fiji.plugin.trackmate.gui.displaysettings.StyleElements.StyleElementVisitor;
+import fiji.plugin.bbtrackmate.gui.displaysettings.DisplaySettings.TrackDisplayMode;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.BooleanElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.BoundedDoubleElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.ColorElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.ColormapElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.DoubleElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.EnumElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.FeatureElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.FontElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.IntElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.LabelElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.Separator;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.StyleElement;
+import fiji.plugin.bbtrackmate.gui.displaysettings.StyleElements.StyleElementVisitor;
 
 public class DisplaySettingsPanel extends JPanel
 {

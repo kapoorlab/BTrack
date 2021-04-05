@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate;
+package fiji.plugin.btrackmate;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -6,36 +6,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fiji.plugin.trackmate.detection.DetectionUtils;
-import fiji.plugin.trackmate.detection.DetectorKeys;
-import fiji.plugin.trackmate.detection.LabeImageDetectorFactory;
-import fiji.plugin.trackmate.detection.SpotDetectorFactoryBase;
-import fiji.plugin.trackmate.features.FeatureAnalyzer;
-import fiji.plugin.trackmate.features.FeatureFilter;
-import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactoryBase;
-import fiji.plugin.trackmate.features.track.TrackAnalyzer;
-import fiji.plugin.trackmate.providers.EdgeAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotAnalyzerProvider;
-import fiji.plugin.trackmate.providers.SpotMorphologyAnalyzerProvider;
-import fiji.plugin.trackmate.providers.TrackAnalyzerProvider;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
-import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
+import fiji.plugin.btrackmate.detection.DetectionUtils;
+import fiji.plugin.btrackmate.detection.DetectorKeys;
+import fiji.plugin.btrackmate.detection.LabeImageDetectorFactory;
+import fiji.plugin.btrackmate.detection.SpotDetectorFactoryBase;
+import fiji.plugin.btrackmate.features.FeatureAnalyzer;
+import fiji.plugin.btrackmate.features.FeatureFilter;
+import fiji.plugin.btrackmate.features.edges.EdgeAnalyzer;
+import fiji.plugin.btrackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.btrackmate.features.spot.SpotAnalyzerFactoryBase;
+import fiji.plugin.btrackmate.features.track.TrackAnalyzer;
+import fiji.plugin.btrackmate.providers.EdgeAnalyzerProvider;
+import fiji.plugin.btrackmate.providers.SpotAnalyzerProvider;
+import fiji.plugin.btrackmate.providers.SpotMorphologyAnalyzerProvider;
+import fiji.plugin.btrackmate.providers.TrackAnalyzerProvider;
+import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.io.FileInfo;
 
 /**
  * This class is used to store user settings for the {@link TrackMate}
- * trackmate. It is simply made of public fields
+ * btrackmate. It is simply made of public fields
  */
 public class Settings
 {
 
 	/**
 	 * The ImagePlus to operate on. Will also be used by some
-	 * {@link fiji.plugin.trackmate.visualization.TrackMateModelView} as a GUI
+	 * {@link fiji.plugin.btrackmate.visualization.TrackMateModelView} as a GUI
 	 * target.
 	 */
 	public ImagePlus imp;
@@ -113,7 +113,7 @@ public class Settings
 
 	/**
 	 * The name of the detector factory to use. It will be used to generate
-	 * {@link fiji.plugin.trackmate.detection.SpotDetector} for each target
+	 * {@link fiji.plugin.btrackmate.detection.SpotDetector} for each target
 	 * frame.
 	 */
 	public SpotDetectorFactoryBase< ? > detectorFactory;
@@ -122,16 +122,16 @@ public class Settings
 	public SpotTrackerFactory trackerFactory;
 
 	/**
-	 * Settings map for {@link fiji.plugin.trackmate.detection.SpotDetector}.
+	 * Settings map for {@link fiji.plugin.btrackmate.detection.SpotDetector}.
 	 *
-	 * @see fiji.plugin.trackmate.detection.DetectorKeys
+	 * @see fiji.plugin.btrackmate.detection.DetectorKeys
 	 */
 	public Map< String, Object > detectorSettings = new HashMap<>();
 
 	/**
-	 * Settings map for {@link fiji.plugin.trackmate.tracking.SpotTracker}.
+	 * Settings map for {@link fiji.plugin.btrackmate.tracking.SpotTracker}.
 	 *
-	 * @see fiji.plugin.trackmate.tracking.TrackerKeys
+	 * @see fiji.plugin.btrackmate.tracking.TrackerKeys
 	 */
 	public Map< String, Object > trackerSettings = new HashMap<>();
 
@@ -543,7 +543,7 @@ public class Settings
 	 * configured.
 	 *
 	 * @param spotAnalyzer
-	 *            the {@link fiji.plugin.trackmate.features.spot.SpotAnalyzer}
+	 *            the {@link fiji.plugin.btrackmate.features.spot.SpotAnalyzer}
 	 *            to add, at the end of the list.
 	 */
 	public void addSpotAnalyzerFactory( final SpotAnalyzerFactoryBase< ? > spotAnalyzer )
@@ -560,7 +560,7 @@ public class Settings
 	 * @param index
 	 *            index at which the analyzer is to be inserted.
 	 * @param spotAnalyzer
-	 *            the {@link fiji.plugin.trackmate.features.spot.SpotAnalyzer}
+	 *            the {@link fiji.plugin.btrackmate.features.spot.SpotAnalyzer}
 	 *            to add, at the specified index in the list.
 	 */
 	public void addSpotAnalyzerFactory( final int index, final SpotAnalyzerFactory< ? > spotAnalyzer )

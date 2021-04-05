@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.features;
+package fiji.plugin.btrackmate.features;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,31 +11,31 @@ import java.util.Random;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.scijava.util.DoubleArray;
 
-import fiji.plugin.trackmate.FeatureModel;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
-import fiji.plugin.trackmate.features.manual.ManualEdgeColorAnalyzer;
-import fiji.plugin.trackmate.features.manual.ManualSpotColorAnalyzerFactory;
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactoryBase;
-import fiji.plugin.trackmate.features.track.TrackAnalyzer;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
-import fiji.plugin.trackmate.visualization.FeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualEdgePerSpotColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotColorGenerator;
-import fiji.plugin.trackmate.visualization.ManualSpotPerEdgeColorGenerator;
-import fiji.plugin.trackmate.visualization.PerEdgeFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.PerSpotFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGenerator;
-import fiji.plugin.trackmate.visualization.SpotColorGeneratorPerEdgeFeature;
-import fiji.plugin.trackmate.visualization.SpotColorGeneratorPerTrackFeature;
-import fiji.plugin.trackmate.visualization.UniformSpotColorGenerator;
-import fiji.plugin.trackmate.visualization.UniformTrackColorGenerator;
-import fiji.plugin.trackmate.visualization.WholeTrackFeatureColorGenerator;
+import fiji.plugin.btrackmate.FeatureModel;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.features.edges.EdgeAnalyzer;
+import fiji.plugin.btrackmate.features.manual.ManualEdgeColorAnalyzer;
+import fiji.plugin.btrackmate.features.manual.ManualSpotColorAnalyzerFactory;
+import fiji.plugin.btrackmate.features.spot.SpotAnalyzerFactoryBase;
+import fiji.plugin.btrackmate.features.track.TrackAnalyzer;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
+import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
+import fiji.plugin.btrackmate.visualization.ManualEdgeColorGenerator;
+import fiji.plugin.btrackmate.visualization.ManualEdgePerSpotColorGenerator;
+import fiji.plugin.btrackmate.visualization.ManualSpotColorGenerator;
+import fiji.plugin.btrackmate.visualization.ManualSpotPerEdgeColorGenerator;
+import fiji.plugin.btrackmate.visualization.PerEdgeFeatureColorGenerator;
+import fiji.plugin.btrackmate.visualization.PerSpotFeatureColorGenerator;
+import fiji.plugin.btrackmate.visualization.PerTrackFeatureColorGenerator;
+import fiji.plugin.btrackmate.visualization.SpotColorGenerator;
+import fiji.plugin.btrackmate.visualization.SpotColorGeneratorPerEdgeFeature;
+import fiji.plugin.btrackmate.visualization.SpotColorGeneratorPerTrackFeature;
+import fiji.plugin.btrackmate.visualization.UniformSpotColorGenerator;
+import fiji.plugin.btrackmate.visualization.UniformTrackColorGenerator;
+import fiji.plugin.btrackmate.visualization.WholeTrackFeatureColorGenerator;
 
 public class FeatureUtils
 {
