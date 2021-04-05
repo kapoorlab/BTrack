@@ -6,7 +6,7 @@ import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.LoadDualImage;
 import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
-import fileListeners.ChooseGreenSegMap;
+import fileListeners.ChooseSegMap;
 import fileListeners.ChooseMaskSegMap;
 
 public class BTrackGo3DMaskFLListener implements ItemListener {
@@ -39,7 +39,7 @@ public class BTrackGo3DMaskFLListener implements ItemListener {
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
-			segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(parent, segmentation.ChooseImage));
+			segmentation.ChooseImage.addActionListener(new ChooseSegMap(parent, segmentation.ChooseImage));
 			segmentation.ChoosesecImage.addActionListener(new ChooseMaskSegMap(parent, segmentation.ChoosesecImage));
 			parent.DoMask = true;
 			parent.NoMask = false;

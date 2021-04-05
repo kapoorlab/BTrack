@@ -5,7 +5,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
-import fileListeners.ChooseGreenSegMap;
+import fileListeners.ChooseSegMap;
 import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 
 public class ThreeDCellGoFreeFLListener implements ItemListener {
@@ -37,7 +37,7 @@ public class ThreeDCellGoFreeFLListener implements ItemListener {
 			
 			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseCellSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
-			segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(parent, segmentation.ChooseImage));
+			segmentation.ChooseImage.addActionListener(new ChooseSegMap(parent, segmentation.ChooseImage));
 			
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,

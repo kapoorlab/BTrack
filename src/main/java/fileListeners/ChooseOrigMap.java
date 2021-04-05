@@ -15,14 +15,14 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
 
-public class ChooseGreenOrigMap implements ActionListener {
+public class ChooseOrigMap implements ActionListener {
 	
 	
 	final BTMStartDialogDescriptor parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseGreenOrigMap(final BTMStartDialogDescriptor parent, final JComboBox<String> choice ) {
+	public ChooseOrigMap(final BTMStartDialogDescriptor parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;
@@ -38,14 +38,14 @@ public class ChooseGreenOrigMap implements ActionListener {
 		
 		
 		
-    	parent.impOrigGreen = WindowManager.getImage(imagename);
-    	if(parent.impOrigGreen!=null) {
-    		parent.imageOrigGreen = SimplifiedIO.openImage(
-    				parent.impOrigGreen.getOriginalFileInfo().directory + parent.impOrigGreen.getOriginalFileInfo().fileName,
+    	parent.impOrig = WindowManager.getImage(imagename);
+    	if(parent.impOrig!=null) {
+    		parent.imageOrig = SimplifiedIO.openImage(
+    				parent.impOrig.getOriginalFileInfo().directory + parent.impOrig.getOriginalFileInfo().fileName,
     				new FloatType());
     		
     			
-			parent.TimeTotal = parent.imageOrigGreen.dimension(3);
+			parent.TimeTotal = parent.imageOrig.dimension(3);
 			
 			
 			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());

@@ -2,9 +2,9 @@ package fiji.plugin.btrack;
 
 import javax.swing.JFrame;
 
+import fiji.plugin.btrack.gui.descriptors.BTStartDialogDescriptor;
 import ij.ImagePlus;
 import ij.io.Opener;
-import pluginTools.BudFileChooser;
 import ij.ImageJ;
 
 public class LoadBTrackPlugIn {
@@ -19,14 +19,14 @@ public class LoadBTrackPlugIn {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Image0.tif");
+				.openImage("/home/sancere/Downloads/TOMCellSegmentation.tif");
 		impA.show();
 		
 	
 	
 		
 
-		BudFileChooser panel = new BudFileChooser();
+		BTStartDialogDescriptor panel = new BTStartDialogDescriptor();
 
 		frame.getContentPane().add(panel, "Center");
 		frame.setSize(panel.getPreferredSize());

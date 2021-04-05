@@ -7,7 +7,7 @@ import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
-import fileListeners.ChooseGreenSegMap;
+import fileListeners.ChooseSegMap;
 
 
 public class CsvLoader implements ItemListener {

@@ -19,11 +19,11 @@ import ij.gui.OvalRoi;
 import net.imglib2.Point;
 import net.imglib2.RealPoint;
 
-public class GreenCheckpointListener implements ActionListener {
+public class CheckpointListener implements ActionListener {
 
 	final BTMStartDialogDescriptor parent;
 	
-	public GreenCheckpointListener(final BTMStartDialogDescriptor parent) {
+	public CheckpointListener(final BTMStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}
@@ -52,11 +52,11 @@ public class GreenCheckpointListener implements ActionListener {
 		};
         String line = "";
         String cvsSplitBy = ",";
-		if (parent.impOrigGreen!=null)
-		csvfile.setCurrentDirectory(new File(parent.impOrigGreen.getOriginalFileInfo().directory));
+		if (parent.impOrig!=null)
+		csvfile.setCurrentDirectory(new File(parent.impOrig.getOriginalFileInfo().directory));
 		else 
 			csvfile.setCurrentDirectory(new java.io.File("."));
-		csvfile.setDialogTitle("Green Cell CSV file");
+		csvfile.setDialogTitle(" Cell CSV file");
 		csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		csvfile.setFileFilter(csvfilter);
 		int count = 0;
@@ -94,12 +94,12 @@ public class GreenCheckpointListener implements ActionListener {
 		                
 		                Cellobject currentcell = new Cellobject(point, time, Label, Perimeter, Area, Intensity, extents);
 		                
-                        if(parent.CSVGreen.get(time)==null) {
+                        if(parent.CSV.get(time)==null) {
                         	reloadcell = new ArrayList<Cellobject>();
-                     	    parent.CSVGreen.put(time, reloadcell);    
+                     	    parent.CSV.put(time, reloadcell);    
                         }
                         else
-                     	   parent.CSVGreen.put(time, reloadcell);
+                     	   parent.CSV.put(time, reloadcell);
 		                
 		                    reloadcell.add(currentcell);
 		         

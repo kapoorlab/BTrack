@@ -6,7 +6,7 @@ import java.awt.event.ItemListener;
 
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
-import fileListeners.ChooseGreenSegMap;
+import fileListeners.ChooseSegMap;
 
 
 public class ImageLoader implements ItemListener {
@@ -45,7 +45,7 @@ public class ImageLoader implements ItemListener {
 			// Listeneres
 			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseCellSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
-			segmentation.ChooseImage.addActionListener(new ChooseGreenSegMap(parent, segmentation.ChooseImage));
+			segmentation.ChooseImage.addActionListener(new ChooseSegMap(parent, segmentation.ChooseImage));
 			
          
 

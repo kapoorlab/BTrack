@@ -11,11 +11,11 @@ import fileListeners.ChooseBudSegBMap;
 import fileListeners.ChooseBudSegCMap;
 
 
-public class BTrackGoGreenFLListener implements ItemListener {
+public class BTrackGoFLListener implements ItemListener {
 
 	public final BTStartDialogDescriptor parent;
 	
-	public BTrackGoGreenFLListener( final BTStartDialogDescriptor parent) {
+	public BTrackGoFLListener( final BTStartDialogDescriptor parent) {
 		
 		this.parent = parent;
 	}
@@ -31,7 +31,7 @@ public class BTrackGoGreenFLListener implements ItemListener {
 			
 			
 			
-			CovistoThreeChForceFileLoader segmentation = new CovistoThreeChForceFileLoader(parent.chooseGreenSegstring, parent.blankimageNames);
+			CovistoThreeChForceFileLoader segmentation = new CovistoThreeChForceFileLoader(parent.chooseSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.ThreeChannelOption();
 			
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
@@ -41,7 +41,7 @@ public class BTrackGoGreenFLListener implements ItemListener {
 			segmentation.ChoosesecImage.addActionListener(new ChooseBudSegBMap(parent, segmentation.ChoosesecImage));
 			segmentation.ChoosethirdImage.addActionListener(new ChooseBudSegCMap(parent, segmentation.ChoosethirdImage));
 			parent.DoYellow = false;
-			parent.DoGreen = true;
+			parent.Do = true;
 			parent.DoRed = false;
 			parent.NoChannel = false;
 		parent.Panelfile.validate();

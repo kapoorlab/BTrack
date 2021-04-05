@@ -10,14 +10,14 @@ import ij.WindowManager;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
 
-public class ChooseGreenSegMap implements ActionListener {
+public class ChooseSegMap implements ActionListener {
 	
 	
 	final BTMStartDialogDescriptor parent;
 	final JComboBox<String> choice;
 	
 	
-	public ChooseGreenSegMap(final BTMStartDialogDescriptor parent, final JComboBox<String> choice ) {
+	public ChooseSegMap(final BTMStartDialogDescriptor parent, final JComboBox<String> choice ) {
 		
 		
 		this.parent = parent;
@@ -30,10 +30,10 @@ public class ChooseGreenSegMap implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		String imagename = (String) choice.getSelectedItem();
-      	parent.impSegGreen = WindowManager.getImage(imagename);
+      	parent.impSeg = WindowManager.getImage(imagename);
     	
       	parent.imageSegA = SimplifiedIO.openImage(
-      			parent.impSegGreen.getOriginalFileInfo().directory + parent.impSegGreen.getOriginalFileInfo().fileName,
+      			parent.impSeg.getOriginalFileInfo().directory + parent.impSeg.getOriginalFileInfo().fileName,
 				new IntType());
 
 

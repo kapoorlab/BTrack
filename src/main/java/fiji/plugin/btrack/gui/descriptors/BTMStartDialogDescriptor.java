@@ -60,20 +60,20 @@ import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 
 import javax.swing.JOptionPane;
 
-import fileListeners.ChooseGreenOrigMap;
-import fileListeners.ChooseGreenSegMap;
+import fileListeners.ChooseOrigMap;
+import fileListeners.ChooseSegMap;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 import listeners.BTrackGo3DMaskFLListener;
 import listeners.BTrackGoFreeFlListener;
-import listeners.BTrackGoGreenFLListener;
+import listeners.BTrackGoFLListener;
 import listeners.BTrackGoYellowFLListener;
 import listeners.BudCheckpointListener;
 import listeners.BudZListener;
 import listeners.CsvLoader;
-import listeners.GreenCheckpointListener;
+import listeners.CheckpointListener;
 import listeners.ImageLoader;
 import listeners.ThreeDCellGoFreeFLListener;
 import net.imglib2.Dimensions;
@@ -101,17 +101,14 @@ public class BTMStartDialogDescriptor extends JPanel
 	private static final long serialVersionUID = 1L;
 	public JFrame Cardframe = new JFrame("XYZT Cell Tracker");
 	public JPanel panelCont = new JPanel();
-	public ImagePlus impOrigGreen, impSegGreen, impMask;
-	public File impOrigGreenfile;
+	public ImagePlus impOrig, impSeg, impMask;
 	
 	//Panels
 	public JPanel panelFirst = new JPanel();
 	public JPanel Panelfile = new JPanel();
-	public JPanel Panelsuperfile = new JPanel();
 	public JPanel Panelfileoriginal = new JPanel();
 	public JPanel Panelfilemask = new JPanel();
 	public JPanel Paneldone = new JPanel();
-	public JPanel Panelrun = new JPanel();
 	public JPanel Microscope = new JPanel();
 	
 	//Insets
@@ -123,12 +120,11 @@ public class BTMStartDialogDescriptor extends JPanel
 	
 	public final String[] imageNames, blankimageNames;
 	public JComboBox<String> ChooseImage;
-	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
 	public JButton Done = new JButton("Start Tracker");
-	public HashMap<Integer, ArrayList<Cellobject>> CSVGreen = new HashMap<Integer, ArrayList<Cellobject>>(); 
-	public String chooseCellSegstring = "Input segmentation image for cells";
-	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
+	public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>(); 
+	public String chooseSegstring = "Input segmentation image for cells";
+	public Border chooseSeg = new CompoundBorder(new TitledBorder(chooseSegstring), new EmptyBorder(c.insets));
     public int fakedim = 2;
 	public String chooseMaskSegstring = "Input segmentation image for Cells and  Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
@@ -140,7 +136,7 @@ public class BTMStartDialogDescriptor extends JPanel
 			scrollbarSize + 10);
 	
 	
-	public RandomAccessibleInterval<FloatType> imageOrigGreen;
+	public RandomAccessibleInterval<FloatType> imageOrig;
 	public RandomAccessibleInterval<IntType> imageSegA;
 	public String chooseoriginalCellfilestring = "Input Image";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
@@ -174,7 +170,6 @@ public class BTMStartDialogDescriptor extends JPanel
 	  public double calibrationX, calibrationY, calibrationZ, FrameInterval;
 	public BTMStartDialogDescriptor() {
 
-		System.out.println("in");
 		panelFirst.setLayout(layout);
 		   inputLabelcalX = new Label("Pixel calibration in X(um)");
 	       inputFieldcalX = new TextField(5);
@@ -198,9 +193,10 @@ public class BTMStartDialogDescriptor extends JPanel
 		
 		
 		panelFirst.setLayout(layout);
-
 		Paneldone.setLayout(layout);
 		Microscope.setLayout(layout);
+		
+		
 		CardLayout cl = new CardLayout();
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
@@ -217,7 +213,6 @@ public class BTMStartDialogDescriptor extends JPanel
 
 		ChooseImage = new JComboBox<String>(blankimageNames);
 		ChooseoriginalImage = new JComboBox<String>(blankimageNames);
-		ChoosesuperImage = new JComboBox<String>(blankimageNames);
 
 		LoadSingleImage original = new LoadSingleImage(chooseoriginalCellfilestring, blankimageNames);
 
@@ -231,7 +226,7 @@ public class BTMStartDialogDescriptor extends JPanel
 		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		original.ChooseImage.addActionListener(new ChooseGreenOrigMap(this, original.ChooseImage));
+		original.ChooseImage.addActionListener(new ChooseOrigMap(this, original.ChooseImage));
 
 		Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
@@ -275,14 +270,12 @@ public class BTMStartDialogDescriptor extends JPanel
 		CsvMode.addItemListener(new CsvLoader(this));
 		FreeMode.addItemListener(new ThreeDCellGoFreeFLListener(this));
 		MaskMode.addItemListener(new BTrackGo3DMaskFLListener(this));
-		Checkpointbutton.addActionListener(new GreenCheckpointListener(this));
+		Checkpointbutton.addActionListener(new CheckpointListener(this));
 		inputFieldT.addTextListener(new InputTListener());
-		Done.addActionListener(new GreenDoneListener());
+		Done.addActionListener(new DoneListener());
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
-		Panelsuperfile.setEnabled(true);
-		ChoosesuperImage.setEnabled(true);
 
 		Cardframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Cardframe.pack();
@@ -346,7 +339,7 @@ public class BTMStartDialogDescriptor extends JPanel
 	}
 
 
-	public class GreenDoneListener implements ActionListener {
+	public class DoneListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -354,12 +347,12 @@ public class BTMStartDialogDescriptor extends JPanel
 			Done.setText("Thank you");
 			Done.validate();
 			Done.repaint();
-				DoneCurrGreen(Cardframe);
+				DoneCurr(Cardframe);
 		}
 
 	}
 
-	public void DoneCurrGreen(Frame parent)  {
+	public void DoneCurr(Frame parent)  {
 
 		
 
@@ -372,9 +365,9 @@ public class BTMStartDialogDescriptor extends JPanel
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
-		String name = impOrigGreen.getOriginalFileInfo().fileName;
+		String name = impOrig.getOriginalFileInfo().fileName;
 
-		if (imageOrigGreen.numDimensions() > 4) {
+		if (imageOrig.numDimensions() > 4) {
 
 			JOptionPane.showMessageDialog(new JFrame(),
 					"This tracker is for 3D + time images only, your image has higher dimensionality, split the channels perhaps?");
@@ -382,9 +375,9 @@ public class BTMStartDialogDescriptor extends JPanel
 		}
 
 		
-		if (imageOrigGreen.numDimensions() <= 3) 
+		if (imageOrig.numDimensions() <= 3) 
 
-			imageOrigGreen = copyUpImage(imageOrigGreen);
+			imageOrig = copyUpImage(imageOrig);
 		
 		if (DoMask) {
 
@@ -401,13 +394,13 @@ public class BTMStartDialogDescriptor extends JPanel
             	
             	
 				ImageObjects ImagePairs  = 
-					Create4D(imageOrigGreen, imageMask, imageSegA);
+					Create4D(imageOrig, imageMask, imageSegA);
 			
 			
-			assert (imageOrigGreen.numDimensions() == imageSegA.numDimensions());
+			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
 			
-			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), 
-					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSV, ImagePairs.imageBigMask, ImagePairs.imageSegA, new File(impOrig.getOriginalFileInfo().directory), 
+					impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 					FrameInterval, name, false);
 			
 
@@ -417,17 +410,17 @@ public class BTMStartDialogDescriptor extends JPanel
 			
             }
             
-            else if (CSVGreen!=null && CSVGreen.size() > 0) {
+            else if (CSV!=null && CSV.size() > 0) {
             	
             	
             	
             	ImageObjects ImagePairs  = 
-    					Create4D(imageOrigGreen, imageMask, imageMask);
+    					Create4D(imageOrig, imageMask, imageMask);
     			
     			
     			
-    			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageBigMask, null, new File(impOrigGreen.getOriginalFileInfo().directory), 
-    					impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
+    			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSV, ImagePairs.imageBigMask, null, new File(impOrig.getOriginalFileInfo().directory), 
+    					impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
     					FrameInterval, name, false);
     			
 
@@ -452,10 +445,10 @@ public class BTMStartDialogDescriptor extends JPanel
         			imageSegA = copyUpIntImage(imageSegA);
 				
 			ImageObjects ImagePairs  = 
-					Create4D(imageOrigGreen, imageSegA, imageSegA);
+					Create4D(imageOrig, imageSegA, imageSegA);
 			
 			
-			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSVGreen, ImagePairs.imageSegA, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
+			InteractiveBud CellCollection = new InteractiveBud(ImagePairs.imageOrig, CSV, ImagePairs.imageSegA, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 					FrameInterval, name, false);
 			
 
@@ -465,10 +458,10 @@ public class BTMStartDialogDescriptor extends JPanel
 			
 			}
 			
-			else if (CSVGreen!=null && CSVGreen.size() > 0) {
+			else if (CSV!=null && CSV.size() > 0) {
 				
 				
-				InteractiveBud CellCollection = new InteractiveBud(imageOrigGreen, CSVGreen, null, new File(impOrigGreen.getOriginalFileInfo().directory), impOrigGreen.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
+				InteractiveBud CellCollection = new InteractiveBud(imageOrig, CSV, null, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, calibrationZ,
 						FrameInterval, name, false);
 				
 

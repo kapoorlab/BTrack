@@ -1,89 +1,48 @@
 package fiji.plugin.btrack.gui.descriptors;
 
-import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.btrackmate.gui.Fonts.TEXTFIELD_DIMENSION;
 
 import java.awt.CardLayout;
-import java.awt.Checkbox;
-import java.awt.CheckboxGroup;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
-import java.awt.Rectangle;
 import java.awt.TextComponent;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import ij.process.ImageConverter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
-
-
 import budDetector.Roiobject;
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fileListeners.ChooseBudOrigMap;
 import fileListeners.ChooseBudSegAMap;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.OvalRoi;
-import ij.gui.Roi;
-import ij.measure.Calibration;
-import listeners.BTrackGoBudListener;
-import listeners.BTrackGoFreeFlListener;
-import listeners.BTrackGoGreenFLListener;
-import listeners.BTrackGoYellowFLListener;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Pair;
-import net.imglib2.util.ValuePair;
 import pluginTools.InteractiveBud;
 import fileListeners.SimplifiedIO;
-import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
-import fiji.plugin.btrackmate.Logger;
-import fiji.plugin.btrackmate.Settings;
-import fiji.plugin.btrackmate.TrackMate;
-import fiji.plugin.btrackmate.gui.GuiUtils;
 
 
 public class BTStartDialogDescriptor  extends JPanel
@@ -96,12 +55,11 @@ public class BTStartDialogDescriptor  extends JPanel
 	private static final long serialVersionUID = 1L;
 	public JFrame Cardframe = new JFrame("Bud n Cell tracker");
 	public JPanel panelCont = new JPanel();
-	public ImagePlus impOrig, impOrigRGB, impSegA, impSegB, impSegC, impSegD;
-	public File impOrigfile, impOrigSecfile, impSegAfile, impSegBfile, impSegCfile;
+	public ImagePlus impOrig, impOrigRGB, impSegA;
+	public File impOrigfile, impSegAfile;
 	public JPanel panelFirst = new JPanel();
 	public JPanel Panelfile = new JPanel();
 	public JPanel Panelcsv = new JPanel();
-	public JPanel Panelsuperfile = new JPanel();
 	public JPanel Panelfileoriginal = new JPanel();
 	public JPanel Paneldone = new JPanel();
 	public JPanel Panelrun = new JPanel();
@@ -111,29 +69,14 @@ public class BTStartDialogDescriptor  extends JPanel
 	public final GridBagConstraints c = new GridBagConstraints();
 	public final String[] imageNames, blankimageNames;
 	public JComboBox<String> ChooseImage;
-	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
-	public JComboBox<String> ChooseRGBImage;
 	public JButton Done = new JButton("Finished choosing files, start BTrack");
 	public JButton Restart = new JButton("Reload Saved Budpoints");
 	public HashMap<String, ArrayList<Roiobject>> BudOvalRois= new HashMap<String, ArrayList<Roiobject>>();
-	public boolean simple = false;
-	public boolean curvesuper = true;
-	public boolean curvesimple = false;
-	public boolean twochannel = false;
     public int BudDotsize = 5;
 	public String chooseBudSegstring = "Segmentation Image for buds";
 	public Border chooseBudSeg = new CompoundBorder(new TitledBorder(chooseBudSegstring), new EmptyBorder(c.insets));
 
-	public String chooseYellowSegstring = "Segmentation Image for buds and cell Ch 1";
-	public Border chooseYellowSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
-			new EmptyBorder(c.insets));
-	public String chooseGreenSegstring = "Segmentation Image for buds and cell Ch 1,2";
-	public Border chooseGreenSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring),
-			new EmptyBorder(c.insets));
-
-	public String chooseRedSegstring = "Segmentation Image for buds and cell Ch 1,2,3";
-	public Border chooseRedSeg = new CompoundBorder(new TitledBorder(chooseYellowSegstring), new EmptyBorder(c.insets));
 
 	public String chooseoriginalbudfilestring = "We analyze only Buds";
 	public Border chooseoriginalbudfile = new CompoundBorder(new TitledBorder(chooseoriginalbudfilestring),
@@ -148,24 +91,6 @@ public class BTStartDialogDescriptor  extends JPanel
 	  public TextField inputFieldcalX, inputFieldcalY, inputFieldcalZ, FieldinputLabelcalT;
 	public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"),
 			new EmptyBorder(c.insets));
-	public CheckboxGroup budmode = new CheckboxGroup();
-	public boolean OnlyBud = true;
-	public boolean RGBBud = false;
-	public Checkbox GoBud = new Checkbox("Bud", OnlyBud, budmode);
-
-	public boolean DoYellow = false;
-	public boolean DoGreen = false;
-	public boolean DoRed = false;
-	public boolean NoChannel = true;
-
-	public CheckboxGroup cellmode = new CheckboxGroup();
-	public Checkbox FreeMode = new Checkbox("No Flourescent Channel", NoChannel, cellmode);
-	public Checkbox YellowMode = new Checkbox("Flourescent Channel 1", DoYellow, cellmode);
-
-
-	
-	
-	
 	
 	
 	public BTStartDialogDescriptor() {
@@ -186,6 +111,8 @@ public class BTStartDialogDescriptor  extends JPanel
 		Paneldone.setLayout(layout);
 		Microscope.setLayout(layout);
 		CardLayout cl = new CardLayout();
+		
+		
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
@@ -199,61 +126,60 @@ public class BTStartDialogDescriptor  extends JPanel
 		for (int i = 0; i < imageNames.length; ++i)
 			blankimageNames[i + 1] = imageNames[i];
 
-		ChooseImage = new JComboBox<String>(blankimageNames);
-		ChooseoriginalImage = new JComboBox<String>(blankimageNames);
-		ChooseRGBImage = new JComboBox<String>(blankimageNames);
-		ChoosesuperImage = new JComboBox<String>(blankimageNames);
-
-
+		
+		// Choose the image for display, usually RAW
 		LoadSingleImage original = new LoadSingleImage(chooseoriginalbudfilestring, blankimageNames);
 
 		Panelfileoriginal = original.SingleChannelOption();
 
-		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
 
-		panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		panelFirst.add(YellowMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
+        // Choose segmentation image for skeletonization
 		LoadSingleImage segmentation = new LoadSingleImage(chooseBudSegstring, blankimageNames);
+		
 		Panelfile = segmentation.SingleChannelOption();
 
-		panelFirst.add(Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Panelcsv.add(Restart, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
+		
+		
+		// Load the pink dots from CSV file instead
+		
+		Panelcsv.add(Restart, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		
-		panelFirst.add(Panelcsv, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(Panelcsv, new GridBagConstraints(0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		
-		Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Paneldone.add(Done, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 		Paneldone.setBorder(LoadBtrack);
-		panelFirst.add(Paneldone, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(Paneldone, new GridBagConstraints(0, 10, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 
-		Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		// Calibration settings for output answers in um/ min
+		Microscope.add(inputLabelcalX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputFieldcalX, new GridBagConstraints(0, 1, 3, 1, 0.1, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 		
-		Microscope.add(inputLabelcalY, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalY, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(inputFieldcalY, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputFieldcalY, new GridBagConstraints(0, 3, 3, 1, 0.1, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 		Microscope.setBorder(microborder);
 		panelFirst.add(Microscope, new GridBagConstraints(0, 8, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER,
@@ -261,24 +187,18 @@ public class BTStartDialogDescriptor  extends JPanel
 
 		// Listeneres
 
-		GoBud.addItemListener(new BTrackGoBudListener(this));
-		FreeMode.addItemListener(new BTrackGoFreeFlListener(this));
-		YellowMode.addItemListener(new BTrackGoYellowFLListener(this));
-		segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(this, segmentation.ChooseImage));
-
 		inputFieldcalX.addTextListener(new CalXListener());
 		inputFieldcalY.addTextListener(new CalYListener());
 		FieldinputLabelcalT.addTextListener(new CalTListener());
+		
 		Done.addActionListener(new BudDoneListener());
 		Restart.addActionListener(new ReloadListener());
+
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
-		Panelsuperfile.setEnabled(true);
-		ChoosesuperImage.setEnabled(true);
 
 		Cardframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		Cardframe.setPreferredSize( new Dimension( 291, 491 ) );
 		Cardframe.pack();
 		Cardframe.setVisible(true);
 	}
@@ -435,29 +355,13 @@ public class BTStartDialogDescriptor  extends JPanel
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
-		if (!DoYellow && !DoGreen && !DoRed) {
 
 			InteractiveBud masterparent = new InteractiveBud(imageOrig, imageSegA,BudOvalRois, new File(impOrig.getOriginalFileInfo().directory) , impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY, FrameInterval,
 					name, true);
 		masterparent.BudDotsize = BudDotsize;
 		masterparent.run(null);
 		
-		}
-
-		if (DoYellow) {
-
-			RandomAccessibleInterval<IntType> imageSegB = SimplifiedIO.openImage(
-					impSegB.getOriginalFileInfo().directory + impSegB.getOriginalFileInfo().fileName, new IntType());
-
-			assert (imageOrig.numDimensions() == imageSegA.numDimensions());
-			assert (imageOrig.numDimensions() == imageSegB.numDimensions());
-			InteractiveBud masterparent =  new InteractiveBud(imageOrig, imageSegA, imageSegB, new File(impOrig.getOriginalFileInfo().directory) ,impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-					FrameInterval, name);
-			masterparent.BudDotsize = BudDotsize;
-			masterparent.run(null);
-
-		}
-
+		
 		
 
 		close(parent);
