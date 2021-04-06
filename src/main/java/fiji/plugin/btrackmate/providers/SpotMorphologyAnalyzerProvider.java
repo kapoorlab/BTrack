@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.features.spot.SpotMorphologyAnalyzerFactory;
+import fiji.plugin.btrackmate.features.spot.SpotMorphologyAnalyzerFactory;
 
 @SuppressWarnings( "rawtypes" )
 public class SpotMorphologyAnalyzerProvider extends AbstractProvider< SpotMorphologyAnalyzerFactory >

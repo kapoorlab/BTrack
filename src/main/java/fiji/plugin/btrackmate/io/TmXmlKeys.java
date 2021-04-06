@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.io;
+package fiji.plugin.btrackmate.io;
 
 
 /**

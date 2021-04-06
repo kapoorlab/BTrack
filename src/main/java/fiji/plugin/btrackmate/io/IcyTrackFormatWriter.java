@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.io;
+package fiji.plugin.btrackmate.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,9 +16,9 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.graph.ConvexBranchesDecomposition;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition;
 import net.imglib2.algorithm.Algorithm;
 import net.imglib2.algorithm.Benchmark;
 

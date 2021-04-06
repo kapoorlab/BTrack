@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.features.track.TrackAnalyzer;
+import fiji.plugin.btrackmate.features.track.TrackAnalyzer;
 
 /**
  * A provider for the track analyzers provided in the GUI.

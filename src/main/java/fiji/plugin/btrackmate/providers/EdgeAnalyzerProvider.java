@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.features.edges.EdgeAnalyzer;
+import fiji.plugin.btrackmate.features.edges.EdgeAnalyzer;
 
 /**
  * A provider for the edge analyzers provided in the GUI.

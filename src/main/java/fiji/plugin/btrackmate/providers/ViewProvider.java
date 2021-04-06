@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.visualization.ViewFactory;
+import fiji.plugin.btrackmate.visualization.ViewFactory;
 
 public class ViewProvider extends AbstractProvider< ViewFactory >
 {

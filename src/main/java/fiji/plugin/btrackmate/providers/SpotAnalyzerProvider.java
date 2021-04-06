@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.features.spot.SpotAnalyzerFactory;
+import fiji.plugin.btrackmate.features.spot.SpotAnalyzerFactory;
 
 /**
  * A provider for the spot analyzer factories provided in the GUI.

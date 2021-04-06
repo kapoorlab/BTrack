@@ -1,4 +1,4 @@
-package fiji.plugin.bbtrackmate.gui.displaysettings;
+package fiji.plugin.btrackmate.gui.displaysettings;
 
 import java.awt.Color;
 import java.io.File;
@@ -26,7 +26,7 @@ import com.google.gson.JsonSerializer;
 public class DisplaySettingsIO
 {
 
-	private static File userDefaultFile = new File( new File( System.getProperty( "user.home" ), ".bbtrackmate" ), "userdefaultsettings.json" );
+	private static File userDefaultFile = new File( new File( System.getProperty( "user.home" ), ".btrackmate" ), "userdefaultsettings.json" );
 
 	public static void toXML( final DisplaySettings ds, final Element dsel )
 	{

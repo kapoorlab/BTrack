@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package fiji.plugin.bbtrackmate.gui.displaysettings;
+package fiji.plugin.btrackmate.gui.displaysettings;
 
 /**
  * A {@code double} variable that can take any value in a given range. A

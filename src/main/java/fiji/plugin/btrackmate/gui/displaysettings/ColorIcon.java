@@ -1,4 +1,4 @@
-package fiji.plugin.bbtrackmate.gui.displaysettings;
+package fiji.plugin.btrackmate.gui.displaysettings;
 
 import java.awt.Color;
 import java.awt.Component;

@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import org.scijava.log.LogService;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 
-import fiji.plugin.trackmate.TrackMateModule;
-import fiji.plugin.trackmate.util.TMUtils;
+import fiji.plugin.btrackmate.TrackMateModule;
+import fiji.plugin.btrackmate.util.TMUtils;
 
 public abstract class AbstractProvider< K extends TrackMateModule >
 {

@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
 
 public class TrackerProvider extends AbstractProvider< SpotTrackerFactory >
 {

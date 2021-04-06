@@ -1,12 +1,12 @@
-package fiji.plugin.trackmate.io;
+package fiji.plugin.btrackmate.io;
 
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DOWNSAMPLE_FACTOR;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_MEDIAN_FILTERING;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_RADIUS;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
-import static fiji.plugin.trackmate.detection.DetectorKeys.KEY_THRESHOLD;
-import static fiji.plugin.trackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_DOWNSAMPLE_FACTOR;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_DO_MEDIAN_FILTERING;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_RADIUS;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_THRESHOLD;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -25,7 +25,7 @@ import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 
-import fiji.plugin.trackmate.Logger;
+import fiji.plugin.btrackmate.Logger;
 import fiji.util.NumberParser;
 import ij.IJ;
 

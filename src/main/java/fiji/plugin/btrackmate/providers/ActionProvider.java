@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.providers;
+package fiji.plugin.btrackmate.providers;
 
-import fiji.plugin.trackmate.action.TrackMateActionFactory;
+import fiji.plugin.btrackmate.action.TrackMateActionFactory;
 
 public class ActionProvider extends AbstractProvider< TrackMateActionFactory >
 {

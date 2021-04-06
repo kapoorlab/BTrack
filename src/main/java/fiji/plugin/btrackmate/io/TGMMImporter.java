@@ -1,4 +1,4 @@
-package fiji.plugin.trackmate.io;
+package fiji.plugin.btrackmate.io;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -26,10 +26,10 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.btrackmate.Logger;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
 
 public class TGMMImporter implements OutputAlgorithm< Model >, Benchmark
 {
