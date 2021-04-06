@@ -8,7 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
-import java.awt.Rectangle;
 import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.awt.event.KeyEvent;
@@ -20,12 +19,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -41,14 +36,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.XYSeriesCollection;
-
 import budDetector.Budobject;
 import budDetector.Budpointobject;
 import budDetector.Cellobject;
 import budDetector.Roiobject;
 import fiji.plugin.btrack.gui.components.CovistoKalmanPanel;
+import fiji.plugin.btrack.segmentation.CellSegmentation;
 import fiji.plugin.btrackmate.Spot;
 import fiji.plugin.btrackmate.SpotCollection;
 import fileListeners.BTrackSaveDirectoryListener;
@@ -56,12 +49,8 @@ import net.imagej.ImageJ;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.WindowManager;
-import ij.gui.OvalRoi;
 import ij.gui.Overlay;
-import ij.plugin.HyperStackConverter;
 import ij.plugin.PlugIn;
-import ij.process.ImageProcessor;
 import listeners.AddBudKeyListener;
 import listeners.BTrackAutoEndListener;
 import listeners.BTrackAutoStartListener;
@@ -84,20 +73,11 @@ import listeners.BudTlocListener;
 import listeners.BudTrackidListener;
 import listeners.BudZListener;
 import net.imglib2.Cursor;
-import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.algorithm.labeling.ConnectedComponents;
-import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
-import net.imglib2.img.array.ArrayImgFactory;
-import net.imglib2.img.array.ArrayImgs;
-import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.roi.labeling.ImgLabeling;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Intervals;
-import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import tracker.BUDDYBudTrackModel;
@@ -510,7 +490,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 
 	public void GreenCellCollector() {
 
-		CollectGreenCells display = new CollectGreenCells(this, jpb);
+		CellSegmentation display = new CellSegmentation(this, jpb);
 		display.execute();
 	}
 
