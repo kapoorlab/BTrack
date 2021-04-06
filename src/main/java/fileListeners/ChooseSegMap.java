@@ -9,6 +9,7 @@ import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import ij.WindowManager;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
+import pluginTools.simplifiedio.SimplifiedIO;
 
 public class ChooseSegMap implements ActionListener {
 	

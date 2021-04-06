@@ -1,6 +1,6 @@
-package fiji.plugin.trackmate.visualization.trackscheme.utils;
+package fiji.plugin.btrackmate.visualization.trackscheme.utils;
 
-import static fiji.plugin.trackmate.gui.Fonts.FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.FONT;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,9 +19,9 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
 
 @SuppressWarnings( "unchecked" )
 public class SearchBar extends JTextField

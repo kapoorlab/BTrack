@@ -40,10 +40,6 @@ public class BTrackGoFreeFlListener implements ItemListener {
 			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 			
-			parent.DoYellow = false;
-			parent.DoGreen = false;
-			parent.DoRed = false;
-			parent.NoChannel = true;
 		parent.Panelfile.validate();
 		parent.Panelfile.repaint();
 		

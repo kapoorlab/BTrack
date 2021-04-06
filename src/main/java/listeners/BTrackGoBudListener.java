@@ -35,8 +35,6 @@ public class BTrackGoBudListener implements ItemListener {
 					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
 	
 			original.ChooseImage.addActionListener(new ChooseBudOrigMap(parent, original.ChooseImage));
-			parent.OnlyBud = true;
-			parent.RGBBud = false;
 		parent.Panelfileoriginal.validate();
 		parent.Panelfileoriginal.repaint();
 		parent.panelFirst.validate();
@@ -46,8 +44,6 @@ public class BTrackGoBudListener implements ItemListener {
 		
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			
-			parent.OnlyBud = false;
-			parent.RGBBud = true;
 			parent.Panelfileoriginal.validate();
 			parent.Panelfileoriginal.repaint();
 			parent.panelFirst.validate();

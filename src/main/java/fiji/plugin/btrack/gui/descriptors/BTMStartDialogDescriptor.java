@@ -1,98 +1,54 @@
 package fiji.plugin.btrack.gui.descriptors;
 
-import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
-import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
-
 import java.awt.CardLayout;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
-import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
-import java.awt.Rectangle;
 import java.awt.Scrollbar;
 import java.awt.TextComponent;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import org.jgrapht.generate.EmptyGraphGenerator;
-
 import budDetector.Cellobject;
-import budDetector.Roiobject;
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
-import fiji.plugin.btrackmate.Logger;
-import fiji.plugin.btrackmate.Settings;
-import fiji.plugin.btrackmate.TrackMate;
-import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
-
-import javax.swing.JOptionPane;
-
 import fileListeners.ChooseOrigMap;
-import fileListeners.ChooseSegMap;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.gui.Roi;
-import ij.measure.Calibration;
 import listeners.BTrackGo3DMaskFLListener;
-import listeners.BTrackGoFreeFlListener;
-import listeners.BTrackGoFLListener;
-import listeners.BTrackGoYellowFLListener;
-import listeners.BudCheckpointListener;
-import listeners.BudZListener;
 import listeners.CsvLoader;
 import listeners.CheckpointListener;
 import listeners.ImageLoader;
 import listeners.ThreeDCellGoFreeFLListener;
-import net.imglib2.Dimensions;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.cell.CellImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.Type;
-import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Pair;
-import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import net.imglib2.Cursor;
 import pluginTools.InteractiveBud;
-import fileListeners.SimplifiedIO;
+import pluginTools.simplifiedio.SimplifiedIO;
 
 public class BTMStartDialogDescriptor extends JPanel
 {

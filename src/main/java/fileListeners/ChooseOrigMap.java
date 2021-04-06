@@ -14,6 +14,7 @@ import ij.WindowManager;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
+import pluginTools.simplifiedio.SimplifiedIO;
 
 public class ChooseOrigMap implements ActionListener {
 	

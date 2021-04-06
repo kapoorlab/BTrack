@@ -9,7 +9,7 @@ import budDetector.Budpointobject;
 import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 import net.imagej.ops.OpService;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;

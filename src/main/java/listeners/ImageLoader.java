@@ -43,7 +43,7 @@ public class ImageLoader implements ItemListener {
 
 			
 			// Listeneres
-			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseCellSegstring, parent.blankimageNames);
+			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseSegstring, parent.blankimageNames);
 			parent.Panelfile = segmentation.SingleChannelOption();
 			segmentation.ChooseImage.addActionListener(new ChooseSegMap(parent, segmentation.ChooseImage));
 			

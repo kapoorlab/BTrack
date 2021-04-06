@@ -39,7 +39,7 @@ import utility.GetNearest;
 import utility.SavePink;
 import displayBud.DisplayListOverlay;
 import fiji.plugin.btrack.gui.components.CovistoKalmanPanel;
-import fiji.plugin.trackmate.Spot;
+import fiji.plugin.btrackmate.Spot;
 import ij.IJ;
 import ij.gui.OvalRoi;
 
