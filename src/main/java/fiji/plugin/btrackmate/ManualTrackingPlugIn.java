@@ -12,17 +12,10 @@ import pluginTools.InteractiveBud;
 public class ManualTrackingPlugIn extends TrackMatePlugIn
 {
 
-	final InteractiveBud parent;
-	
-	public ManualTrackingPlugIn(InteractiveBud parent) {
-		super(parent);
-		this.parent = parent;
-	}
-
 	@Override
-	protected WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		final WizardSequence sequence = super.createSequence( btrackmate, selectionModel, displaySettings );
+		final WizardSequence sequence = super.createSequence( trackmate, selectionModel, displaySettings );
 		sequence.setCurrent( ConfigureViewsDescriptor.KEY );
 		return sequence;
 	}
@@ -44,5 +37,6 @@ public class ManualTrackingPlugIn extends TrackMatePlugIn
 	public static void main( final String[] args )
 	{
 		ImageJ.main( args );
+		new ManualTrackingPlugIn().run( "samples/Merged.tif" );
 	}
 }

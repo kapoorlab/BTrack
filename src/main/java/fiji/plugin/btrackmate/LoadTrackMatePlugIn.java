@@ -25,6 +25,7 @@ import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
+import ij.io.Opener;
 import ij.plugin.PlugIn;
 
 public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
@@ -231,8 +232,9 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 	{
 		ImageJ.main( args );
 		final LoadTrackMatePlugIn plugIn = new LoadTrackMatePlugIn();
-//		plugIn.run( "samples/FakeTracks.xml" );
-//		plugIn.run( "samples/MAX_Merged.xml" );
+		ImagePlus impA = new Opener()
+				.openImage("/home/kapoorlab/TestSmartSeedResults.tif");
+			impA.show();
 		plugIn.run( "" );
 	}
 }

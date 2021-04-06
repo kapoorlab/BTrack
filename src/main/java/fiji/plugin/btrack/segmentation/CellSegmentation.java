@@ -50,8 +50,8 @@ public class CellSegmentation extends SwingWorker<Void, Void> {
 		
 		parent.imp.close();
 		//Initiate the TM plugin
-		TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
-		plugin.run(null);
+		//TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
+		//plugin.run(null);
 		
 	}
 	

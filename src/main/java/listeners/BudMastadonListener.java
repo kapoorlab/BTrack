@@ -25,8 +25,8 @@ public class BudMastadonListener implements ActionListener {
 		
 	
 		IJ.log(Integer.toString(parent.budcells.keySet().size()));
-		TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
-		plugin.run(null);
+		//TrackMatePlugIn plugin = new TrackMatePlugIn(parent);
+		//plugin.run(null);
 		
 		
 		

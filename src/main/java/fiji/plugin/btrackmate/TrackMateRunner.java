@@ -52,11 +52,6 @@ public class TrackMateRunner extends TrackMatePlugIn
 	/*
 	 * List of arguments usable in the macro.
 	 */
-	final InteractiveBud parent;
-	public TrackMateRunner(InteractiveBud parent) {
-		super(parent);
-		this.parent = parent;
-	}
 
 	/**
 	 * The macro parameter to set the detection radius of particles. Accept
@@ -286,7 +281,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 				 */
 
 				final Settings settings = createSettings( imp );
-				final Model model = createModel(  );
+				final Model model = createModel( imp );
 				final SelectionModel selectionModel = new SelectionModel( model );
 				model.setLogger( logger );
 				final TrackMate btrackmate = createTrackMate( model, settings );

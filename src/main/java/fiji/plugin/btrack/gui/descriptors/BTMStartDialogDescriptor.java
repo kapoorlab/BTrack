@@ -232,7 +232,6 @@ public class BTMStartDialogDescriptor extends JPanel
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
-
 		Cardframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Cardframe.pack();
 		Cardframe.setVisible(true);
