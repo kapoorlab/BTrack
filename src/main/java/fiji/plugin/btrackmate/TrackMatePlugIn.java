@@ -1,6 +1,7 @@
 package fiji.plugin.btrackmate;
 
 import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -13,15 +14,16 @@ import fiji.plugin.btrackmate.gui.wizard.TrackMateWizardSequence;
 import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
 import fiji.plugin.btrackmate.visualization.TrackMateModelView;
 import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
+import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
+import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.TrackMatePlugIn;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.numeric.real.FloatType;
-import pluginTools.InteractiveBud;
 
 public class TrackMatePlugIn implements PlugIn
 {
@@ -67,7 +69,7 @@ public class TrackMatePlugIn implements PlugIn
 		// Main objects.
 		final Settings settings = createSettings( imp );
 		final Model model = createModel( imp );
-		final TrackMate trackmate = createTrackMate( model, settings );
+		final TrackMate btrackmate = createTrackMate( model, settings );
 		final SelectionModel selectionModel = new SelectionModel( model );
 		final DisplaySettings displaySettings = createDisplaySettings();
 
@@ -76,7 +78,7 @@ public class TrackMatePlugIn implements PlugIn
 		displayer.render();
 
 		// Wizard.
-		final WizardSequence sequence = createSequence( trackmate, selectionModel, displaySettings );
+		final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
 		final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
 		GuiUtils.positionWindow( frame, imp.getWindow() );
@@ -93,9 +95,9 @@ public class TrackMatePlugIn implements PlugIn
 	 * @param displaySettings
 	 * @return
 	 */
-	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	protected WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		return new TrackMateWizardSequence( trackmate, selectionModel, displaySettings );
+		return new TrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
 	}
 
 	/**
@@ -164,7 +166,7 @@ public class TrackMatePlugIn implements PlugIn
 		ImageJ.main( args );
 //		new TrackMatePlugIn().run( "samples/Stack.tif" );
 //		new TrackMatePlugIn().run( "samples/Merged.tif" );
-		new TrackMatePlugIn().run( "/home/kapoorlab/TestSmartSeedResults.tif");
+		new TrackMatePlugIn().run("/home/kapoorlab/TestSmartSeedResults.tif");
 //		new TrackMatePlugIn().run( "samples/Mask.tif" );
 //		new TrackMatePlugIn().run( "samples/FakeTracks.tif" );
 	}

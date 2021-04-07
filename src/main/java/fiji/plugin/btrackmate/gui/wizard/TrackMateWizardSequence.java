@@ -91,10 +91,14 @@ public class TrackMateWizardSequence implements WizardSequence
 	private final ActionChooserDescriptor actionChooserDescriptor;
 
 	private final SaveDescriptor saveDescriptor;
+	
+	public TrackMate updatedbtrackmate;
 
 	public TrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
 		this.btrackmate = btrackmate;
+		updatedbtrackmate = btrackmate;
+		
 		this.selectionModel = selectionModel;
 		this.displaySettings = displaySettings;
 		final Settings settings = btrackmate.getSettings();
@@ -128,6 +132,14 @@ public class TrackMateWizardSequence implements WizardSequence
 		current = startDialogDescriptor;
 	}
 
+	
+	public TrackMate updatemodel(final Model model, final Settings settings) {
+		
+		updatedbtrackmate = new TrackMate(model, settings); 
+		
+		return updatedbtrackmate;
+	}
+	
 	@Override
 	public WizardPanelDescriptor next()
 	{
@@ -272,7 +284,7 @@ public class TrackMateWizardSequence implements WizardSequence
 	 */
 	private SpotDetectorDescriptor getDetectorConfigDescriptor()
 	{
-		final SpotDetectorFactoryBase< ? > detectorFactory = btrackmate.getSettings().detectorFactory;
+		final SpotDetectorFactoryBase< ? > detectorFactory = updatedbtrackmate.getSettings().detectorFactory;
 
 		/*
 		 * Special case: are we dealing with the manual detector? If yes, no
@@ -293,7 +305,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		 * descriptor.
 		 */
 		// From settings.
-		final Map< String, Object > oldSettings1 = new HashMap<>( btrackmate.getSettings().detectorSettings );
+		final Map< String, Object > oldSettings1 = new HashMap<>( updatedbtrackmate.getSettings().detectorSettings );
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
 		final WizardPanelDescriptor previousDescriptor = next.get( chooseDetectorDescriptor );
@@ -314,10 +326,10 @@ public class TrackMateWizardSequence implements WizardSequence
 			defaultSettings.put( skey, previousValue );
 		}
 
-		final ConfigurationPanel detectorConfigurationPanel = detectorFactory.getDetectorConfigurationPanel( btrackmate.getSettings(), btrackmate.getModel() );
+		final ConfigurationPanel detectorConfigurationPanel = detectorFactory.getDetectorConfigurationPanel( updatedbtrackmate.getSettings(), updatedbtrackmate.getModel() );
 		detectorConfigurationPanel.setSettings( defaultSettings );
 		btrackmate.getSettings().detectorSettings = defaultSettings;
-		final SpotDetectorDescriptor configDescriptor = new SpotDetectorDescriptor( btrackmate.getSettings(), detectorConfigurationPanel, btrackmate.getModel().getLogger() );
+		final SpotDetectorDescriptor configDescriptor = new SpotDetectorDescriptor( updatedbtrackmate.getSettings(), detectorConfigurationPanel, updatedbtrackmate.getModel().getLogger() );
 
 		// Position sequence next and previous.
 		next.put( chooseDetectorDescriptor, configDescriptor );
@@ -338,7 +350,7 @@ public class TrackMateWizardSequence implements WizardSequence
 	 */
 	private SpotTrackerDescriptor getTrackerConfigDescriptor()
 	{
-		final SpotTrackerFactory trackerFactory = btrackmate.getSettings().trackerFactory;
+		final SpotTrackerFactory trackerFactory = updatedbtrackmate.getSettings().trackerFactory;
 
 		/*
 		 * Special case: are we dealing with the manual tracker? If yes, no
@@ -357,7 +369,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		 * descriptor.
 		 */
 		// From settings.
-		final Map< String, Object > oldSettings1 = new HashMap<>( btrackmate.getSettings().trackerSettings );
+		final Map< String, Object > oldSettings1 = new HashMap<>( updatedbtrackmate.getSettings().trackerSettings );
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
 		final WizardPanelDescriptor previousDescriptor = next.get( chooseTrackerDescriptor );
@@ -378,10 +390,10 @@ public class TrackMateWizardSequence implements WizardSequence
 			defaultSettings.put( skey, previousValue );
 		}
 
-		final ConfigurationPanel trackerConfigurationPanel = trackerFactory.getTrackerConfigurationPanel( btrackmate.getModel() );
+		final ConfigurationPanel trackerConfigurationPanel = trackerFactory.getTrackerConfigurationPanel( updatedbtrackmate.getModel() );
 		trackerConfigurationPanel.setSettings( defaultSettings );
-		btrackmate.getSettings().trackerSettings = defaultSettings;
-		final SpotTrackerDescriptor configDescriptor = new SpotTrackerDescriptor( btrackmate.getSettings(), trackerConfigurationPanel, btrackmate.getModel().getLogger() );
+		updatedbtrackmate.getSettings().trackerSettings = defaultSettings;
+		final SpotTrackerDescriptor configDescriptor = new SpotTrackerDescriptor( updatedbtrackmate.getSettings(), trackerConfigurationPanel, updatedbtrackmate.getModel().getLogger() );
 
 		// Position sequence next and previous.
 		next.put( chooseTrackerDescriptor, configDescriptor );
@@ -420,8 +432,8 @@ public class TrackMateWizardSequence implements WizardSequence
 				@Override
 				public void run()
 				{
-					final TrackScheme trackscheme = new TrackScheme( btrackmate.getModel(), selectionModel, displaySettings );
-					final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( btrackmate.getSettings() );
+					final TrackScheme trackscheme = new TrackScheme( updatedbtrackmate.getModel(), selectionModel, displaySettings );
+					final SpotImageUpdater thumbnailUpdater = new SpotImageUpdater( updatedbtrackmate.getSettings() );
 					trackscheme.setSpotImageUpdater( thumbnailUpdater );
 					trackscheme.render();
 				}
@@ -476,7 +488,7 @@ public class TrackMateWizardSequence implements WizardSequence
 				else
 					action = new ExportStatsTablesAction();
 
-				action.execute( btrackmate, selectionModel, displaySettings, null );
+				action.execute( updatedbtrackmate, selectionModel, displaySettings, null );
 			}
 		}.start();
 	}

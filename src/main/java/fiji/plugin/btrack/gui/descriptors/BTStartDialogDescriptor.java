@@ -37,6 +37,7 @@ import fileListeners.ChooseBudSegAMap;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.OvalRoi;
+import ij.plugin.PlugIn;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.type.numeric.integer.IntType;
@@ -45,7 +46,7 @@ import pluginTools.InteractiveBud;
 import pluginTools.simplifiedio.SimplifiedIO;
 
 
-public class BTStartDialogDescriptor  extends JPanel
+public class BTStartDialogDescriptor  extends JPanel 
 
 {
 	
@@ -91,8 +92,7 @@ public class BTStartDialogDescriptor  extends JPanel
 	  public TextField inputFieldcalX, inputFieldcalY, inputFieldcalZ, FieldinputLabelcalT;
 	public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"),
 			new EmptyBorder(c.insets));
-	
-	
+
 	public BTStartDialogDescriptor() {
 
 		   inputLabelcalX = new Label("Pixel calibration in X(um)");

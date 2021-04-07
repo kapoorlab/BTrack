@@ -19,7 +19,7 @@ public class LoadBTrackPlugIn {
 	    new ImageJ();
 	
 		ImagePlus impA = new Opener()
-				.openImage("/home/sancere/Downloads/TOMCellSegmentation.tif");
+				.openImage("/home/kapoorlab/TestSmartSeedResults.tif");
 		impA.show();
 		
 	

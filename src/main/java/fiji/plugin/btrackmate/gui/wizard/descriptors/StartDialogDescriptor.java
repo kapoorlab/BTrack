@@ -2,6 +2,7 @@ package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
 import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.swing.JButton;
@@ -102,10 +104,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 	{
 
 		private static final long serialVersionUID = -1L;
-
+		/** ActionEvent fired when the user press the refresh button. */
+		private final ActionEvent IMAGEPLUS_REFRESHED = new ActionEvent( this, 0, "ImagePlus refreshed" );
 		private static final NumberFormat DOUBLE_FORMAT = new DecimalFormat( "#.###" );
 
 
+		private static final String TOOLTIP = "<html>" +
+				"Pressing this button will make the current <br>" +
+				"ImagePlus the source for BTrackMate..</html>";
 
 		private final JFormattedTextField tfXStart;
 		private final JFormattedTextField tfXEnd;
@@ -124,8 +130,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 		public boolean LoadImage = false;
 		public boolean LoadCSV = true;
 		public CheckboxGroup SegLoadmode = new CheckboxGroup();
-		public Checkbox ImageMode = new Checkbox("Segmentation Data as tif", LoadImage, SegLoadmode);
-		public Checkbox CsvMode = new Checkbox("Segmentation Data as csv", LoadCSV, SegLoadmode);
+		
 		
 		public CheckboxGroup cellmode = new CheckboxGroup();
 		public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
@@ -343,7 +348,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			
 			
 
-
+			final Checkbox ImageMode = new Checkbox("Segmentation as Images", LoadImage, SegLoadmode);
+			ImageMode.setFont( SMALL_FONT );
 			final GridBagConstraints gbcChooseImage = new GridBagConstraints();
 			gbcChooseImage.anchor = GridBagConstraints.NORTH;
 			gbcChooseImage.fill = GridBagConstraints.HORIZONTAL;
@@ -352,14 +358,17 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcChooseImage.gridy = 9;
 			add(ImageMode, gbcChooseImage);
 			
-			
+			final Checkbox CsvMode = new Checkbox("Segmentation as csv", LoadCSV, SegLoadmode);
+			CsvMode.setFont( SMALL_FONT );
 			final GridBagConstraints gbcChooseCSV = new GridBagConstraints();
 			gbcChooseCSV.anchor = GridBagConstraints.NORTH;
 			gbcChooseCSV.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseCSV.insets = new Insets( 5, 5, 5, 5 );
 			gbcChooseCSV.gridx = 2;
 			gbcChooseCSV.gridy = 10;
-			add(ImageMode, gbcChooseCSV);
+			
+			
+			add(ImageMode, gbcChooseImage);
 			
 			add(CsvMode, gbcChooseCSV);
 			
@@ -393,20 +402,41 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 
 		
 
-			/*
-			 * Set values from source image.
-			 */
-			Roi roi = new Roi( 0, 0, imp.getWidth(), imp.getHeight() );
+			final JButton btnRefreshROI = new JButton( "Refresh RAW Image" );
+			btnRefreshROI.setToolTipText( TOOLTIP );
+			btnRefreshROI.setFont( SMALL_FONT );
+			final GridBagConstraints gbcButtonRefresh = new GridBagConstraints();
+			gbcButtonRefresh.anchor = GridBagConstraints.NORTHWEST;
+			gbcButtonRefresh.insets = new Insets( 5, 5, 5, 5 );
+			gbcButtonRefresh.gridwidth = 4;
+			gbcButtonRefresh.gridx = 0;
+			gbcButtonRefresh.gridy = 14;
+			add( btnRefreshROI, gbcButtonRefresh );
+			btnRefreshROI.addActionListener( new ActionListener()
+			{
+				@Override
+				public void actionPerformed( final ActionEvent e )
+				{
+					
+					Roi roi = new Roi( 0, 0, imp.getWidth(), imp.getHeight() );
 
-			final Rectangle boundingRect = roi.getBounds();
-			tfXStart.setValue( Integer.valueOf( boundingRect.x ) );
-			tfYStart.setValue( Integer.valueOf( boundingRect.y ) );
-			tfXEnd.setValue( Integer.valueOf( boundingRect.width + boundingRect.x - 1 ) );
-			tfYEnd.setValue( Integer.valueOf( boundingRect.height + boundingRect.y - 1 ) );
-			tfZStart.setValue( Integer.valueOf( 0 ) );
-			tfZEnd.setValue( Integer.valueOf( imp.getNSlices() - 1 ) );
-			tfTStart.setValue( Integer.valueOf( 0 ) );
-			tfTEnd.setValue( Integer.valueOf( imp.getNFrames() - 1 ) );
+					final Rectangle boundingRect = roi.getBounds();
+					tfXStart.setValue( Integer.valueOf( boundingRect.x ) );
+					tfYStart.setValue( Integer.valueOf( boundingRect.y ) );
+					tfXEnd.setValue( Integer.valueOf( boundingRect.width + boundingRect.x - 1 ) );
+					tfYEnd.setValue( Integer.valueOf( boundingRect.height + boundingRect.y - 1 ) );
+					tfZStart.setValue( Integer.valueOf( 0 ) );
+					tfZEnd.setValue( Integer.valueOf( imp.getNSlices() - 1 ) );
+					tfTStart.setValue( Integer.valueOf( 0 ) );
+					tfTEnd.setValue( Integer.valueOf( imp.getNFrames() - 1 ) );
+					
+					imp = WindowManager.getCurrentImage();
+					getFrom( imp );
+					fireAction( IMAGEPLUS_REFRESHED );
+					
+					
+				}
+			} );
 			final Calibration cal = imp.getCalibration();
 			lblPixelWidthVal.setText( DOUBLE_FORMAT.format( cal.pixelWidth ) );
 			lblPixelHeightVal.setText( DOUBLE_FORMAT.format( cal.pixelHeight ) );
@@ -427,6 +457,66 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			lblSpatialUnits1.setText( cal.getXUnit() );
 			lblSpatialUnits2.setText( cal.getYUnit() );
 			lblSpatialUnits3.setText( cal.getZUnit() );
+			btnRefreshROI.doClick();
+		}
+		protected ArrayList<ActionListener> actionListeners = new ArrayList<>();
+		
+		protected void fireAction(ActionEvent e) {
+			for (ActionListener l : actionListeners)
+				l.actionPerformed(e);
+		}
+		/**
+		 * Fill the text fields with parameters grabbed from specified ImagePlus.
+		 */
+		public void getFrom( final ImagePlus lImp )
+		{
+			settings.imp = lImp;
+			if ( null == lImp )
+			{
+				jLabelImageName.setText( "No image selected." );
+				impValid = false;
+				return;
+			}
+
+			if ( lImp.getType() == ImagePlus.COLOR_RGB )
+			{
+				// We do not know how to process RGB images
+				jLabelImageName.setText( lImp.getShortTitle() + " is RGB: invalid." );
+				impValid = false;
+				return;
+			}
+
+			jLabelImageName.setText( "Target: " + lImp.getShortTitle() );
+			jTextFieldPixelWidth.setValue( lImp.getCalibration().pixelWidth );
+			jTextFieldPixelHeight.setValue( lImp.getCalibration().pixelHeight );
+			jTextFieldVoxelDepth.setValue( lImp.getCalibration().pixelDepth );
+			if ( lImp.getCalibration().frameInterval == 0 )
+			{
+				jTextFieldTimeInterval.setValue( 1 );
+				jLabelUnits4.setText( "frame" );
+			}
+			else
+			{
+				jTextFieldTimeInterval.setValue( lImp.getCalibration().frameInterval );
+				jLabelUnits4.setText( lImp.getCalibration().getTimeUnit() );
+			}
+			jLabelUnits1.setText( lImp.getCalibration().getXUnit() );
+			jLabelUnits2.setText( lImp.getCalibration().getYUnit() );
+			jLabelUnits3.setText( lImp.getCalibration().getZUnit() );
+			Roi roi = lImp.getRoi();
+			if ( null == roi )
+				roi = new Roi( 0, 0, lImp.getWidth(), lImp.getHeight() );
+			final Rectangle boundingRect = roi.getBounds();
+			jTextFieldXStart.setText( "" + ( boundingRect.x ) );
+			jTextFieldYStart.setText( "" + ( boundingRect.y ) );
+			jTextFieldXEnd.setText( "" + ( boundingRect.width + boundingRect.x - 1 ) );
+			jTextFieldYEnd.setText( "" + ( boundingRect.height + boundingRect.y - 1 ) );
+			jTextFieldZStart.setText( "" + 0 );
+			jTextFieldZEnd.setText( "" + ( lImp.getNSlices() - 1 ) );
+			jTextFieldTStart.setText( "" + 0 );
+			jTextFieldTEnd.setText( "" + ( lImp.getNFrames() - 1 ) );
+
+			impValid = true;
 		}
 	}
 	
