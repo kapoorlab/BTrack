@@ -123,7 +123,7 @@ public class TrackMateWizardSequence implements WizardSequence
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 		
 		
-		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), btrackmate );
+		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), updatedbtrackmate );
 		executeDetectionDescriptor = new ExecuteDetectionDescriptor( updatedbtrackmate, logPanel );
 		initFilterDescriptor = new InitFilterDescriptor( updatedbtrackmate, initialFilter );
 		spotFilterDescriptor = new SpotFilterDescriptor( updatedbtrackmate, spotFilters, featureSelector );

@@ -92,6 +92,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		logger.log("https://www.sciencedirect.com/science/article/pii/S1046202316303346\n", Logger.BLUE_COLOR);
 		logger.log("\nNumerical feature analyzers:\n", Logger.BLUE_COLOR);
 		logger.log(settings.toStringFeatureAnalyzersInfo());
+		
 	}
 
 	@Override
@@ -174,6 +175,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		GridBagConstraints gbcChooseCheck = new GridBagConstraints();
 
 		public RoiSettingsPanel(final ImagePlus imp) {
+			
 			this.setPreferredSize(new Dimension(291, 491));
 			final GridBagLayout gridBagLayout = new GridBagLayout();
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -371,7 +373,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcChooseCSV.insets = new Insets(5, 5, 5, 5);
 			gbcChooseCSV.gridx = 2;
 			gbcChooseCSV.gridy = 10;
-
 			add(ImageMode, gbcChooseImage);
 
 			add(CsvMode, gbcChooseCSV);
@@ -417,7 +418,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					tfZEnd.setValue(Integer.valueOf(imp.getNSlices() - 1));
 					tfTStart.setValue(Integer.valueOf(0));
 					tfTEnd.setValue(Integer.valueOf(imp.getNFrames() - 1));
-
+					
 					updateimp = WindowManager.getCurrentImage();
 					updatesettings.setFrom(updateimp);
 					getFrom(updateimp);
