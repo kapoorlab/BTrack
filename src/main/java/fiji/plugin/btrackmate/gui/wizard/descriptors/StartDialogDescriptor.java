@@ -38,6 +38,8 @@ import fiji.plugin.btrackmate.Logger;
 import fiji.plugin.btrackmate.Settings;
 import fiji.plugin.btrackmate.TrackMate;
 import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.Model;
+import fiji.util.NumberParser;
 import fileListeners.ChooseOrigMap;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -53,14 +55,20 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 	private static final String KEY = "Start";
 
 	public  Settings settings;
+	
+	public Model model;
 
 	private final Logger logger;
 
-	public StartDialogDescriptor( final Settings settings, final Logger logger )
+	public StartDialogDescriptor( final Model model, final Settings settings, final Logger logger )
 	{
 		super( KEY );
 		this.settings = settings;
 		this.logger = logger;
+		this.model = model;
+		updatemodel = model;
+		updatesettings = settings;
+		updateimp = settings.imp;
 		this.targetPanel = new RoiSettingsPanel( settings.imp );
 	}
 
@@ -99,7 +107,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 		logger.log( "\nImage region of interest:\n", Logger.BLUE_COLOR );
 		logger.log( settings.toStringImageInfo() );
 	}
-
+	
+	public static ImagePlus updateimp;
+	public static Settings updatesettings;
+	public static TrackMate updatedbtrackmate;
+	public static Model updatemodel;
 	private static class RoiSettingsPanel extends JPanel
 	{
 
@@ -136,8 +148,26 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 		public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 		public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
 		public String origcellfilestring = "Input Image";
+
 		public final String[] imageNames, blankimageNames;
 		
+		
+		JLabel lblPixelWidthVal = new JLabel();
+		JLabel lblImageName = new JLabel( "Target image: "  );
+		JLabel lblCalibrationSettings = new JLabel( "Calibration settings:" );
+		JLabel lblPixelWidth = new JLabel( "Pixel width:" );
+		JLabel lblSpatialUnits1 = new JLabel();
+		JLabel lblPixelHeight = new JLabel( "Pixel height:" );
+		JLabel lblPixelHeightVal = new JLabel();
+		JLabel lblTimeInterval = new JLabel( "Time interval:" );
+		JLabel lblSpatialUnits2 = new JLabel();
+		JLabel lblVoxelDepthVal = new JLabel();
+		JLabel lblVoxelDepth = new JLabel( "Voxel depth:" );
+		JLabel lblSpatialUnits3 = new JLabel();
+		JLabel lblTimeUnits = new JLabel();
+		JLabel lblTimeIntervalVal = new JLabel();
+		Checkbox ImageMode = new Checkbox("Segmentation as Images", LoadImage, SegLoadmode);
+		Checkbox CsvMode = new Checkbox("Segmentation as csv", LoadCSV, SegLoadmode);
 		
 		public RoiSettingsPanel( final ImagePlus imp )
 		{
@@ -197,7 +227,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLblLinkPubMed.gridy = 1;
 			add( lblLinkPubMed, gbcLblLinkPubMed );
 
-			final JLabel lblImageName = new JLabel( "Target image: " + imp.getShortTitle() );
+			lblImageName = new JLabel( "Target image: " + imp.getShortTitle() );
 			lblImageName.setFont( BIG_FONT );
 			final GridBagConstraints gbcLabelImageName = new GridBagConstraints();
 			gbcLabelImageName.anchor = GridBagConstraints.SOUTH;
@@ -208,7 +238,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelImageName.gridy = 3;
 			add( lblImageName, gbcLabelImageName );
 
-			final JLabel lblCalibrationSettings = new JLabel( "Calibration settings:" );
+		
 			lblCalibrationSettings.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelCalibration = new GridBagConstraints();
 			gbcLabelCalibration.anchor = GridBagConstraints.SOUTH;
@@ -219,7 +249,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelCalibration.gridy = 4;
 			add( lblCalibrationSettings, gbcLabelCalibration );
 
-			final JLabel lblPixelWidth = new JLabel( "Pixel width:" );
+			
 			lblPixelWidth.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelPixelWidth = new GridBagConstraints();
 			gbcLabelPixelWidth.anchor = GridBagConstraints.EAST;
@@ -229,7 +259,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelPixelWidth.gridy = 5;
 			add( lblPixelWidth, gbcLabelPixelWidth );
 
-			final JLabel lblPixelWidthVal = new JLabel();
+			
 			lblPixelWidthVal.setHorizontalAlignment( SwingConstants.CENTER );
 			lblPixelWidthVal.setFont( SMALL_FONT );
 			final GridBagConstraints gbcTextFieldPixelWidth = new GridBagConstraints();
@@ -240,7 +270,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcTextFieldPixelWidth.gridy = 5;
 			add( lblPixelWidthVal, gbcTextFieldPixelWidth );
 
-			final JLabel lblSpatialUnits1 = new JLabel();
+			
 			lblSpatialUnits1.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelSpatialUnits = new GridBagConstraints();
 			gbcLabelSpatialUnits.anchor = GridBagConstraints.WEST;
@@ -249,7 +279,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelSpatialUnits.gridy = 5;
 			add( lblSpatialUnits1, gbcLabelSpatialUnits );
 
-			final JLabel lblPixelHeight = new JLabel( "Pixel height:" );
+			
 			lblPixelHeight.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelPixelHeight = new GridBagConstraints();
 			gbcLabelPixelHeight.anchor = GridBagConstraints.EAST;
@@ -259,7 +289,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelPixelHeight.gridy = 6;
 			add( lblPixelHeight, gbcLabelPixelHeight );
 
-			final JLabel lblPixelHeightVal = new JLabel();
+			
 			lblPixelHeightVal.setHorizontalAlignment( SwingConstants.CENTER );
 			lblPixelHeightVal.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLblPixelHeight = new GridBagConstraints();
@@ -270,7 +300,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLblPixelHeight.gridy = 6;
 			add( lblPixelHeightVal, gbcLblPixelHeight );
 
-			final JLabel lblTimeInterval = new JLabel( "Time interval:" );
+			
 			lblTimeInterval.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelTimeInterval = new GridBagConstraints();
 			gbcLabelTimeInterval.anchor = GridBagConstraints.EAST;
@@ -280,7 +310,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelTimeInterval.gridy = 8;
 			add( lblTimeInterval, gbcLabelTimeInterval );
 
-			final JLabel lblSpatialUnits2 = new JLabel();
+			
 			lblSpatialUnits2.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelTimeUnits = new GridBagConstraints();
 			gbcLabelTimeUnits.anchor = GridBagConstraints.WEST;
@@ -289,7 +319,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelTimeUnits.gridy = 6;
 			add( lblSpatialUnits2, gbcLabelTimeUnits );
 
-			final JLabel lblVoxelDepthVal = new JLabel();
+			
 			lblVoxelDepthVal.setHorizontalAlignment( SwingConstants.CENTER );
 			lblVoxelDepthVal.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLblVoxelDepth = new GridBagConstraints();
@@ -300,7 +330,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLblVoxelDepth.gridy = 7;
 			add( lblVoxelDepthVal, gbcLblVoxelDepth );
 
-			final JLabel lblVoxelDepth = new JLabel( "Voxel depth:" );
+			
 			lblVoxelDepth.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelVoxelDepth = new GridBagConstraints();
 			gbcLabelVoxelDepth.anchor = GridBagConstraints.EAST;
@@ -310,7 +340,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelVoxelDepth.gridy = 7;
 			add( lblVoxelDepth, gbcLabelVoxelDepth );
 
-			final JLabel lblSpatialUnits3 = new JLabel();
+			
 			lblSpatialUnits3.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelUnits3 = new GridBagConstraints();
 			gbcLabelUnits3.anchor = GridBagConstraints.WEST;
@@ -319,7 +349,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelUnits3.gridy = 7;
 			add( lblSpatialUnits3, gbcLabelUnits3 );
 
-			final JLabel lblTimeUnits = new JLabel();
+			
 			lblTimeUnits.setFont( SMALL_FONT );
 			final GridBagConstraints gbcLabelUnits4 = new GridBagConstraints();
 			gbcLabelUnits4.anchor = GridBagConstraints.WEST;
@@ -328,7 +358,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcLabelUnits4.gridy = 8;
 			add( lblTimeUnits, gbcLabelUnits4 );
 
-			final JLabel lblTimeIntervalVal = new JLabel();
+			
 			lblTimeIntervalVal.setHorizontalAlignment( SwingConstants.CENTER );
 			lblTimeIntervalVal.setFont( SMALL_FONT );
 			final GridBagConstraints gbcTextFieldTimeInterval = new GridBagConstraints();
@@ -348,7 +378,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			
 			
 
-			final Checkbox ImageMode = new Checkbox("Segmentation as Images", LoadImage, SegLoadmode);
+			
 			ImageMode.setFont( SMALL_FONT );
 			final GridBagConstraints gbcChooseImage = new GridBagConstraints();
 			gbcChooseImage.anchor = GridBagConstraints.NORTH;
@@ -358,7 +388,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 			gbcChooseImage.gridy = 9;
 			add(ImageMode, gbcChooseImage);
 			
-			final Checkbox CsvMode = new Checkbox("Segmentation as csv", LoadCSV, SegLoadmode);
+			
 			CsvMode.setFont( SMALL_FONT );
 			final GridBagConstraints gbcChooseCSV = new GridBagConstraints();
 			gbcChooseCSV.anchor = GridBagConstraints.NORTH;
@@ -430,8 +460,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 					tfTStart.setValue( Integer.valueOf( 0 ) );
 					tfTEnd.setValue( Integer.valueOf( imp.getNFrames() - 1 ) );
 					
-					imp = WindowManager.getCurrentImage();
-					getFrom( imp );
+					updateimp = WindowManager.getCurrentImage();
+					updatesettings.setFrom(updateimp);
+					getFrom( updateimp );
 					fireAction( IMAGEPLUS_REFRESHED );
 					
 					
@@ -470,56 +501,122 @@ public class StartDialogDescriptor extends WizardPanelDescriptor
 		 */
 		public void getFrom( final ImagePlus lImp )
 		{
-			settings.imp = lImp;
+			updateimp = lImp;
 			if ( null == lImp )
 			{
-				jLabelImageName.setText( "No image selected." );
-				impValid = false;
+				lblImageName.setText( "No image selected." );
 				return;
 			}
 
 			if ( lImp.getType() == ImagePlus.COLOR_RGB )
 			{
 				// We do not know how to process RGB images
-				jLabelImageName.setText( lImp.getShortTitle() + " is RGB: invalid." );
-				impValid = false;
+				lblImageName.setText( lImp.getShortTitle() + " is RGB: invalid." );
 				return;
 			}
 
-			jLabelImageName.setText( "Target: " + lImp.getShortTitle() );
-			jTextFieldPixelWidth.setValue( lImp.getCalibration().pixelWidth );
-			jTextFieldPixelHeight.setValue( lImp.getCalibration().pixelHeight );
-			jTextFieldVoxelDepth.setValue( lImp.getCalibration().pixelDepth );
+			lblImageName.setText( "Target: " + lImp.getShortTitle() );
+			lblPixelWidthVal.setText( DOUBLE_FORMAT.format(  lImp.getCalibration().pixelWidth ));
+			lblPixelHeightVal.setText( DOUBLE_FORMAT.format( lImp.getCalibration().pixelHeight ));
+			lblVoxelDepthVal.setText( DOUBLE_FORMAT.format( lImp.getCalibration().pixelDepth ));
 			if ( lImp.getCalibration().frameInterval == 0 )
 			{
-				jTextFieldTimeInterval.setValue( 1 );
-				jLabelUnits4.setText( "frame" );
+				lblTimeIntervalVal.setText( DOUBLE_FORMAT.format( 1. ) );
+				lblTimeUnits.setText( "frame" );
 			}
 			else
 			{
-				jTextFieldTimeInterval.setValue( lImp.getCalibration().frameInterval );
-				jLabelUnits4.setText( lImp.getCalibration().getTimeUnit() );
+				lblTimeIntervalVal.setText( DOUBLE_FORMAT.format(  lImp.getCalibration().frameInterval) );
+				lblTimeUnits.setText( lImp.getCalibration().getTimeUnit() );
 			}
-			jLabelUnits1.setText( lImp.getCalibration().getXUnit() );
-			jLabelUnits2.setText( lImp.getCalibration().getYUnit() );
-			jLabelUnits3.setText( lImp.getCalibration().getZUnit() );
+			lblSpatialUnits1.setText( lImp.getCalibration().getXUnit() );
+			lblSpatialUnits2.setText( lImp.getCalibration().getYUnit() );
+			lblSpatialUnits3.setText( lImp.getCalibration().getZUnit() );
 			Roi roi = lImp.getRoi();
 			if ( null == roi )
 				roi = new Roi( 0, 0, lImp.getWidth(), lImp.getHeight() );
 			final Rectangle boundingRect = roi.getBounds();
-			jTextFieldXStart.setText( "" + ( boundingRect.x ) );
-			jTextFieldYStart.setText( "" + ( boundingRect.y ) );
-			jTextFieldXEnd.setText( "" + ( boundingRect.width + boundingRect.x - 1 ) );
-			jTextFieldYEnd.setText( "" + ( boundingRect.height + boundingRect.y - 1 ) );
-			jTextFieldZStart.setText( "" + 0 );
-			jTextFieldZEnd.setText( "" + ( lImp.getNSlices() - 1 ) );
-			jTextFieldTStart.setText( "" + 0 );
-			jTextFieldTEnd.setText( "" + ( lImp.getNFrames() - 1 ) );
+			tfXStart.setText( "" + ( boundingRect.x ) );
+			tfYStart.setText( "" + ( boundingRect.y ) );
+			tfXEnd.setText( "" + ( boundingRect.width + boundingRect.x - 1 ) );
+			tfYEnd.setText( "" + ( boundingRect.height + boundingRect.y - 1 ) );
+			tfZStart.setText( "" + 0 );
+			tfZEnd.setText( "" + ( lImp.getNSlices() - 1 ) );
+			tfTStart.setText( "" + 0 );
+			tfTEnd.setText( "" + ( lImp.getNFrames() - 1 ) );
+			
+			
+			updateTo(updatemodel, updateimp);
+			
 
-			impValid = true;
 		}
+		
+		
+		
+
+		public void updateTo( final Model model, final ImagePlus imp )
+		{
+			updatesettings.imp = imp;
+			// Crop cube
+			updatesettings.tstart = NumberParser.parseInteger( tfTStart.getText() );
+			updatesettings.tend = NumberParser.parseInteger( tfTEnd.getText() );
+			updatesettings.xstart = NumberParser.parseInteger( tfXStart.getText() );
+			updatesettings.xend = NumberParser.parseInteger( tfXEnd.getText() );
+			updatesettings.ystart = NumberParser.parseInteger( tfYStart.getText() );
+			updatesettings.yend = NumberParser.parseInteger( tfYEnd.getText() );
+			updatesettings.zstart = NumberParser.parseInteger( tfZStart.getText() );
+			updatesettings.zend = NumberParser.parseInteger( tfZEnd.getText() );
+			// Image info
+			updatesettings.dx = NumberParser.parseDouble( lblPixelWidthVal.getText() );
+			updatesettings.dy = NumberParser.parseDouble( lblPixelHeightVal.getText() );
+			updatesettings.dz = NumberParser.parseDouble( lblVoxelDepthVal.getText() );
+			updatesettings.dt = NumberParser.parseDouble( lblTimeIntervalVal.getText() );
+			updatesettings.width = imp.getWidth();
+			updatesettings.height = imp.getHeight();
+			updatesettings.nslices = imp.getNSlices();
+			updatesettings.nframes = imp.getNFrames();
+			// Units
+			model.setPhysicalUnits( lblSpatialUnits1.getText(), lblTimeUnits.getText() );
+			// Roi
+			updatesettings.roi = imp.getRoi();
+
+			// File info
+			if ( null != imp.getOriginalFileInfo() )
+			{
+				updatesettings.imageFileName = imp.getOriginalFileInfo().fileName;
+				updatesettings.imageFolder = imp.getOriginalFileInfo().directory;
+			}
+			updatedbtrackmate =  updatemodel(model, updatesettings); 
+			
+		}
+		
+		
+		
 	}
 	
-
+	public  TrackMate returnUpdatedtrackmate() {
+		
+		return updatedbtrackmate;
+	}
+	
+	
+	public  Model returnUpdatedmodel() {
+		
+		return updatemodel;
+	}
+	
+	
+	public  Settings returnUpdatesettings() {
+		
+		return updatesettings;
+	}
+	
+	public static TrackMate updatemodel(final Model model, final Settings settings) {
+		
+		TrackMate updatedbtrackmate = new TrackMate(model, settings); 
+		
+		return updatedbtrackmate;
+	}
+	
 
 }
