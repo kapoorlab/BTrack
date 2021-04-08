@@ -106,12 +106,9 @@ public class TrackMateWizardSequence implements WizardSequence
 
 		final LogPanel logPanel = new LogPanel();
 		final Logger logger = logPanel.getLogger();
-		model.setLogger( logger );
+		
 
-		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
-		final FeatureFilter initialFilter = new FeatureFilter( Spot.QUALITY, settings.initialSpotFilterValue.doubleValue(), true );
-		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
-		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
+	
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
 		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
@@ -119,6 +116,11 @@ public class TrackMateWizardSequence implements WizardSequence
 		model = startDialogDescriptor.returnUpdatedmodel();
 		updatedbtrackmate = startDialogDescriptor.returnUpdatedtrackmate();
 		settings = startDialogDescriptor.returnUpdatesettings();
+		model.setLogger( logger );
+		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
+		final FeatureFilter initialFilter = new FeatureFilter( Spot.QUALITY, settings.initialSpotFilterValue.doubleValue(), true );
+		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
+		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 		
 		
 		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), btrackmate );
