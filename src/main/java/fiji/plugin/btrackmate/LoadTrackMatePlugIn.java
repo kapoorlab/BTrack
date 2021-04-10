@@ -233,7 +233,7 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 		ImageJ.main( args );
 		final LoadTrackMatePlugIn plugIn = new LoadTrackMatePlugIn();
 		ImagePlus impA = new Opener()
-				.openImage("/Users/aimachine/Image1.tif");
+				.openImage("/Users/aimachine/Downloads/Test.tif");
 			impA.show();
 		plugIn.run( "" );
 	}

@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import fiji.plugin.btrack.gui.components.LoadDualImage;
@@ -79,6 +81,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 	@Override
 	public void aboutToDisplayPanel() {
+		final RoiSettingsPanel panel = (RoiSettingsPanel) targetPanel;
 		final String welcomeMessage = TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION + '\n';
 		// Log GUI processing start
 		logger.log(welcomeMessage, Logger.BLUE_COLOR);
@@ -93,7 +96,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		logger.log("https://www.sciencedirect.com/science/article/pii/S1046202316303346\n", Logger.BLUE_COLOR);
 		logger.log("\nNumerical feature analyzers:\n", Logger.BLUE_COLOR);
 		logger.log(settings.toStringFeatureAnalyzersInfo());
-
+		
+		panel.FreeMode.setVisible(true);
+		panel.MaskMode.setVisible(true);
+		panel.CsvMode.setVisible(true);
+		panel.ImageMode.setVisible(true);
 	}
 
 	@Override
@@ -111,6 +118,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		// Log
 		logger.log("\nImage region of interest:\n", Logger.BLUE_COLOR);
 		logger.log(settings.toStringImageInfo());
+		panel.FreeMode.setVisible(false);
+		panel.MaskMode.setVisible(false);
+		panel.CsvMode.setVisible(false);
+		panel.ImageMode.setVisible(false);
 	}
 
 	public static ImagePlus updateimp;
@@ -172,9 +183,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		JLabel lblSpatialUnits3 = new JLabel();
 		JLabel lblTimeUnits = new JLabel();
 		JLabel lblTimeIntervalVal = new JLabel();
+		
 		Checkbox ImageMode = new Checkbox("Segmentation as Images", LoadImage, SegLoadmode);
 		Checkbox CsvMode = new Checkbox("Segmentation as csv", LoadCSV, SegLoadmode);
 		GridBagConstraints gbcChooseFree = new GridBagConstraints();
+		
 		GridBagConstraints gbcChooseMask = new GridBagConstraints();
 		GridBagConstraints gbcChooseCheck = new GridBagConstraints();
 
