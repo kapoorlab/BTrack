@@ -307,7 +307,6 @@ public class MaskUtils
 	{
 		// Parse each component.
 		final Iterator< Entry< Integer, ArrayList<Cellobject> > > iterator = CSV.entrySet().iterator();
-		final List< Spot > spots = new ArrayList<>( CSV.size() );
 		
 		SpotCollection budcells = new SpotCollection();
 		while ( iterator.hasNext() )
