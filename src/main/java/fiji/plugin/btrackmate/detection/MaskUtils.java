@@ -323,8 +323,8 @@ public class MaskUtils
 				final double y = calibration[1] * ( cell.Location.getDoublePosition(1) );
 				final double z = calibration[2] * ( cell.Location.getDoublePosition(2) );
 				
-				double volume = 0;
-				double quality = 0;
+				double volume = 1;
+				double quality = 1;
 				for (int i = 0; i < cell.extents.length; ++i) {
 					volume *=  cell.extents[i] * calibration[i];
 					quality *= cell.extents[i];	
