@@ -2,12 +2,17 @@ package fiji.plugin.btrackmate.detection;
 
 import java.awt.Polygon;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import budDetector.Cellobject;
 import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.SpotRoi;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
@@ -17,6 +22,7 @@ import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealPoint;
 import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
 import net.imglib2.converter.Converter;
@@ -293,6 +299,50 @@ public class MaskUtils
 		return spots;
 	}
 
+	
+	public static < R extends IntegerType< R > > SpotCollection fromSimpleCSV(
+			HashMap<Integer, ArrayList<Cellobject>> CSV,
+			final int ndims,
+			final double[] calibration )
+	{
+		// Parse each component.
+		final Iterator< Entry< Integer, ArrayList<Cellobject> > > iterator = CSV.entrySet().iterator();
+		final List< Spot > spots = new ArrayList<>( CSV.size() );
+		
+		SpotCollection budcells = new SpotCollection();
+		while ( iterator.hasNext() )
+		{
+			final Map.Entry<Integer, ArrayList<Cellobject>> region = iterator.next();
+			
+			
+			int frame = region.getKey();
+			ArrayList<Cellobject> currentcell = region.getValue();
+			
+			for (Cellobject cell: currentcell) 
+			{
+				final double x = calibration[0]* ( cell.Location.getDoublePosition(0) );
+				final double y = calibration[1] * ( cell.Location.getDoublePosition(1) );
+				final double z = calibration[2] * ( cell.Location.getDoublePosition(2) );
+				
+				double volume = 0;
+				double quality = 0;
+				for (int i = 0; i < cell.extents.length; ++i) {
+					volume *=  cell.extents[i] * calibration[i];
+					quality *= cell.extents[i];	
+				}
+				
+				
+				final double radius = ( ndims== 2 )
+						? Math.sqrt( volume / Math.PI )
+						: Math.pow( 3. * volume / ( 4. * Math.PI ), 1. / 3. );
+						budcells.add(new Spot( x, y, z, radius, quality ), frame);
+			}
+			
+		}
+
+		return budcells;
+	}
+	
 	/**
 	 * Creates spots from a grayscale image, thresholded to create a mask. A
 	 * spot is created for each connected-component of the mask, with a size

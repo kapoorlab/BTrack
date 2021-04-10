@@ -18,6 +18,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,25 +28,37 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileFilter;
 
+import budDetector.Cellobject;
 import fiji.plugin.btrack.gui.components.LoadDualImage;
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import fiji.plugin.btrackmate.Logger;
 import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.detection.MaskUtils;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettingsIO;
+import fiji.plugin.btrackmate.gui.wizard.BTrackMateWizardSequence;
 import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
 import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
 import fiji.util.NumberParser;
 import fileListeners.ChooseOrigMap;
 import fileListeners.ChooseSegMap;
@@ -53,7 +68,9 @@ import ij.gui.Roi;
 import ij.measure.Calibration;
 import listeners.CsvLoader;
 import listeners.ImageLoader;
+import net.imglib2.Point;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.simplifiedio.SimplifiedIO;
@@ -128,7 +145,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static Settings updatesettings;
 	public static TrackMate updatedbtrackmate;
 	public static Model updatemodel;
-
+    public static  SpotCollection budcells;
 	private static class RoiSettingsPanel extends JPanel {
 
 		private static final long serialVersionUID = -1L;
@@ -193,7 +210,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		GridBagConstraints gbcChooseSegLoad = new GridBagConstraints();
 		GridBagConstraints gbcChooseMaskLoad = new GridBagConstraints();
-
+		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>(); 
 		public RoiSettingsPanel(final ImagePlus imp) {
 
 			this.setPreferredSize(new Dimension(391, 691));
@@ -615,8 +632,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			CsvMode.addItemListener(new ItemListener() {
 
 				@Override
-				public void itemStateChanged(ItemEvent e) {
-					if (e.getStateChange() == ItemEvent.SELECTED) {
+				public void itemStateChanged(ItemEvent ef) {
+					
+					if (ef.getStateChange() == ItemEvent.SELECTED) {
 
 						add(Checkpointbutton, gbcChooseCheck);
 						remove(FreeMode);
@@ -624,10 +642,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(Panelfile);
 						validate();
 						repaint();
-
+			
 					}
 
-					else if (e.getStateChange() == ItemEvent.DESELECTED) {
+					else if (ef.getStateChange() == ItemEvent.DESELECTED) {
 
 						remove(Checkpointbutton);
 						validate();
@@ -637,7 +655,115 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 				}
 			});
+			Checkpointbutton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent a) {
+					
+			JFileChooser csvfile = new JFileChooser();
+			FileFilter csvfilter = new FileFilter() 
+			{
+			      //Override accept method
+			      public boolean accept(File file) {
+			              
+			             //if the file extension is .log return true, else false
+			             if (file.getName().endsWith(".csv")) {
+			                return true;
+			             }
+			             return false;
+			      }
 
+				@Override
+				public String getDescription() {
+					
+					return null;
+				}
+			};
+	        String line = "";
+	        String cvsSplitBy = ",";
+			csvfile.setCurrentDirectory(new File(imp.getOriginalFileInfo().directory));
+			csvfile.setDialogTitle(" Cell CSV file");
+			csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			csvfile.setFileFilter(csvfilter);
+			int count = 0;
+			
+			if (csvfile.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
+				
+				File budfile = new File(csvfile.getSelectedFile().getPath());
+				ArrayList<Cellobject> reloadcell = new ArrayList<Cellobject>(); 
+				
+		        try (BufferedReader br = new BufferedReader(new FileReader(budfile))) {
+
+		            while ((line = br.readLine()) != null) {
+
+		                // use comma as separator
+		                String[] budpoints = line.split(cvsSplitBy);
+	                     
+
+		                if(count > 0) {
+		                	
+			                int time = Integer.parseInt(budpoints[0]);
+			                double X = Double.parseDouble(budpoints[1]);
+			                double Y = Double.parseDouble(budpoints[2]);
+			                double Z = Double.parseDouble(budpoints[3]);
+			                int Label = Integer.parseInt(budpoints[4]);
+			                double Perimeter = Double.parseDouble(budpoints[5]);
+			                double Area = Double.parseDouble(budpoints[6]);
+			                int Intensity = Integer.parseInt(budpoints[7]);
+			                double sizeX =  Double.parseDouble(budpoints[8]);
+			                double sizeY = Double.parseDouble(budpoints[9]);
+			                double sizeZ = Double.parseDouble(budpoints[10]);
+			                
+			                double[] extents = new double[] {sizeX, sizeY, sizeZ};
+			                Point point = new Point(new long[] {(long)X,(long)Y,(long)Z});
+			                
+			                
+			                Cellobject currentcell = new Cellobject(point, time, Label, Perimeter, Area, Intensity, extents);
+			                
+	                        if(CSV.get(time)==null) {
+	                        	reloadcell = new ArrayList<Cellobject>();
+	                     	    CSV.put(time, reloadcell);    
+	                        }
+	                        else
+	                     	   CSV.put(time, reloadcell);
+			                
+			                    reloadcell.add(currentcell);
+			         
+			            }
+			                 count = count +  1;
+			            }
+		            }
+		        
+		       
+		        
+		        catch (IOException ie) {
+		            ie.printStackTrace();
+		        }
+		        
+		        int ndims = imp.getNDimensions();
+		        Calibration cal = imp.getCalibration();
+		        double[] calibration = new double[3];
+		        if (ndims == 2)
+		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, 1};
+		        else
+		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, cal.pixelDepth};
+		        	
+		         budcells = MaskUtils.fromSimpleCSV( CSV, ndims, calibration);
+		         updatemodel.setSpots(budcells, true);
+		         final WizardSequence sequence = createSequence( updatedbtrackmate,  new SelectionModel( updatemodel ), createDisplaySettings() );
+		 		 sequence.run( "BTrackMate on " + imp.getShortTitle() );
+		        
+			}
+			else
+				csvfile = null;
+		            
+		            
+		}  
+
+				// TODO Auto-generated method stub
+				
+			
+		});
 			final Calibration cal = imp.getCalibration();
 			lblPixelWidthVal.setText(DOUBLE_FORMAT.format(cal.pixelWidth));
 			lblPixelHeightVal.setText(DOUBLE_FORMAT.format(cal.pixelHeight));
@@ -656,7 +782,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			lblSpatialUnits2.setText(cal.getYUnit());
 			lblSpatialUnits3.setText(cal.getZUnit());
 			btnRefreshROI.doClick();
-
 		}
 
 		protected ArrayList<ActionListener> actionListeners = new ArrayList<>();
@@ -769,6 +894,13 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		return updatesettings;
 	}
+	
+	public SpotCollection returnSpotCollection() {
+
+		return budcells;
+	}
+	
+	
 
 	public static TrackMate updatemodel(final Model model, final Settings settings) {
 
@@ -820,8 +952,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 
-				parent.add(parent.Checkpointbutton, parent.gbcChooseCheck);
-
 			}
 
 			else if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -831,5 +961,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		}
 	}
+	protected static DisplaySettings createDisplaySettings()
+	{
+		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );
+	}
+	protected  static WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	{
+		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
+	}
+
 
 }

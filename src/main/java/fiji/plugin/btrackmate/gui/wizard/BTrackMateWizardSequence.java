@@ -17,6 +17,7 @@ import fiji.plugin.btrackmate.Model;
 import fiji.plugin.btrackmate.SelectionModel;
 import fiji.plugin.btrackmate.Settings;
 import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.TrackMate;
 import fiji.plugin.btrackmate.action.AbstractTMAction;
 import fiji.plugin.btrackmate.action.ExportAllSpotsStatsAction;
