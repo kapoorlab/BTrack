@@ -1,6 +1,7 @@
 package listeners;
 
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -31,14 +32,17 @@ public class BTrackGo3DMaskFLListener implements ItemListener {
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
 			
-			
-			
-			LoadDualImage segmentation = new LoadDualImage(parent.chooseMaskSegstring, parent.blankimageNames);
+			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
+			GridBagConstraints gbcSeg =  new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0);
+			GridBagConstraints gbcMask =  new GridBagConstraints(3, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0);
+			LoadDualImage segmentation = new LoadDualImage(parent.chooseMaskSegstring, parent.blankimageNames, gbcSeg, gbcMask);
 			parent.Panelfile = segmentation.TwoChannelOption();
 			
 			
-			parent.panelFirst.add(parent.Panelfile, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.HORIZONTAL, parent.insets, 0, 0));
+			
 			segmentation.ChooseImage.addActionListener(new ChooseSegMap(parent, segmentation.ChooseImage));
 			segmentation.ChoosesecImage.addActionListener(new ChooseMaskSegMap(parent, segmentation.ChoosesecImage));
 			parent.DoMask = true;

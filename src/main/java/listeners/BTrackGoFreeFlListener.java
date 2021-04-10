@@ -1,6 +1,7 @@
 package listeners;
 
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -31,8 +32,9 @@ public class BTrackGoFreeFlListener implements ItemListener {
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
 			
-			
-			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseBudSegstring, parent.blankimageNames);
+			GridBagConstraints gbc =  new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0);
+			LoadSingleImage segmentation = new LoadSingleImage(parent.chooseBudSegstring, parent.blankimageNames, gbc);
 			parent.Panelfile = segmentation.SingleChannelOption();
 			segmentation.ChooseImage.addActionListener(new ChooseBudSegAMap(parent, segmentation.ChooseImage));
 			

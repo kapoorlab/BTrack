@@ -12,7 +12,7 @@ import org.scijava.util.VersionUtils;
 import fiji.plugin.btrackmate.gui.GuiUtils;
 import fiji.plugin.btrackmate.gui.components.LogPanel;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.btrackmate.gui.wizard.TrackMateWizardSequence;
+import fiji.plugin.btrackmate.gui.wizard.BTrackMateWizardSequence;
 import fiji.plugin.btrackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.btrackmate.gui.wizard.descriptors.LogPanelDescriptor2;
 import fiji.plugin.btrackmate.gui.wizard.descriptors.SomeDialogDescriptor;
@@ -169,7 +169,7 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 			panelIdentifier = ConfigureViewsDescriptor.KEY;
 
 		// Wizard.
-		final TrackMateWizardSequence sequence = new TrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
+		final BTrackMateWizardSequence sequence = new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
 		sequence.setCurrent( panelIdentifier );
 		final JFrame frame = sequence.run( "TrackMate on " + settings.imp.getShortTitle() );
 		frame.setIconImage( TRACKMATE_ICON.getImage() );

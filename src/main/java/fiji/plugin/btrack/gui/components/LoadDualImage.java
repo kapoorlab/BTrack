@@ -15,11 +15,15 @@ public class LoadDualImage {
 
 	final String bordertitle;
 	final String[] blankimageNames;
+	final GridBagConstraints gbcSeg;
+	final GridBagConstraints gbcMask;
 	
-	public LoadDualImage(final String bordertitle, final String[] blankimageNames) {
+	public LoadDualImage(final String bordertitle, final String[] blankimageNames, final GridBagConstraints gbcSeg, final GridBagConstraints gbcMask) {
 		
 		this.bordertitle = bordertitle;
 		this.blankimageNames = blankimageNames;
+		this.gbcSeg = gbcSeg;
+		this.gbcMask = gbcMask;
 	}
 	
 	public  JPanel panelTwoChannel = new JPanel();
@@ -38,10 +42,8 @@ public class LoadDualImage {
 		 
 			
 		
-		 panelTwoChannel.add(ChooseImage, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
-		 panelTwoChannel.add(ChoosesecImage,  new GridBagConstraints(3, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		 panelTwoChannel.add(ChooseImage, gbcSeg);
+		 panelTwoChannel.add(ChoosesecImage, gbcMask);
 		 panelTwoChannel.setBorder(chooseoriginalfile);
 		 
 		 

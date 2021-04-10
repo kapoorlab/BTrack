@@ -15,11 +15,12 @@ public class LoadSingleImage {
 
 	final String bordertitle;
 	final String[] blankimageNames;
-	
-	public LoadSingleImage(final String bordertitle, final String[] blankimageNames) {
+	final GridBagConstraints gbc;
+	public LoadSingleImage(final String bordertitle, final String[] blankimageNames, final GridBagConstraints gbc) {
 		
 		this.bordertitle = bordertitle;
 		this.blankimageNames = blankimageNames;
+		this.gbc = gbc;
 	}
 	
 	public  JPanel panelSingleChannel = new JPanel();
@@ -34,8 +35,7 @@ public class LoadSingleImage {
 		 Border chooseoriginalfile = new CompoundBorder(new TitledBorder(bordertitle),
 				new EmptyBorder(layoutManager.Setlayout.c.insets));
 		
-		 panelSingleChannel.add(ChooseImage, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		 panelSingleChannel.add(ChooseImage, gbc);
 		
 		 panelSingleChannel.setBorder(chooseoriginalfile);
 		 

@@ -128,7 +128,9 @@ public class BTStartDialogDescriptor  extends JPanel
 
 		
 		// Choose the image for display, usually RAW
-		LoadSingleImage original = new LoadSingleImage(chooseoriginalbudfilestring, blankimageNames);
+		GridBagConstraints gbc =  new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0);
+		LoadSingleImage original = new LoadSingleImage(chooseoriginalbudfilestring, blankimageNames, gbc);
 
 		Panelfileoriginal = original.SingleChannelOption();
 
@@ -138,7 +140,7 @@ public class BTStartDialogDescriptor  extends JPanel
 		original.ChooseImage.addActionListener(new ChooseBudOrigMap(this, original.ChooseImage));
 
         // Choose segmentation image for skeletonization
-		LoadSingleImage segmentation = new LoadSingleImage(chooseBudSegstring, blankimageNames);
+		LoadSingleImage segmentation = new LoadSingleImage(chooseBudSegstring, blankimageNames, gbc);
 		
 		Panelfile = segmentation.SingleChannelOption();
 

@@ -51,7 +51,7 @@ import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
 import fiji.plugin.btrackmate.visualization.trackscheme.SpotImageUpdater;
 import fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme;
 
-public class TrackMateWizardSequence implements WizardSequence
+public class BTrackMateWizardSequence implements WizardSequence
 {
 
 	private final TrackMate btrackmate;
@@ -94,7 +94,7 @@ public class TrackMateWizardSequence implements WizardSequence
 	
 	public TrackMate updatedbtrackmate;
 
-	public TrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	public BTrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
 		this.btrackmate = btrackmate;
 		updatedbtrackmate = btrackmate;

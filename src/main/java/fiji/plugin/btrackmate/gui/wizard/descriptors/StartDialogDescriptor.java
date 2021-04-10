@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import fiji.plugin.btrack.gui.components.LoadDualImage;
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
 import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import fiji.plugin.btrackmate.Logger;
@@ -92,7 +93,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		logger.log("https://www.sciencedirect.com/science/article/pii/S1046202316303346\n", Logger.BLUE_COLOR);
 		logger.log("\nNumerical feature analyzers:\n", Logger.BLUE_COLOR);
 		logger.log(settings.toStringFeatureAnalyzersInfo());
-		
+
 	}
 
 	@Override
@@ -136,12 +137,16 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		private final JFormattedTextField tfTStart;
 		private final JFormattedTextField tfTEnd;
 		public RandomAccessibleInterval<FloatType> imageOrig;
-		public RandomAccessibleInterval<IntType>  imageSegA;
-		public JPanel Panelfileoriginal = new JPanel();
+		public RandomAccessibleInterval<IntType> imageSegA;
+		public RandomAccessibleInterval<IntType> imageMask;
+
+		public JPanel Panelfile = new JPanel();
+
 		public boolean DoMask = false;
 		public boolean NoMask = true;
 		public JButton Checkpointbutton = new JButton("Load Data From CSV");
-		public String chooseSegstring = "Input segmentation image for cells";
+		public String chooseSegstring = "Segmentation Image";
+		public String chooseMaskstring = "Segmentation and Mask Image";
 		public boolean LoadImage = false;
 		public boolean LoadCSV = true;
 		public CheckboxGroup SegLoadmode = new CheckboxGroup();
@@ -149,8 +154,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		public CheckboxGroup cellmode = new CheckboxGroup();
 		public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 		public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
-		public String origcellfilestring = "Input Image";
-		public ImagePlus impSeg;
+		public ImagePlus impSeg, impMask;
 
 		public final String[] imageNames, blankimageNames;
 
@@ -174,9 +178,12 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		GridBagConstraints gbcChooseMask = new GridBagConstraints();
 		GridBagConstraints gbcChooseCheck = new GridBagConstraints();
 
+		GridBagConstraints gbcChooseSegLoad = new GridBagConstraints();
+		GridBagConstraints gbcChooseMaskLoad = new GridBagConstraints();
+
 		public RoiSettingsPanel(final ImagePlus imp) {
-			
-			this.setPreferredSize(new Dimension(291, 491));
+
+			this.setPreferredSize(new Dimension(391, 691));
 			final GridBagLayout gridBagLayout = new GridBagLayout();
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 					0.0, 1.0 };
@@ -246,7 +253,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			final GridBagConstraints gbcLabelPixelWidth = new GridBagConstraints();
 			gbcLabelPixelWidth.anchor = GridBagConstraints.EAST;
 			gbcLabelPixelWidth.insets = new Insets(5, 5, 5, 5);
-			gbcLabelPixelWidth.gridwidth = 2;
 			gbcLabelPixelWidth.gridx = 0;
 			gbcLabelPixelWidth.gridy = 5;
 			add(lblPixelWidth, gbcLabelPixelWidth);
@@ -273,7 +279,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			final GridBagConstraints gbcLabelPixelHeight = new GridBagConstraints();
 			gbcLabelPixelHeight.anchor = GridBagConstraints.EAST;
 			gbcLabelPixelHeight.insets = new Insets(5, 5, 5, 5);
-			gbcLabelPixelHeight.gridwidth = 2;
 			gbcLabelPixelHeight.gridx = 0;
 			gbcLabelPixelHeight.gridy = 6;
 			add(lblPixelHeight, gbcLabelPixelHeight);
@@ -292,7 +297,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			final GridBagConstraints gbcLabelTimeInterval = new GridBagConstraints();
 			gbcLabelTimeInterval.anchor = GridBagConstraints.EAST;
 			gbcLabelTimeInterval.insets = new Insets(5, 5, 5, 5);
-			gbcLabelTimeInterval.gridwidth = 2;
 			gbcLabelTimeInterval.gridx = 0;
 			gbcLabelTimeInterval.gridy = 8;
 			add(lblTimeInterval, gbcLabelTimeInterval);
@@ -319,7 +323,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			final GridBagConstraints gbcLabelVoxelDepth = new GridBagConstraints();
 			gbcLabelVoxelDepth.anchor = GridBagConstraints.EAST;
 			gbcLabelVoxelDepth.insets = new Insets(5, 5, 5, 5);
-			gbcLabelVoxelDepth.gridwidth = 2;
 			gbcLabelVoxelDepth.gridx = 0;
 			gbcLabelVoxelDepth.gridy = 7;
 			add(lblVoxelDepth, gbcLabelVoxelDepth);
@@ -359,19 +362,19 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 			ImageMode.setFont(SMALL_FONT);
 			final GridBagConstraints gbcChooseImage = new GridBagConstraints();
-			gbcChooseImage.anchor = GridBagConstraints.NORTH;
+			gbcChooseImage.anchor = GridBagConstraints.EAST;
 			gbcChooseImage.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseImage.insets = new Insets(5, 5, 5, 5);
-			gbcChooseImage.gridx = 2;
+			gbcChooseImage.gridx = 0;
 			gbcChooseImage.gridy = 9;
 			add(ImageMode, gbcChooseImage);
 
 			CsvMode.setFont(SMALL_FONT);
 			final GridBagConstraints gbcChooseCSV = new GridBagConstraints();
-			gbcChooseCSV.anchor = GridBagConstraints.NORTH;
+			gbcChooseCSV.anchor = GridBagConstraints.EAST;
 			gbcChooseCSV.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseCSV.insets = new Insets(5, 5, 5, 5);
-			gbcChooseCSV.gridx = 2;
+			gbcChooseCSV.gridx = 0;
 			gbcChooseCSV.gridy = 10;
 			add(ImageMode, gbcChooseImage);
 
@@ -393,7 +396,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 			tfTEnd = new JFormattedTextField(Integer.valueOf(0));
 
-			final JButton btnRefreshROI = new JButton("Refresh RAW Image");
+			final JButton btnRefreshROI = new JButton("Refresh Raw");
 			btnRefreshROI.setToolTipText(TOOLTIP);
 			btnRefreshROI.setFont(SMALL_FONT);
 			final GridBagConstraints gbcButtonRefresh = new GridBagConstraints();
@@ -401,7 +404,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcButtonRefresh.insets = new Insets(5, 5, 5, 5);
 			gbcButtonRefresh.gridwidth = 4;
 			gbcButtonRefresh.gridx = 0;
-			gbcButtonRefresh.gridy = 14;
+			gbcButtonRefresh.gridy = 16;
 			add(btnRefreshROI, gbcButtonRefresh);
 			btnRefreshROI.addActionListener(new ActionListener() {
 				@Override
@@ -418,7 +421,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					tfZEnd.setValue(Integer.valueOf(imp.getNSlices() - 1));
 					tfTStart.setValue(Integer.valueOf(0));
 					tfTEnd.setValue(Integer.valueOf(imp.getNFrames() - 1));
-					
+
 					updateimp = WindowManager.getCurrentImage();
 					updatesettings.setFrom(updateimp);
 					getFrom(updateimp);
@@ -429,28 +432,45 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 			FreeMode.setFont(SMALL_FONT);
 
-			gbcChooseFree.anchor = GridBagConstraints.NORTH;
+			gbcChooseFree.anchor = GridBagConstraints.WEST;
 			gbcChooseFree.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseFree.insets = new Insets(5, 5, 5, 5);
-			gbcChooseFree.gridx = 2;
-			gbcChooseFree.gridy = 11;
+			gbcChooseFree.gridx = 3;
+			gbcChooseFree.gridy = 9;
 
 			MaskMode.setFont(SMALL_FONT);
 
-			gbcChooseMask.anchor = GridBagConstraints.NORTH;
+			gbcChooseMask.anchor = GridBagConstraints.WEST;
 			gbcChooseMask.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseMask.insets = new Insets(5, 5, 5, 5);
-			gbcChooseMask.gridx = 4;
-			gbcChooseMask.gridy = 11;
+			gbcChooseMask.gridx = 3;
+			gbcChooseMask.gridy = 10;
 
 			Checkpointbutton.setFont(SMALL_FONT);
 
-			gbcChooseCheck.anchor = GridBagConstraints.NORTH;
+			gbcChooseCheck.anchor = GridBagConstraints.EAST;
 			gbcChooseCheck.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseCheck.insets = new Insets(5, 5, 5, 5);
-			gbcChooseCheck.gridx = 2;
-			gbcChooseCheck.gridy = 12;
+			gbcChooseCheck.gridx = 0;
+			gbcChooseCheck.gridy = 11;
 			add(Checkpointbutton, gbcChooseCheck);
+
+			gbcChooseSegLoad.anchor = GridBagConstraints.EAST;
+			gbcChooseSegLoad.fill = GridBagConstraints.HORIZONTAL;
+			gbcChooseSegLoad.insets = new Insets(5, 5, 5, 5);
+			gbcChooseSegLoad.gridx = 0;
+			gbcChooseSegLoad.gridy = 13;
+
+			gbcChooseMaskLoad.anchor = GridBagConstraints.EAST;
+			gbcChooseMaskLoad.fill = GridBagConstraints.HORIZONTAL;
+			gbcChooseMaskLoad.insets = new Insets(5, 5, 5, 5);
+			gbcChooseMaskLoad.gridx = 0;
+			gbcChooseMaskLoad.gridy = 14;
+
+			Panelfile.setFont(SMALL_FONT);
+
+			setMinimumSize(new Dimension(391, 691));
+
 			ImageMode.addItemListener(new ItemListener() {
 
 				@Override
@@ -461,25 +481,24 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(Checkpointbutton);
 						validate();
 						repaint();
-						
+
 						// Listeneres
-						LoadSingleImage segmentation = new LoadSingleImage(chooseSegstring, blankimageNames);
-						segmentation.SingleChannelOption();
-						
+						LoadSingleImage segmentation = new LoadSingleImage(chooseSegstring, blankimageNames,
+								gbcChooseSegLoad);
+						Panelfile = segmentation.SingleChannelOption();
+						add(Panelfile, gbcChooseSegLoad);
+						validate();
+						repaint();
 						segmentation.ChooseImage.addActionListener(new ActionListener() {
-							
+
 							@Override
-							public void actionPerformed(ActionEvent e) {
+							public void actionPerformed(ActionEvent f) {
 
 								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
 								impSeg = WindowManager.getImage(imagename);
-						      	imageSegA = SimplifiedIO.openImage(
-						      			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
-										new IntType());
-								
+
 							}
 						});
-						
 
 					}
 
@@ -487,17 +506,101 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 						remove(FreeMode);
 						remove(MaskMode);
+						remove(Panelfile);
 						validate();
 						repaint();
-
 
 					}
 
 				}
 			});
+
+			FreeMode.addItemListener(new ItemListener() {
+
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+
+						remove(Panelfile);
+						// Listeneres
+						LoadSingleImage segmentation = new LoadSingleImage(chooseSegstring, blankimageNames,
+								gbcChooseSegLoad);
+						Panelfile = segmentation.SingleChannelOption();
+						add(Panelfile, gbcChooseSegLoad);
+						validate();
+						repaint();
+						segmentation.ChooseImage.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+
+								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
+								impSeg = WindowManager.getImage(imagename);
+
+							}
+						});
+
+					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
+
+						remove(Panelfile);
+						validate();
+						repaint();
+					}
+
+				}
+
+			});
+
+			MaskMode.addItemListener(new ItemListener() {
+
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+
+						remove(Panelfile);
+						// Listeneres
+						LoadDualImage segmentation = new LoadDualImage(chooseMaskstring, blankimageNames,
+								gbcChooseSegLoad, gbcChooseMaskLoad);
+						Panelfile = segmentation.TwoChannelOption();
+						add(Panelfile, gbcChooseSegLoad);
+						validate();
+						repaint();
+						segmentation.ChooseImage.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+
+								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
+								impSeg = WindowManager.getImage(imagename);
+
+							}
+						});
+
+						segmentation.ChoosesecImage.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+
+								String imagename = (String) segmentation.ChoosesecImage.getSelectedItem();
+								impMask = WindowManager.getImage(imagename);
+
+							}
+						});
+
+					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
+						remove(Panelfile);
+						validate();
+						repaint();
+					}
+
+				}
+
+			});
+
 			CsvMode.addItemListener(new ItemListener() {
 
-				
 				@Override
 				public void itemStateChanged(ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -505,9 +608,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						add(Checkpointbutton, gbcChooseCheck);
 						remove(FreeMode);
 						remove(MaskMode);
+						remove(Panelfile);
 						validate();
 						repaint();
-
 
 					}
 
@@ -540,7 +643,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			lblSpatialUnits2.setText(cal.getYUnit());
 			lblSpatialUnits3.setText(cal.getZUnit());
 			btnRefreshROI.doClick();
-			
+
 		}
 
 		protected ArrayList<ActionListener> actionListeners = new ArrayList<>();

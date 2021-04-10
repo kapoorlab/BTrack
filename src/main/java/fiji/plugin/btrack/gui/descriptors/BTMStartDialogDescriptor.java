@@ -169,8 +169,9 @@ public class BTMStartDialogDescriptor extends JPanel
 
 		ChooseImage = new JComboBox<String>(blankimageNames);
 		ChooseoriginalImage = new JComboBox<String>(blankimageNames);
-
-		LoadSingleImage original = new LoadSingleImage(chooseoriginalCellfilestring, blankimageNames);
+		GridBagConstraints gbc =  new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0);
+		LoadSingleImage original = new LoadSingleImage(chooseoriginalCellfilestring, blankimageNames, gbc);
 
 		Panelfileoriginal = original.SingleChannelOption();
 

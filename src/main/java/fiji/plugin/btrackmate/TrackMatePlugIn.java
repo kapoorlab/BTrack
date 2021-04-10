@@ -10,7 +10,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import fiji.plugin.btrackmate.gui.GuiUtils;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettingsIO;
-import fiji.plugin.btrackmate.gui.wizard.TrackMateWizardSequence;
+import fiji.plugin.btrackmate.gui.wizard.BTrackMateWizardSequence;
 import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
 import fiji.plugin.btrackmate.visualization.TrackMateModelView;
 import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
@@ -97,7 +97,7 @@ public class TrackMatePlugIn implements PlugIn
 	 */
 	protected WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		return new TrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
+		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
 	}
 
 	/**
