@@ -1,6 +1,7 @@
 package listeners;
 
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -27,7 +28,10 @@ public class BTrackGoBudListener implements ItemListener {
 			parent.panelFirst.validate();
 			parent.panelFirst.repaint();
 			
-			LoadSingleImage original = new LoadSingleImage(parent.chooseoriginalbudfilestring, parent.blankimageNames);
+			GridBagConstraints gbc = new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH,
+					GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0);
+			
+			LoadSingleImage original = new LoadSingleImage(parent.chooseoriginalbudfilestring, parent.blankimageNames, gbc);
 			
 			parent.Panelfileoriginal = original.SingleChannelOption();
 			
