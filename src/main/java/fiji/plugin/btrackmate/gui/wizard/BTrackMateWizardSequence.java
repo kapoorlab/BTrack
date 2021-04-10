@@ -70,9 +70,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 	private final LogPanelDescriptor2 logDescriptor;
 
-	private final ChooseDetectorDescriptor chooseDetectorDescriptor;
 
-	private final ExecuteDetectionDescriptor executeDetectionDescriptor;
 
 	private final InitFilterDescriptor initFilterDescriptor;
 
@@ -123,8 +121,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 		
 		
-		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), updatedbtrackmate );
-		executeDetectionDescriptor = new ExecuteDetectionDescriptor( updatedbtrackmate, logPanel );
 		initFilterDescriptor = new InitFilterDescriptor( updatedbtrackmate, initialFilter );
 		spotFilterDescriptor = new SpotFilterDescriptor( updatedbtrackmate, spotFilters, featureSelector );
 		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), updatedbtrackmate );
@@ -141,17 +137,12 @@ public class BTrackMateWizardSequence implements WizardSequence
 	}
 
 	
-	public TrackMate updatemodel(final Model model, final Settings settings) {
-		
-		updatedbtrackmate = new TrackMate(model, settings); 
-		
-		return updatedbtrackmate;
-	}
+
 	
 	@Override
 	public WizardPanelDescriptor next()
 	{
-		if ( current == chooseDetectorDescriptor )
+		if ( current == startDialogDescriptor )
 			getDetectorConfigDescriptor();
 
 		if ( current == chooseTrackerDescriptor )
@@ -216,7 +207,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 	{
 		final Map< WizardPanelDescriptor, WizardPanelDescriptor > map = new HashMap<>();
 		map.put( startDialogDescriptor, null );
-		map.put( chooseDetectorDescriptor, startDialogDescriptor );
+		map.put( spotFilterDescriptor, startDialogDescriptor );
 		map.put( chooseTrackerDescriptor, spotFilterDescriptor );
 		map.put( configureViewsDescriptor, trackFilterDescriptor );
 		map.put( grapherDescriptor, configureViewsDescriptor );
@@ -227,8 +218,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 	private Map< WizardPanelDescriptor, WizardPanelDescriptor > getForwardSequence()
 	{
 		final Map< WizardPanelDescriptor, WizardPanelDescriptor > map = new HashMap<>();
-		map.put( startDialogDescriptor, chooseDetectorDescriptor );
-		map.put( executeDetectionDescriptor, initFilterDescriptor );
+		map.put( startDialogDescriptor, initFilterDescriptor );
 		map.put( initFilterDescriptor, spotFilterDescriptor );
 		map.put( spotFilterDescriptor, chooseTrackerDescriptor );
 		map.put( executeTrackingDescriptor, trackFilterDescriptor );
@@ -262,8 +252,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 		final List< WizardPanelDescriptor > descriptors = Arrays.asList( new WizardPanelDescriptor[] {
 				logDescriptor,
-				chooseDetectorDescriptor,
-				executeDetectionDescriptor,
 				initFilterDescriptor,
 				spotFilterDescriptor,
 				chooseTrackerDescriptor,
@@ -290,23 +278,10 @@ public class BTrackMateWizardSequence implements WizardSequence
 	 *
 	 * @return a suitable {@link SpotDetectorDescriptor}.
 	 */
-	private SpotDetectorDescriptor getDetectorConfigDescriptor()
+	private InitFilterDescriptor getDetectorConfigDescriptor()
 	{
-		final SpotDetectorFactoryBase< ? > detectorFactory = updatedbtrackmate.getSettings().detectorFactory;
 
-		/*
-		 * Special case: are we dealing with the manual detector? If yes, no
-		 * config, no detection.
-		 */
-		if ( detectorFactory.getKey().equals( ManualDetectorFactory.DETECTOR_KEY ) )
-		{
-			// Position sequence next and previous.
-			next.put( chooseDetectorDescriptor, spotFilterDescriptor );
-			previous.put( spotFilterDescriptor, chooseDetectorDescriptor );
-			previous.put( executeDetectionDescriptor, chooseDetectorDescriptor );
-			previous.put( initFilterDescriptor, chooseDetectorDescriptor );
-			return null;
-		}
+	
 
 		/*
 		 * Copy as much settings as we can to the potentially new config
@@ -316,7 +291,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 		final Map< String, Object > oldSettings1 = new HashMap<>( updatedbtrackmate.getSettings().detectorSettings );
 		// From previous panel.
 		final Map< String, Object > oldSettings2 = new HashMap<>();
-		final WizardPanelDescriptor previousDescriptor = next.get( chooseDetectorDescriptor );
+		final WizardPanelDescriptor previousDescriptor = next.get( startDialogDescriptor );
 		if ( previousDescriptor != null && previousDescriptor instanceof SpotDetectorDescriptor )
 		{
 			final SpotDetectorDescriptor previousSpotDetectorDescriptor = ( SpotDetectorDescriptor ) previousDescriptor;
@@ -324,30 +299,11 @@ public class BTrackMateWizardSequence implements WizardSequence
 			oldSettings2.putAll( detectorConfigPanel.getSettings() );
 		}
 
-		final Map< String, Object > defaultSettings = detectorFactory.getDefaultSettings();
-		for ( final String skey : defaultSettings.keySet() )
-		{
-			Object previousValue = oldSettings2.get( skey );
-			if ( previousValue == null )
-				previousValue = oldSettings1.get( skey );
+	
+		previous.put( initFilterDescriptor, startDialogDescriptor );
+		previous.put( spotFilterDescriptor, startDialogDescriptor );
 
-			defaultSettings.put( skey, previousValue );
-		}
-
-		final ConfigurationPanel detectorConfigurationPanel = detectorFactory.getDetectorConfigurationPanel( updatedbtrackmate.getSettings(), updatedbtrackmate.getModel() );
-		detectorConfigurationPanel.setSettings( defaultSettings );
-		btrackmate.getSettings().detectorSettings = defaultSettings;
-		final SpotDetectorDescriptor configDescriptor = new SpotDetectorDescriptor( updatedbtrackmate.getSettings(), detectorConfigurationPanel, updatedbtrackmate.getModel().getLogger() );
-
-		// Position sequence next and previous.
-		next.put( chooseDetectorDescriptor, configDescriptor );
-		next.put( configDescriptor, executeDetectionDescriptor );
-		previous.put( configDescriptor, chooseDetectorDescriptor );
-		previous.put( executeDetectionDescriptor, configDescriptor );
-		previous.put( initFilterDescriptor, configDescriptor );
-		previous.put( spotFilterDescriptor, configDescriptor );
-
-		return configDescriptor;
+		return initFilterDescriptor;
 	}
 
 	/**
