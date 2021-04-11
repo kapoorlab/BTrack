@@ -113,8 +113,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
 		
-		final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, settings.imp, displaySettings );
-		displayer.render();
+		
 		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
 		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();

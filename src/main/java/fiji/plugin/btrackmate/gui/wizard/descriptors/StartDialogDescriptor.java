@@ -60,6 +60,8 @@ import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettingsIO;
 import fiji.plugin.btrackmate.gui.wizard.BTrackMateWizardSequence;
 import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.plugin.btrackmate.Model;
 import fiji.plugin.btrackmate.SelectionModel;
 import fiji.util.NumberParser;
@@ -765,7 +767,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				  fireAction(IMAGEPLUS_REFRESHED);
 		         updatemodel.setSpots(budcells, true);
 		         updatemodel.setLogger( updatelogger );
-		         
+		         final TrackMateModelView displayer = new HyperStackDisplayer( updatemodel, new SelectionModel( updatemodel ), updatesettings.imp, createDisplaySettings() );
+		 		 displayer.render();
 		         final WizardSequence sequence = createSequence( updatedbtrackmate,  new SelectionModel( updatemodel ), createDisplaySettings() );
 		         sequence.run( "BTrackMate on" + updateimp.getShortTitle() );
 		         
