@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 
 import fiji.plugin.btrackmate.Logger;
 import fiji.plugin.btrackmate.Model;
@@ -89,11 +90,13 @@ public class BTrackMateWizardSequence implements WizardSequence
 	private final ActionChooserDescriptor actionChooserDescriptor;
 
 	private final SaveDescriptor saveDescriptor;
-	
 	public TrackMate updatedbtrackmate;
+	LogPanel logPanel = new LogPanel();
+	Logger logger = logPanel.getLogger();
 
 	public BTrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
+		
 		this.btrackmate = btrackmate;
 		updatedbtrackmate = btrackmate;
 		
@@ -102,21 +105,14 @@ public class BTrackMateWizardSequence implements WizardSequence
 		Settings settings = btrackmate.getSettings();
 		Model model = btrackmate.getModel();
 
-		final LogPanel logPanel = new LogPanel();
-		final Logger logger = logPanel.getLogger();
 		
+		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
 
-	
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
-		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
 		
-		model = startDialogDescriptor.returnUpdatedmodel();
-		updatedbtrackmate = startDialogDescriptor.returnUpdatedtrackmate();
-		settings = startDialogDescriptor.returnUpdatesettings();
-		model.setLogger( logger );
+		
 		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
-		final FeatureFilter initialFilter = new FeatureFilter( Spot.QUALITY, settings.initialSpotFilterValue.doubleValue(), true );
 		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 		
@@ -134,7 +130,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 		this.previous = getBackwardSequence();
 		current = startDialogDescriptor;
 	}
-
+	
 	
 
 	

@@ -2,6 +2,7 @@ package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
 import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
+import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
 import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
 
 import java.awt.Checkbox;
@@ -52,6 +53,8 @@ import fiji.plugin.btrackmate.Settings;
 import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.TrackMate;
 import fiji.plugin.btrackmate.detection.MaskUtils;
+import fiji.plugin.btrackmate.gui.GuiUtils;
+import fiji.plugin.btrackmate.gui.components.LogPanel;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettingsIO;
 import fiji.plugin.btrackmate.gui.wizard.BTrackMateWizardSequence;
@@ -84,8 +87,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public Model model;
 
 	private final Logger logger;
+	
+	
 
-	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger) {
+	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger ) {
 		super(KEY);
 		this.settings = settings;
 		this.logger = logger;
@@ -93,6 +98,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		updatemodel = model;
 		updatesettings = settings;
 		updateimp = settings.imp;
+		updatelogger = logger;
 		this.targetPanel = new RoiSettingsPanel(settings.imp);
 	}
 
@@ -146,6 +152,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static TrackMate updatedbtrackmate;
 	public static Model updatemodel;
     public static  SpotCollection budcells;
+    public static Logger updatelogger;
 	private static class RoiSettingsPanel extends JPanel {
 
 		private static final long serialVersionUID = -1L;
@@ -750,9 +757,13 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		        	
 		         budcells = MaskUtils.fromSimpleCSV( CSV, ndims, calibration);
 		         updatemodel.setSpots(budcells, true);
+		         updatemodel.setLogger( updatelogger );
 		         final WizardSequence sequence = createSequence( updatedbtrackmate,  new SelectionModel( updatemodel ), createDisplaySettings() );
-		 		 sequence.run( "BTrackMate on " + imp.getShortTitle() );
+		         sequence.run( "BTrackMate on" + imp.getShortTitle() );
+		         
 		        
+				
+		      
 			}
 			else
 				csvfile = null;
@@ -965,9 +976,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	{
 		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );
 	}
-	protected  static WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
+	protected  static WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
 	{
-		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
+		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings);
 	}
 
 

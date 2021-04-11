@@ -160,7 +160,6 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 
 		graph = frameToFrameLinker.getResult();
 		cancelable = null;
-		System.out.println("i am graph" + graph + graph.edgeSet().size());
 		/*
 		 * 2. Gap-closing, merging and splitting.
 		 */
