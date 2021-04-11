@@ -50,6 +50,8 @@ import fiji.plugin.btrackmate.providers.DetectorProvider;
 import fiji.plugin.btrackmate.providers.TrackerProvider;
 import fiji.plugin.btrackmate.tracking.ManualTrackerFactory;
 import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
+import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.plugin.btrackmate.visualization.trackscheme.SpotImageUpdater;
 import fiji.plugin.btrackmate.visualization.trackscheme.TrackScheme;
 
@@ -111,7 +113,8 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
 		
-		
+		final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, settings.imp, displaySettings );
+		displayer.render();
 		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
 		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();

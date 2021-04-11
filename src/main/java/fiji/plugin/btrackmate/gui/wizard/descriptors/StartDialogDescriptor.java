@@ -495,12 +495,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcChooseSegLoad.anchor = GridBagConstraints.EAST;
 			gbcChooseSegLoad.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseSegLoad.insets = new Insets(5, 5, 5, 5);
+			gbcChooseSegLoad.gridwidth = 4;
 			gbcChooseSegLoad.gridx = 0;
 			gbcChooseSegLoad.gridy = 13;
 
 			gbcChooseMaskLoad.anchor = GridBagConstraints.EAST;
 			gbcChooseMaskLoad.fill = GridBagConstraints.HORIZONTAL;
 			gbcChooseMaskLoad.insets = new Insets(5, 5, 5, 5);
+			gbcChooseMaskLoad.gridwidth = 4;
 			gbcChooseMaskLoad.gridx = 0;
 			gbcChooseMaskLoad.gridy = 14;
 
@@ -756,10 +758,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, cal.pixelDepth};
 		        	
 		         budcells = MaskUtils.fromSimpleCSV( CSV, ndims, calibration);
+		         updatesettings.setFrom(updateimp);
+				  getFrom(updateimp);
+				  fireAction(IMAGEPLUS_REFRESHED);
 		         updatemodel.setSpots(budcells, true);
 		         updatemodel.setLogger( updatelogger );
+		         
 		         final WizardSequence sequence = createSequence( updatedbtrackmate,  new SelectionModel( updatemodel ), createDisplaySettings() );
-		         sequence.run( "BTrackMate on" + imp.getShortTitle() );
+		         sequence.run( "BTrackMate on" + updateimp.getShortTitle() );
 		         
 		        
 				
@@ -812,7 +818,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		 * Fill the text fields with parameters grabbed from specified ImagePlus.
 		 */
 		public void getFrom(final ImagePlus lImp) {
+			
 			updateimp = lImp;
+			updatesettings.setFrom(updateimp);
 			if (null == lImp) {
 				lblImageName.setText("No image selected.");
 				return;
@@ -920,58 +928,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		return updatedbtrackmate;
 	}
 
-	public class ImageLoader implements ItemListener {
 
-		public final RoiSettingsPanel parent;
 
-		public ImageLoader(final RoiSettingsPanel parent) {
 
-			this.parent = parent;
-		}
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-
-				parent.add(parent.FreeMode, parent.gbcChooseFree);
-				parent.add(parent.MaskMode, parent.gbcChooseMask);
-
-			}
-
-			else if (e.getStateChange() == ItemEvent.DESELECTED) {
-
-				parent.remove(parent.FreeMode);
-				parent.remove(parent.MaskMode);
-
-			}
-
-		}
-	}
-
-	public class CsvLoader implements ItemListener {
-
-		public final RoiSettingsPanel parent;
-
-		public CsvLoader(final RoiSettingsPanel parent) {
-
-			this.parent = parent;
-		}
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-
-			}
-
-			else if (e.getStateChange() == ItemEvent.DESELECTED) {
-
-				parent.remove(parent.Checkpointbutton);
-			}
-
-		}
-	}
 	protected static DisplaySettings createDisplaySettings()
 	{
 		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );

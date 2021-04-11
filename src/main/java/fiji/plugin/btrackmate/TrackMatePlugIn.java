@@ -74,8 +74,7 @@ public class TrackMatePlugIn implements PlugIn
 		final DisplaySettings displaySettings = createDisplaySettings();
 
 		// Main view.
-		final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, imp, displaySettings );
-		displayer.render();
+		
 
 		// Wizard.
 		final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
@@ -166,7 +165,7 @@ public class TrackMatePlugIn implements PlugIn
 		ImageJ.main( args );
 //		new TrackMatePlugIn().run( "samples/Stack.tif" );
 //		new TrackMatePlugIn().run( "samples/Merged.tif" );
-		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/Raw-1.tif");
+		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/Raw.tif");
 //		new TrackMatePlugIn().run( "samples/Mask.tif" );
 //		new TrackMatePlugIn().run( "samples/FakeTracks.tif" );
 	}
