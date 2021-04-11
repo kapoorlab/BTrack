@@ -300,7 +300,7 @@ public class MaskUtils
 	}
 
 	
-	public static < R extends IntegerType< R > > SpotCollection fromSimpleCSV(
+	public static SpotCollection fromSimpleCSV(
 			HashMap<Integer, ArrayList<Cellobject>> CSV,
 			final int ndims,
 			final double[] calibration )
@@ -308,7 +308,7 @@ public class MaskUtils
 		// Parse each component.
 		final Iterator< Entry< Integer, ArrayList<Cellobject> > > iterator = CSV.entrySet().iterator();
 		
-		SpotCollection budcells = new SpotCollection();
+		SpotCollection spots = new SpotCollection();
 		while ( iterator.hasNext() )
 		{
 			final Map.Entry<Integer, ArrayList<Cellobject>> region = iterator.next();
@@ -334,12 +334,12 @@ public class MaskUtils
 				final double radius = ( ndims== 2 )
 						? Math.sqrt( volume / Math.PI )
 						: Math.pow( 3. * volume / ( 4. * Math.PI ), 1. / 3. );
-						budcells.add(new Spot( x, y, z, radius, quality ), frame);
+				spots.add(new Spot( x, y, z, radius, quality ), frame);
 			}
 			
 		}
 
-		return budcells;
+		return spots;
 	}
 	
 	/**
