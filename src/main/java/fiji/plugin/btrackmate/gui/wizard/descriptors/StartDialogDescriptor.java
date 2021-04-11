@@ -860,7 +860,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			tfZEnd.setText("" + (lImp.getNSlices() - 1));
 			tfTStart.setText("" + 0);
 			tfTEnd.setText("" + (lImp.getNFrames() - 1));
-
 			updateTo(updatemodel, updateimp);
 
 		}

@@ -78,7 +78,7 @@ public class TrackMatePlugIn implements PlugIn
 
 		// Wizard.
 		final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
-		final JFrame frame = sequence.run( "BTrackMate on " + imp.getShortTitle() );
+		final JFrame frame = sequence.run( "BTrackMate");
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
 		GuiUtils.positionWindow( frame, imp.getWindow() );
 		frame.setVisible( true );
