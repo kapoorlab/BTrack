@@ -21,18 +21,18 @@ public class TrackFilterDescriptor extends WizardPanelDescriptor
 
 	private static final String KEY = "TrackFilter";
 
-	private final TrackMate btrackmate;
+	private final TrackMate trackmate;
 
 	public TrackFilterDescriptor(
-			final TrackMate btrackmate,
+			final TrackMate trackmate,
 			final List< FeatureFilter > filters,
 			final FeatureDisplaySelector featureSelector )
 	{
 		super( KEY );
-		this.btrackmate = btrackmate;
+		this.trackmate = trackmate;
 		final FilterGuiPanel component = new FilterGuiPanel(
-				btrackmate.getModel(),
-				btrackmate.getSettings(),
+				trackmate.getModel(),
+				trackmate.getSettings(),
 				TrackMateObject.TRACKS,
 				filters,
 				TrackBranchingAnalyzer.NUMBER_SPOTS,
@@ -45,8 +45,8 @@ public class TrackFilterDescriptor extends WizardPanelDescriptor
 	private void filterTracks()
 	{
 		final FilterGuiPanel component = ( FilterGuiPanel ) targetPanel;
-		btrackmate.getSettings().setTrackFilters( component.getFeatureFilters() );
-		btrackmate.execTrackFiltering( false );
+		trackmate.getSettings().setTrackFilters( component.getFeatureFilters() );
+		trackmate.execTrackFiltering( false );
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class TrackFilterDescriptor extends WizardPanelDescriptor
 				disabler.disable();
 				try
 				{
-					final Model model = btrackmate.getModel();
+					final Model model = trackmate.getModel();
 					final Logger logger = model.getLogger();
 
 					/*
@@ -78,13 +78,13 @@ public class TrackFilterDescriptor extends WizardPanelDescriptor
 					logger.log( "\n" );
 					// Calculate features
 					final long start = System.currentTimeMillis();
-					final Logger oldLogger = btrackmate.getModel().getLogger();
-					btrackmate.getModel().setLogger( panel.getLogger() );
-					btrackmate.computeEdgeFeatures( true );
-					btrackmate.computeTrackFeatures( true );
+					final Logger oldLogger = trackmate.getModel().getLogger();
+					trackmate.getModel().setLogger( panel.getLogger() );
+					trackmate.computeEdgeFeatures( true );
+					trackmate.computeTrackFeatures( true );
 					final long end = System.currentTimeMillis();
-					btrackmate.getModel().setLogger( oldLogger );
-					if ( btrackmate.isCanceled() )
+					trackmate.getModel().setLogger( oldLogger );
+					if ( trackmate.isCanceled() )
 						logger.log( "Spot feature calculation canceled.\nSome spots will have missing feature values.\n" );
 					logger.log( String.format( "Calculating features done in %.1f s.\n", ( end - start ) / 1e3f ) );
 					panel.showProgressBar( false );
@@ -110,13 +110,13 @@ public class TrackFilterDescriptor extends WizardPanelDescriptor
 	@Override
 	public void aboutToHidePanel()
 	{
-		final Logger logger = btrackmate.getModel().getLogger();
+		final Logger logger = trackmate.getModel().getLogger();
 		logger.log( "\nPerforming track filtering on the following features:\n", Logger.BLUE_COLOR );
-		final Model model = btrackmate.getModel();
+		final Model model = trackmate.getModel();
 		final FilterGuiPanel component = ( FilterGuiPanel ) targetPanel;
 		final List< FeatureFilter > featureFilters = component.getFeatureFilters();
-		btrackmate.getSettings().setTrackFilters( featureFilters );
-		btrackmate.execTrackFiltering( false );
+		trackmate.getSettings().setTrackFilters( featureFilters );
+		trackmate.execTrackFiltering( false );
 
 		final int ntotal = model.getTrackModel().nTracks( false );
 		if ( featureFilters == null || featureFilters.isEmpty() )
@@ -127,7 +127,7 @@ public class TrackFilterDescriptor extends WizardPanelDescriptor
 		{
 			for ( final FeatureFilter ft : featureFilters )
 			{
-				String str = "  - on " + btrackmate.getModel().getFeatureModel().getTrackFeatureNames().get( ft.feature );
+				String str = "  - on " + trackmate.getModel().getFeatureModel().getTrackFeatureNames().get( ft.feature );
 				if ( ft.isAbove )
 					str += " above ";
 				else

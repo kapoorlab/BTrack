@@ -7,6 +7,7 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITT
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
 import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
 import java.util.Map;
@@ -195,6 +196,7 @@ public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 		boolean ok = true;
 		// Gap-closing
 		ok = ok & checkParameter( settings, KEY_ALLOW_GAP_CLOSING, Boolean.class, str );
+		
 		ok = ok & checkParameter( settings, KEY_GAP_CLOSING_MAX_DISTANCE, Double.class, str );
 		ok = ok & checkParameter( settings, KEY_GAP_CLOSING_MAX_FRAME_GAP, Integer.class, str );
 		ok = ok & checkFeatureMap( settings, KEY_GAP_CLOSING_FEATURE_PENALTIES, str );
@@ -202,6 +204,7 @@ public class SparseLAPSegmentTracker implements SpotTracker, Benchmark
 		ok = ok & checkParameter( settings, KEY_ALLOW_TRACK_SPLITTING, Boolean.class, str );
 		// Merging
 		ok = ok & checkParameter( settings, KEY_ALLOW_TRACK_MERGING, Boolean.class, str );
+		ok = ok & checkParameter( settings, KEY_TRACKLET_LENGTH , Double.class, str );
 		return ok;
 	}
 

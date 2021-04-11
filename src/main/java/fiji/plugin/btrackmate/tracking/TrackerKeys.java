@@ -37,6 +37,7 @@ public class TrackerKeys
 	public static final String TRACKER_SETTINGS_MERGING_ELEMENT = "MergingCondition";
 
 	public static final String TRACKER_SETTINGS_SPLITTING_ELEMENT = "SplittingCondition";
+	
 
 	/*
 	 *
@@ -57,6 +58,11 @@ public class TrackerKeys
 
 	/** A default value for the {@value #KEY_LINKING_MAX_DISTANCE} parameter. */
 	public static final double DEFAULT_LINKING_MAX_DISTANCE = 15.0;
+	
+	public static final String KEY_TRACKLET_LENGTH = "TRACKLET_LENGTH";
+
+	/** A default value for the {@value #KEY_LINKING_MAX_DISTANCE} parameter. */
+	public static final double DEFAULT_KEY_TRACKLET_LENGTH = 2;
 
 	/**
 	 * Key for the parameter specifying the feature penalties when linking

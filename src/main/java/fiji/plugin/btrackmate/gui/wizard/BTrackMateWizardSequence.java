@@ -73,7 +73,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 
 
-	private final InitFilterDescriptor initFilterDescriptor;
 
 	private final SpotFilterDescriptor spotFilterDescriptor;
 
@@ -122,7 +121,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 		
 		
-		initFilterDescriptor = new InitFilterDescriptor( updatedbtrackmate, initialFilter );
 		spotFilterDescriptor = new SpotFilterDescriptor( updatedbtrackmate, spotFilters, featureSelector );
 		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), updatedbtrackmate );
 		executeTrackingDescriptor = new ExecuteTrackingDescriptor( updatedbtrackmate, logPanel );
@@ -219,8 +217,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 	private Map< WizardPanelDescriptor, WizardPanelDescriptor > getForwardSequence()
 	{
 		final Map< WizardPanelDescriptor, WizardPanelDescriptor > map = new HashMap<>();
-		map.put( startDialogDescriptor, initFilterDescriptor );
-		map.put( initFilterDescriptor, spotFilterDescriptor );
+		map.put( startDialogDescriptor, spotFilterDescriptor );
 		map.put( spotFilterDescriptor, chooseTrackerDescriptor );
 		map.put( executeTrackingDescriptor, trackFilterDescriptor );
 		map.put( trackFilterDescriptor, configureViewsDescriptor );
@@ -247,13 +244,12 @@ public class BTrackMateWizardSequence implements WizardSequence
 		if ( panelIdentifier.equals( InitFilterDescriptor.KEY ) )
 		{
 			getDetectorConfigDescriptor();
-			current = initFilterDescriptor;
+			current = spotFilterDescriptor;
 			return;
 		}
 
 		final List< WizardPanelDescriptor > descriptors = Arrays.asList( new WizardPanelDescriptor[] {
 				logDescriptor,
-				initFilterDescriptor,
 				spotFilterDescriptor,
 				chooseTrackerDescriptor,
 				executeTrackingDescriptor,
@@ -279,7 +275,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 	 *
 	 * @return a suitable {@link SpotDetectorDescriptor}.
 	 */
-	private InitFilterDescriptor getDetectorConfigDescriptor()
+	private SpotFilterDescriptor getDetectorConfigDescriptor()
 	{
 
 	
@@ -301,10 +297,9 @@ public class BTrackMateWizardSequence implements WizardSequence
 		}
 
 	
-		previous.put( initFilterDescriptor, startDialogDescriptor );
 		previous.put( spotFilterDescriptor, startDialogDescriptor );
 
-		return initFilterDescriptor;
+		return spotFilterDescriptor;
 	}
 
 	/**

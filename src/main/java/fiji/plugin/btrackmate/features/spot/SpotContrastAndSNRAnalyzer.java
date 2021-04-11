@@ -12,12 +12,13 @@ import fiji.plugin.btrackmate.SpotRoi;
 import fiji.plugin.btrackmate.detection.DetectionUtils;
 import fiji.plugin.btrackmate.util.SpotNeighborhood;
 import fiji.plugin.btrackmate.util.SpotNeighborhoodCursor;
+import fiji.plugin.btrackmate.util.SpotUtil;
 import net.imagej.ImgPlus;
 import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;
 
 /**
- * This {@link fiji.plugin.btrackmate.features.FeatureAnalyzer} computes both the
+ * This {@link fiji.plugin.trackmate.features.FeatureAnalyzer} computes both the
  * <a href=http://en.wikipedia.org/wiki/Michelson_contrast#Formula>Michelson
  * contrast</a> and the SNR for each spot:
  * <p>
@@ -84,7 +85,7 @@ public class SpotContrastAndSNRAnalyzer< T extends RealType< T > > extends Abstr
 			final double alpha = outterRadius / radius;
 			final SpotRoi outterRoi = roi.copy();
 			outterRoi.scale( alpha );
-			final IterableInterval< T > neighborhood = outterRoi.sample( spot, img );
+			final IterableInterval< T > neighborhood = SpotUtil.iterable( outterRoi, spot, img );
 			double outterSum = 0.;
 			for ( final T t : neighborhood )
 				outterSum += t.getRealDouble();

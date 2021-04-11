@@ -4,6 +4,7 @@ import static fiji.plugin.btrackmate.tracking.LAPUtils.checkFeatureMap;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_LINKING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
 import static fiji.plugin.btrackmate.util.TMUtils.checkMapKeys;
 import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
@@ -81,7 +82,6 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 	{
 		isCanceled = false;
 		cancelReason = null;
-
 		/*
 		 * Check input now.
 		 */
@@ -122,7 +122,6 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 			errorMessage = BASE_ERROR_MESSAGE + errorHolder.toString();
 			return false;
 		}
-
 		/*
 		 * Process.
 		 */
@@ -146,6 +145,8 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		final Map< String, Double > featurePenalties = ( Map< String, Double > ) settings.get( KEY_LINKING_FEATURE_PENALTIES );
 		final CostFunction< Spot, Spot > costFunction = getCostFunction( featurePenalties );
 		final Double maxDist = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
+		final Double minTracklet = ( Double ) settings.get(KEY_TRACKLET_LENGTH);
+		System.out.println(minTracklet);
 		final double costThreshold = maxDist * maxDist;
 		final double alternativeCostFactor = ( Double ) settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
 
@@ -171,7 +172,6 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 					// Get frame pairs
 					final int lFrame0 = framePair[ 0 ];
 					final int lFrame1 = framePair[ 1 ];
-
 					// Get spots - we have to create a list from each
 					// content.
 					final List< Spot > sources = new ArrayList<>( spots.getNSpots( lFrame0, true ) );
@@ -219,6 +219,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 
 					logger.setProgress( progress.incrementAndGet() / framePairs.size() );
 					return null;
+					
 				}
 			} );
 			futures.add( future );
@@ -279,6 +280,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		boolean ok = true;
 		// Linking
 		ok = ok & checkParameter( settings, KEY_LINKING_MAX_DISTANCE, Double.class, str );
+		ok = ok & checkParameter( settings, KEY_TRACKLET_LENGTH, Double.class, str );
 		ok = ok & checkFeatureMap( settings, KEY_LINKING_FEATURE_PENALTIES, str );
 		// Others
 		ok = ok & checkParameter( settings, KEY_ALTERNATIVE_LINKING_COST_FACTOR, Double.class, str );
@@ -286,6 +288,7 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		// Check keys
 		final List< String > mandatoryKeys = new ArrayList<>();
 		mandatoryKeys.add( KEY_LINKING_MAX_DISTANCE );
+		mandatoryKeys.add( KEY_TRACKLET_LENGTH );
 		mandatoryKeys.add( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
 		final List< String > optionalKeys = new ArrayList<>();
 		optionalKeys.add( KEY_LINKING_FEATURE_PENALTIES );

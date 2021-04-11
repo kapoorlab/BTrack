@@ -28,18 +28,18 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 
 	private static final String KEY = "SpotFilter";
 
-	private final TrackMate btrackmate;
+	private final TrackMate trackmate;
 
 	public SpotFilterDescriptor(
-			final TrackMate btrackmate,
+			final TrackMate trackmate,
 			final List< FeatureFilter > filters,
 			final FeatureDisplaySelector featureSelector )
 	{
 		super( KEY );
-		this.btrackmate = btrackmate;
+		this.trackmate = trackmate;
 		final FilterGuiPanel component = new FilterGuiPanel(
-				btrackmate.getModel(),
-				btrackmate.getSettings(),
+				trackmate.getModel(),
+				trackmate.getSettings(),
 				TrackMateObject.SPOTS,
 				filters,
 				Spot.QUALITY,
@@ -52,8 +52,8 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 	private void filterSpots()
 	{
 		final FilterGuiPanel component = ( FilterGuiPanel ) targetPanel;
-		btrackmate.getSettings().setSpotFilters( component.getFeatureFilters() );
-		btrackmate.execSpotFiltering( false );
+		trackmate.getSettings().setSpotFilters( component.getFeatureFilters() );
+		trackmate.execSpotFiltering( false );
 	}
 
 	@Override
@@ -69,14 +69,14 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 				try
 				{
 
-					final Model model = btrackmate.getModel();
+					final Model model = trackmate.getModel();
 					final Logger logger = model.getLogger();
 					final String str = "Initial thresholding with a quality threshold above "
-							+ String.format( "%.1f", btrackmate.getSettings().initialSpotFilterValue )
+							+ String.format( "%.1f", trackmate.getSettings().initialSpotFilterValue )
 							+ " ...\n";
 					logger.log( str, Logger.BLUE_COLOR );
 					final int ntotal = model.getSpots().getNSpots( false );
-					btrackmate.execInitialSpotFiltering();
+					trackmate.execInitialSpotFiltering();
 					final int nselected = model.getSpots().getNSpots( false );
 					logger.log( String.format( "Retained %d spots out of %d.\n", nselected, ntotal ) );
 
@@ -84,12 +84,12 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 					 * Should we add morphology feature analyzers?
 					 */
 
-					if ( btrackmate.getSettings().detectorFactory != null
-							&& btrackmate.getSettings().detectorFactory.has2Dsegmentation()
-							&& DetectionUtils.is2D( btrackmate.getSettings().imp ) )
+					if ( trackmate.getSettings().detectorFactory != null
+							&& trackmate.getSettings().detectorFactory.has2Dsegmentation()
+							&& DetectionUtils.is2D( trackmate.getSettings().imp ) )
 					{
 						logger.log( "\nAdding morphology analyzers...\n", Logger.BLUE_COLOR );
-						final Settings settings = btrackmate.getSettings();
+						final Settings settings = trackmate.getSettings();
 						final SpotMorphologyAnalyzerProvider spotMorphologyAnalyzerProvider = new SpotMorphologyAnalyzerProvider( settings.imp.getNChannels() );
 						@SuppressWarnings( "rawtypes" )
 						final List< SpotMorphologyAnalyzerFactory > factories = spotMorphologyAnalyzerProvider
@@ -118,12 +118,12 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 					// Calculate features
 					final long start = System.currentTimeMillis();
 
-					final Logger oldLogger = btrackmate.getModel().getLogger();
-					btrackmate.getModel().setLogger( panel.getLogger() );
-					btrackmate.computeSpotFeatures( true );
+					final Logger oldLogger = trackmate.getModel().getLogger();
+					trackmate.getModel().setLogger( panel.getLogger() );
+					trackmate.computeSpotFeatures( true );
 					final long end = System.currentTimeMillis();
-					btrackmate.getModel().setLogger( oldLogger );
-					if ( btrackmate.isCanceled() )
+					trackmate.getModel().setLogger( oldLogger );
+					if ( trackmate.isCanceled() )
 						logger.log( "Spot feature calculation canceled.\nSome spots will have missing feature values.\n" );
 					logger.log( String.format( "Calculating features done in %.1f s.\n", ( end - start ) / 1e3f ) );
 					panel.showProgressBar( false );
@@ -144,20 +144,20 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 	public void displayingPanel()
 	{
 		final FilterGuiPanel component = ( FilterGuiPanel ) targetPanel;
-		btrackmate.getSettings().setSpotFilters( component.getFeatureFilters() );
-		btrackmate.execSpotFiltering( false );
+		trackmate.getSettings().setSpotFilters( component.getFeatureFilters() );
+		trackmate.execSpotFiltering( false );
 	}
 
 	@Override
 	public void aboutToHidePanel()
 	{
-		final Logger logger = btrackmate.getModel().getLogger();
+		final Logger logger = trackmate.getModel().getLogger();
 		logger.log( "\nPerforming spot filtering on the following features:\n", Logger.BLUE_COLOR );
-		final Model model = btrackmate.getModel();
+		final Model model = trackmate.getModel();
 		final FilterGuiPanel component = ( FilterGuiPanel ) targetPanel;
 		final List< FeatureFilter > featureFilters = component.getFeatureFilters();
-		btrackmate.getSettings().setSpotFilters( featureFilters );
-		btrackmate.execSpotFiltering( false );
+		trackmate.getSettings().setSpotFilters( featureFilters );
+		trackmate.execSpotFiltering( false );
 
 		final int ntotal = model.getSpots().getNSpots( false );
 		if ( featureFilters == null || featureFilters.isEmpty() )
@@ -168,7 +168,7 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 		{
 			for ( final FeatureFilter ft : featureFilters )
 			{
-				String str = "  - on " + btrackmate.getModel().getFeatureModel().getSpotFeatureNames().get( ft.feature );
+				String str = "  - on " + trackmate.getModel().getFeatureModel().getSpotFeatureNames().get( ft.feature );
 				if ( ft.isAbove )
 					str += " above ";
 				else
@@ -185,6 +185,6 @@ public class SpotFilterDescriptor extends WizardPanelDescriptor
 	@Override
 	public Cancelable getCancelable()
 	{
-		return btrackmate;
+		return trackmate;
 	}
 }

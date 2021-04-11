@@ -13,6 +13,7 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PE
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
 import static fiji.plugin.btrackmate.util.TMUtils.checkMapKeys;
 import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 import fiji.plugin.btrackmate.Spot;
@@ -453,8 +454,9 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 		// Others
 		ok = ok & checkParameter( settings, KEY_ALTERNATIVE_LINKING_COST_FACTOR, Double.class, str );
 		ok = ok & checkParameter( settings, KEY_CUTOFF_PERCENTILE, Double.class, str );
-
+		ok = ok & checkParameter( settings, KEY_CUTOFF_PERCENTILE, Double.class, str );
 		// Check keys
+		ok = ok & checkParameter( settings, KEY_TRACKLET_LENGTH, Double.class, str );
 		final List< String > mandatoryKeys = new ArrayList< >();
 		mandatoryKeys.add( KEY_ALLOW_GAP_CLOSING );
 		mandatoryKeys.add( KEY_GAP_CLOSING_MAX_DISTANCE );
@@ -465,6 +467,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 		mandatoryKeys.add( KEY_MERGING_MAX_DISTANCE );
 		mandatoryKeys.add( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
 		mandatoryKeys.add( KEY_CUTOFF_PERCENTILE );
+		mandatoryKeys.add( KEY_TRACKLET_LENGTH);
 		final List< String > optionalKeys = new ArrayList< >();
 		optionalKeys.add( KEY_GAP_CLOSING_FEATURE_PENALTIES );
 		optionalKeys.add( KEY_SPLITTING_FEATURE_PENALTIES );

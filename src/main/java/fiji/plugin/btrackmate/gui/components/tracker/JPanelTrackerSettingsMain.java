@@ -16,6 +16,8 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PE
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
+
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -78,8 +80,12 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 	private final JCheckBox chkboxAllowGapClosing;
 
 	private final JLabel lblLinkingMaxDistanceUnits;
+	
+	private final JLabel lblMinTrackletLengthUnits;
 
 	private final JFormattedTextField txtfldLinkingMaxDistance;
+	
+	private final JFormattedTextField txtfldLinkingMinTracklet;
 
 	private final JLabel lbl6;
 
@@ -119,56 +125,79 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		lblTrackerName.setFont( BIG_FONT );
 		lblTrackerName.setText( trackerName );
 
+		
+		//Min Tracklet length
+		
+		final JLabel lbltl = new JLabel();
+		this.add( lbltl, new GridBagConstraints( 0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		lbltl.setText( "Minimum Tracklet Length:" );
+		lbltl.setFont( SMALL_FONT );
+		txtfldLinkingMinTracklet = new JFormattedTextField( Integer.valueOf( 2 ) );
+		
+		this.add( txtfldLinkingMinTracklet, new GridBagConstraints( 1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		txtfldLinkingMinTracklet.setFont( SMALL_FONT );
+		txtfldLinkingMinTracklet.setSize( TEXTFIELD_DIMENSION );
+		txtfldLinkingMinTracklet.setHorizontalAlignment( JFormattedTextField.CENTER );
+		
+
+		lblLinkingMaxDistanceUnits = new JLabel();
+		this.add( lblLinkingMaxDistanceUnits, new GridBagConstraints( 2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
+		lblLinkingMaxDistanceUnits.setFont( SMALL_FONT );
+		lblLinkingMaxDistanceUnits.setText( spaceUnits );
+		
 		final JLabel lbl2 = new JLabel();
-		this.add( lbl2, new GridBagConstraints( 0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl2, new GridBagConstraints( 0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl2.setText( "Frame to frame linking:" );
 		lbl2.setFont( BIG_FONT.deriveFont( Font.BOLD ) );
 
 		final JLabel lbl3 = new JLabel();
-		this.add( lbl3, new GridBagConstraints( 0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl3, new GridBagConstraints( 0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl3.setText( "Max distance:" );
 		lbl3.setFont( SMALL_FONT );
 
 		txtfldLinkingMaxDistance = new JFormattedTextField( decimalFormat );
-		this.add( txtfldLinkingMaxDistance, new GridBagConstraints( 1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( txtfldLinkingMaxDistance, new GridBagConstraints( 1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		txtfldLinkingMaxDistance.setFont( SMALL_FONT );
 		txtfldLinkingMaxDistance.setSize( TEXTFIELD_DIMENSION );
 		txtfldLinkingMaxDistance.setHorizontalAlignment( JFormattedTextField.CENTER );
 
-		lblLinkingMaxDistanceUnits = new JLabel();
-		this.add( lblLinkingMaxDistanceUnits, new GridBagConstraints( 2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
-		lblLinkingMaxDistanceUnits.setFont( SMALL_FONT );
-		lblLinkingMaxDistanceUnits.setText( spaceUnits );
+		lblMinTrackletLengthUnits = new JLabel();
+		this.add( lblMinTrackletLengthUnits, new GridBagConstraints( 2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
+		lblMinTrackletLengthUnits.setFont( SMALL_FONT );
+		lblMinTrackletLengthUnits.setText( "frames" );
 
 		final JLabel lbl4 = new JLabel();
-		this.add( lbl4, new GridBagConstraints( 0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl4, new GridBagConstraints( 0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl4.setText( "Feature penalties" );
 		lbl4.setFont( SMALL_FONT );
 
 		final JScrollPane scrpneLinkingFeatures = new JScrollPane();
 		final MouseWheelListener[] l = scrpneLinkingFeatures.getMouseWheelListeners();
 		scrpneLinkingFeatures.removeMouseWheelListener( l[ 0 ] );
-		this.add( scrpneLinkingFeatures, new GridBagConstraints( 0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( scrpneLinkingFeatures, new GridBagConstraints( 0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		scrpneLinkingFeatures.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
 		scrpneLinkingFeatures.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 		panelLinkingFeatures = new JPanelFeatureSelectionGui();
 		panelLinkingFeatures.setDisplayFeatures( features, featureNames );
 		scrpneLinkingFeatures.setViewportView( panelLinkingFeatures );
 
+		
+		
+		
 		// Gap closing
 
 		final JLabel lbl5 = new JLabel();
-		this.add( lbl5, new GridBagConstraints( 0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 20, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl5, new GridBagConstraints( 0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 20, 10, 0, 10 ), 0, 0 ) );
 		lbl5.setText( "Track segment gap closing:" );
 		lbl5.setFont( BIG_FONT.deriveFont( Font.BOLD ) );
 
 		chkboxAllowGapClosing = new JCheckBox();
-		this.add( chkboxAllowGapClosing, new GridBagConstraints( 0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( chkboxAllowGapClosing, new GridBagConstraints( 0, 9, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		chkboxAllowGapClosing.setText( "Allow gap closing" );
 		chkboxAllowGapClosing.setFont( SMALL_FONT );
 
 		lbl6 = new JLabel();
-		this.add( lbl6, new GridBagConstraints( 0, 9, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl6, new GridBagConstraints( 0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl6.setText( "Max distance:" );
 		lbl6.setFont( SMALL_FONT );
 
@@ -184,7 +213,7 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		lblGapClosingMaxDistanceUnit.setText( spaceUnits );
 
 		lbl7 = new JLabel();
-		this.add( lbl7, new GridBagConstraints( 0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl7, new GridBagConstraints( 0, 11, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl7.setText( "Max frame gap:" );
 		lbl7.setFont( SMALL_FONT );
 
@@ -195,14 +224,14 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		txtfldGapClosingMaxFrameInterval.setHorizontalAlignment( JFormattedTextField.CENTER );
 
 		lbl8 = new JLabel();
-		this.add( lbl8, new GridBagConstraints( 0, 11, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl8, new GridBagConstraints( 0, 12, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl8.setText( "Feature penalties:" );
 		lbl8.setFont( SMALL_FONT );
 
 		scrpneGapClosingFeatures = new JScrollPane();
 		final MouseWheelListener[] l1 = scrpneGapClosingFeatures.getMouseWheelListeners();
 		scrpneGapClosingFeatures.removeMouseWheelListener( l1[ 0 ] );
-		this.add( scrpneGapClosingFeatures, new GridBagConstraints( 0, 12, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( scrpneGapClosingFeatures, new GridBagConstraints( 0, 13, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		scrpneGapClosingFeatures.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
 		scrpneGapClosingFeatures.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 		panelGapClosing = new JPanelFeatureSelectionGui();
@@ -212,17 +241,17 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		// Splitting
 
 		final JLabel lbl9 = new JLabel();
-		this.add( lbl9, new GridBagConstraints( 0, 13, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 20, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl9, new GridBagConstraints( 0, 14, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 20, 10, 0, 10 ), 0, 0 ) );
 		lbl9.setText( "Track segment splitting:" );
 		lbl9.setFont( BIG_FONT.deriveFont( Font.BOLD ) );
 
 		chkboxAllowSplitting = new JCheckBox();
-		this.add( chkboxAllowSplitting, new GridBagConstraints( 0, 14, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( chkboxAllowSplitting, new GridBagConstraints( 0, 15, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		chkboxAllowSplitting.setText( "Allow track segment splitting" );
 		chkboxAllowSplitting.setFont( SMALL_FONT );
 
 		lbl10 = new JLabel();
-		this.add( lbl10, new GridBagConstraints( 0, 15, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 0 ), 0, 0 ) );
+		this.add( lbl10, new GridBagConstraints( 0, 16, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 0 ), 0, 0 ) );
 		lbl10.setText( "Max distance:" );
 		lbl10.setFont( SMALL_FONT );
 
@@ -299,6 +328,7 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		GuiUtils.selectAllOnFocus( txtfldGapClosingMaxDistance );
 		GuiUtils.selectAllOnFocus( txtfldGapClosingMaxFrameInterval );
 		GuiUtils.selectAllOnFocus( txtfldLinkingMaxDistance );
+	    GuiUtils.selectAllOnFocus( txtfldLinkingMinTracklet );
 		GuiUtils.selectAllOnFocus( txtfldMergingMaxDistance );
 		GuiUtils.selectAllOnFocus( txtfldSplittingMaxDistance );
 
@@ -329,6 +359,7 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 	{
 
 		txtfldLinkingMaxDistance.setValue( settings.get( KEY_LINKING_MAX_DISTANCE ) );
+		txtfldLinkingMinTracklet.setValue( settings.get( KEY_TRACKLET_LENGTH ) );
 		panelLinkingFeatures.setSelectedFeaturePenalties( ( Map< String, Double > ) settings.get( KEY_LINKING_FEATURE_PENALTIES ) );
 
 		chkboxAllowGapClosing.setSelected( ( Boolean ) settings.get( KEY_ALLOW_GAP_CLOSING ) );
@@ -369,6 +400,8 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		final Map< String, Object > settings = LAPUtils.getDefaultLAPSettingsMap();
 
 		settings.put( KEY_LINKING_MAX_DISTANCE, ( ( Number ) txtfldLinkingMaxDistance.getValue() ).doubleValue() );
+		settings.put( KEY_TRACKLET_LENGTH, ( ( Number ) txtfldLinkingMinTracklet.getValue() ).doubleValue() );
+		
 		settings.put( KEY_LINKING_FEATURE_PENALTIES, panelLinkingFeatures.getFeaturePenalties() );
 
 		settings.put( KEY_ALLOW_GAP_CLOSING, chkboxAllowGapClosing.isSelected() );

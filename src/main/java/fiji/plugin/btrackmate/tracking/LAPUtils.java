@@ -15,6 +15,7 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_MERGING_FEATUR
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_MERGING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_KEY_TRACKLET_LENGTH;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
@@ -30,6 +31,7 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PE
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
 import static fiji.plugin.btrackmate.util.TMUtils.checkMapKeys;
 import static fiji.plugin.btrackmate.util.TMUtils.checkParameter;
 
@@ -116,6 +118,7 @@ public class LAPUtils {
 		final Map<String, Object> settings = new HashMap<>();
 		// Linking
 		settings.put(KEY_LINKING_MAX_DISTANCE, DEFAULT_LINKING_MAX_DISTANCE);
+		settings.put(KEY_TRACKLET_LENGTH, DEFAULT_KEY_TRACKLET_LENGTH);
 		settings.put(KEY_LINKING_FEATURE_PENALTIES, new HashMap<>(DEFAULT_LINKING_FEATURE_PENALTIES));
 		// Gap closing
 		settings.put(KEY_ALLOW_GAP_CLOSING, DEFAULT_ALLOW_GAP_CLOSING);
@@ -223,6 +226,7 @@ public class LAPUtils {
 		boolean ok = true;
 		// Linking
 		ok = ok & checkParameter( settings, KEY_LINKING_MAX_DISTANCE, Double.class, errorHolder );
+		ok = ok & checkParameter( settings, KEY_TRACKLET_LENGTH, Double.class, errorHolder );
 		ok = ok & checkFeatureMap( settings, KEY_LINKING_FEATURE_PENALTIES, errorHolder );
 		// Gap-closing
 		ok = ok & checkParameter( settings, KEY_ALLOW_GAP_CLOSING, Boolean.class, errorHolder );
@@ -245,6 +249,7 @@ public class LAPUtils {
 		// Check keys
 		final List<String> mandatoryKeys = new ArrayList<>();
 		mandatoryKeys.add(KEY_LINKING_MAX_DISTANCE);
+		mandatoryKeys.add(KEY_TRACKLET_LENGTH);
 		mandatoryKeys.add(KEY_ALLOW_GAP_CLOSING);
 		mandatoryKeys.add(KEY_GAP_CLOSING_MAX_DISTANCE);
 		mandatoryKeys.add(KEY_GAP_CLOSING_MAX_FRAME_GAP);
