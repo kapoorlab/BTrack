@@ -694,6 +694,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			csvfile.setDialogTitle(" Cell CSV file");
 			csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			csvfile.setFileFilter(csvfilter);
+			if (!CSV.isEmpty())
+				CSV.clear();
 			int count = 0;
 			
 			if (csvfile.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
