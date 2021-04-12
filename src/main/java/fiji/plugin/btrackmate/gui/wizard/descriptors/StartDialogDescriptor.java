@@ -2,9 +2,6 @@ package fiji.plugin.btrackmate.gui.wizard.descriptors;
 
 import static fiji.plugin.btrackmate.gui.Fonts.BIG_FONT;
 import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
-import static fiji.plugin.btrackmate.gui.Icons.TRACKMATE_ICON;
-import static fiji.plugin.btrackmate.gui.Fonts.SMALL_FONT;
-
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
 import java.awt.Cursor;
@@ -20,64 +17,54 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
 import budDetector.Cellobject;
 import fiji.plugin.btrack.gui.components.LoadDualImage;
 import fiji.plugin.btrack.gui.components.LoadSingleImage;
-import fiji.plugin.btrack.gui.descriptors.BTMStartDialogDescriptor;
 import fiji.plugin.btrackmate.Logger;
 import fiji.plugin.btrackmate.Settings;
+import fiji.plugin.btrackmate.Spot;
 import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.TrackMatePlugIn;
+import fiji.plugin.btrackmate.detection.LabelImageDetector;
 import fiji.plugin.btrackmate.detection.MaskUtils;
-import fiji.plugin.btrackmate.gui.GuiUtils;
-import fiji.plugin.btrackmate.gui.components.LogPanel;
-import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
-import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettingsIO;
-import fiji.plugin.btrackmate.gui.wizard.BTrackMateWizardSequence;
 import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
-import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
-import fiji.plugin.btrackmate.visualization.TrackMateModelView;
-import fiji.plugin.btrackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.plugin.btrackmate.Model;
 import fiji.plugin.btrackmate.SelectionModel;
 import fiji.util.NumberParser;
-import fileListeners.ChooseOrigMap;
-import fileListeners.ChooseSegMap;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
 import ij.measure.Calibration;
-import listeners.CsvLoader;
-import listeners.ImageLoader;
+import net.imglib2.FinalInterval;
 import net.imglib2.Point;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.view.Views;
 import pluginTools.simplifiedio.SimplifiedIO;
 
 public class StartDialogDescriptor extends WizardPanelDescriptor {
@@ -121,7 +108,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		logger.log("https://www.sciencedirect.com/science/article/pii/S1046202316303346\n", Logger.BLUE_COLOR);
 		logger.log("\nNumerical feature analyzers:\n", Logger.BLUE_COLOR);
 		logger.log(settings.toStringFeatureAnalyzersInfo());
-		
+		logger.setProgress(0);
 		panel.FreeMode.setVisible(true);
 		panel.MaskMode.setVisible(true);
 		panel.CsvMode.setVisible(true);
@@ -153,7 +140,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static Settings updatesettings;
 	public static TrackMate updatedbtrackmate;
 	public static Model updatemodel;
-    public static  SpotCollection budcells;
+    public static  SpotCollection spots;
     public static Logger updatelogger;
 	private static class RoiSettingsPanel extends JPanel {
 
@@ -216,13 +203,17 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		
 		GridBagConstraints gbcChooseMask = new GridBagConstraints();
 		GridBagConstraints gbcChooseCheck = new GridBagConstraints();
+		GridBagConstraints gbcExecDet = new GridBagConstraints();
 
 		GridBagConstraints gbcChooseSegLoad = new GridBagConstraints();
 		GridBagConstraints gbcChooseMaskLoad = new GridBagConstraints();
+		public JButton ExecuteDetection = new JButton("Start Detection");
+		
+		 double[] calibration;
 		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>(); 
 		public RoiSettingsPanel(final ImagePlus imp) {
 
-			this.setPreferredSize(new Dimension(391, 691));
+			this.setPreferredSize(new Dimension(400, 500));
 			final GridBagLayout gridBagLayout = new GridBagLayout();
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 					0.0, 1.0 };
@@ -508,9 +499,22 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcChooseMaskLoad.gridx = 0;
 			gbcChooseMaskLoad.gridy = 14;
 
+			gbcExecDet.anchor = GridBagConstraints.EAST;
+			ExecuteDetection.setFont(SMALL_FONT);
+			gbcExecDet.fill = GridBagConstraints.HORIZONTAL;
+			gbcExecDet.insets = new Insets(5, 5, 5, 5);
+			gbcExecDet.gridwidth = 4;
+			gbcExecDet.gridx = 2;
+			gbcExecDet.gridy = 14;
+			
 			Panelfile.setFont(SMALL_FONT);
-
-			setMinimumSize(new Dimension(391, 691));
+			 Calibration cal = imp.getCalibration();
+		        calibration = new double[3];
+		        int ndims = imp.getNDimensions();
+		        if (ndims == 2)
+		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, 1};
+		        else
+		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, cal.pixelDepth};
 
 			ImageMode.addItemListener(new ItemListener() {
 
@@ -519,6 +523,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						add(FreeMode, gbcChooseFree);
 						add(MaskMode, gbcChooseMask);
+						add(ExecuteDetection, gbcExecDet);
+						ExecuteDetection.setEnabled(false);
 						remove(Checkpointbutton);
 						validate();
 						repaint();
@@ -548,6 +554,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(FreeMode);
 						remove(MaskMode);
 						remove(Panelfile);
+						remove(ExecuteDetection);
 						validate();
 						repaint();
 
@@ -578,11 +585,17 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
 								impSeg = WindowManager.getImage(imagename);
+								NoMask = true;
+								DoMask = false;
+								ExecuteDetection.setEnabled(true);
 
 							}
 						});
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
+						
+						NoMask = false;
+						DoMask = false;
 
 						remove(Panelfile);
 						validate();
@@ -608,6 +621,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						add(Panelfile, gbcChooseSegLoad);
 						validate();
 						repaint();
+						NoMask = false;
+						DoMask = true;
 						segmentation.ChooseImage.addActionListener(new ActionListener() {
 
 							@Override
@@ -615,6 +630,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
 								impSeg = WindowManager.getImage(imagename);
+								
 
 							}
 						});
@@ -626,11 +642,15 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 								String imagename = (String) segmentation.ChoosesecImage.getSelectedItem();
 								impMask = WindowManager.getImage(imagename);
+								
+								ExecuteDetection.setEnabled(true);
 
 							}
 						});
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
+						NoMask = false;
+						DoMask = false;
 						remove(Panelfile);
 						validate();
 						repaint();
@@ -640,6 +660,65 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 			});
 
+			ExecuteDetection.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					
+					
+					if(impSeg!=null) {
+						
+
+						imageSegA = SimplifiedIO.openImage(
+				      			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
+								new IntType());
+						
+						//run detection process
+						runDetection();
+					}
+					
+					
+					if(impSeg!=null && impMask!=null) {
+						
+						imageSegA = SimplifiedIO.openImage(
+				      			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
+								new IntType());
+						
+						imageMask = SimplifiedIO.openImage(
+								impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
+						if(imageSegA.numDimensions() > imageMask.numDimensions()) {
+							
+							imageMask = MaskUtils.copyUpIntImage(imageMask);
+						}
+						net.imglib2.Cursor<IntType> Bigcursor = Views.iterable(imageMask).localizingCursor();
+						
+						
+						RandomAccess<IntType> segimage = imageSegA.randomAccess();
+						
+						while(Bigcursor.hasNext()) {
+							
+							Bigcursor.fwd();
+							segimage.setPosition(Bigcursor);
+							if(Bigcursor.get().get() == 0 ) {
+								
+										
+								segimage.get().setZero();
+							}
+							
+						}
+						//run detection process
+						
+						runDetection();
+					}
+					
+				}
+			});
+			
+			
+			
+			
+			
 			CsvMode.addItemListener(new ItemListener() {
 
 				@Override
@@ -753,25 +832,16 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		            ie.printStackTrace();
 		        }
 		        
-		        int ndims = imp.getNDimensions();
-		        Calibration cal = imp.getCalibration();
-		        double[] calibration = new double[3];
-		        if (ndims == 2)
-		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, 1};
-		        else
-		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, cal.pixelDepth};
+		        
+		       
 		        	
-		         budcells = MaskUtils.fromSimpleCSV( CSV, ndims, calibration);
-		         updatesettings.setFrom(updateimp);
+		         
 				  getFrom(updateimp);
 				  fireAction(IMAGEPLUS_REFRESHED);
-		         updatemodel.setSpots(budcells, true);
-		         updatemodel.setLogger( updatelogger );
-		         final TrackMateModelView displayer = new HyperStackDisplayer( updatemodel, new SelectionModel( updatemodel ), updatesettings.imp, createDisplaySettings() );
-		 		 displayer.render();
-		         final WizardSequence sequence = createSequence( updatedbtrackmate,  new SelectionModel( updatemodel ), createDisplaySettings() );
-		         sequence.run( "BTrackMate on" + updateimp.getShortTitle() );
-		         
+				  
+				 spots = MaskUtils.fromSimpleCSV( CSV, ndims, calibration);
+				 TrackMatePlugIn.ModelUpdate(updatemodel, updatedbtrackmate, updatesettings, spots, updatelogger, new SelectionModel( updatemodel ), updatesettings.imp);
+			    
 		        
 				
 		      
@@ -786,7 +856,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				
 			
 		});
-			final Calibration cal = imp.getCalibration();
 			lblPixelWidthVal.setText(DOUBLE_FORMAT.format(cal.pixelWidth));
 			lblPixelHeightVal.setText(DOUBLE_FORMAT.format(cal.pixelHeight));
 			lblVoxelDepthVal.setText(DOUBLE_FORMAT.format(cal.pixelDepth));
@@ -900,6 +969,29 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			updatedbtrackmate = updatemodel(model, updatesettings);
 
 		}
+		public  void runDetection() {
+			
+			 long[] min = new long[ imageSegA.numDimensions() ];
+		        long[] max = new long[ imageSegA.numDimensions() ];
+		 
+		        for ( int d = 0; d < imageSegA.numDimensions(); ++d )
+		        {
+		            // we add/subtract another 30 pixels here to illustrate
+		            // that it is really infinite and does not only work once
+		            min[ d ] = imageSegA.min(d);
+		            max[ d ] = imageSegA.max(d);
+		        }
+		 
+		        // define the Interval on the infinite random accessibles
+		        FinalInterval interval = new FinalInterval( min, max );
+			    LabelImageDetector<IntType> detectInteger = new LabelImageDetector<IntType>(imageSegA, interval, calibration, false);
+			    detectInteger.process();
+			    
+			    List<Spot> spotlist = detectInteger.getResult();
+			    
+			
+			
+		}
 
 	}
 
@@ -920,7 +1012,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	
 	public SpotCollection returnSpotCollection() {
 
-		return budcells;
+		return spots;
 	}
 	
 	
@@ -933,16 +1025,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	}
 
 
-
-
-	protected static DisplaySettings createDisplaySettings()
-	{
-		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );
-	}
-	protected  static WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
-	{
-		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings);
-	}
-
+	
 
 }

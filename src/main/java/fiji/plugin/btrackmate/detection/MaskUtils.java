@@ -18,6 +18,7 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.measure.Measurements;
 import ij.process.FloatPolygon;
+import net.imglib2.Cursor;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
@@ -31,6 +32,7 @@ import net.imglib2.histogram.Histogram1d;
 import net.imglib2.histogram.Real1dBinMapper;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.roi.labeling.ImgLabeling;
 import net.imglib2.roi.labeling.LabelRegion;
@@ -239,7 +241,37 @@ public class MaskUtils
 				interval,
 				calibration );
 	}
-
+	public static RandomAccessibleInterval<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input) 
+	   {
+		   
+		
+    long[] newDim = new long[] {input.dimension(0), input.dimension(1), 2, input.dimension(2)};
+    
+		RandomAccessibleInterval<IntType> output = new CellImgFactory<IntType>().create(newDim, new IntType());
+		
+		for(int i = 0; i < 2; ++i ) {
+		RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, i);
+		Cursor<IntType> cursorInput = Views.iterable(input).localizingCursor();
+		RandomAccess<IntType> randomAccess = Slicedoutput.randomAccess();
+		
+		while(cursorInput.hasNext()) {
+			
+			
+			cursorInput.fwd();
+			
+			randomAccess.setPosition(cursorInput);
+			
+			randomAccess.get().set(cursorInput.get());
+			
+		}
+		
+		}
+		
+		
+		
+		   return output;
+		   
+	   }
 	/**
 	 * Creates spots from a label image.
 	 * 

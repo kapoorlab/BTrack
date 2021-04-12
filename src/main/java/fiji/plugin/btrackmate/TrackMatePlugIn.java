@@ -28,6 +28,8 @@ import ij.plugin.PlugIn;
 public class TrackMatePlugIn implements PlugIn
 {
 
+	
+	public static TrackMateModelView displayer;
 	@Override
 	public void run( final String imagePath )
 	{
@@ -74,7 +76,9 @@ public class TrackMatePlugIn implements PlugIn
 		final DisplaySettings displaySettings = createDisplaySettings();
 
 		// Main view.
-		
+		// Main view.
+				displayer = new HyperStackDisplayer( model, selectionModel, imp, displaySettings );
+				displayer.render();
 
 		// Wizard.
 		final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
@@ -82,6 +86,8 @@ public class TrackMatePlugIn implements PlugIn
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
 		GuiUtils.positionWindow( frame, imp.getWindow() );
 		frame.setVisible( true );
+		//Call pack on the JFrame to have panels sized with preferred size
+		frame.pack();
 	}
 
 	/**
@@ -117,6 +123,27 @@ public class TrackMatePlugIn implements PlugIn
 		return model;
 	}
 
+	
+	public static void ModelUpdate(final Model model, final TrackMate btrackmate, final Settings settings, final SpotCollection spots,final Logger logger, final SelectionModel selectionModel, final ImagePlus imp) 
+	
+	{
+		settings.setFrom(imp); 
+        model.setSpots(spots, true);
+        model.setLogger( logger );
+       
+        final WizardSequence sequence = PseudocreateSequence( btrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings() );
+        sequence.run( "BTrackMate on" + imp.getShortTitle() );
+        
+		
+	}
+	protected static DisplaySettings PseudocreateDisplaySettings()
+	{
+		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );
+	}
+	protected  static WizardSequence PseudocreateSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
+	{
+		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings);
+	}
 	/**
 	 * Hook for subclassers: <br>
 	 * Creates the {@link Settings} instance that will be used to tune the
@@ -165,7 +192,7 @@ public class TrackMatePlugIn implements PlugIn
 		ImageJ.main( args );
 //		new TrackMatePlugIn().run( "samples/Stack.tif" );
 //		new TrackMatePlugIn().run( "samples/Merged.tif" );
-		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/Raw.tif");
+		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/SEG.tif");
 //		new TrackMatePlugIn().run( "samples/Mask.tif" );
 //		new TrackMatePlugIn().run( "samples/FakeTracks.tif" );
 	}
