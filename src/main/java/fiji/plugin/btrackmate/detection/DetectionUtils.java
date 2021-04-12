@@ -107,7 +107,7 @@ public class DetectionUtils
 					final TrackMate btrackmate = new TrackMate( lSettings );
 					btrackmate.getModel().setLogger( logger );
 
-					final boolean detectionOk = btrackmate.execDetection();
+					final boolean detectionOk = btrackmate.execDetection(settings);
 					if ( !detectionOk )
 					{
 						logger.error( btrackmate.getErrorMessage() );

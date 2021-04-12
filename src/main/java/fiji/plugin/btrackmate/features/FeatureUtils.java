@@ -15,6 +15,7 @@ import fiji.plugin.btrackmate.FeatureModel;
 import fiji.plugin.btrackmate.Model;
 import fiji.plugin.btrackmate.Settings;
 import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.features.edges.EdgeAnalyzer;
 import fiji.plugin.btrackmate.features.manual.ManualEdgeColorAnalyzer;
 import fiji.plugin.btrackmate.features.manual.ManualSpotColorAnalyzerFactory;

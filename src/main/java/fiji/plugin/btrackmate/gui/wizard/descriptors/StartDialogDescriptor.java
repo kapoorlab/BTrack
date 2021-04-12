@@ -76,15 +76,13 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public Model model;
 
 	private final Logger logger;
-	
-	
 
-	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger ) {
+	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger) {
 		super(KEY);
 		this.settings = settings;
 		this.logger = logger;
 		this.model = model;
-		
+
 		updatemodel = model;
 		updatesettings = settings;
 		updateimp = settings.imp;
@@ -141,8 +139,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static Settings updatesettings;
 	public static TrackMate updatedbtrackmate;
 	public static Model updatemodel;
-    public static  SpotCollection spots;
-    public static Logger updatelogger;
+	public static SpotCollection spots;
+	public static Logger updatelogger;
+
 	private static class RoiSettingsPanel extends JPanel {
 
 		private static final long serialVersionUID = -1L;
@@ -166,7 +165,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		public RandomAccessibleInterval<IntType> imageMask;
 
 		public JPanel Panelfile = new JPanel();
-
+		public JPanel PanelDualfile = new JPanel();
 		public boolean DoMask = false;
 		public boolean NoMask = true;
 		public JButton Checkpointbutton = new JButton("Load Data From CSV");
@@ -197,11 +196,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		JLabel lblSpatialUnits3 = new JLabel();
 		JLabel lblTimeUnits = new JLabel();
 		JLabel lblTimeIntervalVal = new JLabel();
-		
+
 		Checkbox ImageMode = new Checkbox("Segmentation as Images", LoadImage, SegLoadmode);
 		Checkbox CsvMode = new Checkbox("Segmentation as csv", LoadCSV, SegLoadmode);
 		GridBagConstraints gbcChooseFree = new GridBagConstraints();
-		
+
 		GridBagConstraints gbcChooseMask = new GridBagConstraints();
 		GridBagConstraints gbcChooseCheck = new GridBagConstraints();
 		GridBagConstraints gbcExecDet = new GridBagConstraints();
@@ -209,9 +208,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		GridBagConstraints gbcChooseSegLoad = new GridBagConstraints();
 		GridBagConstraints gbcChooseMaskLoad = new GridBagConstraints();
 		public JButton ExecuteDetection = new JButton("Start Detection");
-		
-		 double[] calibration;
-		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>(); 
+
+		double[] calibration;
+		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>();
+
 		public RoiSettingsPanel(final ImagePlus imp) {
 
 			this.setPreferredSize(new Dimension(400, 500));
@@ -507,15 +507,15 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcExecDet.gridwidth = 4;
 			gbcExecDet.gridx = 2;
 			gbcExecDet.gridy = 14;
-			
+
 			Panelfile.setFont(SMALL_FONT);
-			 Calibration cal = imp.getCalibration();
-		        calibration = new double[3];
-		        int ndims = imp.getNDimensions();
-		        if (ndims == 2)
-		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, 1};
-		        else
-		        	calibration = new double []{cal.pixelWidth, cal.pixelHeight, cal.pixelDepth};
+			Calibration cal = imp.getCalibration();
+			calibration = new double[3];
+			int ndims = imp.getNDimensions();
+			if (ndims == 2)
+				calibration = new double[] { cal.pixelWidth, cal.pixelHeight, 1 };
+			else
+				calibration = new double[] { cal.pixelWidth, cal.pixelHeight, cal.pixelDepth };
 
 			ImageMode.addItemListener(new ItemListener() {
 
@@ -524,7 +524,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						add(FreeMode, gbcChooseFree);
 						add(MaskMode, gbcChooseMask);
-						add(ExecuteDetection, gbcExecDet);
+						// add(ExecuteDetection, gbcExecDet);
 						ExecuteDetection.setEnabled(false);
 						remove(Checkpointbutton);
 						validate();
@@ -546,10 +546,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 								impSeg = WindowManager.getImage(imagename);
 								NoMask = true;
 								DoMask = false;
-								ExecuteDetection.setEnabled(true);
+								// ExecuteDetection.setEnabled(true);
+
 							}
 						});
-
+						System.out.println(impSeg);
+						if (impSeg != null)
+							TrackMatePlugIn.ModelUpdate( updatelogger,
+									new SelectionModel(updatemodel), updatesettings.imp, impSeg);
 					}
 
 					else if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -557,11 +561,51 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(FreeMode);
 						remove(MaskMode);
 						remove(Panelfile);
-						remove(ExecuteDetection);
+						// remove(ExecuteDetection);
 						validate();
 						repaint();
 
 					}
+
+				}
+			});
+			LoadSingleImage segmentation = new LoadSingleImage(chooseSegstring, blankimageNames, gbcChooseSegLoad);
+			Panelfile = segmentation.SingleChannelOption();
+
+			LoadDualImage Dualsegmentation = new LoadDualImage(chooseMaskstring, blankimageNames, gbcChooseSegLoad,
+					gbcChooseMaskLoad);
+			PanelDualfile = Dualsegmentation.TwoChannelOption();
+
+			segmentation.ChooseImage.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					String imagename = (String) segmentation.ChooseImage.getSelectedItem();
+					impSeg = WindowManager.getImage(imagename);
+					NoMask = true;
+					DoMask = false;
+
+				}
+			});
+			Dualsegmentation.ChooseImage.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					String imagename = (String) Dualsegmentation.ChooseImage.getSelectedItem();
+					impSeg = WindowManager.getImage(imagename);
+
+				}
+			});
+
+			Dualsegmentation.ChoosesecImage.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					String imagename = (String) Dualsegmentation.ChoosesecImage.getSelectedItem();
+					impMask = WindowManager.getImage(imagename);
 
 				}
 			});
@@ -574,35 +618,30 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 
 						remove(Panelfile);
+						remove(PanelDualfile);
 						// Listeneres
-						LoadSingleImage segmentation = new LoadSingleImage(chooseSegstring, blankimageNames,
-								gbcChooseSegLoad);
-						Panelfile = segmentation.SingleChannelOption();
+
 						add(Panelfile, gbcChooseSegLoad);
+
 						validate();
 						repaint();
-						segmentation.ChooseImage.addActionListener(new ActionListener() {
 
-							@Override
-							public void actionPerformed(ActionEvent e) {
+						getFrom(updateimp);
+						fireAction(IMAGEPLUS_REFRESHED);
+						System.out.println(impSeg);
+						TrackMatePlugIn.ModelUpdate( updatelogger,
+								new SelectionModel(updatemodel), updatesettings.imp, impSeg);
 
-								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
-								impSeg = WindowManager.getImage(imagename);
-								NoMask = true;
-								DoMask = false;
-								ExecuteDetection.setEnabled(true);
-								
-							}
-						});
 						validate();
 						repaint();
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
-						
+
 						NoMask = false;
 						DoMask = false;
 
 						remove(Panelfile);
+						remove(PanelDualfile);
 						validate();
 						repaint();
 					}
@@ -619,46 +658,28 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 
 						remove(Panelfile);
+						remove(PanelDualfile);
 						// Listeneres
-						LoadDualImage segmentation = new LoadDualImage(chooseMaskstring, blankimageNames,
-								gbcChooseSegLoad, gbcChooseMaskLoad);
-						Panelfile = segmentation.TwoChannelOption();
-						add(Panelfile, gbcChooseSegLoad);
+
+						add(PanelDualfile, gbcChooseSegLoad);
 						validate();
 						repaint();
 						NoMask = false;
 						DoMask = true;
-						segmentation.ChooseImage.addActionListener(new ActionListener() {
 
-							@Override
-							public void actionPerformed(ActionEvent e) {
-
-								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
-								impSeg = WindowManager.getImage(imagename);
-								
-
-							}
-						});
-
-						segmentation.ChoosesecImage.addActionListener(new ActionListener() {
-
-							@Override
-							public void actionPerformed(ActionEvent e) {
-
-								String imagename = (String) segmentation.ChoosesecImage.getSelectedItem();
-								impMask = WindowManager.getImage(imagename);
-								
-								ExecuteDetection.setEnabled(true);
-
-							}
-						});
 						validate();
 						repaint();
+						getFrom(updateimp);
+						fireAction(IMAGEPLUS_REFRESHED);
+
+						TrackMatePlugIn.ModelUpdate(updatelogger,
+								new SelectionModel(updatemodel), updatesettings.imp, impSeg, impMask);
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 						NoMask = false;
 						DoMask = false;
 						remove(Panelfile);
+						remove(PanelDualfile);
 						validate();
 						repaint();
 					}
@@ -668,50 +689,29 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			});
 
 			ExecuteDetection.addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
-					
-					
-					if(impSeg!=null) {
-						
 
-						imageSegA = SimplifiedIO.openImage(
-				      			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
-								new IntType());
-						
-						//run detection process
-						runDetection();
+					if (impSeg != null) {
+
+						updatesettings.impSeg = impSeg;
 					}
-					
-					
-					if(impSeg!=null && impMask!=null) {
-						
-						imageSegA = SimplifiedIO.openImage(
-				      			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
-								new IntType());
-						
-						imageMask = SimplifiedIO.openImage(
-								impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
-						
-						//run detection process
-						
-						runDetection();
+
+					if (impSeg != null && impMask != null) {
+
+						updatesettings.impMask = impMask;
+						updatesettings.impSeg = impSeg;
 					}
-					
+
 				}
 			});
-			
-			
-			
-			
-			
+
 			CsvMode.addItemListener(new ItemListener() {
 
 				@Override
 				public void itemStateChanged(ItemEvent ef) {
-					
+
 					if (ef.getStateChange() == ItemEvent.SELECTED) {
 
 						add(Checkpointbutton, gbcChooseCheck);
@@ -720,7 +720,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(Panelfile);
 						validate();
 						repaint();
-			
+
 					}
 
 					else if (ef.getStateChange() == ItemEvent.DESELECTED) {
@@ -734,116 +734,102 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				}
 			});
 			Checkpointbutton.addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent a) {
-					
-			JFileChooser csvfile = new JFileChooser();
-			FileFilter csvfilter = new FileFilter() 
-			{
-			      //Override accept method
-			      public boolean accept(File file) {
-			              
-			             //if the file extension is .log return true, else false
-			             if (file.getName().endsWith(".csv")) {
-			                return true;
-			             }
-			             return false;
-			      }
 
-				@Override
-				public String getDescription() {
-					
-					return null;
+					JFileChooser csvfile = new JFileChooser();
+					FileFilter csvfilter = new FileFilter() {
+						// Override accept method
+						public boolean accept(File file) {
+
+							// if the file extension is .log return true, else false
+							if (file.getName().endsWith(".csv")) {
+								return true;
+							}
+							return false;
+						}
+
+						@Override
+						public String getDescription() {
+
+							return null;
+						}
+					};
+					String line = "";
+					String cvsSplitBy = ",";
+					csvfile.setCurrentDirectory(new File(imp.getOriginalFileInfo().directory));
+					csvfile.setDialogTitle(" Cell CSV file");
+					csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					csvfile.setFileFilter(csvfilter);
+					if (!CSV.isEmpty())
+						CSV.clear();
+					int count = 0;
+
+					if (csvfile.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
+
+						File budfile = new File(csvfile.getSelectedFile().getPath());
+						ArrayList<Cellobject> reloadcell = new ArrayList<Cellobject>();
+
+						try (BufferedReader br = new BufferedReader(new FileReader(budfile))) {
+
+							while ((line = br.readLine()) != null) {
+
+								// use comma as separator
+								String[] budpoints = line.split(cvsSplitBy);
+
+								if (count > 0) {
+
+									int time = Integer.parseInt(budpoints[0]);
+									double X = Double.parseDouble(budpoints[1]);
+									double Y = Double.parseDouble(budpoints[2]);
+									double Z = Double.parseDouble(budpoints[3]);
+									int Label = Integer.parseInt(budpoints[4]);
+									double Perimeter = Double.parseDouble(budpoints[5]);
+									double Area = Double.parseDouble(budpoints[6]);
+									int Intensity = Integer.parseInt(budpoints[7]);
+									double sizeX = Double.parseDouble(budpoints[8]);
+									double sizeY = Double.parseDouble(budpoints[9]);
+									double sizeZ = Double.parseDouble(budpoints[10]);
+
+									double[] extents = new double[] { sizeX, sizeY, sizeZ };
+									Point point = new Point(new long[] { (long) X, (long) Y, (long) Z });
+
+									Cellobject currentcell = new Cellobject(point, time, Label, Perimeter, Area,
+											Intensity, extents);
+
+									if (CSV.get(time) == null) {
+										reloadcell = new ArrayList<Cellobject>();
+										CSV.put(time, reloadcell);
+									} else
+										CSV.put(time, reloadcell);
+
+									reloadcell.add(currentcell);
+
+								}
+								count = count + 1;
+							}
+						}
+
+						catch (IOException ie) {
+							ie.printStackTrace();
+						}
+
+						getFrom(updateimp);
+						fireAction(IMAGEPLUS_REFRESHED);
+
+						spots = MaskUtils.fromSimpleCSV(CSV, ndims, calibration);
+						TrackMatePlugIn.ModelUpdate(spots, updatelogger,
+								new SelectionModel(updatemodel), updatesettings.imp);
+
+					} else
+						csvfile = null;
+
 				}
-			};
-	        String line = "";
-	        String cvsSplitBy = ",";
-			csvfile.setCurrentDirectory(new File(imp.getOriginalFileInfo().directory));
-			csvfile.setDialogTitle(" Cell CSV file");
-			csvfile.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			csvfile.setFileFilter(csvfilter);
-			if (!CSV.isEmpty())
-				CSV.clear();
-			int count = 0;
-			
-			if (csvfile.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
-				
-				File budfile = new File(csvfile.getSelectedFile().getPath());
-				ArrayList<Cellobject> reloadcell = new ArrayList<Cellobject>(); 
-				
-		        try (BufferedReader br = new BufferedReader(new FileReader(budfile))) {
-
-		            while ((line = br.readLine()) != null) {
-
-		                // use comma as separator
-		                String[] budpoints = line.split(cvsSplitBy);
-	                     
-
-		                if(count > 0) {
-		                	
-			                int time = Integer.parseInt(budpoints[0]);
-			                double X = Double.parseDouble(budpoints[1]);
-			                double Y = Double.parseDouble(budpoints[2]);
-			                double Z = Double.parseDouble(budpoints[3]);
-			                int Label = Integer.parseInt(budpoints[4]);
-			                double Perimeter = Double.parseDouble(budpoints[5]);
-			                double Area = Double.parseDouble(budpoints[6]);
-			                int Intensity = Integer.parseInt(budpoints[7]);
-			                double sizeX =  Double.parseDouble(budpoints[8]);
-			                double sizeY = Double.parseDouble(budpoints[9]);
-			                double sizeZ = Double.parseDouble(budpoints[10]);
-			                
-			                double[] extents = new double[] {sizeX, sizeY, sizeZ};
-			                Point point = new Point(new long[] {(long)X,(long)Y,(long)Z});
-			                
-			                
-			                Cellobject currentcell = new Cellobject(point, time, Label, Perimeter, Area, Intensity, extents);
-			                
-	                        if(CSV.get(time)==null) {
-	                        	reloadcell = new ArrayList<Cellobject>();
-	                     	    CSV.put(time, reloadcell);    
-	                        }
-	                        else
-	                     	   CSV.put(time, reloadcell);
-			                
-			                    reloadcell.add(currentcell);
-			         
-			            }
-			                 count = count +  1;
-			            }
-		            }
-		        
-		       
-		        
-		        catch (IOException ie) {
-		            ie.printStackTrace();
-		        }
-		        
-		        
-		       
-		        	
-		         
-				  getFrom(updateimp);
-				  fireAction(IMAGEPLUS_REFRESHED);
-				  
-				 spots = MaskUtils.fromSimpleCSV( CSV, ndims, calibration);
-				 TrackMatePlugIn.ModelUpdate(updatemodel, updatedbtrackmate, updatesettings, spots, updatelogger, new SelectionModel( updatemodel ), updatesettings.imp);
-			    
-		        
-				
-		      
-			}
-			else
-				csvfile = null;
-		            
-		            
-		}  
 
 				// TODO Auto-generated method stub
-				
-			
-		});
+
+			});
 			lblPixelWidthVal.setText(DOUBLE_FORMAT.format(cal.pixelWidth));
 			lblPixelHeightVal.setText(DOUBLE_FORMAT.format(cal.pixelHeight));
 			lblVoxelDepthVal.setText(DOUBLE_FORMAT.format(cal.pixelDepth));
@@ -880,7 +866,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		 * Fill the text fields with parameters grabbed from specified ImagePlus.
 		 */
 		public void getFrom(final ImagePlus lImp) {
-			
+
 			updateimp = lImp;
 			updatesettings.setFrom(updateimp);
 			if (null == lImp) {
@@ -944,7 +930,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			updatesettings.height = imp.getHeight();
 			updatesettings.nslices = imp.getNSlices();
 			updatesettings.nframes = imp.getNFrames();
-			
+
 			// Units
 			model.setPhysicalUnits(lblSpatialUnits1.getText(), lblTimeUnits.getText());
 			// Roi
@@ -958,28 +944,27 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			updatedbtrackmate = updatemodel(model, updatesettings);
 
 		}
-		public  void runDetection() {
-			
-			 long[] min = new long[ imageSegA.numDimensions() ];
-		        long[] max = new long[ imageSegA.numDimensions() ];
-		 
-		        for ( int d = 0; d < imageSegA.numDimensions(); ++d )
-		        {
-		            // we add/subtract another 30 pixels here to illustrate
-		            // that it is really infinite and does not only work once
-		            min[ d ] = imageSegA.min(d) +1;
-		            max[ d ] = imageSegA.max(d) -1;
-		        }
-		 
-		        // define the Interval on the infinite random accessibles
-		        FinalInterval interval = new FinalInterval( min, max );
-			    LabelImageDetector<IntType> detectInteger = new LabelImageDetector<IntType>(imageSegA, interval, calibration, false);
-			    detectInteger.process();
-			    
-			    List<Spot> spotlist = detectInteger.getResult();
-			    
-			
-			
+
+		public void runDetection() {
+
+			long[] min = new long[imageSegA.numDimensions()];
+			long[] max = new long[imageSegA.numDimensions()];
+
+			for (int d = 0; d < imageSegA.numDimensions(); ++d) {
+				// we add/subtract another 30 pixels here to illustrate
+				// that it is really infinite and does not only work once
+				min[d] = imageSegA.min(d) + 1;
+				max[d] = imageSegA.max(d) - 1;
+			}
+
+			// define the Interval on the infinite random accessibles
+			FinalInterval interval = new FinalInterval(min, max);
+			LabelImageDetector<IntType> detectInteger = new LabelImageDetector<IntType>(imageSegA, interval,
+					calibration, false);
+			detectInteger.process();
+
+			List<Spot> spotlist = detectInteger.getResult();
+
 		}
 
 	}
@@ -998,13 +983,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		return updatesettings;
 	}
-	
+
 	public SpotCollection returnSpotCollection() {
 
 		return spots;
 	}
-	
-	
 
 	public static TrackMate updatemodel(final Model model, final Settings settings) {
 
@@ -1012,8 +995,5 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		return updatedbtrackmate;
 	}
-
-
-	
 
 }

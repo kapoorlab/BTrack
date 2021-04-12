@@ -245,6 +245,127 @@ public class Settings
 		}
 		// The rest is left to the user
 	}
+	
+	public void setFrom( final ImagePlus imp, final ImagePlus impSeg )
+	{
+		// Source image
+		this.imp = imp;
+
+		this.impSeg = impSeg;
+		if ( null == imp )
+			return; // we leave field default values
+
+		// File info
+		final FileInfo fileInfo = imp.getOriginalFileInfo();
+		if ( null != fileInfo )
+		{
+			this.imageFileName = fileInfo.fileName;
+			this.imageFolder = fileInfo.directory;
+		}
+		else
+		{
+			this.imageFileName = imp.getShortTitle();
+			this.imageFolder = "";
+
+		}
+		// Image size
+		this.width = imp.getWidth();
+		this.height = imp.getHeight();
+		this.nslices = imp.getNSlices();
+		this.nframes = imp.getNFrames();
+		this.dx = imp.getCalibration().pixelWidth;
+		this.dy = imp.getCalibration().pixelHeight;
+		this.dz = imp.getCalibration().pixelDepth;
+		this.dt = imp.getCalibration().frameInterval;
+
+		if ( dt == 0 )
+			dt = 1.;
+
+		// Crop cube
+		this.zstart = 0;
+		this.zend = imp.getNSlices() - 1;
+		this.tstart = 0;
+		this.tend = imp.getNFrames() - 1;
+		this.roi = imp.getRoi();
+		if ( roi == null )
+		{
+			this.xstart = 0;
+			this.xend = width - 1;
+			this.ystart = 0;
+			this.yend = height - 1;
+		}
+		else
+		{
+			final Rectangle boundingRect = roi.getBounds();
+			this.xstart = boundingRect.x;
+			this.xend = boundingRect.width + boundingRect.x;
+			this.ystart = boundingRect.y;
+			this.yend = boundingRect.height + boundingRect.y;
+		}
+		// The rest is left to the user
+	}
+	public void setFrom( final ImagePlus imp, final ImagePlus impSeg, final ImagePlus impMask )
+	{
+		// Source image
+		this.imp = imp;
+
+		this.impSeg = impSeg;
+		
+		this.impMask = impMask;
+		if ( null == imp )
+			
+			
+			return; // we leave field default values
+
+		// File info
+		final FileInfo fileInfo = imp.getOriginalFileInfo();
+		if ( null != fileInfo )
+		{
+			this.imageFileName = fileInfo.fileName;
+			this.imageFolder = fileInfo.directory;
+		}
+		else
+		{
+			this.imageFileName = imp.getShortTitle();
+			this.imageFolder = "";
+
+		}
+		// Image size
+		this.width = imp.getWidth();
+		this.height = imp.getHeight();
+		this.nslices = imp.getNSlices();
+		this.nframes = imp.getNFrames();
+		this.dx = imp.getCalibration().pixelWidth;
+		this.dy = imp.getCalibration().pixelHeight;
+		this.dz = imp.getCalibration().pixelDepth;
+		this.dt = imp.getCalibration().frameInterval;
+
+		if ( dt == 0 )
+			dt = 1.;
+
+		// Crop cube
+		this.zstart = 0;
+		this.zend = imp.getNSlices() - 1;
+		this.tstart = 0;
+		this.tend = imp.getNFrames() - 1;
+		this.roi = imp.getRoi();
+		if ( roi == null )
+		{
+			this.xstart = 0;
+			this.xend = width - 1;
+			this.ystart = 0;
+			this.yend = height - 1;
+		}
+		else
+		{
+			final Rectangle boundingRect = roi.getBounds();
+			this.xstart = boundingRect.x;
+			this.xend = boundingRect.width + boundingRect.x;
+			this.ystart = boundingRect.y;
+			this.yend = boundingRect.height + boundingRect.y;
+		}
+		// The rest is left to the user
+	}
 
 	/*
 	 * METHODS

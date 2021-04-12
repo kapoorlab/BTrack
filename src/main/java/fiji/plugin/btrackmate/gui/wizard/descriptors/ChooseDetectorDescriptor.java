@@ -17,18 +17,20 @@ public class ChooseDetectorDescriptor extends WizardPanelDescriptor
 	private final TrackMate btrackmate;
 
 	private final DetectorProvider detectorProvider;
+	
 
 	public ChooseDetectorDescriptor( final DetectorProvider detectorProvider, final TrackMate btrackmate )
 	{
 		super( KEY );
 		this.btrackmate = btrackmate;
 		this.detectorProvider = detectorProvider;
-
 		String selectedDetector = LabeImageDetectorFactory.DETECTOR_KEY; // default
 		if ( null != btrackmate.getSettings().detectorFactory )
 			selectedDetector = btrackmate.getSettings().detectorFactory.getKey();
 
 		this.targetPanel = new ModuleChooserPanel<>( detectorProvider, "detector", selectedDetector );
+		if(btrackmate.getSettings().impSeg==null)
+			this.targetPanel.setEnabled(false);
 	}
 
 	private void setCurrentChoiceFromPlugin()

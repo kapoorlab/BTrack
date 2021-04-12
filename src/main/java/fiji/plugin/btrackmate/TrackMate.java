@@ -306,7 +306,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 	 * @return true if the whole detection step has executed correctly.
 	 */
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
-	public boolean execDetection()
+	public boolean execDetection(Settings updatesettings)
 	{
 		isCanceled = false;
 		cancelReason = null;
@@ -317,13 +317,13 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 				+ ( ( numThreads > 1 ) ? ( numThreads + " threads" ) : "1 thread" )
 				+ ".\n", Logger.BLUE_COLOR );
 
-		final SpotDetectorFactoryBase< ? > factory = settings.detectorFactory;
+		final SpotDetectorFactoryBase< ? > factory = updatesettings.detectorFactory;
 		if ( null == factory )
 		{
 			errorMessage = "Detector factory is null.\n";
 			return false;
 		}
-		if ( null == settings.detectorSettings )
+		if ( null == updatesettings.detectorSettings )
 		{
 			errorMessage = "Detector settings is null.\n";
 			return false;
@@ -338,11 +338,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		/*
 		 * Prepare interval
 		 */
-		final ImgPlus imgSeg = TMUtils.rawWraps( settings.impSeg );
+		final ImgPlus imgSeg = TMUtils.rawWraps( updatesettings.impSeg );
 		
 		if(settings.impMask!=null) {
 			
-			ImgPlus imgMask = TMUtils.rawWraps( settings.impSeg );
+			ImgPlus imgMask = TMUtils.rawWraps( updatesettings.impMask );
 			if(imgSeg.numDimensions() > imgMask.numDimensions()) {
 				
 				imgMask = MaskUtils.copyUpIntImage(imgMask);
@@ -366,7 +366,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 			
 		}
 
-		if ( !factory.setTarget( imgSeg, settings.detectorSettings ) )
+		if ( !factory.setTarget( imgSeg, updatesettings.detectorSettings ) )
 		{
 			errorMessage = factory.getErrorMessage();
 			return false;
@@ -784,7 +784,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 	@Override
 	public boolean process()
 	{
-		if ( !execDetection() )
+		if ( !execDetection(settings) )
 			return false;
 		if ( isCanceled() )
 			return true;

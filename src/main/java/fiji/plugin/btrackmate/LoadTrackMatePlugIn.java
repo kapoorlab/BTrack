@@ -169,7 +169,7 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 			panelIdentifier = ConfigureViewsDescriptor.KEY;
 
 		// Wizard.
-		final BTrackMateWizardSequence sequence = new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings );
+		final BTrackMateWizardSequence sequence = new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings, false );
 		sequence.setCurrent( panelIdentifier );
 		final JFrame frame = sequence.run( "TrackMate on " + settings.imp.getShortTitle() );
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
