@@ -18,7 +18,9 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.measure.Measurements;
 import ij.process.FloatPolygon;
+import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
+import net.imglib2.Dimensions;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
@@ -241,13 +243,28 @@ public class MaskUtils
 				interval,
 				calibration );
 	}
-	public static RandomAccessibleInterval<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input) 
+	public static ImgPlus<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input) 
 	   {
 		   
 		
     long[] newDim = new long[] {input.dimension(0), input.dimension(1), 2, input.dimension(2)};
-    
-		RandomAccessibleInterval<IntType> output = new CellImgFactory<IntType>().create(newDim, new IntType());
+    Dimensions dim = new Dimensions() {
+		
+		@Override
+		public int numDimensions() {
+			// TODO Auto-generated method stub
+			return newDim.length;
+		}
+		
+		@Override
+		public long dimension(int d) {
+			// TODO Auto-generated method stub
+			return newDim[d];
+		}
+	};
+    final ImgFactory< IntType > factory = Util.getArrayOrCellImgFactory( dim, new IntType() );
+	final Img< IntType > out = factory.create( input );
+    ImgPlus<IntType> output = new ImgPlus<IntType>(out);
 		
 		for(int i = 0; i < 2; ++i ) {
 		RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, i);
@@ -266,8 +283,6 @@ public class MaskUtils
 		}
 		
 		}
-		
-		
 		
 		   return output;
 		   

@@ -39,6 +39,10 @@ public class Settings
 	 * target.
 	 */
 	public ImagePlus imp;
+	
+	public ImagePlus impSeg;
+	
+	public ImagePlus impMask;
 
 	/**
 	 * The region of interest (ROI). This will be used to crop the image and to

@@ -16,6 +16,7 @@ import org.scijava.Named;
 import org.scijava.util.VersionUtils;
 
 import fiji.plugin.btrackmate.detection.ManualDetectorFactory;
+import fiji.plugin.btrackmate.detection.MaskUtils;
 import fiji.plugin.btrackmate.detection.SpotDetector;
 import fiji.plugin.btrackmate.detection.SpotDetectorFactory;
 import fiji.plugin.btrackmate.detection.SpotDetectorFactoryBase;
@@ -27,12 +28,17 @@ import fiji.plugin.btrackmate.features.SpotFeatureCalculator;
 import fiji.plugin.btrackmate.features.TrackFeatureCalculator;
 import fiji.plugin.btrackmate.tracking.SpotTracker;
 import fiji.plugin.btrackmate.util.TMUtils;
+import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
+import net.imglib2.Cursor;
 import net.imglib2.Interval;
+import net.imglib2.RandomAccess;
 import net.imglib2.algorithm.Algorithm;
 import net.imglib2.algorithm.Benchmark;
 import net.imglib2.algorithm.MultiThreaded;
+import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.view.Views;
 
 /**
  * <p>
@@ -332,9 +338,35 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		/*
 		 * Prepare interval
 		 */
-		final ImgPlus img = TMUtils.rawWraps( settings.imp );
+		final ImgPlus imgSeg = TMUtils.rawWraps( settings.impSeg );
+		
+		if(settings.impMask!=null) {
+			
+			ImgPlus imgMask = TMUtils.rawWraps( settings.impSeg );
+			if(imgSeg.numDimensions() > imgMask.numDimensions()) {
+				
+				imgMask = MaskUtils.copyUpIntImage(imgMask);
+			}
+			Cursor<IntType> Bigcursor = Views.iterable(imgMask).localizingCursor();
+			
+			
+			RandomAccess<IntType> segimage = imgSeg.randomAccess();
+			
+			while(Bigcursor.hasNext()) {
+				
+				Bigcursor.fwd();
+				segimage.setPosition(Bigcursor);
+				if(Bigcursor.get().get() == 0 ) {
+					
+							
+					segimage.get().setZero();
+				}
+				
+			}
+			
+		}
 
-		if ( !factory.setTarget( img, settings.detectorSettings ) )
+		if ( !factory.setTarget( imgSeg, settings.detectorSettings ) )
 		{
 			errorMessage = factory.getErrorMessage();
 			return false;
@@ -347,11 +379,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 		if ( factory instanceof SpotGlobalDetectorFactory )
 		{
-			return processGlobal( ( SpotGlobalDetectorFactory ) factory, img, logger );
+			return processGlobal( ( SpotGlobalDetectorFactory ) factory, imgSeg, logger );
 		}
 		else if ( factory instanceof SpotDetectorFactory )
 		{ 
-			return processFrameByFrame( ( SpotDetectorFactory ) factory, img, logger ); 
+			return processFrameByFrame( ( SpotDetectorFactory ) factory, imgSeg, logger ); 
 		}
 
 		errorMessage = "Don't know how to handle detector factory of type: " + factory.getClass();

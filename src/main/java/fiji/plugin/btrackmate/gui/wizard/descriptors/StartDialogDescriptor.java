@@ -84,6 +84,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		this.settings = settings;
 		this.logger = logger;
 		this.model = model;
+		
 		updatemodel = model;
 		updatesettings = settings;
 		updateimp = settings.imp;
@@ -543,7 +544,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
 								impSeg = WindowManager.getImage(imagename);
-
+								NoMask = true;
+								DoMask = false;
+								ExecuteDetection.setEnabled(true);
 							}
 						});
 
@@ -588,9 +591,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 								NoMask = true;
 								DoMask = false;
 								ExecuteDetection.setEnabled(true);
-
+								
 							}
 						});
+						validate();
+						repaint();
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 						
@@ -647,6 +652,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 							}
 						});
+						validate();
+						repaint();
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 						NoMask = false;
@@ -687,26 +694,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						
 						imageMask = SimplifiedIO.openImage(
 								impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
-						if(imageSegA.numDimensions() > imageMask.numDimensions()) {
-							
-							imageMask = MaskUtils.copyUpIntImage(imageMask);
-						}
-						net.imglib2.Cursor<IntType> Bigcursor = Views.iterable(imageMask).localizingCursor();
 						
-						
-						RandomAccess<IntType> segimage = imageSegA.randomAccess();
-						
-						while(Bigcursor.hasNext()) {
-							
-							Bigcursor.fwd();
-							segimage.setPosition(Bigcursor);
-							if(Bigcursor.get().get() == 0 ) {
-								
-										
-								segimage.get().setZero();
-							}
-							
-						}
 						//run detection process
 						
 						runDetection();
@@ -956,6 +944,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			updatesettings.height = imp.getHeight();
 			updatesettings.nslices = imp.getNSlices();
 			updatesettings.nframes = imp.getNFrames();
+			
 			// Units
 			model.setPhysicalUnits(lblSpatialUnits1.getText(), lblTimeUnits.getText());
 			// Roi
@@ -978,8 +967,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		        {
 		            // we add/subtract another 30 pixels here to illustrate
 		            // that it is really infinite and does not only work once
-		            min[ d ] = imageSegA.min(d);
-		            max[ d ] = imageSegA.max(d);
+		            min[ d ] = imageSegA.min(d) +1;
+		            max[ d ] = imageSegA.max(d) -1;
 		        }
 		 
 		        // define the Interval on the infinite random accessibles
