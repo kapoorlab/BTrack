@@ -213,28 +213,14 @@ public class MaskUtils {
 		return fromLabeling(labeling, interval, calibration);
 	}
 
-	public static ImgPlus<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input) {
+	public static ImgPlus<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input,final RandomAccessibleInterval<IntType> output ) {
 
-		long[] newDim = new long[] { input.dimension(0), input.dimension(1), 2, input.dimension(2) };
-		Dimensions dim = new Dimensions() {
+		long[] newDim = new long[] { input.dimension(0), input.dimension(1), input.dimension(2), output.dimension(3) };
+		
+		final Img<IntType> out = new CellImgFactory<IntType>(new IntType()).create(newDim);
+		ImgPlus<IntType> expandoutput = new ImgPlus<IntType>(out);
 
-			@Override
-			public int numDimensions() {
-				// TODO Auto-generated method stub
-				return newDim.length;
-			}
-
-			@Override
-			public long dimension(int d) {
-				// TODO Auto-generated method stub
-				return newDim[d];
-			}
-		};
-		final ImgFactory<IntType> factory = Util.getArrayOrCellImgFactory(dim, new IntType());
-		final Img<IntType> out = factory.create(input);
-		ImgPlus<IntType> output = new ImgPlus<IntType>(out);
-
-		for (int i = 0; i < 2; ++i) {
+		for (int i = 0; i < output.dimension(3); ++i) {
 			RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, i);
 			Cursor<IntType> cursorInput = Views.iterable(input).localizingCursor();
 			RandomAccess<IntType> randomAccess = Slicedoutput.randomAccess();
@@ -251,10 +237,9 @@ public class MaskUtils {
 
 		}
 
-		return output;
+		return expandoutput;
 
 	}
-
 	
 
 	/**

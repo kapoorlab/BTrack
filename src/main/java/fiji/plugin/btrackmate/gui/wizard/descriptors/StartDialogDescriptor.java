@@ -1017,7 +1017,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		
 		if(imageSeg.numDimensions() > imageMask.numDimensions()) {
 			
-			imageMask = MaskUtils.copyUpIntImage(imageMask);
+			imageMask = MaskUtils.copyUpIntImage(imageMask, imageSeg);
 		}
 		net.imglib2.Cursor<IntType> Bigcursor = Views.iterable(imageMask).localizingCursor();
 		
