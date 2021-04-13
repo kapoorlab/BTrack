@@ -453,7 +453,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					Roi roi = new Roi(0, 0, imp.getWidth(), imp.getHeight());
-					TrackMatePlugIn.ModelUpdate( updatelogger, imp);
 
 					final Rectangle boundingRect = roi.getBounds();
 					tfXStart.setValue(Integer.valueOf(boundingRect.x));
@@ -685,8 +684,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						ImgPlus<FloatType> output =  createHyperStack(imp, impSeg);
 						ImagePlus imp = ImageJFunctions.show(output, "Channels");
 						
-						getFrom(imp);
-						fireAction(IMAGEPLUS_REFRESHED);
 						
 						TrackMatePlugIn.ModelUpdate( updatelogger, imp);
 					}
@@ -697,8 +694,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						ImgPlus<FloatType> output =  createmaskedHyperStack(imp, impSeg, impMask);
 						ImagePlus imp = ImageJFunctions.wrapFloat(output, "");
 					
-						getFrom(imp);
-						fireAction(IMAGEPLUS_REFRESHED);
+						
 						
 						TrackMatePlugIn.ModelUpdate( updatelogger, imp);
 					}
