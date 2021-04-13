@@ -46,7 +46,9 @@ import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.util.Pair;
 import net.imglib2.util.Util;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
@@ -347,13 +349,14 @@ public class MaskUtils
 	}
 
 	
-	public static SpotCollection fromSimpleCSV(
+	public static Pair<SpotCollection,HashMap<Integer, ArrayList<Spot>>> fromSimpleCSV(
 			HashMap<Integer, ArrayList<Cellobject>> CSV,
 			final int ndims,
 			final double[] calibration )
 	{
 		// Parse each component.
 		final Iterator< Entry< Integer, ArrayList<Cellobject> > > iterator = CSV.entrySet().iterator();
+		HashMap<Integer, ArrayList<Spot>> SpotListFrame = new HashMap<Integer, ArrayList<Spot>>(); 
 		
 		SpotCollection spots = new SpotCollection();
 		while ( iterator.hasNext() )
@@ -363,7 +366,7 @@ public class MaskUtils
 			
 			int frame = region.getKey();
 			ArrayList<Cellobject> currentcell = region.getValue();
-			
+			ArrayList<Spot> currentspots = new ArrayList<Spot>();
 			for (Cellobject cell: currentcell) 
 			{
 				final double x = calibration[0]* ( cell.Location.getDoublePosition(0) );
@@ -377,16 +380,20 @@ public class MaskUtils
 					quality *= cell.extents[i];	
 				}
 				
-				
 				final double radius = ( ndims== 2 )
 						? Math.sqrt( volume / Math.PI )
 						: Math.pow( 3. * volume / ( 4. * Math.PI ), 1. / 3. );
-				spots.add(new Spot( x, y, z, radius, quality ), frame);
+				
+				
+				Spot currentspot = new Spot( x, y, z, radius, quality );
+				currentspots.add(currentspot);
+				spots.add(currentspot, frame);
+				SpotListFrame.put(frame, currentspots);
 			}
 			
 		}
 
-		return spots;
+		return new ValuePair<SpotCollection,HashMap<Integer, ArrayList<Spot>>>(spots,SpotListFrame);
 	}
 	
 	/**

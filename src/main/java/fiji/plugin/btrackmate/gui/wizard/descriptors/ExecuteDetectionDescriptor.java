@@ -28,17 +28,14 @@ public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 	@Override
 	public Runnable getForwardRunnable()
 	{
-		if(btrackmate.getSettings().impSeg!=null) {
+		
 		return () -> {
 			final long start = System.currentTimeMillis();
 			btrackmate.execDetection(btrackmate.getSettings());
 			final long end = System.currentTimeMillis();
 			btrackmate.getModel().getLogger().log( String.format( "Detection done in %.1f s.\n", ( end - start ) / 1e3f ) );
 		};
-		}
 		
-		else 
-		 return null;
 	}
 
 	@Override

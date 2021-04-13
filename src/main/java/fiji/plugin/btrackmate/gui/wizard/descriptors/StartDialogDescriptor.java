@@ -64,6 +64,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
 import pluginTools.simplifiedio.SimplifiedIO;
 
@@ -140,6 +141,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static TrackMate updatedbtrackmate;
 	public static Model updatemodel;
 	public static SpotCollection spots;
+	public static Pair<SpotCollection,HashMap<Integer, ArrayList<Spot>>>  SpotListFrame;
 	public static Logger updatelogger;
 
 	private static class RoiSettingsPanel extends JPanel {
@@ -524,36 +526,13 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						add(FreeMode, gbcChooseFree);
 						add(MaskMode, gbcChooseMask);
-						// add(ExecuteDetection, gbcExecDet);
-						ExecuteDetection.setEnabled(false);
+						add(Panelfile, gbcChooseSegLoad);
+						
 						remove(Checkpointbutton);
 						validate();
 						repaint();
+						FreeMode.setEnabled(true);
 
-						// Listeneres
-						LoadSingleImage segmentation = new LoadSingleImage(chooseSegstring, blankimageNames,
-								gbcChooseSegLoad);
-						Panelfile = segmentation.SingleChannelOption();
-						add(Panelfile, gbcChooseSegLoad);
-						validate();
-						repaint();
-						segmentation.ChooseImage.addActionListener(new ActionListener() {
-
-							@Override
-							public void actionPerformed(ActionEvent f) {
-
-								String imagename = (String) segmentation.ChooseImage.getSelectedItem();
-								impSeg = WindowManager.getImage(imagename);
-								NoMask = true;
-								DoMask = false;
-								// ExecuteDetection.setEnabled(true);
-
-							}
-						});
-						System.out.println(impSeg);
-						if (impSeg != null)
-							TrackMatePlugIn.ModelUpdate( updatelogger,
-									new SelectionModel(updatemodel), updatesettings.imp, impSeg);
 					}
 
 					else if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -561,7 +540,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(FreeMode);
 						remove(MaskMode);
 						remove(Panelfile);
-						// remove(ExecuteDetection);
 						validate();
 						repaint();
 
@@ -585,6 +563,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					impSeg = WindowManager.getImage(imagename);
 					NoMask = true;
 					DoMask = false;
+					TrackMatePlugIn.ModelUpdate( updatelogger,
+							new SelectionModel(updatemodel), updatesettings.imp, impSeg);
 
 				}
 			});
@@ -606,6 +586,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 					String imagename = (String) Dualsegmentation.ChoosesecImage.getSelectedItem();
 					impMask = WindowManager.getImage(imagename);
+					TrackMatePlugIn.ModelUpdate( updatelogger,
+							new SelectionModel(updatemodel), updatesettings.imp, impSeg,impMask);
 
 				}
 			});
@@ -626,11 +608,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						validate();
 						repaint();
 
-						getFrom(updateimp);
-						fireAction(IMAGEPLUS_REFRESHED);
-						System.out.println(impSeg);
-						TrackMatePlugIn.ModelUpdate( updatelogger,
-								new SelectionModel(updatemodel), updatesettings.imp, impSeg);
+						
 
 						validate();
 						repaint();
@@ -669,11 +647,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 						validate();
 						repaint();
-						getFrom(updateimp);
-						fireAction(IMAGEPLUS_REFRESHED);
 
-						TrackMatePlugIn.ModelUpdate(updatelogger,
-								new SelectionModel(updatemodel), updatesettings.imp, impSeg, impMask);
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 						NoMask = false;
@@ -818,8 +792,11 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						getFrom(updateimp);
 						fireAction(IMAGEPLUS_REFRESHED);
 
-						spots = MaskUtils.fromSimpleCSV(CSV, ndims, calibration);
-						TrackMatePlugIn.ModelUpdate(spots, updatelogger,
+						SpotListFrame = MaskUtils.fromSimpleCSV(CSV, ndims, calibration);
+						
+						TrackMate.CsvSpots = SpotListFrame.getA();
+						TrackMate.Framespots = SpotListFrame.getB();
+						TrackMatePlugIn.ModelUpdate(updatelogger,
 								new SelectionModel(updatemodel), updatesettings.imp);
 
 					} else

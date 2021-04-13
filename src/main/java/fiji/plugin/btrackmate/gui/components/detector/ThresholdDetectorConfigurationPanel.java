@@ -114,6 +114,9 @@ public class ThresholdDetectorConfigurationPanel extends ConfigurationPanel
 			final String infoText,
 			final String detectorName )
 	{
+		
+		if(settings.impSeg==null)
+			setEnabled(false);
 		this.settings = settings;
 		final ImagePlus imp = settings.imp;
 

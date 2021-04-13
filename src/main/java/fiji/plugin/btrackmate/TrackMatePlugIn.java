@@ -84,9 +84,9 @@ public class TrackMatePlugIn implements PlugIn
 		 btrackmate = createTrackMate( model, settings );
 		// Main view.
 		// Main view.
-				displayer = new HyperStackDisplayer( model, selectionModel, imp, displaySettings );
-				displayer.render();
-
+				
+		 displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
+		 displayer.render();
 		// Wizard.
 		 sequence = createSequence( btrackmate, selectionModel, displaySettings, false );
 		frame = sequence.run( "BTrackMate");
@@ -131,12 +131,12 @@ public class TrackMatePlugIn implements PlugIn
 	}
 
 	
-	public static void ModelUpdate(final SpotCollection spots,final Logger logger, final SelectionModel selectionModel, final ImagePlus imp) 
+	public static void ModelUpdate(final Logger logger, final SelectionModel selectionModel, final ImagePlus imp) 
 	
 	{
 		
 		settings.setFrom(imp); 
-        model.setSpots(spots, true);
+        model.setSpots(TrackMate.CsvSpots, true);
         model.setLogger( logger );
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
         final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), true );
@@ -152,8 +152,6 @@ public class TrackMatePlugIn implements PlugIn
 	{
 		settings.setFrom(imp, impSeg); 
         model.setLogger( logger );
-        impSeg.show();
-        System.out.println(impSeg + " " + settings.impSeg);
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
         final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), false );
         sequence.run( "BTrackMate on" + imp.getShortTitle() );
@@ -171,6 +169,7 @@ public class TrackMatePlugIn implements PlugIn
         model.setLogger( logger );
         
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
+        
         final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), false );
         sequence.run( "BTrackMate on" + imp.getShortTitle() );
         
@@ -232,7 +231,7 @@ public class TrackMatePlugIn implements PlugIn
 		ImageJ.main( args );
 //		new TrackMatePlugIn().run( "samples/Stack.tif" );
 //		new TrackMatePlugIn().run( "samples/Merged.tif" );
-		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/SEG-1.tif");
+		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/Raw.tif");
 //		new TrackMatePlugIn().run( "samples/Mask.tif" );
 //		new TrackMatePlugIn().run( "samples/FakeTracks.tif" );
 	}

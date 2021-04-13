@@ -28,10 +28,13 @@ public class MaskDetectorConfigurationPanel extends ThresholdDetectorConfigurati
 			final Settings settings,
 			final Model model )
 	{
+		
 		super( settings, model, MaskDetectorFactory.INFO_TEXT, MaskDetectorFactory.NAME );
 		ftfIntensityThreshold.setVisible( false );
 		btnAutoThreshold.setVisible( false );
 		lblIntensityThreshold.setVisible( false );
+		if(settings.impSeg==null)
+			setEnabled(false);
 	}
 
 	@Override

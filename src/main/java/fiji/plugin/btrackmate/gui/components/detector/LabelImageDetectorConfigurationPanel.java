@@ -32,6 +32,8 @@ public class LabelImageDetectorConfigurationPanel extends ThresholdDetectorConfi
 		ftfIntensityThreshold.setVisible( false );
 		btnAutoThreshold.setVisible( false );
 		lblIntensityThreshold.setVisible( false );
+		if(settings.impSeg==null)
+			setEnabled(false);
 	}
 
 	@Override
