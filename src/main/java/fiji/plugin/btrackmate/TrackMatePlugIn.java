@@ -81,7 +81,6 @@ public class TrackMatePlugIn implements PlugIn
 		final DisplaySettings displaySettings = createDisplaySettings();
 		settings = createSettings( imp );
 		 model = createModel( imp );
-		 
 		 btrackmate = createTrackMate( model, settings );
 		// Main view.
 		// Main view.
@@ -89,7 +88,7 @@ public class TrackMatePlugIn implements PlugIn
 		 displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
 		 displayer.render();
 		// Wizard.
-		 sequence = createSequence( btrackmate, selectionModel, displaySettings, false );
+		 sequence = createSequence( btrackmate, selectionModel, displaySettings );
 		frame = sequence.run( "BTrackMate");
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
 		GuiUtils.positionWindow( frame, imp.getWindow() );
@@ -108,9 +107,9 @@ public class TrackMatePlugIn implements PlugIn
 	 * @param displaySettings
 	 * @return
 	 */
-	protected WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final boolean CSVMode )
+	protected WizardSequence createSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
 	{
-		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings, CSVMode);
+		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings);
 	}
 
 	/**
@@ -132,21 +131,20 @@ public class TrackMatePlugIn implements PlugIn
 	}
 
 	
-	public static void ModelUpdate(final ImagePlus imp) 
+	public static void ModelUpdate(final Logger logger,  final ImagePlus imp) 
 	
 	{
-		System.out.println("update" + imp + " " +imp.getShortTitle());
 		settings.setFrom(imp); 
 		
-		boolean CSV = false;
+		 displayer = new HyperStackDisplayer( model, new SelectionModel( model ), imp, PseudocreateDisplaySettings() );
+		 displayer.render();
 		if (TrackMate.CsvSpots!=null) {
         model.setSpots(TrackMate.CsvSpots, true);
-        CSV = true;
 		}
-        
+        model.setLogger( logger );
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
-        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), CSV );
-        sequence.run( "BTrackMate on" + imp.getShortTitle() );
+        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings());
+        sequence.run( "BTrackMate");
         
 		
 	}
@@ -157,9 +155,9 @@ public class TrackMatePlugIn implements PlugIn
 	{
 		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );
 	}
-	protected  static WizardSequence PseudocreateSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, boolean CSVMode)
+	protected  static WizardSequence PseudocreateSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
 	{
-		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings, CSVMode);
+		return new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings);
 	}
 	/**
 	 * Hook for subclassers: <br>

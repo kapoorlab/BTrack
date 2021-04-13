@@ -29,10 +29,11 @@ public class SpotDetectorDescriptor extends WizardPanelDescriptor
 	{
 		final ConfigurationPanel configurationPanel = ( ConfigurationPanel ) targetPanel;
 		settings.detectorSettings = configurationPanel.getSettings();
-		
+		if(logger!=null) {
 		logger.log( "\nConfigured detector " );
 		logger.log( settings.detectorFactory.getName(), Logger.BLUE_COLOR );
 		logger.log( " with settings:\n" );
 		logger.log( TMUtils.echoMap( settings.detectorSettings, 2 ) + "\n" );
+		}
 	}
 }

@@ -109,7 +109,7 @@ public class DetectionUtils
 					final TrackMate btrackmate = new TrackMate( lSettings );
 					btrackmate.getModel().setLogger( logger );
 
-					final boolean detectionOk = btrackmate.execDetection(settings);
+					final boolean detectionOk = btrackmate.execDetection();
 					if ( !detectionOk )
 					{
 						logger.error( btrackmate.getErrorMessage() );
@@ -477,7 +477,6 @@ public class DetectionUtils
 			final int frame )
 	{
 		final ImgPlus< T > singleTimePoint;
-		System.out.println(img.dimensionIndex(Axes.TIME) + " " + img.dimensionIndex(Axes.CHANNEL));
 		if ( img.dimensionIndex( Axes.TIME ) < 0 )
 			singleTimePoint = img;
 		else

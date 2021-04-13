@@ -91,14 +91,17 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger) {
 		super(KEY);
+		
 		this.settings = settings;
 		this.logger = logger;
 		this.model = model;
-
+        
 		updatemodel = model;
 		updatesettings = settings;
 		updateimp = settings.imp;
+		updatelogger = logger;
 		this.targetPanel = new RoiSettingsPanel(settings.imp);
+		
 	}
 
 	@Override
@@ -152,6 +155,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static Model updatemodel;
 	public static SpotCollection spots;
 	public static Pair<SpotCollection,HashMap<Integer, ArrayList<Spot>>>  SpotListFrame;
+	public static Logger updatelogger;
 
 	private  static  class  RoiSettingsPanel extends JPanel {
 
@@ -172,7 +176,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		private final JFormattedTextField tfTStart;
 		private final JFormattedTextField tfTEnd;
 		
-		public ImgPlus<IntType> imgMask;
 		
 		public JPanel Panelfile = new JPanel();
 		public JPanel PanelDualfile = new JPanel();
@@ -520,6 +523,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			Panelfile.setFont(SMALL_FONT);
 			Calibration cal = imp.getCalibration();
 			calibration = new double[3];
+			
 			int ndims = imp.getNDimensions();
 			if (ndims == 2)
 				calibration = new double[] { cal.pixelWidth, cal.pixelHeight, 1 };
@@ -679,11 +683,12 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (impSeg != null) {
 
 						ImgPlus<FloatType> output =  createHyperStack(imp, impSeg);
-						ImagePlus imp = ImageJFunctions.show(output, "showme");
+						ImagePlus imp = ImageJFunctions.show(output, "Channels");
 						
-						TrackMatePlugIn.imp.close();
+						getFrom(imp);
+						fireAction(IMAGEPLUS_REFRESHED);
 						
-						TrackMatePlugIn.ModelUpdate(imp);
+						TrackMatePlugIn.ModelUpdate( updatelogger, imp);
 					}
 
 					if (impSeg != null && impMask != null) {
@@ -692,10 +697,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						ImgPlus<FloatType> output =  createmaskedHyperStack(imp, impSeg, impMask);
 						ImagePlus imp = ImageJFunctions.wrapFloat(output, "");
 					
+						getFrom(imp);
+						fireAction(IMAGEPLUS_REFRESHED);
 						
-						TrackMatePlugIn.imp.close();
-						
-						TrackMatePlugIn.ModelUpdate( imp);
+						TrackMatePlugIn.ModelUpdate( updatelogger, imp);
 					}
 
 				}
@@ -816,7 +821,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						
 						TrackMate.CsvSpots = SpotListFrame.getA();
 						TrackMate.Framespots = SpotListFrame.getB();
-						TrackMatePlugIn.ModelUpdate( updatesettings.imp);
+						TrackMatePlugIn.ModelUpdate(updatelogger, updatesettings.imp);
 
 					} else
 						csvfile = null;
@@ -981,8 +986,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
 				imp.getOriginalFileInfo().directory + imp.getOriginalFileInfo().fileName, new FloatType());
 		
-		RandomAccessibleInterval<FloatType> imageSeg = SimplifiedIO.openImage(
-				impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName, new FloatType());
+		RandomAccessibleInterval<IntType> imageSeg = SimplifiedIO.openImage(
+				impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName, new IntType());
 		
 		
 		long[] newDim = new long[] { imageOrig.dimension(0), imageOrig.dimension(1),2, imageOrig.dimension(2), imageOrig.dimension(3) };
@@ -1008,8 +1013,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
 				imp.getOriginalFileInfo().directory + imp.getOriginalFileInfo().fileName, new FloatType());
 		
-		RandomAccessibleInterval<FloatType> imageSeg = SimplifiedIO.openImage(
-				impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName, new FloatType());
+		RandomAccessibleInterval<IntType> imageSeg = SimplifiedIO.openImage(
+				impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName, new IntType());
 		
 		RandomAccessibleInterval<IntType> imageMask = SimplifiedIO.openImage(
 				impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
@@ -1021,7 +1026,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		net.imglib2.Cursor<IntType> Bigcursor = Views.iterable(imageMask).localizingCursor();
 		
 		
-		RandomAccess<FloatType> segimage = imageSeg.randomAccess();
+		RandomAccess<IntType> segimage = imageSeg.randomAccess();
 		
 		while(Bigcursor.hasNext()) {
 			

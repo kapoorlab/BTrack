@@ -13,9 +13,9 @@ public class ManualTrackingPlugIn extends TrackMatePlugIn
 {
 
 	@Override
-	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final boolean CSVMode )
+	protected WizardSequence createSequence( final TrackMate trackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings )
 	{
-		final WizardSequence sequence = super.createSequence( trackmate, selectionModel, displaySettings, false );
+		final WizardSequence sequence = super.createSequence( trackmate, selectionModel, displaySettings );
 		sequence.setCurrent( ConfigureViewsDescriptor.KEY );
 		return sequence;
 	}

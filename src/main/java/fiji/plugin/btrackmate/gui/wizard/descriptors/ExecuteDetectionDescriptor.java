@@ -30,7 +30,7 @@ public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 		
 		return () -> {
 			final long start = System.currentTimeMillis();
-			btrackmate.execDetection(btrackmate.getSettings());
+			btrackmate.execDetection();
 			final long end = System.currentTimeMillis();
 			btrackmate.getModel().getLogger().log( String.format( "Detection done in %.1f s.\n", ( end - start ) / 1e3f ) );
 		};

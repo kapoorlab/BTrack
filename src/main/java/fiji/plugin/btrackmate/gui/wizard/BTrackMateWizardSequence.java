@@ -74,13 +74,11 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 	private final LogPanelDescriptor2 logDescriptor;
 
-
-	public final ChooseDetectorDescriptor chooseDetectorDescriptor;
+	private final ChooseDetectorDescriptor chooseDetectorDescriptor;
 
 	private final ExecuteDetectionDescriptor executeDetectionDescriptor;
 
 	private final InitFilterDescriptor initFilterDescriptor;
-
 
 	private final SpotFilterDescriptor spotFilterDescriptor;
 
@@ -96,76 +94,57 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 	private final ActionChooserDescriptor actionChooserDescriptor;
 
-	public boolean CSVMode;
 	private final SaveDescriptor saveDescriptor;
-	public TrackMate updatedbtrackmate;
-	LogPanel logPanel = new LogPanel();
-	Logger logger = logPanel.getLogger();
+	
 
-	public BTrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, 
-			final DisplaySettings displaySettings, final boolean CSVMode )
+	public BTrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
 	{
-		
 		this.btrackmate = btrackmate;
-		updatedbtrackmate = btrackmate;
-		this.CSVMode = CSVMode;
 		this.selectionModel = selectionModel;
 		this.displaySettings = displaySettings;
-		Settings settings = btrackmate.getSettings();
-		Model model = btrackmate.getModel();
-		model.setLogger( logger );
-		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
+		final Settings settings = btrackmate.getSettings();
+		final Model model = btrackmate.getModel();
 
-
-		logDescriptor = new LogPanelDescriptor2( logPanel );
-		
+		final LogPanel logPanel = new LogPanel();
+		final Logger logger = logPanel.getLogger();
+        
 		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
 		final FeatureFilter initialFilter = new FeatureFilter( Spot.QUALITY, settings.initialSpotFilterValue.doubleValue(), true );
 		final List< FeatureFilter > spotFilters = settings.getSpotFilters();
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
-		
-		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), updatedbtrackmate );
-		executeDetectionDescriptor = new ExecuteDetectionDescriptor( updatedbtrackmate, logPanel  );
-		
-		initFilterDescriptor = new InitFilterDescriptor( updatedbtrackmate, initialFilter );
-		spotFilterDescriptor = new SpotFilterDescriptor( updatedbtrackmate, spotFilters, featureSelector );
-		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), updatedbtrackmate );
-		executeTrackingDescriptor = new ExecuteTrackingDescriptor( updatedbtrackmate, logPanel );
-		trackFilterDescriptor = new TrackFilterDescriptor( updatedbtrackmate, trackFilters, featureSelector );
+
+		logDescriptor = new LogPanelDescriptor2( logPanel );
+		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
+		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), btrackmate );
+		executeDetectionDescriptor = new ExecuteDetectionDescriptor( btrackmate, logPanel );
+		initFilterDescriptor = new InitFilterDescriptor( btrackmate, initialFilter );
+		spotFilterDescriptor = new SpotFilterDescriptor( btrackmate, spotFilters, featureSelector );
+		chooseTrackerDescriptor = new ChooseTrackerDescriptor( new TrackerProvider(), btrackmate );
+		executeTrackingDescriptor = new ExecuteTrackingDescriptor( btrackmate, logPanel );
+		trackFilterDescriptor = new TrackFilterDescriptor( btrackmate, trackFilters, featureSelector );
 		configureViewsDescriptor = new ConfigureViewsDescriptor( displaySettings, featureSelector, new LaunchTrackSchemeAction(), new ShowTrackTablesAction(), new ShowSpotTableAction(), model.getSpaceUnits() );
-		grapherDescriptor = new GrapherDescriptor( updatedbtrackmate, displaySettings );
-		actionChooserDescriptor = new ActionChooserDescriptor( new ActionProvider(), updatedbtrackmate, selectionModel, displaySettings );
-		saveDescriptor = new SaveDescriptor( updatedbtrackmate, displaySettings, this );
+		grapherDescriptor = new GrapherDescriptor( btrackmate, displaySettings );
+		actionChooserDescriptor = new ActionChooserDescriptor( new ActionProvider(), btrackmate, selectionModel, displaySettings );
+		saveDescriptor = new SaveDescriptor( btrackmate, displaySettings, this );
 
 		this.next = getForwardSequence();
 		this.previous = getBackwardSequence();
 		current = startDialogDescriptor;
 	}
-	
-	
 
-	
 	@Override
 	public WizardPanelDescriptor next()
 	{
-		
-		
-		if ( current == chooseDetectorDescriptor ) {
-			
+		if ( current == chooseDetectorDescriptor )
 			getDetectorConfigDescriptor();
-			
-		}
 
 		if ( current == chooseTrackerDescriptor )
 			getTrackerConfigDescriptor();
 
 		current = next.get( current );
 		return current;
-		
-			
-			
-		}
-	
+	}
+
 
 	@Override
 	public WizardPanelDescriptor previous()
@@ -173,10 +152,8 @@ public class BTrackMateWizardSequence implements WizardSequence
 		if ( current == trackFilterDescriptor )
 			getTrackerConfigDescriptor();
 
-		if ( current == spotFilterDescriptor ) {
+		if ( current == spotFilterDescriptor )
 			getDetectorConfigDescriptor();
-			
-		}
 
 		current = previous.get( current );
 		return current;
@@ -221,7 +198,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 	private Map< WizardPanelDescriptor, WizardPanelDescriptor > getBackwardSequence()
 	{
-		
 		final Map< WizardPanelDescriptor, WizardPanelDescriptor > map = new HashMap<>();
 		map.put( startDialogDescriptor, null );
 		map.put( chooseDetectorDescriptor, startDialogDescriptor );
@@ -229,8 +205,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 		map.put( configureViewsDescriptor, trackFilterDescriptor );
 		map.put( grapherDescriptor, configureViewsDescriptor );
 		map.put( actionChooserDescriptor, grapherDescriptor );
-		
-		
 		return map;
 	}
 
@@ -245,8 +219,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 		map.put( trackFilterDescriptor, configureViewsDescriptor );
 		map.put( configureViewsDescriptor, grapherDescriptor );
 		map.put( grapherDescriptor, actionChooserDescriptor );
-		
-		
 		return map;
 	}
 
@@ -255,7 +227,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 	{
 		if ( panelIdentifier.equals( SpotDetectorDescriptor.KEY ) )
 		{
-			
 			current = getDetectorConfigDescriptor();
 			return;
 		}
@@ -272,8 +243,8 @@ public class BTrackMateWizardSequence implements WizardSequence
 			current = initFilterDescriptor;
 			return;
 		}
-		final List< WizardPanelDescriptor > descriptors;
-			descriptors = Arrays.asList( new WizardPanelDescriptor[] {
+
+		final List< WizardPanelDescriptor > descriptors = Arrays.asList( new WizardPanelDescriptor[] {
 				logDescriptor,
 				chooseDetectorDescriptor,
 				executeDetectionDescriptor,
@@ -287,8 +258,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 				actionChooserDescriptor,
 				saveDescriptor
 		} );
-		
-		
 		for ( final WizardPanelDescriptor w : descriptors )
 		{
 			if ( w.getPanelDescriptorIdentifier().equals( panelIdentifier ) )
@@ -364,8 +333,6 @@ public class BTrackMateWizardSequence implements WizardSequence
 
 		return configDescriptor;
 	}
-	
-
 
 	/**
 	 * Determines and registers the descriptor used to configure the tracker
