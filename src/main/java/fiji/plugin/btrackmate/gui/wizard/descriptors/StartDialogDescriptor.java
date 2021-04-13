@@ -51,6 +51,7 @@ import fiji.plugin.btrackmate.TrackMatePlugIn;
 import fiji.plugin.btrackmate.detection.LabelImageDetector;
 import fiji.plugin.btrackmate.detection.MaskUtils;
 import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
+import fiji.plugin.btrackmate.util.TMUtils;
 import fiji.plugin.btrackmate.Model;
 import fiji.plugin.btrackmate.SelectionModel;
 import fiji.util.NumberParser;
@@ -58,11 +59,21 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
 import ij.measure.Calibration;
+import net.imagej.ImgPlus;
+import net.imglib2.Dimensions;
 import net.imglib2.FinalInterval;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
+import net.imglib2.type.Type;
+import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.IntType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.view.Views;
@@ -144,7 +155,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static Pair<SpotCollection,HashMap<Integer, ArrayList<Spot>>>  SpotListFrame;
 	public static Logger updatelogger;
 
-	private static class RoiSettingsPanel extends JPanel {
+	private  static  class  RoiSettingsPanel extends JPanel {
 
 		private static final long serialVersionUID = -1L;
 		/** ActionEvent fired when the user press the refresh button. */
@@ -162,10 +173,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		private final JFormattedTextField tfZEnd;
 		private final JFormattedTextField tfTStart;
 		private final JFormattedTextField tfTEnd;
-		public RandomAccessibleInterval<FloatType> imageOrig;
-		public RandomAccessibleInterval<IntType> imageSegA;
-		public RandomAccessibleInterval<IntType> imageMask;
-
+		
+		public ImgPlus<IntType> imgMask;
+		
 		public JPanel Panelfile = new JPanel();
 		public JPanel PanelDualfile = new JPanel();
 		public boolean DoMask = false;
@@ -209,13 +219,12 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		GridBagConstraints gbcChooseSegLoad = new GridBagConstraints();
 		GridBagConstraints gbcChooseMaskLoad = new GridBagConstraints();
-		public JButton ExecuteDetection = new JButton("Start Detection");
+		public JButton ExecuteDetection = new JButton("Create Dataset");
 
 		double[] calibration;
 		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>();
 
-		public RoiSettingsPanel(final ImagePlus imp) {
-
+		public< T extends Type< T > > RoiSettingsPanel(final ImagePlus imp) {
 			this.setPreferredSize(new Dimension(400, 500));
 			final GridBagLayout gridBagLayout = new GridBagLayout();
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -527,7 +536,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						add(FreeMode, gbcChooseFree);
 						add(MaskMode, gbcChooseMask);
 						add(Panelfile, gbcChooseSegLoad);
-						
+						add(ExecuteDetection, gbcExecDet);
+						ExecuteDetection.setEnabled(false);
 						remove(Checkpointbutton);
 						validate();
 						repaint();
@@ -540,6 +550,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(FreeMode);
 						remove(MaskMode);
 						remove(Panelfile);
+						remove(ExecuteDetection);
 						validate();
 						repaint();
 
@@ -561,10 +572,14 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 					String imagename = (String) segmentation.ChooseImage.getSelectedItem();
 					impSeg = WindowManager.getImage(imagename);
+					
 					NoMask = true;
 					DoMask = false;
-					TrackMatePlugIn.ModelUpdate( updatelogger,
-							new SelectionModel(updatemodel), updatesettings.imp, impSeg);
+					updatesettings.setFrom(imp, impSeg);
+					
+					ExecuteDetection.setEnabled(true);
+				    
+					
 
 				}
 			});
@@ -575,7 +590,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 					String imagename = (String) Dualsegmentation.ChooseImage.getSelectedItem();
 					impSeg = WindowManager.getImage(imagename);
-
+					
 				}
 			});
 
@@ -586,8 +601,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 					String imagename = (String) Dualsegmentation.ChoosesecImage.getSelectedItem();
 					impMask = WindowManager.getImage(imagename);
-					TrackMatePlugIn.ModelUpdate( updatelogger,
-							new SelectionModel(updatemodel), updatesettings.imp, impSeg,impMask);
+					updatesettings.setFrom(imp, impSeg, impMask);
+					ExecuteDetection.setEnabled(true);
+					
 
 				}
 			});
@@ -610,8 +626,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 						
 
-						validate();
-						repaint();
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 
@@ -645,8 +659,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						NoMask = false;
 						DoMask = true;
 
-						validate();
-						repaint();
+						
 
 
 					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -661,7 +674,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				}
 
 			});
-
+			
 			ExecuteDetection.addActionListener(new ActionListener() {
 
 				@Override
@@ -670,12 +683,23 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					if (impSeg != null) {
 
 						updatesettings.impSeg = impSeg;
+						ImgPlus<FloatType> output =  createHyperStack(imp, impSeg);
+						updatesettings.imp = ImageJFunctions.wrapFloat(output, "");
+						TrackMatePlugIn.imp.close();
+						TrackMatePlugIn.ModelUpdate( updatelogger,
+								new SelectionModel(updatemodel), updatesettings.imp, impSeg);
 					}
 
 					if (impSeg != null && impMask != null) {
 
 						updatesettings.impMask = impMask;
 						updatesettings.impSeg = impSeg;
+						
+						ImgPlus<FloatType> output =  createmaskedHyperStack(imp, impSeg, impMask);
+						updatesettings.imp = ImageJFunctions.wrapFloat(output, "");
+						TrackMatePlugIn.imp.close();
+						TrackMatePlugIn.ModelUpdate( updatelogger,
+								new SelectionModel(updatemodel), updatesettings.imp, impSeg,impMask);
 					}
 
 				}
@@ -824,6 +848,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			lblSpatialUnits2.setText(cal.getYUnit());
 			lblSpatialUnits3.setText(cal.getZUnit());
 			btnRefreshROI.doClick();
+			
+			
+			
 		}
 
 		protected ArrayList<ActionListener> actionListeners = new ArrayList<>();
@@ -921,28 +948,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			updatedbtrackmate = updatemodel(model, updatesettings);
 
 		}
+		
+	
 
-		public void runDetection() {
 
-			long[] min = new long[imageSegA.numDimensions()];
-			long[] max = new long[imageSegA.numDimensions()];
-
-			for (int d = 0; d < imageSegA.numDimensions(); ++d) {
-				// we add/subtract another 30 pixels here to illustrate
-				// that it is really infinite and does not only work once
-				min[d] = imageSegA.min(d) + 1;
-				max[d] = imageSegA.max(d) - 1;
-			}
-
-			// define the Interval on the infinite random accessibles
-			FinalInterval interval = new FinalInterval(min, max);
-			LabelImageDetector<IntType> detectInteger = new LabelImageDetector<IntType>(imageSegA, interval,
-					calibration, false);
-			detectInteger.process();
-
-			List<Spot> spotlist = detectInteger.getResult();
-
-		}
 
 	}
 
@@ -972,5 +981,82 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 		return updatedbtrackmate;
 	}
+	public static ImgPlus<FloatType> createHyperStack(ImagePlus imp, ImagePlus impSeg) {
+		
+		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
+				imp.getOriginalFileInfo().directory + imp.getOriginalFileInfo().fileName, new FloatType());
+		
+		RandomAccessibleInterval<FloatType> imageSeg = SimplifiedIO.openImage(
+				impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName, new FloatType());
+		
+		
+		long[] newDim = new long[] { imageOrig.dimension(0), imageOrig.dimension(1),2, imageOrig.dimension(2), imageOrig.dimension(3) };
+		final Img<FloatType> out = new CellImgFactory<FloatType>(new FloatType()).create(newDim);
+		ImgPlus<FloatType> output = new ImgPlus<FloatType>(out);
+		RandomAccessibleInterval<FloatType> channelRaw = Views.hyperSlice(output, 2, 0);
+    	RandomAccessibleInterval<FloatType> channelSeg = Views.hyperSlice(output, 2, 1);
+		LoopBuilder.setImages(imageOrig, imageSeg, channelRaw, channelSeg).multiThreaded().forEachPixel(
+			    (a, b, r, g) -> {
+			    	
+			            r.set(a.get());
+			            g.set(b.get());
+			        
+			    }
+			);
+		
+		return output;
+		
+	}
+	
+	public static ImgPlus<FloatType> createmaskedHyperStack(ImagePlus imp, ImagePlus impSeg, ImagePlus impMask) {
+		
+		RandomAccessibleInterval<FloatType> imageOrig = SimplifiedIO.openImage(
+				imp.getOriginalFileInfo().directory + imp.getOriginalFileInfo().fileName, new FloatType());
+		
+		RandomAccessibleInterval<FloatType> imageSeg = SimplifiedIO.openImage(
+				impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName, new FloatType());
+		
+		RandomAccessibleInterval<IntType> imageMask = SimplifiedIO.openImage(
+				impMask.getOriginalFileInfo().directory + impMask.getOriginalFileInfo().fileName, new IntType());
+		
+		if(imageSeg.numDimensions() > imageMask.numDimensions()) {
+			
+			imageMask = MaskUtils.copyUpIntImage(imageMask);
+		}
+		net.imglib2.Cursor<IntType> Bigcursor = Views.iterable(imageMask).localizingCursor();
+		
+		
+		RandomAccess<FloatType> segimage = imageSeg.randomAccess();
+		
+		while(Bigcursor.hasNext()) {
+			
+			Bigcursor.fwd();
+			segimage.setPosition(Bigcursor);
+			if(Bigcursor.get().get() == 0 ) {
+				
+						
+				segimage.get().setZero();
+			}
+			
+		}
+		long[] newDim = new long[] { imageOrig.dimension(0), imageOrig.dimension(1),2, imageOrig.dimension(2), imageOrig.dimension(3) };
+		final Img<FloatType> out = new CellImgFactory<FloatType>(new FloatType()).create(newDim);
+		ImgPlus<FloatType> output = new ImgPlus<FloatType>(out);
+		RandomAccessibleInterval<FloatType> channelRaw = Views.hyperSlice(output, 2, 0);
+    	RandomAccessibleInterval<FloatType> channelSeg = Views.hyperSlice(output, 2, 1);
+		LoopBuilder.setImages(imageOrig, imageSeg, channelRaw, channelSeg).multiThreaded().forEachPixel(
+			    (a, b, r, g) -> {
+			    	
+			            r.set(a.get());
+			            g.set(b.get());
+			        
+			    }
+			);
+		
+		return output;
+		
+	}
+	
+	
 
 }

@@ -17,6 +17,7 @@ import fiji.plugin.btrackmate.Spot;
 import fiji.plugin.btrackmate.SpotCollection;
 import fiji.plugin.btrackmate.TrackMate;
 import fiji.plugin.btrackmate.detection.util.MedianFilter2D;
+import fiji.plugin.btrackmate.util.TMUtils;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -107,7 +108,7 @@ public class DetectionUtils
 					final TrackMate btrackmate = new TrackMate( lSettings );
 					btrackmate.getModel().setLogger( logger );
 
-					final boolean detectionOk = btrackmate.execDetection(settings);
+					final boolean detectionOk = btrackmate.execDetection(TMUtils.rawWraps( settings.imp),settings);
 					if ( !detectionOk )
 					{
 						logger.error( btrackmate.getErrorMessage() );

@@ -82,12 +82,15 @@ public class LabelImageDetector< T extends RealType< T > & NativeType< T > > imp
 		final RandomAccessibleInterval< T > rai = Views.interval( input, interval );
 		final T type = Util.getTypeFromInterval( rai );
 
+		System.out.println(type + " " + rai.dimension(0) + " " + rai.dimension(1) + " " + rai.dimension(2) + " " + rai.dimension(3) );
 		if ( type instanceof IntegerType )
 		{
+			System.out.println("type int");
 			processIntegerImg( ( RandomAccessibleInterval ) Views.zeroMin( rai ) );
 		}
 		else
 		{
+			System.out.println("type not int");
 			final ImgFactory< IntType > factory = Util.getArrayOrCellImgFactory( interval, new IntType() );
 			final Img< IntType > img = factory.create( interval );
 			LoopBuilder
@@ -107,9 +110,11 @@ public class LabelImageDetector< T extends RealType< T > & NativeType< T > > imp
 		final AtomicInteger max = new AtomicInteger( 0 );
 		Views.iterable( rai ).forEach( p -> {
 			final int val = p.getInteger();
+			System.out.println(val);
 			if ( val != 0 && val > max.get() )
 				max.set( val );
 		} );
+		System.out.println("max" + max);
 		final List< Integer > indices = new ArrayList<>( max.get() );
 		for ( int i = 0; i < max.get(); i++ )
 			indices.add( Integer.valueOf( i + 1 ) );

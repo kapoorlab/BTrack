@@ -36,12 +36,11 @@ public class TrackMatePlugIn implements PlugIn
 	public static TrackMate btrackmate;
 	public static JFrame frame;
 	public static WizardSequence sequence;
-	
+	public static ImagePlus imp;
 	@Override
 	public void run( final String imagePath )
 	{
 		GuiUtils.setSystemLookAndFeel();
-		final ImagePlus imp;
 		if ( imagePath != null && imagePath.length() > 0 )
 		{
 			imp = IJ.openImage( imagePath );
@@ -153,6 +152,8 @@ public class TrackMatePlugIn implements PlugIn
 		settings.setFrom(imp, impSeg); 
         model.setLogger( logger );
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
+        displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
+		displayer.render();
         final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), false );
         sequence.run( "BTrackMate on" + imp.getShortTitle() );
         
@@ -169,7 +170,8 @@ public class TrackMatePlugIn implements PlugIn
         model.setLogger( logger );
         
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
-        
+        displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
+		displayer.render();
         final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), false );
         sequence.run( "BTrackMate on" + imp.getShortTitle() );
         
@@ -231,7 +233,7 @@ public class TrackMatePlugIn implements PlugIn
 		ImageJ.main( args );
 //		new TrackMatePlugIn().run( "samples/Stack.tif" );
 //		new TrackMatePlugIn().run( "samples/Merged.tif" );
-		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/Raw.tif");
+		new TrackMatePlugIn().run("/Users/aimachine/Downloads/CellTracking/SEG-1.tif");
 //		new TrackMatePlugIn().run( "samples/Mask.tif" );
 //		new TrackMatePlugIn().run( "samples/FakeTracks.tif" );
 	}

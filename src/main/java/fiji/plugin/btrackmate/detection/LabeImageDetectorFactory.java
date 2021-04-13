@@ -78,6 +78,7 @@ public class LabeImageDetectorFactory< T extends RealType< T > & NativeType< T >
 	{
 		this.img = img;
 		this.settings = settings;
+		
 		return checkSettings( settings );
 	}
 	

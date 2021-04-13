@@ -22,6 +22,7 @@ import fiji.plugin.btrackmate.Dimension;
 import fiji.plugin.btrackmate.Logger;
 import fiji.plugin.btrackmate.Settings;
 import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.detection.MaskUtils;
 import ij.IJ;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
@@ -32,7 +33,9 @@ import net.imglib2.Interval;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImgPlusViews;
 import net.imglib2.type.Type;
+import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.DoubleType;
+import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 
 /**
@@ -107,6 +110,21 @@ public class TMUtils
 		final ImgPlus raw = img;
 		return raw;
 	}
+	
+	public static final ImgPlus<FloatType> rawFloat( final ImagePlus imp )
+	{
+		final ImgPlus <FloatType>  img = ImagePlusAdapter.wrapImgPlus( imp );
+		final ImgPlus<FloatType> raw = img;
+		return raw;
+	}
+	
+	public static final ImgPlus<IntType> rawInt( final ImagePlus imp )
+	{
+		final ImgPlus< IntType > img = ImagePlusAdapter.wrapImgPlus( imp );
+		final ImgPlus< IntType >  raw = img;
+		return raw;
+	}
+	
 
 	/**
 	 * Check that the given map has all some keys. Two String collection allows
