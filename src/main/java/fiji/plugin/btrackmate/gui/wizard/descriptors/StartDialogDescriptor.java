@@ -98,7 +98,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		updatemodel = model;
 		updatesettings = settings;
 		updateimp = settings.imp;
-		updatelogger = logger;
 		this.targetPanel = new RoiSettingsPanel(settings.imp);
 	}
 
@@ -153,7 +152,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public static Model updatemodel;
 	public static SpotCollection spots;
 	public static Pair<SpotCollection,HashMap<Integer, ArrayList<Spot>>>  SpotListFrame;
-	public static Logger updatelogger;
 
 	private  static  class  RoiSettingsPanel extends JPanel {
 
@@ -575,7 +573,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					
 					NoMask = true;
 					DoMask = false;
-					updatesettings.setFrom(imp, impSeg);
 					
 					ExecuteDetection.setEnabled(true);
 				    
@@ -601,7 +598,6 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 					String imagename = (String) Dualsegmentation.ChoosesecImage.getSelectedItem();
 					impMask = WindowManager.getImage(imagename);
-					updatesettings.setFrom(imp, impSeg, impMask);
 					ExecuteDetection.setEnabled(true);
 					
 
@@ -682,24 +678,24 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 					if (impSeg != null) {
 
-						updatesettings.impSeg = impSeg;
 						ImgPlus<FloatType> output =  createHyperStack(imp, impSeg);
-						updatesettings.imp = ImageJFunctions.wrapFloat(output, "");
+						ImagePlus imp = ImageJFunctions.show(output, "showme");
+						
 						TrackMatePlugIn.imp.close();
-						TrackMatePlugIn.ModelUpdate( updatelogger,
-								new SelectionModel(updatemodel), updatesettings.imp, impSeg);
+						
+						TrackMatePlugIn.ModelUpdate(imp);
 					}
 
 					if (impSeg != null && impMask != null) {
 
-						updatesettings.impMask = impMask;
-						updatesettings.impSeg = impSeg;
 						
 						ImgPlus<FloatType> output =  createmaskedHyperStack(imp, impSeg, impMask);
-						updatesettings.imp = ImageJFunctions.wrapFloat(output, "");
+						ImagePlus imp = ImageJFunctions.wrapFloat(output, "");
+					
+						
 						TrackMatePlugIn.imp.close();
-						TrackMatePlugIn.ModelUpdate( updatelogger,
-								new SelectionModel(updatemodel), updatesettings.imp, impSeg,impMask);
+						
+						TrackMatePlugIn.ModelUpdate( imp);
 					}
 
 				}
@@ -820,8 +816,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						
 						TrackMate.CsvSpots = SpotListFrame.getA();
 						TrackMate.Framespots = SpotListFrame.getB();
-						TrackMatePlugIn.ModelUpdate(updatelogger,
-								new SelectionModel(updatemodel), updatesettings.imp);
+						TrackMatePlugIn.ModelUpdate( updatesettings.imp);
 
 					} else
 						csvfile = null;

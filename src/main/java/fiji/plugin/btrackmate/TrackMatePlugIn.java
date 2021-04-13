@@ -24,6 +24,7 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 
 public class TrackMatePlugIn implements PlugIn
 {
@@ -80,6 +81,7 @@ public class TrackMatePlugIn implements PlugIn
 		final DisplaySettings displaySettings = createDisplaySettings();
 		settings = createSettings( imp );
 		 model = createModel( imp );
+		 
 		 btrackmate = createTrackMate( model, settings );
 		// Main view.
 		// Main view.
@@ -130,53 +132,27 @@ public class TrackMatePlugIn implements PlugIn
 	}
 
 	
-	public static void ModelUpdate(final Logger logger, final SelectionModel selectionModel, final ImagePlus imp) 
+	public static void ModelUpdate(final ImagePlus imp) 
 	
 	{
-		
+		System.out.println("update" + imp + " " +imp.getShortTitle());
 		settings.setFrom(imp); 
+		
+		boolean CSV = false;
+		if (TrackMate.CsvSpots!=null) {
         model.setSpots(TrackMate.CsvSpots, true);
-        model.setLogger( logger );
+        CSV = true;
+		}
+        
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
-        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), true );
+        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), CSV );
         sequence.run( "BTrackMate on" + imp.getShortTitle() );
         
 		
 	}
 	
 	
-	public static void ModelUpdate(
-			final Logger logger, final SelectionModel selectionModel, final ImagePlus imp, final ImagePlus impSeg) 
 	
-	{
-		settings.setFrom(imp, impSeg); 
-        model.setLogger( logger );
-        TrackMate updatedbtrackmate = new TrackMate(model, settings);
-        displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
-		displayer.render();
-        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), false );
-        sequence.run( "BTrackMate on" + imp.getShortTitle() );
-        
-		
-	}
-	
-	
-	public static void ModelUpdate(
-			final Logger logger, final SelectionModel selectionModel,
-			final ImagePlus imp, final ImagePlus impSeg, final ImagePlus impMask) 
-	
-	{
-		settings.setFrom(imp, impSeg, impMask); 
-        model.setLogger( logger );
-        
-        TrackMate updatedbtrackmate = new TrackMate(model, settings);
-        displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
-		displayer.render();
-        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings(), false );
-        sequence.run( "BTrackMate on" + imp.getShortTitle() );
-        
-		
-	}
 	protected static DisplaySettings PseudocreateDisplaySettings()
 	{
 		return DisplaySettingsIO.readUserDefault().copy( "CurrentDisplaySettings" );

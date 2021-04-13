@@ -21,8 +21,6 @@ public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 		this.btrackmate = btrackmate;
 		
 		this.targetPanel = logPanel;
-		if(btrackmate.getSettings().impSeg==null)
-			this.targetPanel.setEnabled(false);
 		
 	}
 
@@ -32,7 +30,7 @@ public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 		
 		return () -> {
 			final long start = System.currentTimeMillis();
-			btrackmate.execDetection(TMUtils.rawWraps( btrackmate.getSettings().imp),btrackmate.getSettings());
+			btrackmate.execDetection(btrackmate.getSettings());
 			final long end = System.currentTimeMillis();
 			btrackmate.getModel().getLogger().log( String.format( "Detection done in %.1f s.\n", ( end - start ) / 1e3f ) );
 		};

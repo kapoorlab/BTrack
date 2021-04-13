@@ -29,7 +29,6 @@ public class ChooseDetectorDescriptor extends WizardPanelDescriptor
 			selectedDetector = btrackmate.getSettings().detectorFactory.getKey();
 
 		this.targetPanel = new ModuleChooserPanel<>( detectorProvider, "detector", selectedDetector );
-		if(btrackmate.getSettings().impSeg==null)
 			this.targetPanel.setEnabled(false);
 	}
 

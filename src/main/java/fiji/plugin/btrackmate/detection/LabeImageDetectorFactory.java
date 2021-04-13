@@ -25,6 +25,7 @@ import fiji.plugin.btrackmate.Settings;
 import fiji.plugin.btrackmate.gui.components.ConfigurationPanel;
 import fiji.plugin.btrackmate.gui.components.detector.LabelImageDetectorConfigurationPanel;
 import fiji.plugin.btrackmate.util.TMUtils;
+import net.imagej.ImageJ;
 import net.imagej.ImgPlus;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
@@ -78,7 +79,8 @@ public class LabeImageDetectorFactory< T extends RealType< T > & NativeType< T >
 	{
 		this.img = img;
 		this.settings = settings;
-		
+		ImageJ IJ =  new ImageJ();
+		IJ.ui().show(img);
 		return checkSettings( settings );
 	}
 	
@@ -88,6 +90,7 @@ public class LabeImageDetectorFactory< T extends RealType< T > & NativeType< T >
 		final boolean simplifyContours = ( Boolean ) settings.get( KEY_SIMPLIFY_CONTOURS );
 		final double[] calibration = TMUtils.getSpatialCalibration( img );
 		final int channel = ( Integer ) settings.get( KEY_TARGET_CHANNEL ) - 1;
+		System.out.println("channel" + channel);
 		final RandomAccessible< T > imFrame = DetectionUtils.prepareFrameImg( img, channel, frame );
 
 		final LabelImageDetector< T > detector = new LabelImageDetector<>(

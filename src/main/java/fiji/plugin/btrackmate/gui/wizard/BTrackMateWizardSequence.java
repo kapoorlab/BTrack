@@ -113,13 +113,12 @@ public class BTrackMateWizardSequence implements WizardSequence
 		this.displaySettings = displaySettings;
 		Settings settings = btrackmate.getSettings();
 		Model model = btrackmate.getModel();
-
+		model.setLogger( logger );
 		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
 
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
 		
-		System.out.println("dims" + settings.imp.getDimensions());
 		final FeatureDisplaySelector featureSelector = new FeatureDisplaySelector( model, settings, displaySettings );
 		final FeatureFilter initialFilter = new FeatureFilter( Spot.QUALITY, settings.initialSpotFilterValue.doubleValue(), true );
 		final List< FeatureFilter > spotFilters = settings.getSpotFilters();

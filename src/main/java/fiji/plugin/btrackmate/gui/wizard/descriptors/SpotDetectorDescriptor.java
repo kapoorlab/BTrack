@@ -22,8 +22,6 @@ public class SpotDetectorDescriptor extends WizardPanelDescriptor
 		this.settings = settings;
 		this.targetPanel = configurationPanel;
 		this.logger = logger;
-		if(settings.impSeg==null)
-			this.targetPanel.setEnabled(false);
 	}
 
 	@Override

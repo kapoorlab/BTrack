@@ -40,6 +40,7 @@ import net.imglib2.img.array.ArrayCursor;
 import net.imglib2.img.array.ArrayImg;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.basictypeaccess.array.FloatArray;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.img.display.imagej.ImgPlusViews;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.Type;
@@ -108,7 +109,7 @@ public class DetectionUtils
 					final TrackMate btrackmate = new TrackMate( lSettings );
 					btrackmate.getModel().setLogger( logger );
 
-					final boolean detectionOk = btrackmate.execDetection(TMUtils.rawWraps( settings.imp),settings);
+					final boolean detectionOk = btrackmate.execDetection(settings);
 					if ( !detectionOk )
 					{
 						logger.error( btrackmate.getErrorMessage() );
@@ -476,16 +477,20 @@ public class DetectionUtils
 			final int frame )
 	{
 		final ImgPlus< T > singleTimePoint;
+		System.out.println(img.dimensionIndex(Axes.TIME) + " " + img.dimensionIndex(Axes.CHANNEL));
 		if ( img.dimensionIndex( Axes.TIME ) < 0 )
 			singleTimePoint = img;
 		else
 			singleTimePoint = ImgPlusViews.hyperSlice( img, img.dimensionIndex( Axes.TIME ), frame );
 
+		
 		final ImgPlus< T > singleChannel;
 		if ( singleTimePoint.dimensionIndex( Axes.CHANNEL ) < 0 )
 			singleChannel = singleTimePoint;
 		else
 			singleChannel = ImgPlusViews.hyperSlice( singleTimePoint, singleTimePoint.dimensionIndex( Axes.CHANNEL ), channel );
+		
+	
 		return singleChannel;
 	}
 }

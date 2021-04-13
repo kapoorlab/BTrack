@@ -31,6 +31,7 @@ import fiji.plugin.btrackmate.features.TrackFeatureCalculator;
 import fiji.plugin.btrackmate.tracking.SpotTracker;
 import fiji.plugin.btrackmate.util.TMUtils;
 import ij.ImagePlus;
+import net.imagej.ImageJ;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
@@ -321,7 +322,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 	 * @return true if the whole detection step has executed correctly.
 	 */
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
-	public < T extends Type< T > > boolean execDetection(ImgPlus img, Settings updatesettings)
+	public < T extends Type< T > > boolean execDetection(Settings updatesettings)
 	{
 		isCanceled = false;
 		cancelReason = null;
@@ -356,9 +357,9 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		
 		
 	    
-	  
-		
-		
+	    ImgPlus img = TMUtils.rawFloat(updatesettings.imp);
+	    
+	    
 
 		if ( !factory.setTarget( img, updatesettings.detectorSettings ) )
 		{
@@ -408,7 +409,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 			cancelables.add( ( Cancelable ) detector );
 
 		// Execute detection
-		logger.setStatus( "Detection already done by CSV" );
+		logger.setStatus( "Detection ..." );
 		
 			final SpotCollection rawSpots;
 			if ( CsvSpots!=null)
@@ -840,7 +841,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 	@Override
 	public boolean process()
 	{
-		if ( !execDetection(null, settings) )
+		if ( !execDetection( settings) )
 			return false;
 		if ( isCanceled() )
 			return true;
