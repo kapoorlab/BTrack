@@ -452,8 +452,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			btnRefreshROI.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-
 					Roi roi = new Roi(0, 0, imp.getWidth(), imp.getHeight());
+					TrackMatePlugIn.ModelUpdate( updatelogger, imp);
 
 					final Rectangle boundingRect = roi.getBounds();
 					tfXStart.setValue(Integer.valueOf(boundingRect.x));
