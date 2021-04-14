@@ -683,7 +683,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 						ImgPlus<FloatType> output =  createHyperStack(imp, impSeg);
 						ImagePlus localimp = ImageJFunctions.show(output, "Channels");
-						
+						localimp.setCalibration(imp.getCalibration()); 
 						
 						TrackMatePlugIn.ModelUpdate( updatelogger, localimp);
 					}
@@ -693,7 +693,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						
 						ImgPlus<FloatType> output =  createmaskedHyperStack(imp, impSeg, impMask);
 						ImagePlus localimp = ImageJFunctions.show(output, "Channels");
-					
+					    localimp.setCalibration(imp.getCalibration()); 
 						
 						
 						TrackMatePlugIn.ModelUpdate( updatelogger, localimp);
