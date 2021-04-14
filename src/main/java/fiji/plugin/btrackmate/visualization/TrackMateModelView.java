@@ -4,6 +4,7 @@ import fiji.plugin.btrackmate.Model;
 import fiji.plugin.btrackmate.SelectionModel;
 import fiji.plugin.btrackmate.Spot;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
+import ij.ImagePlus;
 
 public interface TrackMateModelView
 {
@@ -60,5 +61,7 @@ public interface TrackMateModelView
 	
 	
 	public void resetModel(Model model);
+
+	void resetImp(ImagePlus imp);
 
 }

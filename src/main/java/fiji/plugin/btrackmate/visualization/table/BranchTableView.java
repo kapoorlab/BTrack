@@ -49,6 +49,7 @@ import fiji.plugin.btrackmate.util.FileChooser.SelectionMode;
 import fiji.plugin.btrackmate.util.TMUtils;
 import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
 import fiji.plugin.btrackmate.visualization.TrackMateModelView;
+import ij.ImagePlus;
 
 public class BranchTableView extends JFrame implements TrackMateModelView
 {
@@ -514,6 +515,12 @@ public class BranchTableView extends JFrame implements TrackMateModelView
 
 	@Override
 	public void resetModel(Model model) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetImp(ImagePlus imp) {
 		// TODO Auto-generated method stub
 		
 	}

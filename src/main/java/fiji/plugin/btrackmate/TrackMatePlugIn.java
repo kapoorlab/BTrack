@@ -30,23 +30,21 @@ public class TrackMatePlugIn implements PlugIn
 {
 
 	
-	public static TrackMateModelView displayer;
 	
 	public static Settings settings;
 	public static Model model;
 	public static TrackMate btrackmate;
-	public static JFrame frame;
-	public static WizardSequence sequence;
-	
+	public static JFrame globalframe; 
+	public static ImagePlus globalimp;
 	@Override
 	public void run( final String imagePath )
 	{
 		GuiUtils.setSystemLookAndFeel();
-		final ImagePlus imp;
+		
 		if ( imagePath != null && imagePath.length() > 0 )
 		{
-			imp = IJ.openImage( imagePath );
-			if ( null == imp.getOriginalFileInfo() )
+			globalimp = IJ.openImage( imagePath );
+			if ( null == globalimp.getOriginalFileInfo() )
 			{
 				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, "Could not load image with path " + imagePath + "." );
 				return;
@@ -54,14 +52,14 @@ public class TrackMatePlugIn implements PlugIn
 		}
 		else
 		{
-			imp = WindowManager.getCurrentImage();
-			if ( null == imp )
+			globalimp = WindowManager.getCurrentImage();
+			if ( null == globalimp )
 			{
 				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION,
 						"Please open an image before running TrackMate." );
 				return;
 			}
-			else if ( imp.getType() == ImagePlus.COLOR_RGB )
+			else if ( globalimp.getType() == ImagePlus.COLOR_RGB )
 			{
 				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION,
 						"TrackMate does not work on RGB images." );
@@ -69,33 +67,32 @@ public class TrackMatePlugIn implements PlugIn
 			}
 		}
 
-		imp.setOpenAsHyperStack( true );
-		imp.setDisplayMode( IJ.COMPOSITE );
-		if ( !imp.isVisible() )
-			imp.show();
+		globalimp.setOpenAsHyperStack( true );
+		globalimp.setDisplayMode( IJ.COMPOSITE );
+		if ( !globalimp.isVisible() )
+			globalimp.show();
 
-		GuiUtils.userCheckImpDimensions( imp );
+		GuiUtils.userCheckImpDimensions( globalimp );
 
 		// Main objects.
 		
 		final SelectionModel selectionModel = new SelectionModel( model );
 		final DisplaySettings displaySettings = createDisplaySettings();
-		 settings = createSettings( imp );
-		 model = createModel( imp );
+		 settings = createSettings( globalimp );
+		 model = createModel( globalimp );
 		 btrackmate = createTrackMate( model, settings );
 		// Main view.
-		// Main view.
 				
-		 displayer = new HyperStackDisplayer( model, selectionModel, imp, PseudocreateDisplaySettings() );
+		 final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, globalimp, createDisplaySettings() );
 		 displayer.render();
 		// Wizard.
-		 sequence = createSequence( btrackmate, selectionModel, displaySettings );
-		frame = sequence.run( "BTrackMate");
-		frame.setIconImage( TRACKMATE_ICON.getImage() );
-		GuiUtils.positionWindow( frame, imp.getWindow() );
-		frame.setVisible( true );
+		 final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
+		 globalframe = sequence.run( "BTrackMate");
+		 globalframe.setIconImage( TRACKMATE_ICON.getImage() );
+		GuiUtils.positionWindow( globalframe, globalimp.getWindow() );
+		globalframe.setVisible( true );
 		//Call pack on the JFrame to have panels sized with preferred size
-		frame.pack();
+		globalframe.pack();
 	}
 
 	/**
@@ -155,11 +152,33 @@ public class TrackMatePlugIn implements PlugIn
 		        
 		 btrackmate = localcreateTrackMate( model, settings );
 		 settings.setFrom(localimp); 
-		
 		 
-        TrackMate updatedbtrackmate = new TrackMate(model, settings);
-        final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings());
-        sequence.run( "BTrackMate");
+		 
+		 localimp.setOpenAsHyperStack( true );
+		 localimp.setDisplayMode( IJ.COMPOSITE );
+			if ( !localimp.isVisible() )
+				localimp.show();
+
+			GuiUtils.userCheckImpDimensions( localimp );
+
+			// Main objects.
+			
+			final SelectionModel selectionModel = new SelectionModel( model );
+			final DisplaySettings displaySettings = PseudocreateDisplaySettings();
+			// Main view.
+					
+			 final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, localimp, displaySettings );
+			 displayer.render();
+			 final WizardSequence sequence = PseudocreateSequence( btrackmate, selectionModel, displaySettings );
+			 final JFrame frame = sequence.run( "BTrackMate");
+			frame.setIconImage( TRACKMATE_ICON.getImage() );
+			GuiUtils.positionWindow( frame, localimp.getWindow() );
+			frame.setVisible( true );
+			//Call pack on the JFrame to have panels sized with preferred size
+			frame.pack();
+			globalframe.dispose();
+			globalimp.close();
+        
         
 		
 	}

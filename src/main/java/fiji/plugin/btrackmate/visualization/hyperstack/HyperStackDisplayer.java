@@ -17,7 +17,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 
 	private static final boolean DEBUG = false;
 
-	protected final ImagePlus imp;
+	protected ImagePlus imp;
 
 	protected SpotOverlay spotOverlay;
 
@@ -121,6 +121,13 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	{
 		
 		this.selectionModel = selectionModel;
+	}
+	
+	@Override
+	public void resetImp(ImagePlus imp)
+	{
+		
+		this.imp = imp;
 	}
 	@Override
 	public void resetModel(Model model)

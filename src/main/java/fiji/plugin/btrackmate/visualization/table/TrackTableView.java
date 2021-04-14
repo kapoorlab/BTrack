@@ -54,6 +54,7 @@ import fiji.plugin.btrackmate.util.TMUtils;
 import fiji.plugin.btrackmate.visualization.FeatureColorGenerator;
 import fiji.plugin.btrackmate.visualization.TrackMateModelView;
 import fiji.plugin.btrackmate.visualization.trackscheme.utils.SearchBar;
+import ij.ImagePlus;
 
 public class TrackTableView extends JFrame implements TrackMateModelView, ModelChangeListener, SelectionChangeListener
 {
@@ -607,6 +608,12 @@ public class TrackTableView extends JFrame implements TrackMateModelView, ModelC
 
 	@Override
 	public void resetModel(Model model) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetImp(ImagePlus imp) {
 		// TODO Auto-generated method stub
 		
 	}
