@@ -679,24 +679,24 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					if (impSeg != null) {
+					if (impSeg != null&& impMask == null) {
 
 						ImgPlus<FloatType> output =  createHyperStack(imp, impSeg);
-						ImagePlus imp = ImageJFunctions.show(output, "Channels");
+						ImagePlus localimp = ImageJFunctions.show(output, "Channels");
 						
 						
-						TrackMatePlugIn.ModelUpdate( updatelogger, imp);
+						TrackMatePlugIn.ModelUpdate( updatelogger, localimp);
 					}
 
 					if (impSeg != null && impMask != null) {
 
 						
 						ImgPlus<FloatType> output =  createmaskedHyperStack(imp, impSeg, impMask);
-						ImagePlus imp = ImageJFunctions.wrapFloat(output, "");
+						ImagePlus localimp = ImageJFunctions.show(output, "Channels");
 					
 						
 						
-						TrackMatePlugIn.ModelUpdate( updatelogger, imp);
+						TrackMatePlugIn.ModelUpdate( updatelogger, localimp);
 					}
 
 				}

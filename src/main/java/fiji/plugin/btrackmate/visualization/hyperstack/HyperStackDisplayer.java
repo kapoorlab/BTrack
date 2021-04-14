@@ -62,7 +62,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	 *
 	 * @return the spot overlay
 	 */
-	protected SpotOverlay createSpotOverlay(final DisplaySettings displaySettings)
+	public SpotOverlay createSpotOverlay(final DisplaySettings displaySettings)
 	{
 		return new SpotOverlay( model, imp, displaySettings );
 	}
@@ -74,7 +74,7 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	 *
 	 * @return the track overlay
 	 */
-	protected TrackOverlay createTrackOverlay(final DisplaySettings displaySettings)
+	public TrackOverlay createTrackOverlay(final DisplaySettings displaySettings)
 	{
 		return new TrackOverlay( model, imp, displaySettings );
 	}
@@ -109,7 +109,25 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 			break;
 		}
 	}
-
+	@Override
+	public void resetDisplaySettings(DisplaySettings displaySettings)
+	{
+		
+		this.displaySettings = displaySettings;
+	}
+	
+	@Override
+	public void resetSelectionModel(SelectionModel selectionModel)
+	{
+		
+		this.selectionModel = selectionModel;
+	}
+	@Override
+	public void resetModel(Model model)
+	{
+		
+		this.model = model;
+	}
 	@Override
 	public void selectionChanged( final SelectionChangeEvent event )
 	{
@@ -187,6 +205,8 @@ public class HyperStackDisplayer extends AbstractTrackMateModelView
 	 * PRIVATE METHODS
 	 */
 
+
+	
 	private void registerEditTool()
 	{
 		editTool = SpotEditTool.getInstance();

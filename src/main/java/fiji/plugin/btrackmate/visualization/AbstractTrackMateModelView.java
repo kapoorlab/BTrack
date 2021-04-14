@@ -25,11 +25,11 @@ public abstract class AbstractTrackMateModelView implements SelectionChangeListe
 	 */
 
 	/** The model displayed by this class. */
-	protected final Model model;
+	protected Model model;
 
-	protected final SelectionModel selectionModel;
+	protected  SelectionModel selectionModel;
 
-	protected final DisplaySettings displaySettings;
+	protected  DisplaySettings displaySettings;
 
 	/*
 	 * PROTECTED CONSTRUCTOR
@@ -72,5 +72,23 @@ public abstract class AbstractTrackMateModelView implements SelectionChangeListe
 	public Model getModel()
 	{
 		return model;
+	}
+	@Override
+	public void resetDisplaySettings(DisplaySettings displaySettings) {
+		
+		this.displaySettings = displaySettings;
+		
+	}
+	@Override
+	public void resetSelectionModel(SelectionModel selectionModel)
+	{
+		
+		this.selectionModel = selectionModel;
+	}
+	@Override
+	public void resetModel(Model model)
+	{
+		
+		this.model = model;
 	}
 }

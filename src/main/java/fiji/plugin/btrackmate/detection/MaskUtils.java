@@ -215,13 +215,13 @@ public class MaskUtils {
 
 	public static ImgPlus<IntType> copyUpIntImage(final RandomAccessibleInterval<IntType> input,final RandomAccessibleInterval<IntType> output ) {
 
-		long[] newDim = new long[] { input.dimension(0), input.dimension(1), input.dimension(2), output.dimension(3) };
+		long[] newDim = new long[] { input.dimension(0), input.dimension(1), output.dimension(2), input.dimension(2) };
 		
 		final Img<IntType> out = new CellImgFactory<IntType>(new IntType()).create(newDim);
 		ImgPlus<IntType> expandoutput = new ImgPlus<IntType>(out);
 
-		for (int i = 0; i < output.dimension(3); ++i) {
-			RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(output, 2, i);
+		for (int i = 0; i < output.dimension(2); ++i) {
+			RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(input, 2, i);
 			Cursor<IntType> cursorInput = Views.iterable(input).localizingCursor();
 			RandomAccess<IntType> randomAccess = Slicedoutput.randomAccess();
 

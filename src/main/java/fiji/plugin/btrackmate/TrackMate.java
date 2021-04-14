@@ -495,6 +495,52 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 		final ExecutorService executorService = Executors.newFixedThreadPool( nSimultaneousFrames );
 		final List< Future< Boolean > > tasks = new ArrayList<>( numFrames );
+		
+		
+		if (CsvSpots!=null)
+			for ( int i = settings.tstart; i <= settings.tend; i++ )
+			{
+				final int frame = i;
+				final List< Spot > spotsThisFrame = Framespots.get(frame);
+				if ( img.dimension( 0 ) < 2 && zindex < 0 )
+				{
+					for ( final Spot spot : spotsThisFrame )
+					{
+						spot.putFeature( Spot.POSITION_Y, spot.getDoublePosition( 0 ) );
+						spot.putFeature( Spot.POSITION_X, 0d );
+					}
+				}
+
+				List< Spot > prunedSpots;
+				if ( settings.roi != null )
+				{
+					prunedSpots = new ArrayList<>();
+					for ( final Spot spot : spotsThisFrame )
+					{
+						if ( settings.roi.contains(
+								( int ) Math.round( spot.getFeature( Spot.POSITION_X ) / calibration[ 0 ] ),
+								( int ) Math.round( spot.getFeature( Spot.POSITION_Y ) / calibration[ 1 ] ) ) )
+							prunedSpots.add( spot );
+					}
+				}
+				else
+				{
+					prunedSpots = spotsThisFrame;
+				}
+				// Add detection feature other than position
+				for ( final Spot spot : prunedSpots )
+				{
+					// FRAME will be set upon adding to
+					// SpotCollection.
+					spot.putFeature( Spot.POSITION_T, frame * settings.dt );
+				}
+				// Store final results for this frame
+				spots.put( frame, prunedSpots );
+				// Report
+				spotFound.addAndGet( prunedSpots.size() );
+			
+			}
+		if (CsvSpots==null)
 		for ( int i = settings.tstart; i <= settings.tend; i++ )
 		{
 			final int frame = i;
@@ -522,11 +568,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 					if ( detector.checkInput() && detector.process() )
 					{
 						// On success, get results.
-						final List< Spot > spotsThisFrame;
-						if (CsvSpots!=null)
-							spotsThisFrame= Framespots.get(frame);
-						else	
-							spotsThisFrame =  detector.getResult();
+						final List< Spot > spotsThisFrame =  detector.getResult();
 
 						/*
 						 * Special case: if we have a single column image, then

@@ -592,4 +592,22 @@ public class TrackTableView extends JFrame implements TrackMateModelView, ModelC
 
 		}
 	}
+
+	@Override
+	public void resetDisplaySettings(DisplaySettings displaySettings) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetSelectionModel(SelectionModel selectionModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetModel(Model model) {
+		// TODO Auto-generated method stub
+		
+	}
 }

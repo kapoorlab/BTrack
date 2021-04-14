@@ -80,14 +80,19 @@ public class LabelImageDetector< T extends RealType< T > & NativeType< T > > imp
 	{
 		final long start = System.currentTimeMillis();
 		final RandomAccessibleInterval< T > rai = Views.interval( input, interval );
-		final T type = Util.getTypeFromInterval( rai );
+		/*
+		final T type = new IntegerType();//Util.getTypeFromInterval( rai );
 
 		if ( type instanceof IntegerType )
 		{
-			processIntegerImg( ( RandomAccessibleInterval ) Views.zeroMin( rai ) );
+		*/
+			//processIntegerImg( ( RandomAccessibleInterval ) Views.zeroMin( rai ) );
+			
+			/*
 		}
 		else
 		{
+		*/
 			final ImgFactory< IntType > factory = Util.getArrayOrCellImgFactory( interval, new IntType() );
 			final Img< IntType > img = factory.create( interval );
 			LoopBuilder
@@ -95,7 +100,8 @@ public class LabelImageDetector< T extends RealType< T > & NativeType< T > > imp
 					.multiThreaded( )
 					.forEachPixel( ( i, o ) -> o.setReal( i.getRealDouble() ) );
 			processIntegerImg( img );
-		}
+		//}
+		
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;
 		return true;

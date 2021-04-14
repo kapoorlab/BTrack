@@ -1,7 +1,9 @@
 package fiji.plugin.btrackmate.visualization;
 
 import fiji.plugin.btrackmate.Model;
+import fiji.plugin.btrackmate.SelectionModel;
 import fiji.plugin.btrackmate.Spot;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 
 public interface TrackMateModelView
 {
@@ -50,5 +52,13 @@ public interface TrackMateModelView
 	 * @return the key, as a String.
 	 */
 	public String getKey();
+	
+	public void resetDisplaySettings(DisplaySettings displaySettings);
+
+	
+	public void resetSelectionModel(SelectionModel selectionModel);
+	
+	
+	public void resetModel(Model model);
 
 }

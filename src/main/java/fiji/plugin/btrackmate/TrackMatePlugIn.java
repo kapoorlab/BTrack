@@ -37,11 +37,12 @@ public class TrackMatePlugIn implements PlugIn
 	public static TrackMate btrackmate;
 	public static JFrame frame;
 	public static WizardSequence sequence;
-	public static ImagePlus imp;
+	
 	@Override
 	public void run( final String imagePath )
 	{
 		GuiUtils.setSystemLookAndFeel();
+		final ImagePlus imp;
 		if ( imagePath != null && imagePath.length() > 0 )
 		{
 			imp = IJ.openImage( imagePath );
@@ -79,7 +80,7 @@ public class TrackMatePlugIn implements PlugIn
 		
 		final SelectionModel selectionModel = new SelectionModel( model );
 		final DisplaySettings displaySettings = createDisplaySettings();
-		settings = createSettings( imp );
+		 settings = createSettings( imp );
 		 model = createModel( imp );
 		 btrackmate = createTrackMate( model, settings );
 		// Main view.
@@ -129,19 +130,33 @@ public class TrackMatePlugIn implements PlugIn
 				imp.getCalibration().getTimeUnit() );
 		return model;
 	}
-
+	public static Model localcreateModel( final ImagePlus imp )
+	{
+		final Model model = new Model();
+		model.setPhysicalUnits(
+				imp.getCalibration().getUnit(),
+				imp.getCalibration().getTimeUnit() );
+		return model;
+	}
 	
-	public static void ModelUpdate(final Logger logger,  final ImagePlus imp) 
+	public static void ModelUpdate(final Logger logger,  final ImagePlus localimp) 
 	
 	{
-		settings.setFrom(imp); 
 		
-		 displayer = new HyperStackDisplayer( model, new SelectionModel( model ), imp, PseudocreateDisplaySettings() );
-		 displayer.render();
-		if (TrackMate.CsvSpots!=null) {
-        model.setSpots(TrackMate.CsvSpots, true);
-		}
-        model.setLogger( logger );
+		
+		 settings = localcreateSettings( localimp );
+		 model = localcreateModel( localimp );
+		 
+		 if (TrackMate.CsvSpots!=null) {
+		        model.setSpots(TrackMate.CsvSpots, true);
+				}
+		        model.setLogger( logger );
+		        
+		        
+		 btrackmate = localcreateTrackMate( model, settings );
+		 settings.setFrom(localimp); 
+		
+		 
         TrackMate updatedbtrackmate = new TrackMate(model, settings);
         final WizardSequence sequence = PseudocreateSequence( updatedbtrackmate,  new SelectionModel( model ), PseudocreateDisplaySettings());
         sequence.run( "BTrackMate");
@@ -176,6 +191,14 @@ public class TrackMatePlugIn implements PlugIn
 		ls.addAllAnalyzers();
 		return ls;
 	}
+	
+	public static Settings localcreateSettings( final ImagePlus imp )
+	{
+		final Settings ls = new Settings();
+		ls.setFrom( imp );
+		ls.addAllAnalyzers();
+		return ls;
+	}
 
 	/**
 	 * Hook for subclassers: <br>
@@ -184,6 +207,19 @@ public class TrackMatePlugIn implements PlugIn
 	 * @return a new {@link TrackMate} instance.
 	 */
 	protected TrackMate createTrackMate( final Model model, final Settings settings )
+	{
+		/*
+		 * Since we are now sure that we will be working on this model with this
+		 * settings, we need to pass to the model the units from the settings.
+		 */
+		final String spaceUnits = settings.imp.getCalibration().getXUnit();
+		final String timeUnits = settings.imp.getCalibration().getTimeUnit();
+		model.setPhysicalUnits( spaceUnits, timeUnits );
+
+		return new TrackMate( model, settings );
+	}
+	
+	public static TrackMate localcreateTrackMate( final Model model, final Settings settings )
 	{
 		/*
 		 * Since we are now sure that we will be working on this model with this

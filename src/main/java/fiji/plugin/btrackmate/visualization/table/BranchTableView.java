@@ -42,6 +42,7 @@ import fiji.plugin.btrackmate.Spot;
 import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition;
 import fiji.plugin.btrackmate.graph.ConvexBranchesDecomposition.TrackBranchDecomposition;
 import fiji.plugin.btrackmate.graph.TimeDirectedNeighborIndex;
+import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 import fiji.plugin.btrackmate.util.FileChooser;
 import fiji.plugin.btrackmate.util.FileChooser.DialogType;
 import fiji.plugin.btrackmate.util.FileChooser.SelectionMode;
@@ -498,5 +499,22 @@ public class BranchTableView extends JFrame implements TrackMateModelView
 		BRANCH_FEATURES_SHORTNAMES.put( LAST, "Last ID" );
 		BRANCH_FEATURES_ISINTS.put( LAST, Boolean.TRUE );
 		BRANCH_FEATURES_DIMENSIONS.put( LAST, Dimension.NONE );
+	}
+	@Override
+	public void resetDisplaySettings(DisplaySettings displaySettings) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetSelectionModel(SelectionModel selectionModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetModel(Model model) {
+		// TODO Auto-generated method stub
+		
 	}
 }
