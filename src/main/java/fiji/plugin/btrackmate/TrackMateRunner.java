@@ -396,7 +396,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 					displayer.render();
 
 					// Wizard.
-					final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
+					final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings, false );
 					final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
 					frame.setIconImage( TRACKMATE_ICON.getImage() );
 					GuiUtils.positionWindow( frame, imp.getWindow() );
@@ -494,7 +494,7 @@ public class TrackMateRunner extends TrackMatePlugIn
 					displayer.render();
 
 					// Wizard.
-					final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings );
+					final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings, false );
 					sequence.setCurrent( ConfigureViewsDescriptor.KEY );
 					final JFrame frame = sequence.run( "TrackMate on " + imp.getShortTitle() );
 					frame.setIconImage( TRACKMATE_ICON.getImage() );

@@ -87,7 +87,7 @@ public class TrackerKeys
 	public static final String KEY_ALLOW_GAP_CLOSING = "ALLOW_GAP_CLOSING";
 
 	/** A default value for the {@value #KEY_ALLOW_GAP_CLOSING} parameter. */
-	public static final boolean DEFAULT_ALLOW_GAP_CLOSING = true;
+	public static final boolean DEFAULT_ALLOW_GAP_CLOSING = false;
 
 	/**
 	 * Key for the parameter that specify the maximal number of frames to bridge
@@ -177,7 +177,7 @@ public class TrackerKeys
 	/**
 	 * A default value for the {@value #KEY_ALLOW_TRACK_SPLITTING} parameter.
 	 */
-	public static final boolean DEFAULT_ALLOW_TRACK_SPLITTING = false;
+	public static final boolean DEFAULT_ALLOW_TRACK_SPLITTING = true;
 
 	/**
 	 * Key for the parameter specifying the max splitting distance. Expected

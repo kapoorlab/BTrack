@@ -67,6 +67,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImg;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.loops.LoopBuilder;
@@ -88,19 +89,21 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 	public Model model;
 
 	private final Logger logger;
+	
+	public boolean secondrun;
 
-	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger) {
+	public StartDialogDescriptor(final Model model, final Settings settings, final Logger logger, final boolean secondrun) {
 		super(KEY);
 		
 		this.settings = settings;
 		this.logger = logger;
 		this.model = model;
-        
+        this.secondrun = secondrun;
 		updatemodel = model;
 		updatesettings = settings;
 		updateimp = settings.imp;
 		updatelogger = logger;
-		this.targetPanel = new RoiSettingsPanel(settings.imp);
+		this.targetPanel = new RoiSettingsPanel(settings.imp, this.secondrun);
 		
 	}
 
@@ -225,7 +228,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		double[] calibration;
 		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>();
 
-		public< T extends Type< T > > RoiSettingsPanel(final ImagePlus imp) {
+		public< T extends Type< T > > RoiSettingsPanel(final ImagePlus imp, final Boolean secondrun) {
 			this.setPreferredSize(new Dimension(400, 500));
 			final GridBagLayout gridBagLayout = new GridBagLayout();
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -402,7 +405,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 			for (int i = 0; i < imageNames.length; ++i)
 				blankimageNames[i + 1] = imageNames[i];
-
+			if(!secondrun) {
 			ImageMode.setFont(SMALL_FONT);
 			final GridBagConstraints gbcChooseImage = new GridBagConstraints();
 			gbcChooseImage.anchor = GridBagConstraints.EAST;
@@ -422,6 +425,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			add(ImageMode, gbcChooseImage);
 
 			add(CsvMode, gbcChooseCSV);
+			}
 
 			tfXStart = new JFormattedTextField(Integer.valueOf(0));
 
@@ -471,7 +475,24 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 
 				}
 			});
+			
+			if(secondrun) {
+				
+				final JLabel secCitation = new JLabel("<html>" + "You have choosen your run mode"
+						+ "click next to start the tracking process.\n" + "<p>"
+						 + "</html>");
+				secCitation.setFont(SMALL_FONT);
 
+				final GridBagConstraints gbcsecCitation = new GridBagConstraints();
+				gbcsecCitation.fill = GridBagConstraints.BOTH;
+				gbcsecCitation.insets = new Insets(5, 5, 5, 5);
+				gbcsecCitation.gridwidth = 4;
+				gbcsecCitation.gridx = 0;
+				gbcsecCitation.gridy = 11;
+				add(secCitation, gbcsecCitation);
+			}
+
+			if(!secondrun) {
 			FreeMode.setFont(SMALL_FONT);
 
 			gbcChooseFree.anchor = GridBagConstraints.WEST;
@@ -518,7 +539,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcExecDet.gridwidth = 4;
 			gbcExecDet.gridx = 2;
 			gbcExecDet.gridy = 14;
-
+			}
 			Panelfile.setFont(SMALL_FONT);
 			Calibration cal = imp.getCalibration();
 			calibration = new double[3];
@@ -685,7 +706,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						ImagePlus localimp = ImageJFunctions.show(output, "Channels");
 						localimp.setCalibration(imp.getCalibration()); 
 						
-						TrackMatePlugIn.ModelUpdate( updatelogger, localimp);
+						TrackMatePlugIn.ModelUpdate( updatelogger,imp, localimp);
 					}
 
 					if (impSeg != null && impMask != null) {
@@ -696,7 +717,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 					    localimp.setCalibration(imp.getCalibration()); 
 						
 						
-						TrackMatePlugIn.ModelUpdate( updatelogger, localimp);
+						TrackMatePlugIn.ModelUpdate( updatelogger,imp, localimp);
 					}
 
 				}
@@ -713,6 +734,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						remove(FreeMode);
 						remove(MaskMode);
 						remove(Panelfile);
+						remove(PanelDualfile);
+						
 						validate();
 						repaint();
 
@@ -817,7 +840,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 						
 						TrackMate.CsvSpots = SpotListFrame.getA();
 						TrackMate.Framespots = SpotListFrame.getB();
-						TrackMatePlugIn.ModelUpdate(updatelogger, updatesettings.imp);
+						TrackMatePlugIn.ModelUpdate(updatelogger,imp, updatesettings.imp);
 
 					} else
 						csvfile = null;
@@ -1019,28 +1042,33 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			
 			imageMask = MaskUtils.copyUpIntImage(imageMask, imageSeg);
 		}
+		
+
 		net.imglib2.Cursor<IntType> Bigcursor = Views.iterable(imageMask).localizingCursor();
 		
-		
-		RandomAccess<IntType> segimage = imageSeg.randomAccess();
+		RandomAccessibleInterval<IntType> ClearedimageSeg = new CellImgFactory<IntType>(new IntType()).create(imageSeg);
+		RandomAccess<IntType> oldsegimage = imageSeg.randomAccess();
+		RandomAccess<IntType> segimage = ClearedimageSeg.randomAccess();
 		
 		while(Bigcursor.hasNext()) {
 			
 			Bigcursor.fwd();
 			segimage.setPosition(Bigcursor);
-			if(Bigcursor.get().get() == 0 ) {
+			oldsegimage.setPosition(Bigcursor);
+			if(Bigcursor.get().get() == 0 ) 
 				
-						
 				segimage.get().setZero();
-			}
+			if(Bigcursor.get().get() > 0 ) 
+				segimage.get().set(segimage.get());
 			
 		}
+		ImageJFunctions.show(ClearedimageSeg);
 		long[] newDim = new long[] { imageOrig.dimension(0), imageOrig.dimension(1),2, imageOrig.dimension(2), imageOrig.dimension(3) };
 		final Img<FloatType> out = new CellImgFactory<FloatType>(new FloatType()).create(newDim);
 		ImgPlus<FloatType> output = new ImgPlus<FloatType>(out);
 		RandomAccessibleInterval<FloatType> channelRaw = Views.hyperSlice(output, 2, 0);
     	RandomAccessibleInterval<FloatType> channelSeg = Views.hyperSlice(output, 2, 1);
-		LoopBuilder.setImages(imageOrig, imageSeg, channelRaw, channelSeg).multiThreaded().forEachPixel(
+		LoopBuilder.setImages(imageOrig, ClearedimageSeg, channelRaw, channelSeg).multiThreaded().forEachPixel(
 			    (a, b, r, g) -> {
 			    	
 			            r.set(a.get());

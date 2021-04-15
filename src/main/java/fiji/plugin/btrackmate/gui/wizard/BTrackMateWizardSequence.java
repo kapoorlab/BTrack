@@ -59,6 +59,8 @@ public class BTrackMateWizardSequence implements WizardSequence
 {
 
 	private final TrackMate btrackmate;
+	
+	public final boolean secondrun;
 
 	private final SelectionModel selectionModel;
 
@@ -97,14 +99,16 @@ public class BTrackMateWizardSequence implements WizardSequence
 	private final SaveDescriptor saveDescriptor;
 	
 
-	public BTrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings)
+	public BTrackMateWizardSequence( final TrackMate btrackmate, final SelectionModel selectionModel, final DisplaySettings displaySettings, final Boolean secondrun)
 	{
 		this.btrackmate = btrackmate;
 		this.selectionModel = selectionModel;
 		this.displaySettings = displaySettings;
+		this.secondrun = secondrun;
 		final Settings settings = btrackmate.getSettings();
 		final Model model = btrackmate.getModel();
 
+		
 		final LogPanel logPanel = new LogPanel();
 		final Logger logger = logPanel.getLogger();
         model.setLogger(logger);
@@ -114,7 +118,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 		final List< FeatureFilter > trackFilters = settings.getTrackFilters();
 
 		logDescriptor = new LogPanelDescriptor2( logPanel );
-		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger );
+		startDialogDescriptor = new StartDialogDescriptor( model, settings, logger, secondrun );
 		chooseDetectorDescriptor = new ChooseDetectorDescriptor( new DetectorProvider(), btrackmate );
 		executeDetectionDescriptor = new ExecuteDetectionDescriptor( btrackmate, logPanel );
 		initFilterDescriptor = new InitFilterDescriptor( btrackmate, initialFilter );
