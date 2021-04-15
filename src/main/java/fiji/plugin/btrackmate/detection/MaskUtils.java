@@ -221,7 +221,7 @@ public class MaskUtils {
 		ImgPlus<IntType> expandoutput = new ImgPlus<IntType>(out);
 
 		for (int i = 0; i < output.dimension(2); ++i) {
-			RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(input, 2, i);
+			RandomAccessibleInterval<IntType> Slicedoutput = Views.hyperSlice(expandoutput, 2, i);
 			Cursor<IntType> cursorInput = Views.iterable(input).localizingCursor();
 			RandomAccess<IntType> randomAccess = Slicedoutput.randomAccess();
 

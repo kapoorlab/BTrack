@@ -229,7 +229,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 		public HashMap<Integer, ArrayList<Cellobject>> CSV = new HashMap<Integer, ArrayList<Cellobject>>();
 
 		public< T extends Type< T > > RoiSettingsPanel(final ImagePlus imp, final Boolean secondrun) {
+			
 			this.setPreferredSize(new Dimension(400, 500));
+			
 			final GridBagLayout gridBagLayout = new GridBagLayout();
 			gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 					0.0, 1.0 };
@@ -479,7 +481,8 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			if(secondrun) {
 				
 				final JLabel secCitation = new JLabel("<html>" + "You have choosen your run mode"
-						+ "click next to start the tracking process.\n" + "<p>"
+                          +  "the calibration settings are taken from your chosen image \n"   + "<p>"
+						  + "click next to filter stops and start the tracking process.\n" + "<p>"
 						 + "</html>");
 				secCitation.setFont(SMALL_FONT);
 
@@ -488,7 +491,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				gbcsecCitation.insets = new Insets(5, 5, 5, 5);
 				gbcsecCitation.gridwidth = 4;
 				gbcsecCitation.gridx = 0;
-				gbcsecCitation.gridy = 11;
+				gbcsecCitation.gridy = 15;
 				add(secCitation, gbcsecCitation);
 			}
 
@@ -1058,11 +1061,10 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			if(Bigcursor.get().get() == 0 ) 
 				
 				segimage.get().setZero();
-			if(Bigcursor.get().get() > 0 ) 
-				segimage.get().set(segimage.get());
+			else
+				segimage.get().set(oldsegimage.get());
 			
 		}
-		ImageJFunctions.show(ClearedimageSeg);
 		long[] newDim = new long[] { imageOrig.dimension(0), imageOrig.dimension(1),2, imageOrig.dimension(2), imageOrig.dimension(3) };
 		final Img<FloatType> out = new CellImgFactory<FloatType>(new FloatType()).create(newDim);
 		ImgPlus<FloatType> output = new ImgPlus<FloatType>(out);
