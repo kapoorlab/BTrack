@@ -454,7 +454,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			gbcButtonRefresh.gridwidth = 4;
 			gbcButtonRefresh.gridx = 0;
 			gbcButtonRefresh.gridy = 16;
+			if(!secondrun)
 			add(btnRefreshROI, gbcButtonRefresh);
+			
 			btnRefreshROI.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -480,9 +482,9 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 			
 			if(secondrun) {
 				
-				final JLabel secCitation = new JLabel("<html>" + "You have choosen your run mode"
-                          +  "the calibration settings are taken from your chosen image \n"   + "<p>"
-						  + "click next to filter stops and start the tracking process.\n" + "<p>"
+				final JLabel secCitation = new JLabel("<html>" + "You have choosen your run mode,"
+                          +  " the calibration settings are taken from your chosen image. \n"   + "<p>"
+						  + " Click next to start the tracking process.\n" + "<p>"
 						 + "</html>");
 				secCitation.setFont(SMALL_FONT);
 
@@ -491,7 +493,7 @@ public class StartDialogDescriptor extends WizardPanelDescriptor {
 				gbcsecCitation.insets = new Insets(5, 5, 5, 5);
 				gbcsecCitation.gridwidth = 4;
 				gbcsecCitation.gridx = 0;
-				gbcsecCitation.gridy = 15;
+				gbcsecCitation.gridy = 13;
 				add(secCitation, gbcsecCitation);
 			}
 
