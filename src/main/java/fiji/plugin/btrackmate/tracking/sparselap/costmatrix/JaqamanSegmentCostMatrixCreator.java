@@ -159,7 +159,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 
 		final boolean mergingOrSplitting = allowMerging || allowSplitting;
 
-		final GraphSegmentSplitter segmentSplitter = new GraphSegmentSplitter( graph, mergingOrSplitting );
+		final GraphSegmentSplitter segmentSplitter = new GraphSegmentSplitter( graph, mergingOrSplitting, minTracklet );
 		final List< Spot > segmentEnds = segmentSplitter.getSegmentEnds();
 		final List< Spot > segmentStarts = segmentSplitter.getSegmentStarts();
 
@@ -302,11 +302,11 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 						final int sourceFrame = source.getFeature( Spot.FRAME ).intValue();
 						for ( final Spot target : segmentStarts )
 						{
-							// Check frame interval, must be greater than Tracklet length.
+							// Check frame interval, must be 1.
 							final int targetFrame = target.getFeature( Spot.FRAME ).intValue();
 							final int tdiff = targetFrame - sourceFrame;
 
-							if ( tdiff < 1 || tdiff > minTracklet )
+							if ( tdiff != 1 )
 							{
 								continue;
 							}
@@ -345,18 +345,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 		 * empty.
 		 */
 
-		if ( sources.isEmpty() || targets.isEmpty() )
-		{
-			uniqueSources = Collections.emptyList();
-			uniqueTargets = Collections.emptyList();
-			alternativeCost = Double.NaN;
-			scm = null;
-			/*
-			 * CAREFUL! We return null if no acceptable links are found.
-			 */
-		}
-		else
-		{
+		
 
 			final DefaultCostMatrixCreator< Spot, Spot > creator = new DefaultCostMatrixCreator< >( sources, targets, linkCosts.data, alternativeCostFactor, percentile );
 			if ( !creator.checkInput() || !creator.process() )
@@ -372,7 +361,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 			scm = creator.getResult();
 			uniqueSources = creator.getSourceList();
 			uniqueTargets = creator.getTargetList();
-		}
+		
 
 		final long end = System.currentTimeMillis();
 		processingTime = end - start;

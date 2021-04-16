@@ -278,6 +278,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		cancelReason = null;
 		cancelables.clear();
 
+		model.clearTracks(true);
 		final Logger logger = model.getLogger();
 		logger.log( "Starting tracking process.\n", Logger.BLUE_COLOR );
 
@@ -288,6 +289,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		}
 
 		final SpotTracker tracker = settings.trackerFactory.create( model.getSpots(), settings.trackerSettings );
+		
 		if ( tracker == null )
 		{
 			logger.log( "Tracker return by factory is null. Skipping tracking.\n" );
@@ -327,7 +329,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		isCanceled = false;
 		cancelReason = null;
 		cancelables.clear();
-
+		model.clearSpots(true);
 		final Logger logger = model.getLogger();
 		logger.log( "Starting detection process using "
 				+ ( ( numThreads > 1 ) ? ( numThreads + " threads" ) : "1 thread" )

@@ -141,7 +141,7 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		
 
 		lblLinkingMaxDistanceUnits = new JLabel();
-		this.add( lblLinkingMaxDistanceUnits, new GridBagConstraints( 2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
+		this.add( lblLinkingMaxDistanceUnits, new GridBagConstraints( 2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
 		lblLinkingMaxDistanceUnits.setFont( SMALL_FONT );
 		lblLinkingMaxDistanceUnits.setText( spaceUnits );
 		
@@ -156,7 +156,7 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		lbl3.setFont( SMALL_FONT );
 
 		txtfldLinkingMaxDistance = new JFormattedTextField( decimalFormat );
-		this.add( txtfldLinkingMaxDistance, new GridBagConstraints( 1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( txtfldLinkingMaxDistance, new GridBagConstraints( 1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		txtfldLinkingMaxDistance.setFont( SMALL_FONT );
 		txtfldLinkingMaxDistance.setSize( TEXTFIELD_DIMENSION );
 		txtfldLinkingMaxDistance.setHorizontalAlignment( JFormattedTextField.CENTER );
@@ -256,13 +256,13 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		lbl10.setFont( SMALL_FONT );
 
 		txtfldSplittingMaxDistance = new JFormattedTextField( decimalFormat );
-		this.add( txtfldSplittingMaxDistance, new GridBagConstraints( 1, 9, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( txtfldSplittingMaxDistance, new GridBagConstraints( 1, 10, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		txtfldSplittingMaxDistance.setSize( TEXTFIELD_DIMENSION );
 		txtfldSplittingMaxDistance.setFont( SMALL_FONT );
 		txtfldSplittingMaxDistance.setHorizontalAlignment( JFormattedTextField.CENTER );
 
 		lblSplittingMaxDistanceUnit = new JLabel();
-		this.add( lblSplittingMaxDistanceUnit, new GridBagConstraints( 2, 9, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
+		this.add( lblSplittingMaxDistanceUnit, new GridBagConstraints( 2, 10, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
 		lblSplittingMaxDistanceUnit.setFont( SMALL_FONT );
 		lblSplittingMaxDistanceUnit.setText( spaceUnits );
 

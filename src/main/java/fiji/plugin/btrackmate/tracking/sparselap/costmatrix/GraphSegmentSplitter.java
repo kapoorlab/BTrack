@@ -18,8 +18,9 @@ public class GraphSegmentSplitter
 	private final List< Spot > segmentEnds;
 
 	private final List< List< Spot >> segmentMiddles;
+	
 
-	public GraphSegmentSplitter( final Graph< Spot, DefaultWeightedEdge > graph, final boolean findMiddlePoints )
+	public GraphSegmentSplitter( final Graph< Spot, DefaultWeightedEdge > graph, final boolean findMiddlePoints, final double minTracklength )
 	{
 		final ConnectivityInspector< Spot, DefaultWeightedEdge > connectivity = new ConnectivityInspector< >( graph );
 		final List< Set< Spot >> connectedSets = connectivity.connectedSets();
@@ -38,7 +39,8 @@ public class GraphSegmentSplitter
 
 		for ( final Set< Spot > set : connectedSets )
 		{
-			if ( set.size() < 2 )
+			
+			if ( set.size() < minTracklength )
 			{
 				continue;
 			}
@@ -48,6 +50,7 @@ public class GraphSegmentSplitter
 
 			segmentEnds.add( list.remove( list.size() - 1 ) );
 			segmentStarts.add( list.remove( 0 ) );
+			
 			if ( findMiddlePoints )
 			{
 				segmentMiddles.add( list );
