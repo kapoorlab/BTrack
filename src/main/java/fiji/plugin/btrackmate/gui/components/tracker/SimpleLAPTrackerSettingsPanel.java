@@ -10,6 +10,7 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_GAP_CLOSING_FE
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_LINKING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_MERGING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_MERGING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_KEY_TRACKLET_LENGTH;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.DEFAULT_SPLITTING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_ALLOW_GAP_CLOSING;
@@ -27,6 +28,7 @@ import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_FEATURE_PE
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_MERGING_MAX_DISTANCE;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_FEATURE_PENALTIES;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_SPLITTING_MAX_DISTANCE;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -166,6 +168,7 @@ public class SimpleLAPTrackerSettingsPanel extends ConfigurationPanel
 		settings.put( KEY_GAP_CLOSING_FEATURE_PENALTIES, DEFAULT_GAP_CLOSING_FEATURE_PENALTIES );
 		// Track splitting
 		settings.put( KEY_ALLOW_TRACK_SPLITTING, false );
+		settings.put( KEY_TRACKLET_LENGTH, ( ( Number ) DEFAULT_KEY_TRACKLET_LENGTH ).doubleValue() );
 		settings.put( KEY_SPLITTING_MAX_DISTANCE, DEFAULT_SPLITTING_MAX_DISTANCE );
 		settings.put( KEY_SPLITTING_FEATURE_PENALTIES, DEFAULT_SPLITTING_FEATURE_PENALTIES );
 		// Track merging

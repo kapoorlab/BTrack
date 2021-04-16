@@ -145,8 +145,6 @@ public class SparseLAPFrameToFrameTracker extends MultiThreadedBenchmarkAlgorith
 		final Map< String, Double > featurePenalties = ( Map< String, Double > ) settings.get( KEY_LINKING_FEATURE_PENALTIES );
 		final CostFunction< Spot, Spot > costFunction = getCostFunction( featurePenalties );
 		final Double maxDist = ( Double ) settings.get( KEY_LINKING_MAX_DISTANCE );
-		final Double minTracklet = ( Double ) settings.get(KEY_TRACKLET_LENGTH);
-		System.out.println(minTracklet);
 		final double costThreshold = maxDist * maxDist;
 		final double alternativeCostFactor = ( Double ) settings.get( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
 

@@ -129,12 +129,12 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		//Min Tracklet length
 		
 		final JLabel lbltl = new JLabel();
-		this.add( lbltl, new GridBagConstraints( 0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbltl, new GridBagConstraints( 0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbltl.setText( "Minimum Tracklet Length:" );
 		lbltl.setFont( SMALL_FONT );
 		txtfldLinkingMinTracklet = new JFormattedTextField( Integer.valueOf( 2 ) );
 		
-		this.add( txtfldLinkingMinTracklet, new GridBagConstraints( 1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( txtfldLinkingMinTracklet, new GridBagConstraints( 1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		txtfldLinkingMinTracklet.setFont( SMALL_FONT );
 		txtfldLinkingMinTracklet.setSize( TEXTFIELD_DIMENSION );
 		txtfldLinkingMinTracklet.setHorizontalAlignment( JFormattedTextField.CENTER );
@@ -146,12 +146,12 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		lblLinkingMaxDistanceUnits.setText( spaceUnits );
 		
 		final JLabel lbl2 = new JLabel();
-		this.add( lbl2, new GridBagConstraints( 0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl2, new GridBagConstraints( 0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl2.setText( "Frame to frame linking:" );
 		lbl2.setFont( BIG_FONT.deriveFont( Font.BOLD ) );
 
 		final JLabel lbl3 = new JLabel();
-		this.add( lbl3, new GridBagConstraints( 0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl3, new GridBagConstraints( 0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl3.setText( "Max distance:" );
 		lbl3.setFont( SMALL_FONT );
 
@@ -162,19 +162,19 @@ public class JPanelTrackerSettingsMain extends javax.swing.JPanel
 		txtfldLinkingMaxDistance.setHorizontalAlignment( JFormattedTextField.CENTER );
 
 		lblMinTrackletLengthUnits = new JLabel();
-		this.add( lblMinTrackletLengthUnits, new GridBagConstraints( 2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
+		this.add( lblMinTrackletLengthUnits, new GridBagConstraints( 2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets( 0, 5, 0, 0 ), 0, 0 ) );
 		lblMinTrackletLengthUnits.setFont( SMALL_FONT );
 		lblMinTrackletLengthUnits.setText( "frames" );
 
 		final JLabel lbl4 = new JLabel();
-		this.add( lbl4, new GridBagConstraints( 0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
+		this.add( lbl4, new GridBagConstraints( 0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets( 0, 10, 0, 10 ), 0, 0 ) );
 		lbl4.setText( "Feature penalties" );
 		lbl4.setFont( SMALL_FONT );
 
 		final JScrollPane scrpneLinkingFeatures = new JScrollPane();
 		final MouseWheelListener[] l = scrpneLinkingFeatures.getMouseWheelListeners();
 		scrpneLinkingFeatures.removeMouseWheelListener( l[ 0 ] );
-		this.add( scrpneLinkingFeatures, new GridBagConstraints( 0, 7, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
+		this.add( scrpneLinkingFeatures, new GridBagConstraints( 0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets( 0, 0, 0, 0 ), 0, 0 ) );
 		scrpneLinkingFeatures.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
 		scrpneLinkingFeatures.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 		panelLinkingFeatures = new JPanelFeatureSelectionGui();

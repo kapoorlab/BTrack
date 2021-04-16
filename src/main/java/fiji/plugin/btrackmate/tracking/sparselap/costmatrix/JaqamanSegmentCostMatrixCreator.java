@@ -137,6 +137,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 		final CostFunction< Spot, Spot > sCostFunction = getCostFunctionFor( sFeaturePenalties );
 		final boolean allowSplitting = ( Boolean ) settings.get( KEY_ALLOW_TRACK_SPLITTING );
 		final double sMaxDistance = ( Double ) settings.get( KEY_SPLITTING_MAX_DISTANCE );
+		final double minTracklet = (Double) settings.get(KEY_TRACKLET_LENGTH);
 		final double sCostThreshold = sMaxDistance * sMaxDistance;
 
 		// Alternative cost
@@ -301,11 +302,11 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 						final int sourceFrame = source.getFeature( Spot.FRAME ).intValue();
 						for ( final Spot target : segmentStarts )
 						{
-							// Check frame interval, must be 1.
+							// Check frame interval, must be greater than Tracklet length.
 							final int targetFrame = target.getFeature( Spot.FRAME ).intValue();
 							final int tdiff = targetFrame - sourceFrame;
 
-							if ( tdiff != 1 )
+							if ( tdiff < 1 || tdiff > minTracklet )
 							{
 								continue;
 							}
