@@ -28,7 +28,6 @@ import fiji.plugin.btrackmate.gui.wizard.descriptors.ConfigureViewsDescriptor;
 import fiji.plugin.btrackmate.gui.wizard.descriptors.LogPanelDescriptor2;
 import fiji.plugin.btrackmate.io.TmXmlWriter;
 import fiji.plugin.btrackmate.tracking.TrackerKeys;
-import fiji.plugin.btrackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 import fiji.plugin.btrackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import fiji.plugin.btrackmate.util.LogRecorder;
 import fiji.plugin.btrackmate.util.TMUtils;
@@ -41,7 +40,6 @@ import ij.ImagePlus;
 import ij.Macro;
 import ij.WindowManager;
 import net.imglib2.util.ValuePair;
-import pluginTools.InteractiveBud;
 
 /**
  * An extension of TrackMate plugin that makes it executable from a macro.

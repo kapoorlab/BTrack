@@ -7,7 +7,6 @@ import fiji.plugin.btrackmate.gui.components.ModuleChooserPanel;
 import fiji.plugin.btrackmate.gui.wizard.WizardPanelDescriptor;
 import fiji.plugin.btrackmate.providers.TrackerProvider;
 import fiji.plugin.btrackmate.tracking.SpotTrackerFactory;
-import fiji.plugin.btrackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 import fiji.plugin.btrackmate.tracking.sparselap.SparseLAPTrackerFactory;
 
 public class ChooseTrackerDescriptor extends WizardPanelDescriptor
@@ -34,7 +33,7 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 
 	private void setCurrentChoiceFromPlugin()
 	{
-		String key = SimpleSparseLAPTrackerFactory.THIS2_TRACKER_KEY; // default
+		String key = SparseLAPTrackerFactory.THIS_TRACKER_KEY; // default
 		if ( null != btrackmate.getSettings().trackerFactory )
 			key = btrackmate.getSettings().trackerFactory.getKey();
 

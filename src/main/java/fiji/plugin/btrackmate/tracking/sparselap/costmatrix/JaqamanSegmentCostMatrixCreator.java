@@ -128,6 +128,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 		final Map< String, Double > mFeaturePenalties = ( Map< String, Double > ) settings.get( KEY_MERGING_FEATURE_PENALTIES );
 		final CostFunction< Spot, Spot > mCostFunction = getCostFunctionFor( mFeaturePenalties );
 		final double mMaxDistance = ( Double ) settings.get( KEY_MERGING_MAX_DISTANCE );
+		final double mintracklength = ( Double ) settings.get( KEY_TRACKLET_LENGTH );
 		final double mCostThreshold = mMaxDistance * mMaxDistance;
 		final boolean allowMerging = ( Boolean ) settings.get( KEY_ALLOW_TRACK_MERGING );
 
@@ -159,7 +160,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 
 		final boolean mergingOrSplitting = allowMerging || allowSplitting;
 
-		final GraphSegmentSplitter segmentSplitter = new GraphSegmentSplitter( graph, mergingOrSplitting, minTracklet );
+		final GraphSegmentSplitter segmentSplitter = new GraphSegmentSplitter( graph, mergingOrSplitting );
 		final List< Spot > segmentEnds = segmentSplitter.getSegmentEnds();
 		final List< Spot > segmentStarts = segmentSplitter.getSegmentStarts();
 
@@ -294,6 +295,7 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 			final ExecutorService executorS = Executors.newFixedThreadPool( numThreads );
 			for ( final Spot source : allMiddles )
 			{
+				
 				executorS.submit( new Runnable()
 				{
 					@Override
@@ -337,6 +339,12 @@ public class JaqamanSegmentCostMatrixCreator implements CostMatrixCreator< Spot,
 			{
 				errorMessage = BASE_ERROR_MESSAGE + e.getMessage();
 			}
+			
+			
+			
+			
+			
+			
 		}
 		linkCosts.trimToSize();
 

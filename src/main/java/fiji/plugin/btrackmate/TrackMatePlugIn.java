@@ -95,64 +95,7 @@ public class TrackMatePlugIn implements PlugIn
 		globalframe.pack();
 	}
 	
-	public void secondrun( final String imagePath )
-	{
-		GuiUtils.setSystemLookAndFeel();
-		
-		if ( imagePath != null && imagePath.length() > 0 )
-		{
-			globalimp = IJ.openImage( imagePath );
-			if ( null == globalimp.getOriginalFileInfo() )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION, "Could not load image with path " + imagePath + "." );
-				return;
-			}
-		}
-		else
-		{
-			globalimp = WindowManager.getCurrentImage();
-			if ( null == globalimp )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION,
-						"Please open an image before running TrackMate." );
-				return;
-			}
-			else if ( globalimp.getType() == ImagePlus.COLOR_RGB )
-			{
-				IJ.error( TrackMate.PLUGIN_NAME_STR + " v" + TrackMate.PLUGIN_NAME_VERSION,
-						"TrackMate does not work on RGB images." );
-				return;
-			}
-		}
-
-		globalimp.setOpenAsHyperStack( true );
-		globalimp.setDisplayMode( IJ.COMPOSITE );
-		if ( !globalimp.isVisible() )
-			globalimp.show();
-
-		GuiUtils.userCheckImpDimensions( globalimp );
-
-		// Main objects.
-		
-		final SelectionModel selectionModel = new SelectionModel( model );
-		final DisplaySettings displaySettings = createDisplaySettings();
-		 settings = createSettings( globalimp );
-		 model = createModel( globalimp );
-		 btrackmate = createTrackMate( model, settings );
-		// Main view.
-				
-		 final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, globalimp, createDisplaySettings() );
-		 displayer.render();
-		// Wizard.
-		 final WizardSequence sequence = createSequence( btrackmate, selectionModel, displaySettings, true );
-		 globalframe = sequence.run( "BTrackMate");
-		 globalframe.setIconImage( TRACKMATE_ICON.getImage() );
-		GuiUtils.positionWindow( globalframe, globalimp.getWindow() );
-		globalframe.setVisible( true );
-		//Call pack on the JFrame to have panels sized with preferred size
-		globalframe.pack();
-	}
-
+	
 	/**
 	 * Hook for subclassers: <br>
 	 * Will create and position the sequence that will be played by the wizard
@@ -211,7 +154,7 @@ public class TrackMatePlugIn implements PlugIn
 		 btrackmate = localcreateTrackMate( model, settings );
 		 settings.setFrom(localimp); 
 		 
-		 
+		 if (TrackMate.CsvSpots ==null) {
 		 localimp.setOpenAsHyperStack( true );
 		 localimp.setDisplayMode( IJ.COMPOSITE );
 			if ( !localimp.isVisible() )
@@ -236,7 +179,7 @@ public class TrackMatePlugIn implements PlugIn
 			frame.pack();
 			globalframe.dispose();
 			globalimp.close();
-        
+		 }
         
 		
 	}

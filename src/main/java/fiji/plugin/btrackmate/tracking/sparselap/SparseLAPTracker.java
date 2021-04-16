@@ -244,7 +244,6 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		// Check keys
 		final List< String > mandatoryKeys = new ArrayList< >();
 		mandatoryKeys.add( KEY_LINKING_MAX_DISTANCE );
-		mandatoryKeys.add( KEY_TRACKLET_LENGTH );
 		mandatoryKeys.add( KEY_ALLOW_GAP_CLOSING );
 		mandatoryKeys.add( KEY_GAP_CLOSING_MAX_DISTANCE );
 		mandatoryKeys.add( KEY_GAP_CLOSING_MAX_FRAME_GAP );
@@ -255,6 +254,7 @@ public class SparseLAPTracker extends MultiThreadedBenchmarkAlgorithm implements
 		mandatoryKeys.add( KEY_ALTERNATIVE_LINKING_COST_FACTOR );
 		mandatoryKeys.add( KEY_CUTOFF_PERCENTILE );
 		final List< String > optionalKeys = new ArrayList< >();
+		optionalKeys.add( KEY_TRACKLET_LENGTH );
 		optionalKeys.add( KEY_LINKING_FEATURE_PENALTIES );
 		optionalKeys.add( KEY_GAP_CLOSING_FEATURE_PENALTIES );
 		optionalKeys.add( KEY_SPLITTING_FEATURE_PENALTIES );
