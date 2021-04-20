@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -33,6 +34,7 @@ import fiji.plugin.btrackmate.features.EdgeFeatureCalculator;
 import fiji.plugin.btrackmate.features.FeatureFilter;
 import fiji.plugin.btrackmate.features.SpotFeatureCalculator;
 import fiji.plugin.btrackmate.features.TrackFeatureCalculator;
+import fiji.plugin.btrackmate.tracking.LAPUtils;
 import fiji.plugin.btrackmate.tracking.SpotTracker;
 import fiji.plugin.btrackmate.util.TMUtils;
 import ij.ImagePlus;
@@ -57,6 +59,7 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
+import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
 
 /**
  * <p>
@@ -301,8 +304,12 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 	public void CleanTracks() {
 
+		final Map< String, Object > settings = LAPUtils.getDefaultLAPSettingsMap();
 		
-
+		double timecutoff = ( Double )settings.get(KEY_TRACKLET_LENGTH);
+		model.beginUpdate();
+		
+		
 		for (final Integer trackID : model.getTrackModel().trackIDs(false)) {
 
 			ArrayList<Pair<Integer, Spot>> Sources = new ArrayList<Pair<Integer, Spot>>();
@@ -370,20 +377,35 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 					scount = 0;
 				}
 
-			for (Pair<Integer, Spot>  sid : Splits) {
+			
+			if(Splits.size() > 0) {
 				
-				System.out.println(sid.getA());
+			for (Pair<Integer, Spot>  sid : Ends) {
+				
+				Spot Spotend = sid.getB();
+				
+				int trackletlength = 0;
+				
+				
+					for (Pair<Integer, Spot>  splitid : Splits) {
+						Spot Spotstart = splitid.getB();
+						trackletlength = (int) Math.abs(Spotstart.diffTo(Spotend, Spot.FRAME));
+					System.out.println(trackletlength);
+					
+					if(trackletlength < timecutoff) {
+						
+						
+						model.getTrackModel().removeSpot(Spotend);
+						
+						
+						System.out.println(Spotend.ID() + " " + " deleted");
+						
+					}
+					
+					
+				
 				
 			}
-			
-			
-		//for ( DefaultWeightedEdge e: model.getTrackModel().edgeSet(){
-			
-			
-			
-			
-			
-	//	}
 			
 			
 
@@ -391,6 +413,11 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 
 	}
+		}
+		
+		model.endUpdate();
+			
+		}
 
 	/**
 	 * Execute the detection part.
