@@ -54,6 +54,7 @@ import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 
@@ -288,7 +289,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 			model.setTracks(tracker.getResult(), true);
 
-			SimpleWeightedGraph<Spot, DefaultWeightedEdge> clearedgraph = CleanTracks();
+			CleanTracks();
 			return true;
 
 		}
@@ -298,18 +299,21 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		return false;
 	}
 
-	public SimpleWeightedGraph<Spot, DefaultWeightedEdge> CleanTracks() {
+	public void CleanTracks() {
 
-		SimpleWeightedGraph<Spot, DefaultWeightedEdge> clearedgraph = new SimpleWeightedGraph<>(
-				DefaultWeightedEdge.class);
+		
 
 		for (final Integer trackID : model.getTrackModel().trackIDs(false)) {
 
-			ArrayList<Integer> Sources = new ArrayList<Integer>();
-			ArrayList<Integer> Targets = new ArrayList<Integer>();
-			ArrayList<Integer> Starts = new ArrayList<Integer>();
-			ArrayList<Integer> Ends = new ArrayList<Integer>();
-			HashSet<Integer> Splits = new HashSet<Integer>();
+			ArrayList<Pair<Integer, Spot>> Sources = new ArrayList<Pair<Integer, Spot>>();
+			ArrayList<Pair<Integer, Spot>> Targets = new ArrayList<Pair<Integer, Spot>>();
+			ArrayList<Integer> SourcesID = new ArrayList<Integer>();
+			ArrayList<Integer> TargetsID = new ArrayList<Integer>();
+			
+			
+			ArrayList<Pair<Integer, Spot>> Starts = new ArrayList<Pair<Integer, Spot>>();
+			ArrayList<Pair<Integer, Spot>> Ends = new ArrayList<Pair<Integer, Spot>>();
+			HashSet<Pair<Integer, Spot>> Splits = new HashSet<Pair<Integer, Spot>>();
 
 			final Set<DefaultWeightedEdge> track = model.getTrackModel().trackEdges(trackID);
 
@@ -321,55 +325,70 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 
 				Integer targetID = Spottarget.ID();
 				Integer sourceID = Spotbase.ID();
-				Sources.add(sourceID);
-				Targets.add(targetID);
+				Sources.add(new ValuePair<Integer, Spot>(sourceID, Spotbase));
+				Targets.add(new ValuePair<Integer, Spot>(targetID, Spottarget));
+				SourcesID.add(sourceID);
+				TargetsID.add(targetID);
 
 			}
 			// find track ends
-			for (int tid : Targets) {
+			for (Pair<Integer, Spot> tid : Targets) {
 
-				if (!Sources.contains(tid)) {
+				if (!SourcesID.contains(tid.getA())) {
 
 					Ends.add(tid);
+					
 				}
 
 			}
 
 			// find track starts
-			for (int sid : Sources) {
+			for (Pair<Integer, Spot> sid : Sources) {
 
-				if (!Targets.contains(sid)) {
+				if (!TargetsID.contains(sid.getA())) {
 
 					Starts.add(sid);
+					
 				}
 
 			}
 
 			// find track splits
 			int scount = 0;
-			for (int sid : Sources) {
+			for (Pair<Integer, Spot>  sid : Sources) {
 			
-				for (int dupsid : Sources) {
+				for (Pair<Integer, Spot> dupsid : Sources) {
 					
-					if(dupsid == sid)
+					
+					if(dupsid.getA().intValue() == sid.getA().intValue()) {
 					scount++;
+					}
 				}
-					
 					if (scount > 1) {
 						Splits.add(sid);
 					}
 					scount = 0;
 				}
 
-			
-			for (int id : Splits) {
-				System.out.println(id);
+			for (Pair<Integer, Spot>  sid : Splits) {
+				
+				System.out.println(sid.getA());
 				
 			}
+			
+			
+		//for ( DefaultWeightedEdge e: model.getTrackModel().edgeSet(){
+			
+			
+			
+			
+			
+	//	}
+			
+			
 
 		}
 
-		return clearedgraph;
 
 	}
 
