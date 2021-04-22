@@ -95,13 +95,7 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 			return;
 		}
 
-		final String version = reader.getVersion();
-		if ( VersionUtils.compare( version, "2.1.0" ) < 0 )
-		{
-			// Since v7.0.0 we do not support TrackMate file version < 2.1.0.
-			logger.error( "Cannot read TrackMate file version lower than 2.1.0.\nAborting.\n" );
-			return;
-		}
+	
 		if ( !reader.isReadingOk() )
 		{
 			logger.error( reader.getErrorMessage() );
@@ -169,9 +163,9 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn
 			panelIdentifier = ConfigureViewsDescriptor.KEY;
 
 		// Wizard.
-		final BTrackMateWizardSequence sequence = new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings, false );
+		final BTrackMateWizardSequence sequence = new BTrackMateWizardSequence( btrackmate, selectionModel, displaySettings, true );
 		sequence.setCurrent( panelIdentifier );
-		final JFrame frame = sequence.run( "TrackMate on " + settings.imp.getShortTitle() );
+		final JFrame frame = sequence.run( "BTrackMate XML " + settings.imp.getShortTitle() );
 		frame.setIconImage( TRACKMATE_ICON.getImage() );
 		GuiUtils.positionWindow( frame, settings.imp.getWindow() );
 		frame.setVisible( true );
