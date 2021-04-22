@@ -488,7 +488,6 @@ public class FeatureDisplaySelector
 				final double beta = ( alpha - alphaMin ) / ( alphaMax - alphaMin );
 
 				//System.out.println("graphics" + g);
-				System.out.println( " " + colormap + " " + beta) ;
 				g.setColor( colormap.getPaint( beta ) );
 				g.drawLine( i, 0, i, height );
 			}

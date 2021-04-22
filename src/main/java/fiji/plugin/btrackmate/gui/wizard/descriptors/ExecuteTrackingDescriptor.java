@@ -45,7 +45,11 @@ public class ExecuteTrackingDescriptor extends WizardPanelDescriptor
 			logger.log( String.format( "  - max size: %d spots.\n", stats.getMax() ) );
 		};
 	}
-
+	@Override
+	public Runnable getBackwardRunnable()
+	{
+		return () -> btrackmate.getModel().clearTracks( true );
+	}
 	@Override
 	public Cancelable getCancelable()
 	{

@@ -38,6 +38,11 @@ public class ExecuteDetectionDescriptor extends WizardPanelDescriptor
 	}
 
 	@Override
+	public Runnable getBackwardRunnable()
+	{
+		return () -> btrackmate.getModel().clearSpots( true );
+	}
+	@Override
 	public Cancelable getCancelable()
 	{
 		return btrackmate;
