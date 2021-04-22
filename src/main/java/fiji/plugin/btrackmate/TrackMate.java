@@ -2,8 +2,11 @@ package fiji.plugin.btrackmate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +18,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 import org.scijava.Cancelable;
 import org.scijava.Named;
 import org.scijava.util.VersionUtils;
@@ -34,6 +39,7 @@ import fiji.plugin.btrackmate.features.EdgeFeatureCalculator;
 import fiji.plugin.btrackmate.features.FeatureFilter;
 import fiji.plugin.btrackmate.features.SpotFeatureCalculator;
 import fiji.plugin.btrackmate.features.TrackFeatureCalculator;
+import fiji.plugin.btrackmate.graph.TimeDirectedSortedDepthFirstIterator;
 import fiji.plugin.btrackmate.tracking.LAPUtils;
 import fiji.plugin.btrackmate.tracking.SpotTracker;
 import fiji.plugin.btrackmate.util.TMUtils;
@@ -60,7 +66,7 @@ import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import static fiji.plugin.btrackmate.detection.DetectorKeys.KEY_TARGET_CHANNEL;
 import static fiji.plugin.btrackmate.tracking.TrackerKeys.KEY_TRACKLET_LENGTH;
-
+import static fiji.plugin.btrackmate.Spot.FRAME;
 /**
  * <p>
  * The TrackMate_ class runs on the currently active time-lapse image (2D or 3D)
@@ -289,10 +295,10 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		if (tracker.checkInput() && tracker.process()) {
 			if (isCanceled())
 				logger.log("Tracking canceled. Reason:\n" + getCancelReason() + "\n");
+			SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph = tracker.getResult();
+			model.setTracks(graph, true);
 
-			model.setTracks(tracker.getResult(), true);
-
-			CleanTracks();
+			CleanTracks(graph);
 			return true;
 
 		}
@@ -302,122 +308,154 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 		return false;
 	}
 
-	public void CleanTracks() {
+	public void CleanTracks(SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph) {
 
-		final Map< String, Object > settings = LAPUtils.getDefaultLAPSettingsMap();
-		
-		double timecutoff = ( Double )settings.get(KEY_TRACKLET_LENGTH);
+		double timecutoff = (Double) settings.trackerSettings.get(KEY_TRACKLET_LENGTH);
+		final ConnectivityInspector<Spot, DefaultWeightedEdge> connectivity = new ConnectivityInspector<>(graph);
+
 		model.beginUpdate();
-		
-		
-		for (final Integer trackID : model.getTrackModel().trackIDs(false)) {
 
-			ArrayList<Pair<Integer, Spot>> Sources = new ArrayList<Pair<Integer, Spot>>();
-			ArrayList<Pair<Integer, Spot>> Targets = new ArrayList<Pair<Integer, Spot>>();
-			ArrayList<Integer> SourcesID = new ArrayList<Integer>();
-			ArrayList<Integer> TargetsID = new ArrayList<Integer>();
-			
-			
-			ArrayList<Pair<Integer, Spot>> Starts = new ArrayList<Pair<Integer, Spot>>();
-			ArrayList<Pair<Integer, Spot>> Ends = new ArrayList<Pair<Integer, Spot>>();
-			HashSet<Pair<Integer, Spot>> Splits = new HashSet<Pair<Integer, Spot>>();
+		for (int i = 0; i <= timecutoff; ++i) {
+			for (final Integer trackID : model.getTrackModel().trackIDs(false)) {
 
-			final Set<DefaultWeightedEdge> track = model.getTrackModel().trackEdges(trackID);
+				ArrayList<Pair<Integer, Spot>> Sources = new ArrayList<Pair<Integer, Spot>>();
+				ArrayList<Pair<Integer, Spot>> Targets = new ArrayList<Pair<Integer, Spot>>();
+				ArrayList<Integer> SourcesID = new ArrayList<Integer>();
+				ArrayList<Integer> TargetsID = new ArrayList<Integer>();
 
-			for (final DefaultWeightedEdge e : track) {
+				ArrayList<Pair<Integer, Spot>> Starts = new ArrayList<Pair<Integer, Spot>>();
+				ArrayList<Pair<Integer, Spot>> Ends = new ArrayList<Pair<Integer, Spot>>();
+				HashSet<Pair<Integer, Spot>> Splits = new HashSet<Pair<Integer, Spot>>();
 
-				final double cost = model.getTrackModel().getEdgeWeight(e);
-				Spot Spotbase = model.getTrackModel().getEdgeSource(e);
-				Spot Spottarget = model.getTrackModel().getEdgeTarget(e);
+				final Set<DefaultWeightedEdge> track = model.getTrackModel().trackEdges(trackID);
 
-				Integer targetID = Spottarget.ID();
-				Integer sourceID = Spotbase.ID();
-				Sources.add(new ValuePair<Integer, Spot>(sourceID, Spotbase));
-				Targets.add(new ValuePair<Integer, Spot>(targetID, Spottarget));
-				SourcesID.add(sourceID);
-				TargetsID.add(targetID);
+				for (final DefaultWeightedEdge e : track) {
 
-			}
-			// find track ends
-			for (Pair<Integer, Spot> tid : Targets) {
+					final double cost = model.getTrackModel().getEdgeWeight(e);
+					Spot Spotbase = model.getTrackModel().getEdgeSource(e);
+					Spot Spottarget = model.getTrackModel().getEdgeTarget(e);
 
-				if (!SourcesID.contains(tid.getA())) {
+					Integer targetID = Spottarget.ID();
+					Integer sourceID = Spotbase.ID();
+					Sources.add(new ValuePair<Integer, Spot>(sourceID, Spotbase));
+					Targets.add(new ValuePair<Integer, Spot>(targetID, Spottarget));
+					SourcesID.add(sourceID);
+					TargetsID.add(targetID);
 
-					Ends.add(tid);
-					
 				}
+				// find track ends
+				for (Pair<Integer, Spot> tid : Targets) {
 
-			}
+					if (!SourcesID.contains(tid.getA())) {
 
-			// find track starts
-			for (Pair<Integer, Spot> sid : Sources) {
+						Ends.add(tid);
 
-				if (!TargetsID.contains(sid.getA())) {
-
-					Starts.add(sid);
-					
-				}
-
-			}
-
-			// find track splits
-			int scount = 0;
-			for (Pair<Integer, Spot>  sid : Sources) {
-			
-				for (Pair<Integer, Spot> dupsid : Sources) {
-					
-					
-					if(dupsid.getA().intValue() == sid.getA().intValue()) {
-					scount++;
 					}
+
 				}
+
+				// find track starts
+				for (Pair<Integer, Spot> sid : Sources) {
+
+					if (!TargetsID.contains(sid.getA())) {
+
+						Starts.add(sid);
+
+					}
+
+				}
+
+				// find track splits
+				int scount = 0;
+				for (Pair<Integer, Spot> sid : Sources) {
+
+					for (Pair<Integer, Spot> dupsid : Sources) {
+
+						if (dupsid.getA().intValue() == sid.getA().intValue()) {
+							scount++;
+						}
+					}
 					if (scount > 1) {
 						Splits.add(sid);
 					}
 					scount = 0;
 				}
 
-			
-			if(Splits.size() > 0) {
-				
-			for (Pair<Integer, Spot>  sid : Ends) {
-				
-				Spot Spotend = sid.getB();
-				
-				int trackletlength = 0;
-				
-				
-					for (Pair<Integer, Spot>  splitid : Splits) {
-						Spot Spotstart = splitid.getB();
-						trackletlength = (int) Math.abs(Spotstart.diffTo(Spotend, Spot.FRAME));
-					System.out.println(trackletlength);
-					
-					if(trackletlength < timecutoff) {
-						
-						
-						model.getTrackModel().removeSpot(Spotend);
-						
-						
-						System.out.println(Spotend.ID() + " " + " deleted");
-						
-					}
-					
-					
-				
-				
-			}
-			
-			
+				if (Splits.size() > 0) {
 
+					for (Pair<Integer, Spot> sid : Ends) {
+
+						Spot Spotend = sid.getB();
+
+						int trackletlength = 0;
+
+
+						double minsize = Double.MAX_VALUE;
+						Spot Actualsplit = null;
+						for (Pair<Integer, Spot> splitid : Splits) {
+							Spot Spotstart = splitid.getB();
+							Set<Spot> spotset = connectedSetOf(graph, Spotend, Spotstart);
+							
+
+							if (spotset.size() < minsize) {
+
+								minsize = spotset.size();
+								Actualsplit = Spotstart;
+
+							}
+
+						}
+
+						if (Actualsplit != null) {
+							trackletlength = (int) Math.abs(Actualsplit.diffTo(Spotend, Spot.FRAME));
+
+							if (trackletlength < timecutoff)
+
+								model.getTrackModel().removeSpot(Spotend);
+
+						}
+
+					}
+				}
+			}
 		}
 
+		model.endUpdate();
 
 	}
+
+	public Set<Spot> connectedSetOf(SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph, Spot vertex, Spot split) {
+
+		Set<Spot> connectedSet = new HashSet<>();
+
+		connectedSet = new HashSet<>();
+
+		BreadthFirstIterator<Spot,DefaultWeightedEdge > i = new BreadthFirstIterator<>(graph, vertex);
+
+		do{
+			Spot spot = i.next();
+			 if(spot.ID() == split.ID()) {
+				 break;
+				 
+			 }
+			connectedSet.add(spot);
+		}while (i.hasNext()); 
+
+
+		return connectedSet;
+	}
+	
+	Comparator<Spot> ThirdDimcomparison = new Comparator<Spot>() {
+
+		@Override
+		public int compare(final Spot A,
+				final Spot B) {
+
+			return (int) (-A.getFeature(FRAME) + B.getFeature(FRAME));
+
 		}
-		
-		model.endUpdate();
-			
-		}
+
+	};
 
 	/**
 	 * Execute the detection part.
