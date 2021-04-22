@@ -36,6 +36,7 @@ public class TrackMatePlugIn implements PlugIn
 	public static TrackMate btrackmate;
 	public static JFrame globalframe; 
 	public static ImagePlus globalimp;
+	public static DisplaySettings displaySettings;
 	@Override
 	public void run( final String imagePath )
 	{
@@ -77,7 +78,7 @@ public class TrackMatePlugIn implements PlugIn
 		// Main objects.
 		
 		final SelectionModel selectionModel = new SelectionModel( model );
-		final DisplaySettings displaySettings = createDisplaySettings();
+		displaySettings = createDisplaySettings();
 		 settings = createSettings( globalimp );
 		 model = createModel( globalimp );
 		 btrackmate = createTrackMate( model, settings );
@@ -165,7 +166,6 @@ public class TrackMatePlugIn implements PlugIn
 			// Main objects.
 			
 			final SelectionModel selectionModel = new SelectionModel( model );
-			final DisplaySettings displaySettings = PseudocreateDisplaySettings();
 			// Main view.
 					
 			 final TrackMateModelView displayer = new HyperStackDisplayer( model, selectionModel, localimp, displaySettings );

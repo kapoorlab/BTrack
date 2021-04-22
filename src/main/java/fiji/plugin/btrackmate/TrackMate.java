@@ -409,7 +409,7 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 						if (Actualsplit != null) {
 							trackletlength = (int) Math.abs(Actualsplit.diffTo(Spotend, Spot.FRAME));
 
-							if (trackletlength < timecutoff)
+							if (trackletlength <= timecutoff)
 
 								model.getTrackModel().removeSpot(Spotend);
 

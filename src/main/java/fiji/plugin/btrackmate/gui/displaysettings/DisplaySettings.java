@@ -801,7 +801,7 @@ public class DisplaySettings
 	{
 		df = new DisplaySettings( "Default" );
 		df.useAntialiasing = true;
-		df.colormap = null;
+		df.colormap = Colormap.Jet;
 		df.limitZDrawingDepth = false;
 		df.drawingZDepth = 10.;
 		df.fadeTracks = true;
