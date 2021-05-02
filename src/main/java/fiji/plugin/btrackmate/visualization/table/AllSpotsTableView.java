@@ -355,9 +355,4 @@ public class AllSpotsTableView extends JFrame implements TrackMateModelView, Mod
 		
 	}
 
-	@Override
-	public void resetImp(ImagePlus imp) {
-		// TODO Auto-generated method stub
-		
-	}
 }

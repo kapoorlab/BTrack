@@ -79,4 +79,11 @@ public class ChooseTrackerDescriptor extends WizardPanelDescriptor
 			btrackmate.getSettings().trackerSettings = defaultSettings;
 		}
 	}
+	
+	@Override
+	public Runnable getBackwardRunnable()
+	{
+		// Delete tracks.
+		return () -> btrackmate.getModel().clearTracks( true );
+	}
 }

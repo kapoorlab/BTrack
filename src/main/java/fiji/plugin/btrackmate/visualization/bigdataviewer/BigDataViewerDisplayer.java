@@ -220,9 +220,4 @@ public class BigDataViewerDisplayer extends AbstractTrackMateModelView
 		return KEY;
 	}
 
-	@Override
-	public void resetImp(ImagePlus imp) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -88,6 +88,6 @@ public class TransitionAnimator extends AbstractAnimator
 			y = ( int ) Math.round( t * height );
 			break;
 		}
-		return combined.getSubimage( x, y, width, height );
+		return combined.getSubimage( x, y, 291, 391 );
 	}
 }

@@ -612,9 +612,5 @@ public class TrackTableView extends JFrame implements TrackMateModelView, ModelC
 		
 	}
 
-	@Override
-	public void resetImp(ImagePlus imp) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

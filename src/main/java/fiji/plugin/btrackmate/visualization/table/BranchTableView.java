@@ -519,9 +519,5 @@ public class BranchTableView extends JFrame implements TrackMateModelView
 		
 	}
 
-	@Override
-	public void resetImp(ImagePlus imp) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

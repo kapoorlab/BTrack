@@ -62,6 +62,5 @@ public interface TrackMateModelView
 	
 	public void resetModel(Model model);
 
-	void resetImp(ImagePlus imp);
 
 }

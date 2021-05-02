@@ -131,6 +131,7 @@ public class BTrackMateWizardSequence implements WizardSequence
 		actionChooserDescriptor = new ActionChooserDescriptor( new ActionProvider(), btrackmate, selectionModel, displaySettings );
 		saveDescriptor = new SaveDescriptor( btrackmate, displaySettings, this );
 
+		
 		this.next = getForwardSequence();
 		this.previous = getBackwardSequence();
 		current = startDialogDescriptor;
@@ -146,6 +147,8 @@ public class BTrackMateWizardSequence implements WizardSequence
 			getTrackerConfigDescriptor();
 
 		current = next.get( current );
+		
+		
 		return current;
 	}
 

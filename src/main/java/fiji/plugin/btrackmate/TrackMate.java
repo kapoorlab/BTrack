@@ -309,8 +309,12 @@ public class TrackMate implements Benchmark, MultiThreaded, Algorithm, Named, Ca
 	}
 
 	public void CleanTracks(SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph) {
-
-		double timecutoff = (Double) settings.trackerSettings.get(KEY_TRACKLET_LENGTH);
+		
+		double timecutoff = 0;
+		if (settings.trackerSettings.get(KEY_TRACKLET_LENGTH)!=null)
+			timecutoff = (Double) settings.trackerSettings.get(KEY_TRACKLET_LENGTH);
+		
+		
 		final ConnectivityInspector<Spot, DefaultWeightedEdge> connectivity = new ConnectivityInspector<>(graph);
 
 		model.beginUpdate();
