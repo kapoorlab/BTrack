@@ -158,15 +158,20 @@ public class TrackEachBud {
 							"Computing Skeletons = " + parent.thirdDimension + "/" + parent.thirdDimensionSize + " Total Buddies = "
 									+ (parent.pixellist.size() ));
 				// If we did not compute the skeletons before we compute it for each label
+				
+				
 				if(parent.BudOvalRois.get(uniqueID)==null) {
 				    
 					
 					
 					List<RealLocalizable> currentskel = SkeletonCreator(PairCurrentViewBit, truths);
+					
 					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
+					
 					FillArrays(currentskel,truths, currentpoint, label);
 					
 				}
+				
 				
 				// If we have a pre-computation/manual marked skeleton point we load it for the current label
 				if (parent.BudOvalRois.get(uniqueID)!=null){
@@ -215,7 +220,7 @@ public class TrackEachBud {
 			
 		}
 	
-		 
+		    
 			parent.BudOvalRois.put(uniqueID, Allrois);
 
 			parent.imp.updateAndDraw();

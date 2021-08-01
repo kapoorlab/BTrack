@@ -7,6 +7,7 @@ import java.util.List;
 import budDetector.Distance;
 import budDetector.Roiobject;
 import ij.IJ;
+import ij.ImagePlus;
 import ij.gui.Arrow;
 import ij.gui.Line;
 import ij.gui.OvalRoi;
@@ -66,12 +67,11 @@ public class DisplayListOverlay {
 		Color displayColor; 
 		
 		displayColor = Color.GREEN;
-		
+		parent.imp.setOverlay(parent.overlay);
 		for (int i = 0; i < truths.size() ; i += 1) {
 
 			double X = Math.round(truths.get(i).getDoublePosition(0));
 			double Y = Math.round(truths.get(i).getDoublePosition(1));
-
 
 			OvalRoi points =  new OvalRoi((int) X - 1, (int) Y - 1,
 					2, 2);
@@ -80,7 +80,6 @@ public class DisplayListOverlay {
 			parent.overlay.add(points);
 		
 		}
-
 		OvalRoi oval = new OvalRoi((int) currentpoint.getDoublePosition(0) - parent.BudDotsize/2, (int) currentpoint.getDoublePosition(1) - parent.BudDotsize/2,
 				parent.BudDotsize, parent.BudDotsize);
 		oval.setStrokeWidth(parent.BudDotsize);
