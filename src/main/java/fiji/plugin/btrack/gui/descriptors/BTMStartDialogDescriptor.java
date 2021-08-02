@@ -48,7 +48,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import net.imglib2.Cursor;
 import pluginTools.InteractiveBud;
-import pluginTools.simplifiedio.SimplifiedIO;
+import pluginTools.BTracksimplifiedio.SimplifiedIO;
 
 public class BTMStartDialogDescriptor extends JPanel
 {

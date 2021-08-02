@@ -43,7 +43,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import pluginTools.InteractiveBud;
-import pluginTools.simplifiedio.SimplifiedIO;
+import pluginTools.BTracksimplifiedio.SimplifiedIO;
 
 
 public class BTStartDialogDescriptor  extends JPanel 

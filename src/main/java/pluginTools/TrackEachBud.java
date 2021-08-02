@@ -116,6 +116,7 @@ public class TrackEachBud {
 
 				
 				ArrayList<Roiobject> currentrois = new ArrayList<Roiobject>();
+				ArrayList<Roiobject> currentbranchrois = new ArrayList<Roiobject>();
 				ArrayList<Roiobject> rejrois = new ArrayList<Roiobject>();
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
@@ -164,11 +165,21 @@ public class TrackEachBud {
 				    
 					
 					
-					List<RealLocalizable> currentskel = SkeletonCreator(PairCurrentViewBit, truths);
+					Pair<List<RealLocalizable>,List<RealLocalizable>>  currentbranchskel = SkeletonCreator(PairCurrentViewBit, truths);
+					
+					List<RealLocalizable> currentskel = currentbranchskel.getA();
+							
+					List<RealLocalizable> currentbranch = currentbranchskel.getB();		
 					
 					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
 					
+					
 					FillArrays(currentskel,truths, currentpoint, label);
+					
+					
+                    currentbranchrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentbranch, label, parent.BudSplitColor);
+					
+					
 					
 				}
 				
@@ -230,20 +241,25 @@ public class TrackEachBud {
 	
 
 	
-	public List<RealLocalizable> SkeletonCreator(Budregionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
+	public Pair<List<RealLocalizable>, List<RealLocalizable>> SkeletonCreator(Budregionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
 		
 		
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
 		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
+		List<RealLocalizable> skeletonBranchPoints = new ArrayList<RealLocalizable>();
+		Pair<List<RealLocalizable>, List<RealLocalizable>> skelEndsBranches = new ValuePair<List<RealLocalizable>, List<RealLocalizable>>(skeletonEndPoints, skeletonBranchPoints);
+		
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
 		skelmake.setClosingRadius(0);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 
-		skeletonEndPoints = AnalyzeSkeleton(Allskeletons,truths, ops);
+		skelEndsBranches = AnalyzeSkeleton(Allskeletons,truths, ops);
 		
-		return skeletonEndPoints;
+		
+		
+		return skelEndsBranches;
 		
 	}
 
@@ -302,15 +318,17 @@ public class TrackEachBud {
 		
 	}
 
-	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
+	public static Pair<List<RealLocalizable>,List<RealLocalizable>> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
 			OpService ops) {
 
 		ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
+		ArrayList<RealLocalizable> branchPoints = new ArrayList<RealLocalizable>();
 
 		for (RandomAccessibleInterval<BitType> skeleton : Allskeletons) {
 
 			SkeletonAnalyzer<BitType> skelanalyze = new SkeletonAnalyzer<BitType>(skeleton, ops);
 			RandomAccessibleInterval<BitType> Ends = skelanalyze.getEndpoints();
+			RandomAccessibleInterval<BitType> Branches = skelanalyze.getBranchpoints();
 
 			Cursor<BitType> skelcursor = Views.iterable(Ends).localizingCursor();
 			while (skelcursor.hasNext()) {
@@ -328,14 +346,32 @@ public class TrackEachBud {
 			}
 			
 			
+		
+		
+		Cursor<BitType> skelbranchcursor = Views.iterable(Branches).localizingCursor();
+		while (skelbranchcursor.hasNext()) {
+
+			skelbranchcursor.next();
+
+			RealPoint addPoint = new RealPoint(skelbranchcursor);
+			if (skelbranchcursor.get().getInteger() > 0) {
+				
+				
+				branchPoints.add(addPoint);
+
+			}
+
 		}
+		
+		}
+	
 		
 		
 		
 		ArrayList<RealLocalizable> farPoints = RemoveClose( endPoints, 20);
 		
 		
-		return farPoints;
+		return new ValuePair<List<RealLocalizable>,List<RealLocalizable>> (farPoints,branchPoints);
 
 	}
 	
