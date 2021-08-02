@@ -106,21 +106,21 @@ public class Listordering {
 			RealLocalizable skelcord, double slope, double intercept) {
 
 		double minDistance = Double.MAX_VALUE;
-		double pointminDistance = Double.MAX_VALUE;
+		
 		RealLocalizable mincord = null;
 
 		int Sy = (int) Math.signum(branchcord.getDoublePosition(1) - skelcord.getDoublePosition(1));
 		int Sx = (int) Math.signum(branchcord.getDoublePosition(0) - skelcord.getDoublePosition(0));
-		truths = SignedList(truths, branchcord, Sy, Sx);
+		truths = SignedList(truths, skelcord, Sy, Sx);
 		for (RealLocalizable cord : truths) {
 
 			double distance = Distance.PointLineDistance(cord, slope, intercept);
-			double pointdistance = Distance.DistanceSqrt(skelcord, cord);
+			
 
-			if (distance <= minDistance && pointdistance <= pointminDistance) {
+			if (distance <= minDistance ) {
 
 				minDistance = distance;
-				pointminDistance = pointdistance;
+				
 				mincord = cord;
 
 			}
@@ -141,7 +141,7 @@ public class Listordering {
 			int Sy = (int) Math.signum(branchcord.getDoublePosition(1) - cord.getDoublePosition(1));
 			int Sx = (int) Math.signum(branchcord.getDoublePosition(0) - cord.getDoublePosition(0));
 
-			if (Sy == defSy || Sx == defSx) {
+			if (Sy == defSy && Sx == defSx) {
 
 				signedtruths.add(cord);
 			}
