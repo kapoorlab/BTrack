@@ -443,7 +443,7 @@ public class TrackEachBud {
 				
 				copywhitePoints = whitePoints;
 				double minDistance = Double.MAX_VALUE;
-				RealLocalizable pointA = null;
+				RealLocalizable pointA = point;
 				RealLocalizable pointB = null;
 				
 			
@@ -452,16 +452,23 @@ public class TrackEachBud {
 					
 				
 				
-				for (RealLocalizable branchpoint: branchPoints) {
-					
+				
+					while(minDistance > 0) {
+						
+						
 					copywhitePoints.remove(point);
+					
+					
 					
 					RealLocalizable nearest = budDetector.Listordering.getNextNearest(point, copywhitePoints);
 					
 					
 					point = nearest;
+					
+					
 				
 					
+					for (RealLocalizable branchpoint: branchPoints) {
 					double distance = Distance.DistanceSqrt(nearest, branchpoint);
 					
 					
@@ -469,14 +476,16 @@ public class TrackEachBud {
 						
 						minDistance = distance;
 						
-						pointA  = point;
-						
 						pointB = branchpoint;
 						
 					}
+                  
+					
 				
 				}
-				
+					
+					}
+					
 				graphPairs.add(new ValuePair<RealLocalizable, RealLocalizable>(pointA, pointB));
 				
 				
