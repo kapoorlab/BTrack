@@ -113,6 +113,7 @@ public class InteractiveBud extends JPanel implements PlugIn {
 	public int borderexpand = 20;
 	public int BudDotsize = 6;
 	public Color BudColor = Color.PINK;
+	public Color BudBeforeColor = Color.YELLOW;
 	public Color BudSplitColor = Color.BLUE;
 	public Color RemoveBudColor = Color.RED;
 	

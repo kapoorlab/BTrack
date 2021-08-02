@@ -16,6 +16,7 @@ import budDetector.Budpointobject;
 import budDetector.Budregionobject;
 import budDetector.Cellobject;
 import budDetector.Distance;
+import budDetector.Listordering;
 import budDetector.Roiobject;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
@@ -29,6 +30,7 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.algorithm.neighborhood.DiamondShape;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.util.Pair;
@@ -165,20 +167,36 @@ public class TrackEachBud {
 				    
 					
 					
-					Pair<List<RealLocalizable>,List<RealLocalizable>>  currentbranchskel = SkeletonCreator(PairCurrentViewBit, truths);
+					ArrayList<Pair<RealLocalizable, RealLocalizable>> currentbranchskel = SkeletonCreator(PairCurrentViewBit, truths);
 					
-					List<RealLocalizable> currentskel = currentbranchskel.getA();
+					List<RealLocalizable> currentskel = new ArrayList<RealLocalizable>();
+					List<RealLocalizable> currentbranch = new ArrayList<RealLocalizable>();
+					for(int i = 0; i < currentbranchskel.size(); ++i) {
+					
+					currentskel.add(currentbranchskel.get(i).getA());
 							
-					List<RealLocalizable> currentbranch = currentbranchskel.getB();		
-					
-					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
+					currentbranch.add(currentbranchskel.get(i).getB());		
 					
 					
-					FillArrays(currentskel,truths, currentpoint, label);
+					}
+					
+					DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudBeforeColor);
+					
+					List<RealLocalizable> newcurrentskel = NearestBoundarySkel(currentskel, currentbranch, truths);
+					
+					newcurrentskel = RemoveClose( newcurrentskel, 20);
+					
+					// Write a method to move the points to the boundary
+					
+					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, newcurrentskel, label, parent.BudColor);
+					
+					
+					FillArrays(newcurrentskel,truths, currentpoint, label);
 					
 					
                     currentbranchrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentbranch, label, parent.BudSplitColor);
 					
+                    currentskel = newcurrentskel;
 					
 					
 				}
@@ -240,15 +258,49 @@ public class TrackEachBud {
 	
 	
 
+	public List<RealLocalizable> NearestBoundarySkel(List<RealLocalizable> currentskel, List<RealLocalizable> currentbranch,List<RealLocalizable> truths    ){
+		
+		
+		List<RealLocalizable> closestskel = new ArrayList<RealLocalizable>();
+		
+		for (int i = 0; i < currentskel.size(); ++i) {
 	
-	public Pair<List<RealLocalizable>, List<RealLocalizable>> SkeletonCreator(Budregionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
+			
+			RealLocalizable cord = currentskel.get(i);
+			
+		    RealLocalizable nearestbranchpoint = currentbranch.get(i);
+		
+		// Make the line
+		
+		double slope = ( cord.getDoublePosition(1) - nearestbranchpoint.getDoublePosition(1) ) / ( cord.getDoublePosition(0) - nearestbranchpoint.getDoublePosition(0) + 1.0E-30 );
+		
+		double intercept = cord.getDoublePosition(1) - slope * cord.getDoublePosition(0);
+		
+		// Closest distance of point from a line
+		
+		RealLocalizable nearestborderpoint = Listordering.getClosestBoundaryPoint(truths, nearestbranchpoint, cord,  slope, intercept);
+		
+		closestskel.add(nearestborderpoint);
+		
+		}
+		
+		
+		
+		return closestskel;
+		
+	}
+	
+	
+
+	
+	public ArrayList<Pair<RealLocalizable, RealLocalizable>> SkeletonCreator(Budregionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
 		
 		
 		// Skeletonize Bud
 		OpService ops = parent.ij.op();
 		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
 		List<RealLocalizable> skeletonBranchPoints = new ArrayList<RealLocalizable>();
-		Pair<List<RealLocalizable>, List<RealLocalizable>> skelEndsBranches = new ValuePair<List<RealLocalizable>, List<RealLocalizable>>(skeletonEndPoints, skeletonBranchPoints);
+		ArrayList<Pair<RealLocalizable, RealLocalizable>> skelEndsBranches = new ArrayList<Pair<RealLocalizable, RealLocalizable>>();
 		
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
 		skelmake.setClosingRadius(0);
@@ -318,18 +370,39 @@ public class TrackEachBud {
 		
 	}
 
-	public static Pair<List<RealLocalizable>,List<RealLocalizable>> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
+	public static ArrayList<Pair<RealLocalizable, RealLocalizable>>AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
 			OpService ops) {
 
 		ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
 		ArrayList<RealLocalizable> branchPoints = new ArrayList<RealLocalizable>();
+		ArrayList<RealLocalizable> whitePoints = new ArrayList<RealLocalizable>();
+		ArrayList<RealLocalizable> copywhitePoints = new ArrayList<RealLocalizable>();
+		ArrayList<Pair<RealLocalizable, RealLocalizable>> graphPairs = new ArrayList<Pair<RealLocalizable, RealLocalizable>>();
 
+		 
+		
 		for (RandomAccessibleInterval<BitType> skeleton : Allskeletons) {
 
 			SkeletonAnalyzer<BitType> skelanalyze = new SkeletonAnalyzer<BitType>(skeleton, ops);
 			RandomAccessibleInterval<BitType> Ends = skelanalyze.getEndpoints();
 			RandomAccessibleInterval<BitType> Branches = skelanalyze.getBranchpoints();
-
+          
+			Cursor<BitType> skeletoncursor = Views.iterable(skeleton).localizingCursor();
+			
+			while(skeletoncursor.hasNext()) {
+				
+				skeletoncursor.next();
+				RealPoint whitePoint = new RealPoint(skeletoncursor);
+				if (skeletoncursor.get().getInteger() > 0 ) {
+					
+					
+					whitePoints.add(whitePoint);
+				}
+				
+				
+			}
+			
+			
 			Cursor<BitType> skelcursor = Views.iterable(Ends).localizingCursor();
 			while (skelcursor.hasNext()) {
 
@@ -363,24 +436,76 @@ public class TrackEachBud {
 
 		}
 		
+		
+			
+			for (RealLocalizable point: endPoints) {
+				
+				
+				copywhitePoints = whitePoints;
+				double minDistance = Double.MAX_VALUE;
+				RealLocalizable pointA = null;
+				RealLocalizable pointB = null;
+				
+			
+				
+				
+					
+				
+				
+				for (RealLocalizable branchpoint: branchPoints) {
+					
+					copywhitePoints.remove(point);
+					
+					RealLocalizable nearest = budDetector.Listordering.getNextNearest(point, copywhitePoints);
+					
+					
+					point = nearest;
+				
+					
+					double distance = Distance.DistanceSqrt(nearest, branchpoint);
+					
+					
+					if(distance <= minDistance) {
+						
+						minDistance = distance;
+						
+						pointA  = point;
+						
+						pointB = branchpoint;
+						
+					}
+				
+				}
+				
+				graphPairs.add(new ValuePair<RealLocalizable, RealLocalizable>(pointA, pointB));
+				
+				
+				
+				
+			}
+			
+		
+		
+		
+		
 		}
 	
 		
 		
 		
-		ArrayList<RealLocalizable> farPoints = RemoveClose( endPoints, 20);
 		
 		
-		return new ValuePair<List<RealLocalizable>,List<RealLocalizable>> (farPoints,branchPoints);
+		
+		return graphPairs;
 
 	}
 	
-	public static ArrayList<RealLocalizable> RemoveClose(ArrayList<RealLocalizable> endPoints, double mindist) {
+	public static ArrayList<RealLocalizable> RemoveClose(List<RealLocalizable> newcurrentskel, double mindist) {
 		
-		ArrayList<RealLocalizable> farPoints = new ArrayList<RealLocalizable>(endPoints);
+		ArrayList<RealLocalizable> farPoints = new ArrayList<RealLocalizable>(newcurrentskel);
 		
 		
-		for(RealLocalizable addPoint:endPoints) {
+		for(RealLocalizable addPoint:newcurrentskel) {
 			
 			
 			farPoints.remove(addPoint);

@@ -196,7 +196,28 @@ public class Distance {
 	
 
  
+   public static double PointLineDistance( RealLocalizable cord, double slope, double intercept) {
+	   
+	   
+	   double closestdistance = Math.abs(cord.getDoublePosition(1) - slope * cord.getDoublePosition(0) - intercept);
+	   
+	   return closestdistance;
+	   
+   }
    
+   
+   public static double SignDistance(RealLocalizable cordA, RealLocalizable cordB) {
+	   
+	   
+	   double distance = 0;
+	   
+	   distance = Math.signum((cordA.getDoublePosition(1) - cordB.getDoublePosition(1))/(cordA.getDoublePosition(0) - cordB.getDoublePosition(0)) );
+	   
+	   
+	   return distance;
+	   
+	   
+   }
      
 
 }
