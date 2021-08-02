@@ -95,7 +95,7 @@ public class Skeletons {
 			OpService opService )
 	{
 		final RandomAccessibleInterval< BitType > thin = Utils.createEmptyCopy( input );
-		opService.morphology().thinZhangSuen( thin, input );
+		opService.morphology().thinGuoHall( thin, input );
 		return thin;
 	}
 
