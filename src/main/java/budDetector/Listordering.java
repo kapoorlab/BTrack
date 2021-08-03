@@ -105,26 +105,36 @@ public class Listordering {
 	public static RealLocalizable getClosestBoundaryPoint(List<RealLocalizable> truths, RealLocalizable branchcord,
 			RealLocalizable skelcord, double slope, double intercept) {
 
-		double minDistance = Double.MAX_VALUE;
 		
 		RealLocalizable mincord = null;
-
-		int Sy = (int) Math.signum(branchcord.getDoublePosition(1) - skelcord.getDoublePosition(1));
-		int Sx = (int) Math.signum(branchcord.getDoublePosition(0) - skelcord.getDoublePosition(0));
-		truths = SignedList(truths, skelcord, Sy, Sx);
+        double minDistance = Double.MAX_VALUE;
+		ArrayList<RealLocalizable> lineintersections = new ArrayList<RealLocalizable>();
 		for (RealLocalizable cord : truths) {
 
 			double distance = Distance.PointLineDistance(cord, slope, intercept);
 			
 
-			if (distance <= minDistance ) {
-
-				minDistance = distance;
+			if(distance <= 4 ) {
 				
-				mincord = cord;
-
+				lineintersections.add(cord);
+				
 			}
 
+		}
+		
+		
+		for(int i = 0; i < lineintersections.size(); ++i) {
+			
+             double pointdistance = Distance.DistanceSqrt(skelcord, lineintersections.get(i));
+             
+             if(pointdistance <= minDistance) {
+            	 
+            	 
+            	 minDistance = pointdistance;
+            	 mincord = lineintersections.get(i);
+             }
+			
+			
 		}
 
 		return mincord;

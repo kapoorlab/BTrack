@@ -165,7 +165,7 @@ public class TrackEachBud {
 
 					}
 
-					DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudBeforeColor);
+				//	DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudBeforeColor);
 
 					List<RealLocalizable> newcurrentskel = NearestBoundarySkel(currentskel, currentbranch, truths);
 
@@ -177,8 +177,8 @@ public class TrackEachBud {
 
 					FillArrays(newcurrentskel, truths, currentpoint, label);
 
-					currentbranchrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentbranch, label,
-							parent.BudSplitColor);
+				//	currentbranchrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentbranch, label,
+				//			parent.BudSplitColor);
 
 					currentskel = newcurrentskel;
 
