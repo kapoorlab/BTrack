@@ -106,7 +106,7 @@ public class Listordering {
 			RealLocalizable skelcord, double slope, double intercept) {
 
 		
-		RealLocalizable mincord = null;
+		RealLocalizable mincord = new Point(0,0);
         double minDistance = Double.MAX_VALUE;
 		ArrayList<RealLocalizable> lineintersections = new ArrayList<RealLocalizable>();
 		for (RealLocalizable cord : truths) {
@@ -114,7 +114,7 @@ public class Listordering {
 			double distance = Distance.PointLineDistance(cord, slope, intercept);
 			
 
-			if(distance <= 4 ) {
+			if(distance <= 10 ) {
 				
 				lineintersections.add(cord);
 				
@@ -122,7 +122,7 @@ public class Listordering {
 
 		}
 		
-		
+		if(lineintersections.size()  > 0)
 		for(int i = 0; i < lineintersections.size(); ++i) {
 			
              double pointdistance = Distance.DistanceSqrt(skelcord, lineintersections.get(i));
@@ -137,6 +137,7 @@ public class Listordering {
 			
 		}
 
+		
 		return mincord;
 
 	}
