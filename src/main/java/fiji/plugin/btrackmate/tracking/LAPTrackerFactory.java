@@ -97,8 +97,8 @@ public abstract class LAPTrackerFactory implements SpotTrackerFactory {
 		// Linking
 		final Element linkingElement = element.getChild(XML_ELEMENT_NAME_LINKING);
 		if (null == linkingElement) {
-			errorHolder.append("Could not found the " + XML_ELEMENT_NAME_LINKING + " element in XML.\n");
-			ok = false;
+			//errorHolder.append("Could not found the " + XML_ELEMENT_NAME_LINKING + " element in XML.\n");
+			ok = true;
 
 		} else {
 
@@ -115,8 +115,8 @@ public abstract class LAPTrackerFactory implements SpotTrackerFactory {
 		// Gap closing
 		final Element gapClosingElement = element.getChild(XML_ELEMENT_NAME_GAP_CLOSING);
 		if (null == gapClosingElement) {
-			errorHolder.append("Could not found the " + XML_ELEMENT_NAME_GAP_CLOSING + " element in XML.\n");
-			ok = false;
+			//errorHolder.append("Could not found the " + XML_ELEMENT_NAME_GAP_CLOSING + " element in XML.\n");
+			ok = true;
 
 		} else {
 
@@ -135,8 +135,8 @@ public abstract class LAPTrackerFactory implements SpotTrackerFactory {
 		// Track splitting
 		final Element trackSplittingElement = element.getChild(XML_ELEMENT_NAME_SPLITTING);
 		if (null == trackSplittingElement) {
-			errorHolder.append("Could not found the " + XML_ELEMENT_NAME_SPLITTING + " element in XML.\n");
-			ok = false;
+			//errorHolder.append("Could not found the " + XML_ELEMENT_NAME_SPLITTING + " element in XML.\n");
+			ok = true;
 
 		} else {
 
@@ -154,8 +154,8 @@ public abstract class LAPTrackerFactory implements SpotTrackerFactory {
 		// Track merging
 		final Element trackMergingElement = element.getChild(XML_ELEMENT_NAME_MERGING);
 		if (null == trackMergingElement) {
-			errorHolder.append("Could not found the " + XML_ELEMENT_NAME_MERGING + " element in XML.\n");
-			ok = false;
+			//errorHolder.append("Could not found the " + XML_ELEMENT_NAME_MERGING + " element in XML.\n");
+			ok = true;
 
 		} else {
 

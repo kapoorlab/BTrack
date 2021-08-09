@@ -123,7 +123,6 @@ public class LoadTrackMatePlugIn extends SomeDialogDescriptor implements PlugIn 
 		/*
 		 * Create TrackMate.
 		 */
-
 		final TrackMate btrackmate = new TrackMate(model, settings);
 
 		// Hook actions

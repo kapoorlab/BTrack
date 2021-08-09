@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 
 import fiji.plugin.btrackmate.Logger;
 import fiji.plugin.btrackmate.TrackMate;
+import fiji.plugin.btrackmate.Logger.StringBuilderLogger;
 import fiji.plugin.btrackmate.gui.components.LogPanel;
 import fiji.plugin.btrackmate.gui.displaysettings.DisplaySettings;
 import fiji.plugin.btrackmate.gui.wizard.WizardSequence;
@@ -36,7 +37,7 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 
 	@Override
 	public void displayingPanel() {
-		final LogPanel logPanel = (LogPanel) targetPanel;
+		 LogPanel logPanel = (LogPanel) targetPanel;
 		final Logger logger = logPanel.getLogger();
 		logger.log("Saving data...\n", Logger.BLUE_COLOR);
 		if (null == file)
@@ -68,7 +69,7 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 		writer.appendSettings(btrackmate.getSettings());
 		writer.appendGUIState(sequence.current().getPanelDescriptorIdentifier());
 		writer.appendDisplaySettings(displaySettings);
-
+		
 		try {
 			writer.writeToFile();
 			logger.log("Data saved to: " + file.toString() + '\n');
@@ -79,5 +80,9 @@ public class SaveDescriptor extends SomeDialogDescriptor {
 			logger.error("Input/Output error:\n" + e.getMessage() + '\n');
 			return;
 		}
+		
+		logPanel.setTextContent("Welcome to tracking world");
+		logPanel.repaint();
+		logPanel.validate();
 	}
 }

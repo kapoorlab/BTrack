@@ -333,8 +333,8 @@ public class IOUtils {
 			final String parameterKey, final StringBuilder errorHolder) {
 		final String str = element.getAttributeValue(parameterKey);
 		if (null == str) {
-			errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
-			return false;
+			//errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
+			return true;
 		}
 		try {
 			final double val = NumberParser.parseDouble(str);
@@ -350,8 +350,8 @@ public class IOUtils {
 			final String parameterKey, final StringBuilder errorHolder) {
 		final String str = element.getAttributeValue(parameterKey);
 		if (null == str) {
-			errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
-			return false;
+			//errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
+			return true;
 		}
 		try {
 			final int val = NumberParser.parseInteger(str);
@@ -367,8 +367,8 @@ public class IOUtils {
 			final String parameterKey, final StringBuilder errorHolder) {
 		final String str = element.getAttributeValue(parameterKey);
 		if (null == str) {
-			errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
-			return false;
+			//errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
+			return true;
 		}
 		try {
 			final boolean val = Boolean.parseBoolean(str);
@@ -384,8 +384,8 @@ public class IOUtils {
 			final String parameterKey, final StringBuilder errorHolder) {
 		final String str = element.getAttributeValue(parameterKey);
 		if (null == str) {
-			errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
-			return false;
+			//errorHolder.append("Attribute " + parameterKey + " could not be found in XML element.\n");
+			return true;
 		}
 		settings.put(parameterKey, str);
 		return true;

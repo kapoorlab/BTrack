@@ -429,12 +429,6 @@ public class TmXmlReader {
 			getTrackerSettings(settingsElement, settings, trackerProvider);
 
 		// Spot Filters
-		final FeatureFilter initialFilter = getInitialFilter(settingsElement);
-		if (null != initialFilter)
-			settings.initialSpotFilterValue = initialFilter.value;
-
-		final List<FeatureFilter> spotFilters = getSpotFeatureFilters(settingsElement);
-		settings.setSpotFilters(spotFilters);
 
 		// Track Filters
 		final List<FeatureFilter> trackFilters = getTrackFeatureFilters(settingsElement);

@@ -184,7 +184,7 @@ public class WizardController {
 		new Thread(() -> {
 			saveDescriptor.aboutToDisplayPanel();
 			saveDescriptor.targetPanel.setSize(sequence.current().targetPanel.getSize());
-			display(saveDescriptor, sequence.current(), Direction.BOTTOM);
+			display(saveDescriptor, sequence.current(), Direction.TOP);
 			saveDescriptor.displayingPanel();
 		}).start();
 	}

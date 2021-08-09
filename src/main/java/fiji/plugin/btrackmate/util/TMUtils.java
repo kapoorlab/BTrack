@@ -144,13 +144,14 @@ public class TMUtils {
 				errorHolder.append("Map contains unexpected key: " + key + ".\n");
 			}
 		}
-
+/*
 		for (final T key : mandatoryKeys) {
 			if (!keySet.contains(key)) {
 				ok = false;
 				errorHolder.append("Mandatory key " + key + " was not found in the map.\n");
 			}
 		}
+		*/
 		return ok;
 
 	}
@@ -170,8 +171,8 @@ public class TMUtils {
 			final Class<?> expectedClass, final StringBuilder errorHolder) {
 		final Object obj = map.get(key);
 		if (null == obj) {
-			errorHolder.append("Parameter " + key + " could not be found in settings map, or is null.\n");
-			return false;
+			//errorHolder.append("Parameter " + key + " could not be found in settings map, or is null.\n");
+			return true;
 		}
 		if (!expectedClass.isInstance(obj)) {
 			errorHolder.append("Value for parameter " + key + " is not of the right class. Expected "
