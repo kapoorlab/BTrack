@@ -693,11 +693,7 @@ public class TmXmlWriter
 			if ( null == val )
 				continue;
 
-			final String str;
-			if ( fm.getSpotFeatureIsInt().get( feature ).booleanValue() )
-				str = Integer.toString( val.intValue() );
-			else
-				str = val.toString();
+			final String str = val.toString();
 
 			attributes.add( new Attribute( feature, str ) );
 		}
